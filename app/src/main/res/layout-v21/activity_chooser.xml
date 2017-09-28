@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/clChooserLayout"
     android:layout_height="match_parent"
     tools:context="dustit.clientapp.mvp.ui.activities.ChooserActivity">
 
@@ -10,6 +11,7 @@
         android:id="@+id/btnChooserLogin"
         android:layout_width="0dp"
         android:layout_height="60dp"
+        android:transitionName="btnLogin"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -27,6 +29,7 @@
     <Button
         android:id="@+id/btnChooserRegister"
         android:layout_width="0dp"
+        android:transitionName="btnRegister"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
@@ -43,6 +46,7 @@
         android:id="@+id/ivChooserIcon"
         android:layout_width="240dp"
         android:layout_height="200dp"
+        android:transitionName="icon"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginTop="64dp"

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/clLoginLayout"
     android:layout_height="match_parent"
     tools:context="dustit.clientapp.mvp.ui.activities.LoginActivity">
 
@@ -11,6 +12,7 @@
         android:id="@+id/ivLoginIcon"
         android:layout_width="240dp"
         android:layout_height="200dp"
+        android:transitionName="icon"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
@@ -26,6 +28,7 @@
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
+        android:transitionName="btnLogin"
         android:layout_height="60dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
