@@ -14,11 +14,23 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         void onSwipeUp();
     }
 
-    private IGestureListener gestureListener;
+    public interface IFragmentGestureListener {
+        void onSwipeRight();
+        void onSwipeLeft();
+    }
+
+    private IGestureListener gestureListener = null;
+
+    private IFragmentGestureListener fragmentGestureListener = null;
 
     public GestureListener(IGestureListener gestureListener) {
         super();
         this.gestureListener = gestureListener;
+    }
+
+    public GestureListener(IFragmentGestureListener fragmentGestureListener) {
+        super();
+        this.fragmentGestureListener = fragmentGestureListener;
     }
 
     @Override
@@ -37,11 +49,23 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     public boolean onSwipe(Direction direction) {
         switch (direction) {
             case up:
-                gestureListener.onSwipeUp();
-                return true;
+                if (gestureListener != null) {
+                    gestureListener.onSwipeUp();
+                }
+            case right:
+                if (fragmentGestureListener != null) {
+                    fragmentGestureListener.onSwipeRight();
+                }
+                break;
+            case left:
+                if (fragmentGestureListener != null) {
+                    fragmentGestureListener.onSwipeLeft();
+                }
+                break;
             default:
                 return false;
         }
+        return true;
     }
 
     public Direction getDirection(float x1, float y1, float x2, float y2) {

@@ -2,6 +2,8 @@ package dustit.clientapp;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import dustit.clientapp.di.component.AppComponent;
 import dustit.clientapp.di.component.DaggerAppComponent;
 import dustit.clientapp.di.modules.AppModule;
@@ -27,6 +29,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fresco.initialize(this);
         instance = this;
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))

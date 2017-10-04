@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#000</color>
     <color name="colorAccent">#fff</color>
     <color name="colorEditTextHint">#aaeeeeee</color>
-    <color name="colorEditTextMainText">#fefefe</color>
+    <color name="colorMainText">#fefefe</color>
 </resources>

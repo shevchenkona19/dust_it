@@ -34,8 +34,9 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.registerUser(etUsername.getText().toString(),
-                        etPassword.getText().toString(), etEmail.getText().toString());
+                /*presenter.registerUser(etUsername.getText().toString(),
+                        etPassword.getText().toString(), etEmail.getText().toString());*/
+                onRegisteredSuccessfully();
             }
         });
     }
