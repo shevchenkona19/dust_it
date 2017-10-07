@@ -6,5 +6,5 @@ package dustit.clientapp.utils;
  */
 
 public interface IConstants {
-    String BASE_URL = "http://127.0.0.1";
+    String BASE_URL = "http://192.168.43.140:8888";
 }

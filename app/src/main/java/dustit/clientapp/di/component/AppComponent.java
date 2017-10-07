@@ -7,8 +7,10 @@ import dustit.clientapp.di.modules.AppModule;
 import dustit.clientapp.di.modules.ServerModule;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
+import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.RegisterActivityPresenter;
+import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 
 /**
  * Created by shevc on 22.09.2017.
@@ -21,4 +23,8 @@ public interface AppComponent {
     void inject(DataManager dataManager);
     void inject(LoginActivityPresenter presenter);
     void inject(RegisterActivityPresenter presenter);
+
+    void inject(FeedFragmentPresenter feedFragmentPresenter);
+
+    void inject(FeedActivityPresenter feedActivityPresenter);
 }

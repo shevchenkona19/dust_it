@@ -18,15 +18,20 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+    private FeedFragment feedFragment;
+    private HotFragment hotFragment;
+
     @Override
     public Fragment getItem(int position) {
         Fragment selectedFragment;
         switch (position) {
             case 0:
-                selectedFragment = FeedFragment.newInstance();
+                feedFragment = FeedFragment.newInstance();
+                selectedFragment = feedFragment;
                 break;
             case 1:
-                selectedFragment = HotFragment.newInstance();
+                hotFragment = HotFragment.newInstance();
+                selectedFragment = hotFragment;
                 break;
             default:
                 selectedFragment = null;
@@ -37,5 +42,13 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 2;
+    }
+
+    public void postLikeFeed(String id) {
+
+    }
+
+    public void postLikeHot(String id) {
+
     }
 }

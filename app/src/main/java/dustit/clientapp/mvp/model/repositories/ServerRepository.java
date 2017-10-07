@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
+import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import rx.Observable;
@@ -34,5 +35,15 @@ public class ServerRepository {
         return serverAPI.loginUser(loginUserEntity)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<MemUpperEntity> getFeed(String token, int count, int offset) {
+        return serverAPI.getFeed(token, count, offset)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public void postLike(String token, String id) {
+        serverAPI.postLike(token, id);
     }
 }
