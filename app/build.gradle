@@ -39,4 +39,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.0.1'
     provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.facebook.fresco:fresco:1.5.0'
 }

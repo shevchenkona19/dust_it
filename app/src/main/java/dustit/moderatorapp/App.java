@@ -2,6 +2,8 @@ package dustit.moderatorapp;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import dustit.moderatorapp.di.components.AppComponent;
 import dustit.moderatorapp.di.components.DaggerAppComponent;
 import dustit.moderatorapp.di.modules.AppModule;
@@ -28,6 +30,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Fresco.initialize(this);
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(instance))
                 .build();
