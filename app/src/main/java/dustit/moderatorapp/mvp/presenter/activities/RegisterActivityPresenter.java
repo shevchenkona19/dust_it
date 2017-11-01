@@ -31,17 +31,18 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
-                        Log.d("MY", "---DONE!---");
+                        getView().onRegistered();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().onError();
                         Log.d("MY", e.getMessage());
                     }
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
-                        getView().showToken(tokenEntity.getToken());
+                        dataManager.saveToken(tokenEntity.getToken());
                     }
                 });
     }

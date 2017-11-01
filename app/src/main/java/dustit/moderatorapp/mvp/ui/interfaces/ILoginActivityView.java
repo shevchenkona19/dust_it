@@ -6,5 +6,5 @@ package dustit.moderatorapp.mvp.ui.interfaces;
  */
 
 public interface ILoginActivityView extends IActivityView {
-    void showToken(String s);
+    void onLoggedSuccessfully();
 }

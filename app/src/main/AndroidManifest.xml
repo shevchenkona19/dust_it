@@ -24,7 +24,8 @@
         </activity>
         <activity android:name=".mvp.ui.activities.ChooserActivity" />
         <activity android:name=".mvp.ui.activities.LoginActivity" />
-        <activity android:name=".mvp.ui.activities.DecideActivity"></activity>
+        <activity android:name=".mvp.ui.activities.DecideActivity" />
+        <activity android:name=".mvp.ui.activities.SettingsActivity"></activity>
     </application>
 
 </manifest>

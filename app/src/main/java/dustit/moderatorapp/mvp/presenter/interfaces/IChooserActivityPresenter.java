@@ -6,5 +6,5 @@ package dustit.moderatorapp.mvp.presenter.interfaces;
  */
 
 public interface IChooserActivityPresenter {
-    boolean isFirstTime();
+    boolean isLogged();
 }

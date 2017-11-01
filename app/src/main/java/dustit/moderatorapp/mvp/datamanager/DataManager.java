@@ -1,17 +1,20 @@
 package dustit.moderatorapp.mvp.datamanager;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import dustit.moderatorapp.App;
+import dustit.moderatorapp.mvp.model.entities.CategoriesIdEntity;
+import dustit.moderatorapp.mvp.model.entities.Category;
+import dustit.moderatorapp.mvp.model.entities.CategoryEntity;
 import dustit.moderatorapp.mvp.model.entities.LoginUserEntity;
+import dustit.moderatorapp.mvp.model.entities.MemIdEntity;
+import dustit.moderatorapp.mvp.model.entities.ResponseCode;
 import dustit.moderatorapp.mvp.model.entities.TokenEntity;
 import dustit.moderatorapp.mvp.model.entities.UserEntity;
 import dustit.moderatorapp.mvp.model.repositories.ServerRepository;
 import dustit.moderatorapp.mvp.model.repositories.SharedPreferencesRepository;
 import rx.Observable;
-import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * Created by shevc on 15.09.2017.
@@ -29,51 +32,53 @@ public class DataManager {
     }
 
     public Observable<TokenEntity> registerUser(UserEntity userEntity) {
-        final String[] token = new String[1];
         return serverRepository.registerUser(userEntity);
-        /*serverRepository.registerUser(new UserEntity(username, password))
-                .subscribe(new Subscriber<TokenEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        //Save token for further use...
-                        Log.d("MY", "Completed request");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("MY", e.toString());
-                    }
-
-                    @Override
-                    public void onNext(TokenEntity tokenEntity) {
-                        token[0] = tokenEntity.getToken();
-                    }
-                });*/
     }
 
     public Observable<TokenEntity> loginUser(LoginUserEntity loginUserEntity) {
-        final String[] token = new String[1];
         return serverRepository.loginUser(loginUserEntity);
-        /*serverRepository.loginUser(loginUserEntity)
-                .subscribe(new Subscriber<TokenEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d("MY", "Completed");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("MY", e.toString());
-                    }
-
-                    @Override
-                    public void onNext(TokenEntity tokenEntity) {
-                        token[0] = tokenEntity.getToken();
-                    }
-                });*/
     }
 
-    public boolean isFirstTime() {
-        return sharedPreferencesRepository.isFirstTime();
+    public Observable<ResponseCode> logout() {
+        return serverRepository.logout(sharedPreferencesRepository.getCurrentToken().getToken());
+    }
+
+    public Observable<Category> getCategories() {
+        return serverRepository.getCategories(sharedPreferencesRepository.getCurrentToken().getToken())
+                .flatMap(new Func1<CategoryEntity, Observable<Category>>() {
+                    @Override
+                    public Observable<Category> call(CategoryEntity categoryEntity) {
+                        return Observable.from(categoryEntity.getCategories());
+                    }
+                });
+    }
+
+    public Observable<ResponseCode> postMem(String id, CategoriesIdEntity entity) {
+        return serverRepository.postMem(sharedPreferencesRepository.getCurrentToken().getToken(),
+                id, entity);
+    }
+
+    public Observable<MemIdEntity> getNewMem() {
+        return serverRepository.getNewMem(sharedPreferencesRepository.getCurrentToken().getToken());
+    }
+
+    public Observable<ResponseCode> discardMem(String id) {
+        return serverRepository.discardMem(sharedPreferencesRepository.getCurrentToken().getToken(), id);
+    }
+
+    public void saveToken(String token) {
+        sharedPreferencesRepository.saveToken(token);
+    }
+
+    public void deleteCurrentToken() {
+        sharedPreferencesRepository.deleteToken();
+    }
+
+    public boolean isLogged() {
+        return sharedPreferencesRepository.isLogged();
+    }
+
+    public String getToken() {
+        return sharedPreferencesRepository.getCurrentToken().getToken();
     }
 }

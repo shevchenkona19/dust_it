@@ -76,7 +76,12 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
 
     @Override
-    public void showToken(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    public void onRegistered() {
+        startActivity(new Intent(this, DecideActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, "Errr...", Toast.LENGTH_SHORT).show();
     }
 }

@@ -22,7 +22,7 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
     }
 
     @Override
-    public boolean isFirstTime() {
-        return dataManager.isFirstTime();
+    public boolean isLogged() {
+        return dataManager.isLogged();
     }
 }

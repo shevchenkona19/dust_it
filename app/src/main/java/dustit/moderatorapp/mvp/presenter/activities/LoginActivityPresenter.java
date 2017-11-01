@@ -32,7 +32,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
-                        Log.d("MY", "---DONE---");
+                        getView().onLoggedSuccessfully();
                     }
 
                     @Override
@@ -42,7 +42,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
-                        getView().showToken(tokenEntity.getToken());
+                        dataManager.saveToken(tokenEntity.getToken());
                     }
                 });
     }

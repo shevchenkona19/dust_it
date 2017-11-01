@@ -6,5 +6,8 @@ package dustit.moderatorapp.mvp.ui.interfaces;
  */
 
 public interface IRegisterActivityView extends IActivityView {
-    void showToken(String s);
+
+    void onRegistered();
+
+    void onError();
 }

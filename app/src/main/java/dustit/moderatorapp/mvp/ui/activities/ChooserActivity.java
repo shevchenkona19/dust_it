@@ -1,8 +1,8 @@
 package dustit.moderatorapp.mvp.ui.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,7 +24,7 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         super.onCreate(savedInstanceState);
         presenter = new ChooserActivityPresenter();
         presenter.bind(this);
-        if (presenter.isFirstTime()) {
+        if (!presenter.isLogged()) {
             setContentView(R.layout.activity_chooser);
             ButterKnife.bind(this);
             btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +44,7 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
                 }
             });
         } else {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, DecideActivity.class);
             startActivity(intent);
             finish();
         }

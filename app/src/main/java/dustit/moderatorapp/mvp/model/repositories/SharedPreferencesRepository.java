@@ -18,18 +18,16 @@ public class SharedPreferencesRepository {
         sharedPreferences = context.getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
-    public boolean isFirstTime() {
-        boolean res = sharedPreferences.getBoolean(IConstants.IS_FIRST_TIME_KEY, true);
-        if (res) {
-            sharedPreferences
-                    .edit()
-                    .putBoolean(IConstants.IS_FIRST_TIME_KEY, false)
-                    .apply();
-        }
-        return res;
+    public boolean isLogged() {
+        return sharedPreferences.getBoolean(IConstants.IS_FIRST_TIME_KEY, true);
+    }
+
+    public void setLogged(boolean isLogged) {
+        sharedPreferences.edit().putBoolean(IConstants.IS_FIRST_TIME_KEY, isLogged).apply();
     }
 
     public void saveToken(String token) {
+        setLogged(true);
         sharedPreferences
                 .edit()
                 .putString(IConstants.TOKEN_KEY, token)
@@ -42,6 +40,7 @@ public class SharedPreferencesRepository {
     }
 
     public void deleteToken() {
+        setLogged(false);
         sharedPreferences
                 .edit()
                 .putString(IConstants.TOKEN_KEY, "")
