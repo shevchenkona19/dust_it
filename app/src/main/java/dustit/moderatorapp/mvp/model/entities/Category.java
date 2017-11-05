@@ -9,7 +9,7 @@ public class Category {
     @SerializedName("Name")
     @Expose
     private String name;
-    @SerializedName("Id")
+    @SerializedName("ID")
     @Expose
     private String id;
 

@@ -40,6 +40,10 @@ public class DecideActivity extends AppCompatActivity implements IDecideActivity
     Button btnDiscard;
     @BindView(R.id.pbDecideLoading)
     ProgressBar pbLoading;
+    @BindView(R.id.btnDecideRetryMem)
+    Button btnRetryMem;
+    @BindView(R.id.btnDecideRetryCategories)
+    Button btnRetryCategories;
     private DecideCategoriesRecyclerViewAdapter adapter;
     private MemIdEntity currentMem;
 
@@ -75,17 +79,35 @@ public class DecideActivity extends AppCompatActivity implements IDecideActivity
                 }
             }
         });
+
+        btnRetryMem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.getNewMem();
+            }
+        });
+
+        btnRetryCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.getCategories();
+            }
+        });
     }
 
     @Override
     public void onCategoriesLoaded(List<Category> categories) {
         pbLoading.setVisibility(View.GONE);
+        btnRetryCategories.setVisibility(View.GONE);
+        rvCategories.setVisibility(View.VISIBLE);
         adapter.updateList(categories);
     }
 
     @Override
     public void onErrorInLoadingCategories() {
         pbLoading.setVisibility(View.GONE);
+        rvCategories.setVisibility(View.GONE);
+        btnRetryCategories.setVisibility(View.VISIBLE);
         Toast.makeText(this, "Ошибка в загрузке категорий", Toast.LENGTH_SHORT).show();
     }
 
@@ -104,6 +126,8 @@ public class DecideActivity extends AppCompatActivity implements IDecideActivity
 
     @Override
     public void onNewMemArrived(MemIdEntity memIdEntity) {
+        btnRetryMem.setVisibility(View.GONE);
+        sdvMemImage.setVisibility(View.VISIBLE);
         pbLoading.setVisibility(View.GONE);
         currentMem = memIdEntity;
         sdvMemImage.setImageURI(IConstants.BASE_URL + "/moderator/imgs?token="
@@ -114,6 +138,8 @@ public class DecideActivity extends AppCompatActivity implements IDecideActivity
     @Override
     public void onErrorInGettingNewMem() {
         pbLoading.setVisibility(View.GONE);
+        sdvMemImage.setVisibility(View.GONE);
+        btnRetryMem.setVisibility(View.GONE);
         Toast.makeText(this, "Не удается получить мем", Toast.LENGTH_SHORT).show();
     }
 

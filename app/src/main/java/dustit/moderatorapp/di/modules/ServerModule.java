@@ -10,6 +10,7 @@ import dagger.Provides;
 import dustit.moderatorapp.mvp.model.api.ServerAPI;
 import dustit.moderatorapp.mvp.model.repositories.ServerRepository;
 import dustit.moderatorapp.utils.IConstants;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;

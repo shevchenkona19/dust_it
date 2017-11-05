@@ -2,6 +2,7 @@ package dustit.moderatorapp.mvp.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,14 +64,15 @@ public class DecideCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<De
 
     public CategoriesIdEntity getCheckedCategories() {
         StringBuilder builder = new StringBuilder();
+        builder.append(" ");
         for (int i = 0; i < categoryList.size(); i++) {
             if (categoryList.get(i).isChecked()) {
                 Category category = categoryList.get(i);
                 builder.append(category.getId());
                 builder.append(" ");
+                Log.d("MY", "Builder: " + builder.toString());
             }
         }
-        builder.deleteCharAt(builder.lastIndexOf(" "));
         return new CategoriesIdEntity(builder.toString());
     }
 

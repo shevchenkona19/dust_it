@@ -19,6 +19,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        presenter.bind(this);
         btnLogout = (Button) findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,5 +38,11 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     @Override
     public void onError() {
         Toast.makeText(this, "Errr...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.unbind();
+        super.onDestroy();
     }
 }

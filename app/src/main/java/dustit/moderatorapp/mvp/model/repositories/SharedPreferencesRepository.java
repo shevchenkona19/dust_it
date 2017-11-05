@@ -19,7 +19,7 @@ public class SharedPreferencesRepository {
     }
 
     public boolean isLogged() {
-        return sharedPreferences.getBoolean(IConstants.IS_FIRST_TIME_KEY, true);
+        return sharedPreferences.getBoolean(IConstants.IS_FIRST_TIME_KEY, false);
     }
 
     public void setLogged(boolean isLogged) {

@@ -42,6 +42,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
+                        Log.d("MY", "Token: " + tokenEntity.getToken());
                         dataManager.saveToken(tokenEntity.getToken());
                     }
                 });
