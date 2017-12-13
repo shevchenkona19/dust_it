@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dustit.clientapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".mvp.ui.activities.SplashActivity"
+            android:theme="@style/SplashScreenStyle">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".mvp.ui.activities.ChooserActivity"
+            android:theme="@style/HelloTheme" />
+        <activity
+            android:name=".mvp.ui.activities.LoginActivity"
+            android:theme="@style/HelloTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".mvp.ui.activities.RegisterActivity"
+            android:theme="@style/HelloTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".mvp.ui.activities.PreTestActivity"
+            android:theme="@style/HelloTheme" />
+        <activity
+            android:name=".mvp.ui.activities.TestActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/HelloTheme" />
+        <activity
+            android:name=".mvp.ui.activities.ResultActivity"
+            android:theme="@style/HelloTheme" />
+        <activity
+            android:name=".mvp.ui.activities.FeedActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.ui.activities.AccountActivity" />
+        <activity android:name=".mvp.ui.activities.SettingsActivity" />
+        <activity android:name=".mvp.ui.activities.PersonalSettingsActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".mvp.ui.activities.MemViewActivity"
+            android:theme="@style/DismissableActivity" />
+        <activity android:name=".mvp.ui.activities.FavoritesActivity" />
+        <activity android:name=".mvp.ui.activities.FavoriteViewActivity"
+            android:theme="@style/DismissableActivity"/>
+    </application>
+
+</manifest>

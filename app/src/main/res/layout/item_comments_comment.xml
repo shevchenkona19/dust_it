@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_centerInParent="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdvItemCommentsUserPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/tvItemCommentUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Крутой_Юзер"
+                app:layout_constraintStart_toEndOf="@+id/sdvItemCommentsUserPhoto"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvItemCommentText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:text="длино коммент смешно нет не мнешнds;dgklrgnwlsrjgnksrjgbksrjgksrjbgksrhgbskhrbgskrhbgksrhbgskrhbgksrhbgskbvfmkrkvmvmvmvmvmvmvmvvvvvvrvrvrvrvrvrrvrvrvrrvrvrvrvrvrvrvrvbо очень грустно я устал отработы в се уже давно утихло пися не стоит год я умру в 34"
+                android:textColor="#202020"
+                app:layout_constraintBottom_toTopOf="@+id/tvItemCommentDateStamp"
+                app:layout_constraintLeft_toRightOf="@id/sdvItemCommentsUserPhoto"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvItemCommentUsername" />
+
+            <TextView
+                android:id="@+id/tvItemCommentDateStamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

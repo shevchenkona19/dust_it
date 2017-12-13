@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context="dustit.clientapp.mvp.ui.activities.RegisterActivity">
+
+    <ImageView
+        android:id="@+id/ivLoginIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="0dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/icon_no_background">
+
+    </ImageView>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilLoginUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/colorEditTextHint"
+        android:visibility="visible"
+        app:counterEnabled="true"
+        app:counterMaxLength="16"
+        app:counterTextAppearance="@style/TextLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLoginIcon">
+
+        <EditText
+            android:id="@+id/etRegisterUsername"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Логин"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:textColor="@color/colorMainText" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilLoginPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:textColorHint="@color/colorEditTextHint"
+        android:visibility="visible"
+        app:counterEnabled="true"
+        app:counterMaxLength="22"
+        app:counterTextAppearance="@style/TextLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilLoginUsername">
+
+        <EditText
+            android:id="@+id/etRegisterPassword"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Пароль"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textColor="@color/colorMainText" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilRegisterEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:textColorHint="@color/colorEditTextHint"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilLoginPassword">
+
+        <EditText
+            android:id="@+id/etRegisterEmail"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="E-mail"
+            android:inputType="textEmailAddress"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/btn_hello_accent"
+        android:text="Зарегистрироваться"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilRegisterEmail"
+        app:layout_constraintVertical_bias="0.507" />
+
+    <TextView
+        android:id="@+id/tvAlreadyRegistered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Уже зарегистрированы?"
+        android:textColor="@color/colorEditTextHint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.93"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="527dp" />
+
+    <ProgressBar
+        android:id="@+id/pbRegisterLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline7" />
+
+
+</android.support.constraint.ConstraintLayout>

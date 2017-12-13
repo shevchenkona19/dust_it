@@ -1,0 +1,39 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#222</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorAccent">#fff</item>
+        <item name="colorControlNormal">#aaeeeeee</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:spinnerItemStyle">@style/MooSpinnerItem</item>
+    </style>
+    
+    <style name="DismissableActivity" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="MooSpinnerItem" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:textAppearance">@style/MooTextAppearanceSpinnerItem</item>
+    </style>
+
+    <style name="MooTextAppearanceSpinnerItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">#ddd</item>
+    </style>
+    <style name="HelloTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/main_gradient_color</item>
+    </style>
+
+    <style name="SplashScreenStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#000</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorAccent">#eee</item>
+        <item name="android:windowBackground">@drawable/splash_theme</item>
+    </style>
+
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorMainText</item>
+    </style>
+
+</resources>
