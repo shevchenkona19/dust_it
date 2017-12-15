@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.utils.IConstants;
 
 /**
@@ -22,7 +22,7 @@ import dustit.clientapp.utils.IConstants;
  */
 
 public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<FavoritesRecyclerViewAdapter.FavoriteViewHolder> {
-    private List<FavoritesUpperEntity.FavoriteEntity> list;
+    private List<FavoriteEntity> list;
     private LayoutInflater inflater;
     private String token;
 
@@ -65,7 +65,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
         return list.size();
     }
 
-    public void updateAll(List<FavoritesUpperEntity.FavoriteEntity> list) {
+    public void updateAll(List<FavoriteEntity> list) {
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();

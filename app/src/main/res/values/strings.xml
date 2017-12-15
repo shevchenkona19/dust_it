@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">ClientApp</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">MemSpace</string>
     <string name="error">Ошибка</string>
     <string name="change_profile_pic_title">Поменять фотографию профиля</string>
     <string name="change_profile_pic_question">Вы хотите поменять фотографию своего профиля?</string>
@@ -32,7 +30,7 @@
     <string name="begin">Стартуем</string>
     <string name="welcome_to_memspace">Добро пожаловать в MemSpace!</string>
     <string name="warning_one">Прежде чем мы начнем бороздить мем-просторы, давайте познакомимся поближе. Так вы будете видеть в своей ленте только то, что вам интересно.</string>
-    <string name="warning_two">Сейчас мы покажем вам по очереди 15 мемов. Если мем вам понравился, смахните его направо, если нет - налево. Всё очень просто.</string>
+    <string name="warning_two">Сейчас мы покажем вам по очереди 15 мемов. Если мем вам понравился, смахните его направо, если нет - налево. Всё очень просто.</string> //ИХ ТОЧНО 15??
     <string name="skip">Пропустить</string>
     <string name="email_edit_text_hint">E-mail</string>
     <string name="already_registered_question">Уже зарегистрированы?</string>

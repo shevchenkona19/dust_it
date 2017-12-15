@@ -84,11 +84,13 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getFavorites() {
+        Log.d("MY", "GetFavorites");
        final int[] size = new int[1];
         addSubscription(dataManager.getAllFavorites()
         .subscribe(new Subscriber<FavoritesUpperEntity>() {
             @Override
             public void onCompleted() {
+                Log.d("MY", "SIZE: " + size[0]);
                 getView().updateFavorites(size[0]);
             }
 
@@ -99,6 +101,7 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
             @Override
             public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
+                favoritesUpperEntity.initList();
                 size[0] = favoritesUpperEntity.getList().size();
             }
         }));

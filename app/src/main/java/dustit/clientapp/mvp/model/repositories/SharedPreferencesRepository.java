@@ -43,8 +43,7 @@ public class SharedPreferencesRepository {
 
     public void clearUsername() {
         preferences.edit()
-                .putString(IConstants.IPreferences.USERNAME_KEY, "")
-                .putBoolean(IConstants.IPreferences.USERNAME_CACHED_KEY, false)
+                .clear()
                 .apply();
     }
 

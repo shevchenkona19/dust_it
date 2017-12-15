@@ -48,6 +48,7 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
 
                     @Override
                     public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
+                        favoritesUpperEntity.initList();
                         favoritesEntity[0] = favoritesUpperEntity;
                     }
                 }));

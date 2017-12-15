@@ -15,7 +15,11 @@ public class FavoritesUpperEntity {
 
     public FavoritesUpperEntity(String ids) {
         this.ids = ids;
+    }
+
+    public void initList() {
         list = new ArrayList<>();
+        if(ids.charAt(0) == ' ') ids = ids.replaceFirst(" ", "");
         if (ids.contains(" ")) {
             String[] idArr = ids.split(" ");
             for (String s :
@@ -39,21 +43,5 @@ public class FavoritesUpperEntity {
 
     public void setIds(String ids) {
         this.ids = ids;
-    }
-
-    public static class FavoriteEntity {
-        private String id;
-
-        public FavoriteEntity(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
     }
 }

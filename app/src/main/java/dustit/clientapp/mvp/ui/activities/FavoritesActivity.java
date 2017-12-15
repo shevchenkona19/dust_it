@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteActivityView;
@@ -69,7 +69,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     }
 
     @Override
-    public void onFavoritesArrived(List<FavoritesUpperEntity.FavoriteEntity> list) {
+    public void onFavoritesArrived(List<FavoriteEntity> list) {
         pbLoading.setVisibility(View.GONE);
         rvFavorites.setVisibility(View.VISIBLE);
         mAdapter.updateAll(list);
