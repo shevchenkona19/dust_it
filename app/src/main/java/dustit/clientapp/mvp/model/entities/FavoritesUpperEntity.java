@@ -16,10 +16,16 @@ public class FavoritesUpperEntity {
     public FavoritesUpperEntity(String ids) {
         this.ids = ids;
         list = new ArrayList<>();
-        String[] idArr = ids.split(" ");
-        for (String s :
-                idArr) {
-            list.add(new FavoriteEntity(s));
+        if (ids.contains(" ")) {
+            String[] idArr = ids.split(" ");
+            for (String s :
+                    idArr) {
+                list.add(new FavoriteEntity(s));
+            }
+        } else {
+            if (ids.length() > 0) {
+                list.add(new FavoriteEntity(ids));
+            }
         }
     }
 

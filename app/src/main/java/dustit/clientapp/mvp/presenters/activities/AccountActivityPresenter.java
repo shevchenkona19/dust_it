@@ -31,7 +31,6 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
     @Override
     public void uploadImage(File file) {
         final ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
-        Log.d("MY", "File: " + file.getName());
         addSubscription(dataManager.postPhoto(requestBody, file.getName())
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override

@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -113,16 +112,15 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             @Override
             public void onClick(View view) {
                 final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
-                        .setTitle("Поменять фотографию профиля")
-                        .setMessage("Вы хотите поменять фотографию своего профиля?")
-                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.change_profile_pic_title))
+                        .setMessage(getString(R.string.change_profile_pic_question))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
                                         Manifest.permission.READ_EXTERNAL_STORAGE);
                                 int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
                                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                                Log.d("MY", "Perm checked");
                                 if (permCheckRead != PackageManager.PERMISSION_GRANTED
                                         && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
                                     ActivityCompat.requestPermissions(AccountActivity.this,
@@ -133,13 +131,13 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                                     getIntent.setType("image/*");
                                     Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                     pickIntent.setType("image/*");
-                                    Intent chooserIntent = Intent.createChooser(getIntent, "Выбирите фото:");
+                                    Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
                                     startActivityForResult(chooserIntent, PICK_IMAGE);
                                 }
                             }
                         })
-                        .setNegativeButton("Нет", null)
+                        .setNegativeButton(getString(R.string.no), null)
                         .create();
                 dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -183,7 +181,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                         getIntent.setType("image/*");
                         Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         pickIntent.setType("image/*");
-                        Intent chooserIntent = Intent.createChooser(getIntent, "Выбирите фото:");
+                        Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
                         startActivityForResult(chooserIntent, PICK_IMAGE);
                     }
@@ -197,7 +195,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE) {
             if (resultCode != RESULT_OK) {
-                Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                 return;
             }
             Uri imageSource = data.getData();
@@ -208,8 +206,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 options.setToolbarColor(getResources().getColor(R.color.colorPrimary));
                 options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
                 options.setActiveWidgetColor(getResources().getColor(R.color.colorPrimary));
-                options.setToolbarTitle("Обрежьте фото");
-
+                options.setToolbarTitle(getString(R.string.crop_photo));
                 UCrop.of(imageSource, destinationUri)
                         .withOptions(options)
                         .start(this, CROPPED_IMAGE);
@@ -218,7 +215,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             }
         } else if (requestCode == CROPPED_IMAGE) {
             if (resultCode == UCrop.RESULT_ERROR) {
-                Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                 try {
                     throw UCrop.getError(data);
                 } catch (Throwable throwable) {
@@ -263,7 +260,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     @Override
     public void onUploadFailed() {
         cpbPhotoLoading.setVisibility(View.GONE);
-        Toast.makeText(this, "Errr...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         sdvIcon.setVisibility(View.VISIBLE);
     }
 

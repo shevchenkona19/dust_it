@@ -35,8 +35,11 @@ import dustit.clientapp.utils.FavoritesUtils;
 @Singleton
 public interface AppComponent {
     void inject(ServerRepository repository);
+
     void inject(DataManager dataManager);
+
     void inject(LoginActivityPresenter presenter);
+
     void inject(RegisterActivityPresenter presenter);
 
     void inject(FeedFragmentPresenter feedFragmentPresenter);

@@ -89,7 +89,6 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
                     @Override
                     public void onNext(Category category) {
-                        Log.d("MY", "Id in presenter: " + category.getId());
                         categoryList.add(category);
                     }
                 }));

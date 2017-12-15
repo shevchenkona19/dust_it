@@ -50,7 +50,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
                     @Override
                     public void onNext(MemEntity memEntity) {
-                        Log.d("MY", "ID-HOT: " + memEntity.getId());
                         list.add(memEntity);
                     }
                 }));
@@ -75,7 +74,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
                     @Override
                     public void onNext(MemEntity memEntity) {
-                        Log.d("MY", "ID-HOT: " + memEntity.getId());
                         list.add(memEntity);
                     }
                 }));

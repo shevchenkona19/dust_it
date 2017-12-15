@@ -56,7 +56,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
         setSupportActionBar(toolbar);
         mAdapter = new FavoritesRecyclerViewAdapter(this,this, mPresenter.getToken());
         rvFavorites.setAdapter(mAdapter);
-        rvFavorites.setLayoutManager(new GridLayoutManager(this, 3));
+        rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
         mPresenter.loadFavorites();
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         btnReload.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +87,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
 
     @Override
     public void onFailedToRemoveFromFavorites(String id) {
-        Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

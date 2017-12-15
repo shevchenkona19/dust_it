@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.utils.IConstants;
 
 /**
  * Created by Никита on 05.12.2017.
@@ -48,8 +49,8 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
     @Override
     public void onBindViewHolder(final FavoriteViewHolder holder, int position) {
-        /*holder.sdvImage.setImageURI(IConstants.BASE_URL + "/client/getFavorite?token=" + token + "&id=" + list.get(position).getId());*/
-        holder.sdvImage.setImageURI(list.get(position).getId());
+        holder.sdvImage.setImageURI(IConstants.BASE_URL + "/client/getFavorite?token=" + token + "&id=" + list.get(position).getId());
+        /*holder.sdvImage.setImageURI(list.get(position).getId());*/
         holder.sdvImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

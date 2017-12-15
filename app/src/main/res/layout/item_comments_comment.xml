@@ -31,25 +31,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:text="HiIAmHArry"
                 android:layout_marginTop="8dp"
-                android:text="Крутой_Юзер"
                 app:layout_constraintStart_toEndOf="@+id/sdvItemCommentsUserPhoto"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvItemCommentText"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_height="121dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="длино коммент смешно нет не мнешнds;dgklrgnwlsrjgnksrjgbksrjgksrjbgksrhgbskhrbgskrhbgksrhbgskrhbgksrhbgskbvfmkrkvmvmvmvmvmvmvmvvvvvvrvrvrvrvrvrrvrvrvrrvrvrvrvrvrvrvrvbо очень грустно я устал отработы в се уже давно утихло пися не стоит год я умру в 34"
                 android:textColor="#202020"
                 app:layout_constraintBottom_toTopOf="@+id/tvItemCommentDateStamp"
                 app:layout_constraintLeft_toRightOf="@id/sdvItemCommentsUserPhoto"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvItemCommentUsername" />
+                app:layout_constraintTop_toBottomOf="@+id/tvItemCommentUsername" />
 
             <TextView
                 android:id="@+id/tvItemCommentDateStamp"

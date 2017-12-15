@@ -183,7 +183,7 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
 
     @Override
     public void addToFavorites(String id) {
-        addToFavorites(id);
+        presenter.addToFavorites(id);
     }
 
     public void passPostLike(String id) {

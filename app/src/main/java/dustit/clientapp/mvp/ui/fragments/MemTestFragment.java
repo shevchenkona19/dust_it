@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -209,7 +208,6 @@ public class MemTestFragment extends Fragment implements GestureListener.IFragme
     public void onDestroyView() {
         if (getView() != null) {
             getView().clearAnimation();
-            Log.d("MY", "animation cleared");
         }
         unbinder.unbind();
         super.onDestroyView();

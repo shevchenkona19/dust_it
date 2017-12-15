@@ -2,9 +2,6 @@ package dustit.clientapp.mvp.presenters.activities;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -25,12 +22,12 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
     }
     @Override
     public void loadFavorites() {
-        List<FavoritesUpperEntity.FavoriteEntity> list = new ArrayList<>();
+        /*List<FavoritesUpperEntity.FavoriteEntity> list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             list.add(new FavoritesUpperEntity.FavoriteEntity("http://www.gettyimages.com/gi-resources/images/VR/GettyImages-500977426.jpg"));
         }
-        getView().onFavoritesArrived(list);
-        /*final FavoritesUpperEntity[] favoritesEntity = new FavoritesUpperEntity[1];
+        getView().onFavoritesArrived(list);*/
+        final FavoritesUpperEntity[] favoritesEntity = new FavoritesUpperEntity[1];
         addSubscription(dataManager.getAllFavorites()
                 .subscribe(new Subscriber<FavoritesUpperEntity>() {
                     @Override
@@ -53,7 +50,7 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
                     public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
                         favoritesEntity[0] = favoritesUpperEntity;
                     }
-                }));*/
+                }));
     }
 
     @Override

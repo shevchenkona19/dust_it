@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ILoginActivityView;
+import dustit.clientapp.utils.StringUtil;
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivityView {
     @BindView(R.id.etLoginPassword)
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     TextView tvNotRegistered;
 
     private final LoginActivityPresenter loginActivityPresenter = new LoginActivityPresenter();
+    private final StringUtil stringUtil = new StringUtil(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*stringUtil.hideError(tilLoginPassword, tilLoginUsername);
+                stringUtil.hideError(tilLoginPassword, tilLoginUsername);
                 if (stringUtil.isCorrectInput(etPassword, etUsername)) {
                     tilLoginPassword.setVisibility(View.GONE);
                     tilLoginUsername.setVisibility(View.GONE);
@@ -53,8 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
                             etPassword.getText().toString());
                 } else {
                     stringUtil.showError(etPassword, etUsername, tilLoginPassword, tilLoginUsername);
-                }*/
-                onLoggedSuccessfully();
+                }
             }
         });
         tvNotRegistered.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         pbLoading.setVisibility(View.GONE);
         tilLoginUsername.setVisibility(View.VISIBLE);
         tilLoginPassword.setVisibility(View.VISIBLE);
-        Toast.makeText(this, "ERROR\n" + message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -46,7 +46,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
 
-    public boolean onSwipe(Direction direction) {
+    private boolean onSwipe(Direction direction) {
         switch (direction) {
             case up:
                 if (gestureListener != null) {
@@ -68,12 +68,12 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         return true;
     }
 
-    public Direction getDirection(float x1, float y1, float x2, float y2) {
+    private Direction getDirection(float x1, float y1, float x2, float y2) {
         double angle = getAngle(x1, y1, x2, y2);
         return Direction.get(angle);
     }
 
-    public double getAngle(float x1, float y1, float x2, float y2) {
+    private double getAngle(float x1, float y1, float x2, float y2) {
 
         double rad = Math.atan2(y1 - y2, x2 - x1) + Math.PI;
         return (rad * 180 / Math.PI + 180) % 360;

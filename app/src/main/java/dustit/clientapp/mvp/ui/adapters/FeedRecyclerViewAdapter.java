@@ -3,10 +3,10 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.utils.IConstants;
 
 /**
  * Created by shevc on 05.10.2017.
@@ -167,7 +168,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Log.d("MY", "onbind");
         int pos = holder.getAdapterPosition();
         if (pos % 5 == 0 && pos != 0) {
             if (pos > lastPos) {
@@ -189,13 +189,9 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.sdvMemImage.setController(
                     Fresco.newDraweeControllerBuilder()
                             .setTapToRetryEnabled(true)
-/*
                             .setUri(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId()))
-*/
-                            .setUri(mem.getUrl())
                             .build());
-            /*memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId()));*/
-            memViewHolder.sdvMemImage.setImageURI(mem.getUrl());
+            memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId()));
             memViewHolder.tvLikeCount.setText(mem.getLikes());
             memViewHolder.tvDislikeCount.setText(mem.getDislikes());
             if (mem.isLiked()) {
@@ -307,13 +303,11 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void onFailedToLoad() {
-        Log.d("MY", "On failed to load");
         isLoading = false;
         notifyItemChanged(memEntityList.size() - 1);
     }
 
     public void updateListWhole(List<MemEntity> list) {
-        Log.d("MY", "updateList");
         if (isLoading) {
             isLoading = false;
         }

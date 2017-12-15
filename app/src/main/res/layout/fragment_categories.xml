@@ -27,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="Не удалось соедениться с сервером... :("
+            android:text="@string/cant_connect_to_server"
             android:textSize="18sp"
             android:visibility="gone" />
 
@@ -39,7 +39,7 @@
             android:layout_below="@id/tvCategoriesFailedToLoad"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:text="Попробовать ещё раз"
+            android:text="@string/retry"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:visibility="gone" />

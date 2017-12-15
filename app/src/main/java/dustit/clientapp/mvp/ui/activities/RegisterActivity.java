@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     TextView tvRegistered;
 
     private final RegisterActivityPresenter presenter = new RegisterActivityPresenter();
-    private final StringUtil stringUtil = new StringUtil();
+    private final StringUtil stringUtil = new StringUtil(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         tilRegisterUsername.setVisibility(View.VISIBLE);
         btnRegister.setVisibility(View.VISIBLE);
         pbLoading.setVisibility(View.GONE);
-        Toast.makeText(this, "ERROR\n" + message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getText(R.string.error), Toast.LENGTH_SHORT).show();
     }
 }

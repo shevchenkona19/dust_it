@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.presenters.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
+import dustit.clientapp.utils.IConstants;
 import rx.Subscriber;
 
 /**
@@ -61,7 +63,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
     @Override
     public void downloadImage(String id) {
         Picasso.with(dataManager.getContext())
-                .load(id)/*load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + dataManager.getToken() + "&id=" + id))*/
+                .load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + dataManager.getToken() + "&id=" + id))
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

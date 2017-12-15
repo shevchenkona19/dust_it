@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,6 +19,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.customviews.TouchImageView;
 import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
+import dustit.clientapp.utils.IConstants;
 
 public class FavoriteViewActivity extends AppCompatActivity implements IFavoriteViewActivityView {
     public static final String ID_KEY = "idket";
@@ -44,7 +46,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         mPresenter.bind(this);
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
         Picasso.with(this)
-                .load(mFavoriteId)/*load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + mPresenter.getToken() + "&id=" + mFavoriteId))*/
+                .load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + mPresenter.getToken() + "&id=" + mFavoriteId))
                 .noFade()
                 .noPlaceholder()
                 .into(tivImage);
@@ -98,25 +100,25 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
 
     @Override
     public void onRemovedFromFavorites() {
-        Toast.makeText(this, "Убрано из избранных", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.deleted_from_favorites), Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void onErrorRemovingFromFavorites() {
-        Toast.makeText(this, "Ошибка. Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDownloaded(String pathToImage) {
         /*sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
                 Uri.parse("file://" + Environment.getExternalStorageDirectory())));*/
-        Toast.makeText(this, "Сохранено в: " + pathToImage, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.downloaded_to) + pathToImage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDownloadFailed() {
-        Toast.makeText(this, "Ошибка в загрузке", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
     }
 
     @Override

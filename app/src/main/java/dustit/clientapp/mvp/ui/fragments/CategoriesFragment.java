@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -236,7 +237,7 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
 
     @Override
     public void onErrorInAddingToFavorites(String id) {
-
+        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

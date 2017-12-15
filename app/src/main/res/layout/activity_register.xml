@@ -48,7 +48,7 @@
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Логин"
+            android:hint="@string/login_edit_text_hint"
             android:inputType="textPersonName"
             android:maxLines="1"
             android:textColor="@color/colorMainText" />
@@ -75,7 +75,7 @@
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Пароль"
+            android:hint="@string/password_edit_text_hint"
             android:inputType="textPassword"
             android:maxLines="1"
             android:textColor="@color/colorMainText" />
@@ -99,7 +99,7 @@
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="E-mail"
+            android:hint="@string/email_edit_text_hint"
             android:inputType="textEmailAddress"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
@@ -114,7 +114,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/btn_hello_accent"
-        android:text="Зарегистрироваться"
+        android:text="@string/register"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="0.503"
@@ -133,7 +133,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Уже зарегистрированы?"
+        android:text="@string/already_registered_question"
         android:textColor="@color/colorEditTextHint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

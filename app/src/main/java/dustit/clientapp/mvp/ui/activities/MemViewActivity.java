@@ -43,6 +43,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.utils.IConstants;
 
 /**
  * Created by shevc on 07.10.2017.
@@ -163,7 +164,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
 
     @Override
     public void onCommentSendFail() {
-        Toast.makeText(this, "Err..", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
         //show fail
@@ -173,7 +174,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     public void onErrorSendingQuerry() {
         hideDislikesLoading();
         hideLikesLoading();
-        Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         currentQuarry = null;
     }
 
@@ -237,7 +238,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         commentAdapter = new CommentsRecyclerViewAdapter(this, this);
         mem = getIntent().getExtras().getParcelable(FeedActivity.MEM_ENTITY);
         Picasso.with(this)
-                .load("https://cdn.pixabay.com/photo/2017/05/09/21/49/gecko-2299365_960_720.jpg")/*load(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId())*/
+                ./*load("https://cdn.pixabay.com/photo/2017/05/09/21/49/gecko-2299365_960_720.jpg")*/load(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId())
                 .noFade()
                 .noPlaceholder()
                 .into(sdvIcon);

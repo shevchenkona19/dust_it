@@ -31,11 +31,11 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void loadBase() {
-        /*getView().onStartLoading();*/
+        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
-        list.add(new MemEntity("0","https://www.picmonkey.com/_/static/images/index/picmonkey_twitter_02.24fd38f81e59.jpg", "","20","30", true, false, false));
-        getView().onBaseUpdated(list);
-        /*addSubscription(dataManager.getFeed(6, 0)
+        /*list.add(new MemEntity("0","https://www.picmonkey.com/_/static/images/index/picmonkey_twitter_02.24fd38f81e59.jpg", "","20","30", true, false, false));
+        getView().onBaseUpdated(list);*/
+        addSubscription(dataManager.getFeed(6, 0)
                 .subscribe(new Subscriber<MemEntity>() {
                     @Override
                     public void onCompleted() {
@@ -52,7 +52,7 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
                     public void onNext(MemEntity memEntity) {
                         list.add(memEntity);
                     }
-                }));*/
+                }));
     }
 
     @Override
@@ -74,7 +74,6 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
                     @Override
                     public void onNext(MemEntity memEntity) {
-                        Log.d("MY", "ID: " + memEntity.getId());
                         list.add(memEntity);
                     }
                 }));
