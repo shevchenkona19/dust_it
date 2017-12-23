@@ -48,4 +48,5 @@
     <string name="your_comment">Комментарий…</string>
     <string name="cant_load_feed">Произошла ошибка при загрузке ленты  :(</string>
     <string name="retry_load_feed">Загрузить ещё раз</string>
+    <string name="applied">Применено</string>
 </resources>

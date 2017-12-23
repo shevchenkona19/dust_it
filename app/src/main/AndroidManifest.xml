@@ -16,11 +16,11 @@
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
             android:theme="@style/SplashScreenStyle">
-            <intent-filter>
+            <!--<intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".mvp.ui.activities.ChooserActivity"
@@ -45,7 +45,13 @@
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity android:name=".mvp.ui.activities.AccountActivity" />
         <activity android:name=".mvp.ui.activities.SettingsActivity" />
         <activity android:name=".mvp.ui.activities.PersonalSettingsActivity" />
@@ -57,8 +63,9 @@
             android:name=".mvp.ui.activities.MemViewActivity"
             android:theme="@style/DismissableActivity" />
         <activity android:name=".mvp.ui.activities.FavoritesActivity" />
-        <activity android:name=".mvp.ui.activities.FavoriteViewActivity"
-            android:theme="@style/DismissableActivity"/>
+        <activity
+            android:name=".mvp.ui.activities.FavoriteViewActivity"
+            android:theme="@style/DismissableActivity" />
     </application>
 
 </manifest>

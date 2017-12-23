@@ -20,6 +20,7 @@ import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
+import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.activities.MemViewActivity;
@@ -75,4 +76,6 @@ public interface AppComponent {
     void inject(FavoritesUtils favoritesUtils);
 
     void inject(FavoriteViewActivityPresenter favoriteViewActivityPresenter);
+
+    void inject(ChangeCategoriesFragmentPresenter changeCategoriesFragmentPresenter);
 }
