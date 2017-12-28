@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -11,6 +9,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFavoritesActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteActivityView;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityView> implements IFavoritesActivityPresenter {
@@ -42,7 +41,7 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onFailedToLoadFavorites();
                     }
 
@@ -65,7 +64,7 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onFailedToRemoveFromFavorites(id);
                     }
 

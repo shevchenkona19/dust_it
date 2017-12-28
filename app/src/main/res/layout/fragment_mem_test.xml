@@ -55,7 +55,7 @@
                 app:layout_constraintRight_toLeftOf="@+id/guideline19"
                 app:layout_constraintTop_toTopOf="@+id/guideline18"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/thumb_down" />
+                app:srcCompat="@drawable/ic_dislike" />
 
             <ImageButton
                 android:id="@+id/ibTestMemInterestedButton"
@@ -73,7 +73,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline18"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/thumb_up" />
+                app:srcCompat="@drawable/ic_like" />
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline18"

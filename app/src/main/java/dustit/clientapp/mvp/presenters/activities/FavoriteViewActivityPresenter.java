@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -22,6 +21,7 @@ import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 /**
@@ -47,7 +47,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onErrorRemovingFromFavorites();
                     }
 

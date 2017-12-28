@@ -9,11 +9,6 @@ import dustit.clientapp.di.component.AppComponent;
 import dustit.clientapp.di.component.DaggerAppComponent;
 import dustit.clientapp.di.modules.AppModule;
 
-/**
- * Created by shevc on 22.09.2017.
- * Let's GO!
- */
-
 public class App extends Application {
 
     private static App instance;

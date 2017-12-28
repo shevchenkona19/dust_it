@@ -27,10 +27,10 @@
 
                 <ImageView
                     android:id="@+id/ivMemViewBack"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
                     android:layout_height="match_parent"
                     android:tint="#404040"
-                    app:srcCompat="@drawable/ic_chevron_left_black" />
+                    app:srcCompat="@drawable/ic_arrow_left_simple" />
 
                 <ImageView
                     android:id="@+id/ivMemViewMenu"
@@ -39,8 +39,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
                     android:tint="#404040"
-                    app:srcCompat="@drawable/ic_more" />
-            </RelativeLayout>
+            app:srcCompat="@drawable/ic_details" />
+        </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
@@ -89,7 +89,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
-                    app:srcCompat="@drawable/ic_arrow_down" />
+                    app:srcCompat="@drawable/ic_arrow_down_simple" />
             </RelativeLayout>
 
 
@@ -109,7 +109,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/ic_add_to_photos" />
+                    app:srcCompat="@drawable/ic_add_to_favourites" />
 
                 <ImageView
                     android:id="@+id/ivMemViewExpandComments"
@@ -119,7 +119,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_comment_black" />
+                    app:srcCompat="@drawable/ic_comment" />
 
                 <ImageView
                     android:id="@+id/ivMemViewLike"
@@ -130,7 +130,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/thumb_up_outline" />
+                    app:srcCompat="@drawable/ic_like" />
 
                 <TextView
                     android:id="@+id/tvMemViewLikeCount"
@@ -154,7 +154,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/ivMemViewLike"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/thumb_down_outline" />
+                    app:srcCompat="@drawable/ic_dislike" />
 
                 <TextView
                     android:id="@+id/tvMemViewDislikeCount"
@@ -251,7 +251,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_send" />
+                app:srcCompat="@drawable/ic_send_comment" />
             <ProgressBar
                 android:id="@+id/pbIMemViewCommentSendingLoading"
                 android:layout_width="wrap_content"

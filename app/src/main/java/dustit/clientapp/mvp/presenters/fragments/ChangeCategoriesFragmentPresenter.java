@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IChangeCategoriesFragmentView;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 /**
@@ -47,7 +46,7 @@ public class ChangeCategoriesFragmentPresenter extends BasePresenter<IChangeCate
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        Log.d("MY", e.getMessage());
+                                        L.print(e.getMessage());
                                         getView().onErrorInCategoriesChanging();
                                     }
 
@@ -87,7 +86,7 @@ public class ChangeCategoriesFragmentPresenter extends BasePresenter<IChangeCate
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onErrorInCategoriesChanging();
                     }
 
@@ -109,7 +108,7 @@ public class ChangeCategoriesFragmentPresenter extends BasePresenter<IChangeCate
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", e.getMessage());
+                L.print(e.getMessage());
                 getView().onErrorInCategoriesChanging();
             }
 

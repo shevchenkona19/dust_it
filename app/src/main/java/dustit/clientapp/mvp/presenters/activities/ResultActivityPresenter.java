@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IResultActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IResultActivityView;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 /**
@@ -40,7 +39,7 @@ public class ResultActivityPresenter extends BasePresenter<IResultActivityView> 
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onFailedToSendCategories();
                     }
 
@@ -65,7 +64,7 @@ public class ResultActivityPresenter extends BasePresenter<IResultActivityView> 
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onErrorInLoadingCategories();
                     }
 

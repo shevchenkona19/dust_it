@@ -185,7 +185,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             final FeedMemViewHolder memViewHolder = (FeedMemViewHolder) holder;
             final MemEntity mem = memEntityList.get(position);
             memViewHolder.sdvMemImage.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
-            memViewHolder.sdvMemImage.getHierarchy().setRetryImage(context.getResources().getDrawable(R.drawable.ic_cached_black_24dp));
+            memViewHolder.sdvMemImage.getHierarchy().setRetryImage(context.getResources().getDrawable(R.drawable.ic_reload));
             memViewHolder.sdvMemImage.setController(
                     Fresco.newDraweeControllerBuilder()
                             .setTapToRetryEnabled(true)
@@ -196,28 +196,28 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.tvDislikeCount.setText(mem.getDislikes());
             if (mem.isLiked()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.thumb_up));
+                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
                 } else {
-                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.thumb_up));
+                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.thumb_up_outline));
+                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like_pressed));
                 } else {
-                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.thumb_up_outline));
+                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_pressed));
                 }
             }
             if (mem.isDisliked()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.thumb_down));
+                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
                 } else {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.thumb_down));
+                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.thumb_down_outline));
+                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike_pressed));
                 } else {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.thumb_down_outline));
+                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike_pressed));
                 }
             }
             memViewHolder.ivLike.setOnClickListener(new View.OnClickListener() {

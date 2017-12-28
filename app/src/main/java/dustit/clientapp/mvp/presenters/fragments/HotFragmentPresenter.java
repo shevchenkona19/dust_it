@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IHotFragmentPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.FavoritesUtils;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 /**
@@ -44,7 +43,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", "Error in loading base: " + e.getMessage());
+                        L.print("Error in loading base: " + e.getMessage());
                         getView().onErrorInLoading();
                     }
 
@@ -68,7 +67,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", "Error in loading partial: " + e.getMessage());
+                        L.print("Error in loading partial: " + e.getMessage());
                         getView().onErrorInLoading();
                     }
 
@@ -92,7 +91,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
                 getView().onLikePostError(id);
             }
 
@@ -116,7 +115,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
                 getView().onLikeDeletingError(id);
             }
 
@@ -140,7 +139,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
                 getView().onLikeDeletingError(id);
             }
 
@@ -164,7 +163,7 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
                 getView().onDislikeDeletingError(id);
             }
 

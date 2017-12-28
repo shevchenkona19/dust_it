@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 app:actualImageScaleType="fitXY"
-                app:failureImage="@drawable/ic_cached_black_24dp"
+                app:failureImage="@drawable/ic_reload"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -37,7 +37,7 @@
                 app:layout_constraintRight_toLeftOf="@+id/tvItemFeedLikeCount"
                 app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/thumb_up_outline" />
+                app:srcCompat="@drawable/ic_like" />
 
             <TextView
                 android:id="@+id/tvItemFeedLikeCount"
@@ -62,7 +62,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/ic_more" />
+                app:srcCompat="@drawable/ic_details" />
 
             <ImageView
                 android:id="@+id/ivItemFeedAddToFavorites"
@@ -75,7 +75,7 @@
                 app:layout_constraintLeft_toRightOf="@+id/ivItemFeedMore"
                 app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/ic_add_to_photos" />
+                app:srcCompat="@drawable/ic_add_to_favourites" />
 
             <ImageView
                 android:id="@+id/ivItemFeedDisliked"
@@ -88,7 +88,7 @@
                 app:layout_constraintRight_toLeftOf="@id/ivItemFeedIsLiked"
                 app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/thumb_down_outline" />
+                app:srcCompat="@drawable/ic_dislike" />
 
             <TextView
                 android:id="@+id/tvItemFeedDislikeCount"

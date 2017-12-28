@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IMemViewPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.utils.L;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -44,7 +43,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         if (getView() != null) {
                             getView().onErrorInLoading();
                         }
@@ -70,7 +69,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onErrorInLoading();
                     }
 
@@ -97,7 +96,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onCommentSendFail();
                     }
 

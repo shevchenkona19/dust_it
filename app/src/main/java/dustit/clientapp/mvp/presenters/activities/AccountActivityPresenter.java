@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import java.io.File;
 
 import javax.inject.Inject;
@@ -14,6 +12,7 @@ import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IAccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import rx.Subscriber;
 
@@ -40,7 +39,7 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onUploadFailed();
                     }
 
@@ -70,7 +69,7 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.d("MY", e.getMessage());
+                            L.print(e.getMessage());
                             getView().onUsernameFailedToLoad();
                         }
 
@@ -84,13 +83,11 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getFavorites() {
-        Log.d("MY", "GetFavorites");
        final int[] size = new int[1];
         addSubscription(dataManager.getAllFavorites()
         .subscribe(new Subscriber<FavoritesUpperEntity>() {
             @Override
             public void onCompleted() {
-                Log.d("MY", "SIZE: " + size[0]);
                 getView().updateFavorites(size[0]);
             }
 

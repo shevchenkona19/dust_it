@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_chevron_right_black" />
+            app:srcCompat="@drawable/ic_arrow_right_simple" />
 
         <View
             android:layout_width="0dp"

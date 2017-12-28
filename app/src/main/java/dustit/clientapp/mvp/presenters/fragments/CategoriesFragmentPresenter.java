@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +14,7 @@ import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.ICategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.FavoritesUtils;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragmentView> implements ICategoriesFragmentPresenter {
@@ -107,7 +106,7 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
             }
 
             @Override
@@ -130,7 +129,7 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
             }
 
             @Override
@@ -153,7 +152,7 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
             }
 
             @Override
@@ -176,7 +175,7 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
             @Override
             public void onError(Throwable e) {
-                Log.d("MY", "deleteLike: " + e.getMessage());
+                L.print("deleteLike: " + e.getMessage());
             }
 
             @Override

@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +11,7 @@ import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.ITestActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ITestActivityView;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 /**
@@ -43,7 +42,7 @@ public class TestActivityPresenter extends BasePresenter<ITestActivityView> impl
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("MY", e.getMessage());
+                        L.print(e.getMessage());
                         getView().onErrorInLoadingTest();
                     }
 

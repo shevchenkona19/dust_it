@@ -273,15 +273,15 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         });
         if (mem.isLiked()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ivLike.setImageDrawable(this.getDrawable(R.drawable.thumb_up));
+                ivLike.setImageDrawable(this.getDrawable(R.drawable.ic_like));
             } else {
-                ivLike.setImageDrawable(getResources().getDrawable(R.drawable.thumb_up));
+                ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
             }
         } else if (mem.isDisliked()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ivDislike.setImageDrawable(this.getDrawable(R.drawable.thumb_down));
+                ivDislike.setImageDrawable(this.getDrawable(R.drawable.ic_dislike));
             } else {
-                ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.thumb_down));
+                ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
             }
         }
     }
