@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class TestUpperEntity {
-    @SerializedName("Test")
+    @SerializedName("test")
     @Expose
     private List<TestMemEntity> list;
 

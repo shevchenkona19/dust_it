@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import android.util.Log;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -9,6 +11,7 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IRegisterActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
+import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityView> implements IRegisterActivityPresenter {
@@ -36,7 +39,9 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
+                        L.print("WTF WHERE IS TOKEN? : " + tokenEntity.getToken());
                         dataManager.saveToken(tokenEntity.getToken());
+                        L.print("CHO SA HUY?");
                     }
                 }));
     }

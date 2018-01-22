@@ -10,11 +10,11 @@ import java.util.List;
  */
 
 public class CommentUpperEntity {
-    @SerializedName("Comments")
+    @SerializedName("comments")
     @Expose
     private List<CommentEntity> list;
 
-    @SerializedName("Count")
+    @SerializedName("count")
     @Expose
     private int count;
 

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokenEntity {
 
-    @SerializedName("Token")
+    @SerializedName("token")
     @Expose
     private String token;
 

@@ -15,6 +15,7 @@ import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -28,86 +29,86 @@ import rx.Observable;
 
 public interface ServerAPI {
 
-    @POST("/client/register/")
+    @POST("/account/register/")
     Observable<TokenEntity> registerUser(@Body RegisterUserEntity userEntity);
 
-    @POST("/client/login/")
+    @POST("/account/login/")
     Observable<TokenEntity> loginUser(@Body LoginUserEntity loginUserEntity);
 
-    @GET("/client/getFeed")
-    Observable<MemUpperEntity> getFeed(@Query("token") String token,
+    @GET("/feed/getFeed")
+    Observable<MemUpperEntity> getFeed(@Header("Authorization") String token,
                                        @Query("count") int count,
                                        @Query("offset") int offset);
 
-    @GET("/client/getHotFeed")
-    Observable<MemUpperEntity> getHot(@Query("token") String token,
+    @GET("/feed/getHotFeed")
+    Observable<MemUpperEntity> getHot(@Header("Authorization") String token,
                                       @Query("count") int count,
                                       @Query("offset") int offset);
 
-    @GET("/client/getCategoryFeed")
-    Observable<MemUpperEntity> getCategoriesFeed(@Query("token") String token,
+    @GET("/feed/getCategoryFeed")
+    Observable<MemUpperEntity> getCategoriesFeed(@Header("Authorization") String token,
                                                  @Query("category") String categoryId,
                                                  @Query("count") int count,
                                                  @Query("offset") int offset);
 
-    @GET("/client/getCategories")
-    Observable<CategoryEntity> getCategories(@Query("token") String token);
+    @GET("/config/getCategories")
+    Observable<CategoryEntity> getCategories(@Header("Authorization") String token);
 
-    @POST("/client/postSelectedCategories")
-    Observable<ResponseEntity> postSelectedCategories(@Query("token") String token,
+    @POST("/config/postSelectedCategories")
+    Observable<ResponseEntity> postSelectedCategories(@Header("Authorization") String token,
                                                       @Body CategoryIdEntity entity);
 
-    @GET("/client/getPersonalCategories")
-    Observable<CategoryIdEntity> getPersonalCategories(@Query("token") String token);
+    @GET("/config/getPersonalCategories")
+    Observable<CategoryIdEntity> getPersonalCategories(@Header("Authorization") String token);
 
-    @POST("/client/postLike")
-    Observable<ResponseEntity> postLike(@Query("token") String token,
+    @GET("/feedback/postLike")
+    Observable<ResponseEntity> postLike(@Header("Authorization") String token,
                                         @Query("id") String id);
 
-    @POST("/client/deleteLike")
-    Observable<ResponseEntity> deleteLike(@Query("token") String token,
+    @GET("/feedback/deleteLike")
+    Observable<ResponseEntity> deleteLike(@Header("Authorization") String token,
                                           @Query("id") String id);
 
-    @POST("/client/postDislike")
-    Observable<ResponseEntity> postDislike(@Query("token") String token,
+    @GET("/feedback/postDislike")
+    Observable<ResponseEntity> postDislike(@Header("Authorization") String token,
                                            @Query("id") String id);
 
-    @POST("/client/deleteDislike")
-    Observable<ResponseEntity> deleteDislike(@Query("token") String token,
+    @GET("/feedback/deleteDislike")
+    Observable<ResponseEntity> deleteDislike(@Header("Authorization") String token,
                                              @Query("id") String id);
 
-    @POST("/client/logout")
-    Observable<ResponseEntity> logout(@Query("token") String token);
+    @POST("/account/logout")
+    Observable<ResponseEntity> logout(@Header("Authorization") String token);
 
-    @GET("/client/getTest")
-    Observable<TestUpperEntity> getTest(@Query("token") String token);
+    @GET("/config/getTest")
+    Observable<TestUpperEntity> getTest(@Header("Authorization") String token);
 
-    @POST("/client/addToFavorites")
-    Observable<ResponseEntity> addToFavorites(@Query("token") String token,
+    @GET("/favorites/addToFavorites")
+    Observable<ResponseEntity> addToFavorites(@Header("Authorization") String token,
                                               @Query("id") String id);
 
-    @GET("/client/getAllFavorites")
-    Observable<FavoritesUpperEntity> getAllFavorites(@Query("token") String token);
+    @GET("/favorites/getAllFavorites")
+    Observable<FavoritesUpperEntity> getAllFavorites(@Header("Authorization") String token);
 
-    @POST("/client/postComment")
-    Observable<ResponseEntity> postComment(@Query("token") String token,
+    @POST("/feedback/postComment")
+    Observable<ResponseEntity> postComment(@Header("Authorization") String token,
                                            @Query("id") String id,
                                            @Body PostCommentEntity entity);
 
-    @GET("/client/getComments")
-    Observable<CommentUpperEntity> getComments(@Query("token") String token,
+    @GET("/feedback/getComments")
+    Observable<CommentUpperEntity> getComments(@Header("Authorization") String token,
                                                @Query("id") String id,
                                                @Query("count") int count,
                                                @Query("offset") int offset);
 
     @Multipart
-    @POST("/client/postPhoto")
-    Observable<ResponseEntity> postPhoto(@Query("token") String token, @Part MultipartBody.Part photo);
+    @POST("/config/postPhoto")
+    Observable<ResponseEntity> postPhoto(@Header("Authorization") String token, @Part MultipartBody.Part photo);
 
-    @GET("/client/getMyUsername")
-    Observable<UsernameEntity> getMyUsername(@Query("token") String token);
+    @GET("/account/getMyUsername")
+    Observable<UsernameEntity> getMyUsername(@Header("Authorization") String token);
 
-    @POST("/client/removeFromFavorites")
-    Observable<ResponseEntity> removeFromFavorites(@Query("token") String token, @Query("id") String id);
+    @POST("/favorites/removeFromFavorites")
+    Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token, @Query("id") String id);
 
 }

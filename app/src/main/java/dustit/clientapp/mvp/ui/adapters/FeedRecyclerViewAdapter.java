@@ -189,9 +189,9 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.sdvMemImage.setController(
                     Fresco.newDraweeControllerBuilder()
                             .setTapToRetryEnabled(true)
-                            .setUri(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId()))
+                            .setUri(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId()))
                             .build());
-            memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId()));
+            memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId()));
             memViewHolder.tvLikeCount.setText(mem.getLikes());
             memViewHolder.tvDislikeCount.setText(mem.getDislikes());
             if (mem.isLiked()) {

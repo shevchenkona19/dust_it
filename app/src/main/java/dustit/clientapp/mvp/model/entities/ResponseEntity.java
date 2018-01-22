@@ -3,6 +3,8 @@ package dustit.clientapp.mvp.model.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import dustit.clientapp.utils.L;
+
 /**
  * Created by shevc on 15.10.2017.
  * Let's GO!
@@ -10,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResponseEntity {
 
-    @SerializedName("ResponseCode")
+    @SerializedName("message")
     @Expose
     int response;
 

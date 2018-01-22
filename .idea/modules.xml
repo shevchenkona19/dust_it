@@ -5,6 +5,7 @@
       <module fileurl="file://A:\Programming\Android Projects\Android Code.iml" filepath="A:\Programming\Android Projects\Android Code.iml" />
       <module fileurl="file://$PROJECT_DIR$/Client.iml" filepath="$PROJECT_DIR$/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/memspace_client_app.iml" filepath="$PROJECT_DIR$/memspace_client_app.iml" />
     </modules>
   </component>
 </project>

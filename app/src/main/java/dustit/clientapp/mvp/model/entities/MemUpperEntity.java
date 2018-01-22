@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MemUpperEntity {
 
-    @SerializedName("Memes")
+    @SerializedName("memes")
     @Expose
     private List<MemEntity> memEntities = null;
 

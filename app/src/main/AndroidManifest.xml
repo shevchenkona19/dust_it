@@ -16,11 +16,11 @@
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
             android:theme="@style/SplashScreenStyle">
-            <!--<intent-filter>
+            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.MAIN" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity
             android:name=".mvp.ui.activities.ChooserActivity"
@@ -46,11 +46,6 @@
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name=".mvp.ui.activities.AccountActivity" />
         <activity android:name=".mvp.ui.activities.SettingsActivity" />

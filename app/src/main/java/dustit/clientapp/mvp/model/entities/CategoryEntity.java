@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CategoryEntity {
 
-    @SerializedName("Categories")
+    @SerializedName("categories")
     @Expose
     private List<Category> categories = null;
 

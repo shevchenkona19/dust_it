@@ -8,19 +8,19 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class CommentEntity {
-    @SerializedName("Text")
+    @SerializedName("text")
     @Expose
     private String text;
 
-    @SerializedName("Date")
+    @SerializedName("date")
     @Expose
     private String dateOfPost;
 
-    @SerializedName("Username")
+    @SerializedName("username")
     @Expose
     private String username;
 
-    @SerializedName("Time")
+    @SerializedName("time")
     @Expose
     private String time;
 

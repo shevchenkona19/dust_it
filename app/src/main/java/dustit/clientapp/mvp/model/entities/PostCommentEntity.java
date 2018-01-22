@@ -8,22 +8,12 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PostCommentEntity {
-    @SerializedName("Text")
+    @SerializedName("text")
     @Expose
     private String text;
 
-    @SerializedName("Date")
-    @Expose
-    private String date;
-
-    @SerializedName("Time")
-    @Expose
-    private String time;
-
-    public PostCommentEntity(String text, String date, String time) {
+    public PostCommentEntity(String text) {
         this.text = text;
-        this.date = date;
-        this.time = time;
     }
 
     public String getText() {
@@ -32,21 +22,5 @@ public class PostCommentEntity {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 }

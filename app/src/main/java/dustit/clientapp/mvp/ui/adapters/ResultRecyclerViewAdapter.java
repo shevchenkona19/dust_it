@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Category;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 04.10.2017.
@@ -37,9 +39,15 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
     }
 
     @Override
-    public void onBindViewHolder(ResultViewHolder holder, int position) {
+    public void onBindViewHolder(final ResultViewHolder holder, int position) {
         holder.cbTheme.setText(categoryList.get(position).getName());
         holder.cbTheme.setChecked(categoryList.get(position).isChecked());
+        holder.cbTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                categoryList.get(holder.getAdapterPosition()).setChecked(isChecked);
+            }
+        });
     }
 
     @Override
@@ -67,13 +75,15 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
 
     public String getChecked() {
         StringBuilder builder = new StringBuilder();
-        builder.append(" ");
         for (Category cat : categoryList) {
             if (cat.isChecked()) {
+                L.print("We get checked!: " + cat.getId());
                 builder.append(cat.getId());
                 builder.append(" ");
             }
         }
+        String s = builder.toString();
+        L.print("HET: " + s);
         return builder.toString();
     }
 

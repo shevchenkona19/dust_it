@@ -30,6 +30,7 @@ public class ResultActivityPresenter extends BasePresenter<IResultActivityView> 
 
     @Override
     public void toMemes(String categoryIds) {
+        L.print(categoryIds);
         addSubscription(dataManager.postPersonalCategories(new CategoryIdEntity(categoryIds))
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override

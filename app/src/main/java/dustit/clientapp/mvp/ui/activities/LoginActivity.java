@@ -42,6 +42,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        etUsername.setText("test");
+        etPassword.setText("test1");
         loginActivityPresenter.bind(this);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class RegisterUserEntity {
 
-    @SerializedName("Username")
+    @SerializedName("username")
     @Expose
     private String username;
-    @SerializedName("Password")
+    @SerializedName("password")
     @Expose
     private String password;
-    @SerializedName("Email")
+    @SerializedName("email")
     @Expose
     private String email;
 

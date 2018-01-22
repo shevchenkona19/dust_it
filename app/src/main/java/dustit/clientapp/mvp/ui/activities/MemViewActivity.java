@@ -44,6 +44,7 @@ import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 07.10.2017.
@@ -63,6 +64,9 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
 
     private Quarry currentQuarry;
 
+
+@BindView(R.id.tvCommentEmptySet)
+TextView tvCommentEmpty;
     @BindView(R.id.sdvMemViewIcon)
     TouchImageView sdvIcon;
     @BindView(R.id.ivMemViewMenu)
@@ -133,8 +137,16 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
 
     @Override
     public void onBaseUpdated(List<CommentEntity> list) {
-        srlCommentsRefresh.setRefreshing(false);
-        commentAdapter.updateListWhole(list);
+        if (list.size() > 0) {
+            srlCommentsRefresh.setRefreshing(false);
+            commentAdapter.updateListWhole(list);
+            tvCommentEmpty.setVisibility(View.GONE);
+        } else {
+            //TODO: show empty
+            L.print("Empty list");
+            rvComments.setVisibility(View.GONE);
+            tvCommentEmpty.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -238,7 +250,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         commentAdapter = new CommentsRecyclerViewAdapter(this, this);
         mem = getIntent().getExtras().getParcelable(FeedActivity.MEM_ENTITY);
         Picasso.with(this)
-                ./*load("https://cdn.pixabay.com/photo/2017/05/09/21/49/gecko-2299365_960_720.jpg")*/load(IConstants.BASE_URL + "/client/imgs?token=" + dataManager.getToken() + "&id=" + mem.getId())
+                ./*load("https://cdn.pixabay.com/photo/2017/05/09/21/49/gecko-2299365_960_720.jpg")*/load(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
                 .noFade()
                 .noPlaceholder()
                 .into(sdvIcon);

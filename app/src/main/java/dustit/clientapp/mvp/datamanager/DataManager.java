@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
+import android.util.Log;
 
 import javax.inject.Inject;
 
@@ -23,6 +24,7 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import okhttp3.MultipartBody;
 import rx.Observable;
@@ -159,6 +161,7 @@ public class DataManager {
     }
 
     public String getToken() {
+        L.print("Token: " + preferencesRepository.getSavedToken());
         return preferencesRepository.getSavedToken();
     }
 

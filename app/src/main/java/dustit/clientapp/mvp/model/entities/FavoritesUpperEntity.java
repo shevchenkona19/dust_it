@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesUpperEntity {
-    @SerializedName("IDs")
+    @SerializedName("Ids")
     @Expose
     private String ids;
 

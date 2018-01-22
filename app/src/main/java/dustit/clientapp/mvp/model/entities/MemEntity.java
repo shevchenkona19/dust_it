@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MemEntity implements Parcelable {
 
-    @SerializedName("Id")
+    @SerializedName("imageid")
     @Expose
     private String id;
     @SerializedName("Url")
@@ -18,10 +18,10 @@ public class MemEntity implements Parcelable {
     @SerializedName("Text")
     @Expose
     private String text;
-    @SerializedName("Likes")
+    @SerializedName("likes")
     @Expose
     private String likes;
-    @SerializedName("Dislikes")
+    @SerializedName("dislikes")
     @Expose
     private String dislikes;
     @SerializedName("IsDisliked")

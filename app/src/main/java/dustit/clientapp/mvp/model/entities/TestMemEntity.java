@@ -7,11 +7,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TestMemEntity implements Parcelable {
-    @SerializedName("Id")
+    @SerializedName("imageid")
     @Expose
     private String memId;
 
-    @SerializedName("CategoryId")
+    @SerializedName("categoryid")
     @Expose
     private String categoryId;
 

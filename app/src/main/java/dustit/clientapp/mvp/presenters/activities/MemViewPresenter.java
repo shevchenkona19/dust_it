@@ -82,11 +82,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void postComment(String id, String text) {
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-        String formattedDate = df.format(calendar.getTime());
-        PostCommentEntity commentEntity = new PostCommentEntity(text, formattedDate, "21:11:10");
+        PostCommentEntity commentEntity = new PostCommentEntity(text);
         dataManager.postComment(id, commentEntity)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override

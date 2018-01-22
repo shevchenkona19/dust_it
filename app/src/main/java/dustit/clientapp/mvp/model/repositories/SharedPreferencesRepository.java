@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 11.10.2017.
@@ -26,7 +27,7 @@ public class SharedPreferencesRepository {
 
     public void saveToken(String token) {
         preferences.edit()
-                .putString(IConstants.IPreferences.TOKEN_KEY, token)
+                .putString(IConstants.IPreferences.TOKEN_KEY, "JWT " + token)
                 .apply();
     }
 
