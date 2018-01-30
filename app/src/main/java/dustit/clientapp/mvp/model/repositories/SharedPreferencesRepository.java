@@ -51,4 +51,15 @@ public class SharedPreferencesRepository {
     public String getCachedUsername() {
         return preferences.getString(IConstants.IPreferences.USERNAME_KEY, "");
     }
+
+    public void saveLanguagePref(String lang) {
+        preferences.edit()
+                .putString(IConstants.IPreferences.LANGUAGE_KEY, lang)
+                .apply();
+    }
+
+
+    public String loadLanguage() {
+        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "ru");
+    }
 }

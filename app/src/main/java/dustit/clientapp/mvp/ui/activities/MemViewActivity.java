@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.activities;
 import android.animation.LayoutTransition;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,10 +23,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -35,8 +41,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
-import dustit.clientapp.customviews.TouchImageView;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
+import dustit.clientapp.customviews.zoomableview.ZoomableDraweeViewSupport;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
@@ -44,7 +50,6 @@ import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 07.10.2017.
@@ -65,10 +70,8 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     private Quarry currentQuarry;
 
 
-@BindView(R.id.tvCommentEmptySet)
-TextView tvCommentEmpty;
-    @BindView(R.id.sdvMemViewIcon)
-    TouchImageView sdvIcon;
+    @BindView(R.id.tvCommentEmptySet)
+    TextView tvCommentEmpty;
     @BindView(R.id.ivMemViewMenu)
     ImageView ivMenu;
     @BindView(R.id.ivMemViewBack)
@@ -113,6 +116,8 @@ TextView tvCommentEmpty;
     ProgressBar pbDislikeLoading;
     @BindView(R.id.pbLikeLoading)
     ProgressBar pbLikeLoading;
+    @BindView(R.id.zdvMem)
+    ZoomableDraweeViewSupport zdvMem;
 
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
@@ -124,8 +129,11 @@ TextView tvCommentEmpty;
 
     public interface IMemViewRatingInteractionListener {
         void passPostLike(String id);
+
         void passDeleteLike(String id);
+
         void passPostDislike(String id);
+
         void passDeleteDislike(String id);
     }
 
@@ -143,7 +151,7 @@ TextView tvCommentEmpty;
             tvCommentEmpty.setVisibility(View.GONE);
         } else {
             //TODO: show empty
-            L.print("Empty list");
+
             rvComments.setVisibility(View.GONE);
             tvCommentEmpty.setVisibility(View.VISIBLE);
         }
@@ -241,7 +249,7 @@ TextView tvCommentEmpty;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_mem_view);
+        setContentView(R.layout.activity_mem_view);
         App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
         pbDislikeLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
@@ -249,11 +257,6 @@ TextView tvCommentEmpty;
         presenter.bind(this);
         commentAdapter = new CommentsRecyclerViewAdapter(this, this);
         mem = getIntent().getExtras().getParcelable(FeedActivity.MEM_ENTITY);
-        Picasso.with(this)
-                ./*load("https://cdn.pixabay.com/photo/2017/05/09/21/49/gecko-2299365_960_720.jpg")*/load(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
-                .noFade()
-                .noPlaceholder()
-                .into(sdvIcon);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initSlidr();
         initOnClicks();
@@ -271,6 +274,14 @@ TextView tvCommentEmpty;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         }
+        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
+                .setTapToRetryEnabled(true).build();
+        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
+                .setProgressBarImage(new ProgressBarDrawable())
+                .build();
+        zdvMem.setController(ctrl);
+        zdvMem.setHierarchy(hierarchy);
         ivExpandComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -322,16 +333,16 @@ TextView tvCommentEmpty;
             @Override
             public void onClick(View view) {
                 showDislikesLoading();
-                if (mem.isDisliked()){
+                if (mem.isDisliked()) {
                     presenter.deleteDislike(mem.getId());
                     currentQuarry = Quarry.DELETE_DISLIKE;
-                } else{
+                } else {
                     presenter.postDislike(mem.getId());
                     currentQuarry = Quarry.POST_DISLIKE;
                 }
             }
         });
-        sdvIcon.setOnClickListener(new View.OnClickListener() {
+        zdvMem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isExpanded) {
@@ -391,7 +402,7 @@ TextView tvCommentEmpty;
         clExpandedUpperLayout.setVisibility(View.GONE);
         rvComments.setVisibility(View.GONE);
         cvCommentSendPanel.setVisibility(View.GONE);
-        sdvIcon.setVisibility(View.VISIBLE);
+        zdvMem.setVisibility(View.VISIBLE);
     }
 
     private void expandComments() {
@@ -408,7 +419,7 @@ TextView tvCommentEmpty;
         clExpandedUpperLayout.setVisibility(View.VISIBLE);
         cvCommentSendPanel.setVisibility(View.VISIBLE);
         presenter.loadCommentsBase(mem.getId());
-        sdvIcon.setVisibility(View.GONE);
+        zdvMem.setVisibility(View.GONE);
         srlCommentsRefresh.setVisibility(View.VISIBLE);
         srlCommentsRefresh.setEnabled(true);
         rvComments.setVisibility(View.VISIBLE);

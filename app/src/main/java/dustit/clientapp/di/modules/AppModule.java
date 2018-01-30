@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.IConstants;
 
@@ -48,6 +49,12 @@ public class AppModule {
     @Singleton
     public SharedPreferencesRepository sharedPreferencesRepository() {
         return new SharedPreferencesRepository();
+    }
+
+    @Provides
+    @Singleton
+    public UserSettingsDataManager provideUserSettingsDataManager() {
+        return new UserSettingsDataManager();
     }
 }
 

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clMemViewUpperLayout"
     android:layout_width="match_parent"
-    android:background="#fff"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="#fff">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -39,13 +40,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
                     android:tint="#404040"
-            app:srcCompat="@drawable/ic_details" />
-        </RelativeLayout>
+                    app:srcCompat="@drawable/ic_details" />
+            </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <dustit.clientapp.customviews.TouchImageView
-        android:id="@+id/sdvMemViewIcon"
+    <dustit.clientapp.customviews.zoomableview.ZoomableDraweeViewSupport
+        android:id="@+id/zdvMem"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -187,8 +188,8 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/ivMemViewDisliked"
@@ -213,12 +214,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
     <TextView
         android:id="@+id/tvCommentEmptySet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Тут пока пусто..."
-        android:visibility="gone"/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/empty_set_comments"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ablExpandablePanel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cvMemViewCommentSendView"
@@ -239,8 +249,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/your_comment"
                 android:layout_marginStart="16dp"
+                android:hint="@string/your_comment"
                 android:textCursorDrawable="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivMemViewCommentSend"
@@ -257,16 +267,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_send_comment" />
+
             <ProgressBar
                 android:id="@+id/pbIMemViewCommentSendingLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="9dp"
                 android:visibility="invisible"
-                app:layout_constraintLeft_toRightOf="@id/etMemViewComment"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintLeft_toRightOf="@id/etMemViewComment"
+                app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>

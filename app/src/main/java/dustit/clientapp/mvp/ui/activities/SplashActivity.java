@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Locale;
+
 import dustit.clientapp.R;
 
 public class SplashActivity extends AppCompatActivity {
