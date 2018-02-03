@@ -194,21 +194,22 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
 
     @Override
     public void onLikePostError(String id) {
+        showErrorToast();
     }
 
     @Override
     public void onLikeDeletingError(String id) {
-
+        showErrorToast();
     }
 
     @Override
     public void onDislikePostError(String id) {
-
+        showErrorToast();
     }
 
     @Override
     public void onDislikeDeletingError(String id) {
-
+        showErrorToast();
     }
 
     @Override
@@ -239,6 +240,16 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     @Override
     public void onErrorInAddingToFavorites(String id) {
         Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onErrorInRemovingFromFavorites(String id) {
+        showErrorToast();
+    }
+
+    @Override
+    public void onRemovedFromFavorites(String id) {
+        adapter.onDeletedFromFavorites(id);
     }
 
     @Override
@@ -279,6 +290,16 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     @Override
     public void addToFavorites(String id) {
         presenter.addToFavorites(id);
+    }
+
+    @Override
+    public void deleteFromFavorites(String id) {
+        presenter.removeFromFavorites(id);
+    }
+
+    @Override
+    public void showErrorToast() {
+        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     public void passPostLike(String id) {

@@ -108,7 +108,7 @@ public interface ServerAPI {
     @GET("/account/getMyUsername")
     Observable<UsernameEntity> getMyUsername(@Header("Authorization") String token);
 
-    @POST("/favorites/removeFromFavorites")
+    @GET("/favorites/removeFromFavorites")
     Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token, @Query("id") String id);
 
 }

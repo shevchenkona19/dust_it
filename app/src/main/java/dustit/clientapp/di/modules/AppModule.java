@@ -12,6 +12,7 @@ import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 /**
  * Created by shevc on 22.09.2017.
@@ -55,6 +56,12 @@ public class AppModule {
     @Singleton
     public UserSettingsDataManager provideUserSettingsDataManager() {
         return new UserSettingsDataManager();
+    }
+
+    @Provides
+    @Singleton
+    public ThemeManager provideThemeManager(Context context) {
+        return new ThemeManager(context);
     }
 }
 

@@ -83,8 +83,8 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
 
     private void initSlidr() {
         SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(getResources().getColor(R.color.colorPrimary))
-                .secondaryColor(getResources().getColor(R.color.colorPrimaryDark))
+                .primaryColor(getResources().getColor(R.color.colorPrimaryDefault))
+                .secondaryColor(getResources().getColor(R.color.colorPrimaryDarkDefault))
                 .position(SlidrPosition.VERTICAL)
                 .sensitivity(0.5f)
                 .scrimColor(Color.BLACK)

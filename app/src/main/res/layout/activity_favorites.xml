@@ -62,7 +62,7 @@
         android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackground"
         android:text="@string/try_to_load_one_more_time"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDefault"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

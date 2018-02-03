@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -119,21 +120,25 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
     @Override
     public void onLikePostError(String id) {
         /*adapter.onLikePostError(id);*/
+        showErrorToast();
     }
 
     @Override
     public void onLikeDeletingError(String id) {
         /*adapter.onLikeDeletingError(id);*/
+        showErrorToast();
     }
 
     @Override
     public void onDislikePostError(String id) {
         /*adapter.onDislikePostError(id);*/
+        showErrorToast();
     }
 
     @Override
     public void onDislikeDeletingError(String id) {
         /*adapter.onDislikeDeletingError(id);*/
+        showErrorToast();
     }
 
     @Override
@@ -143,7 +148,17 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
 
     @Override
     public void onErrorInAddingToFavorites(String id) {
+        showErrorToast();
+    }
 
+    @Override
+    public void onRemovedFromFavorites(String id) {
+        adapter.onDeletedFromFavorites(id);
+    }
+
+    @Override
+    public void onErrorInRemovingFromFavorites(String id) {
+        showErrorToast();
     }
 
     @Override
@@ -184,6 +199,16 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
     @Override
     public void addToFavorites(String id) {
         presenter.addToFavorites(id);
+    }
+
+    @Override
+    public void deleteFromFavorites(String id) {
+        presenter.deleteFromFavorites(id);
+    }
+
+    @Override
+    public void showErrorToast() {
+        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     public void passPostLike(String id) {

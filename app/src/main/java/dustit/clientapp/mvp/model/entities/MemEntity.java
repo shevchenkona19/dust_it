@@ -7,29 +7,25 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.Nullable;
+
+import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
+
 public class MemEntity implements Parcelable {
 
     @SerializedName("imageid")
     @Expose
     private String id;
-    @SerializedName("Url")
-    @Expose
-    private String url;
-    @SerializedName("Text")
-    @Expose
-    private String text;
     @SerializedName("likes")
     @Expose
     private String likes;
     @SerializedName("dislikes")
     @Expose
     private String dislikes;
-    @SerializedName("IsDisliked")
+    @SerializedName("opinion")
     @Expose
-    private boolean isDisliked;
-    @SerializedName("IsLiked")
-    @Expose
-    private boolean isLiked;
+    private String opinion;
     @SerializedName("IsFavorite")
     @Expose
     private boolean favorite;
@@ -40,25 +36,19 @@ public class MemEntity implements Parcelable {
     public MemEntity() {
     }
 
-    public MemEntity(String id, String url, String text, String likes, String dislikes, boolean isDisliked, boolean isLiked, boolean favorite) {
+    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite) {
         this.id = id;
-        this.url = url;
-        this.text = text;
         this.likes = likes;
         this.dislikes = dislikes;
-        this.isDisliked = isDisliked;
-        this.isLiked = isLiked;
         this.favorite = favorite;
+        this.opinion = opinion;
     }
 
     protected MemEntity(Parcel in) {
         id = in.readString();
-        url = in.readString();
-        text = in.readString();
         likes = in.readString();
         dislikes = in.readString();
-        isDisliked = in.readByte() != 0;
-        isLiked = in.readByte() != 0;
+        opinion = in.readString();
         favorite = in.readByte() != 0;
     }
 
@@ -82,44 +72,12 @@ public class MemEntity implements Parcelable {
         this.dislikes = dislikes;
     }
 
-    public boolean isDisliked() {
-        return isDisliked;
-    }
-
-    public void setDisliked(boolean disliked) {
-        isDisliked = disliked;
-    }
-
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public String getLikes() {
@@ -138,20 +96,59 @@ public class MemEntity implements Parcelable {
         this.favorite = favorite;
     }
 
+    @Nullable
+    public IConstants.OPINION getOpinion() {
+        if (opinion != null) {
+            switch (opinion) {
+                case "0":
+                    return IConstants.OPINION.DISLIKED;
+                case "1":
+                    return IConstants.OPINION.LIKED;
+                default:
+                    return IConstants.OPINION.NEUTRAL;
+            }
+        } else {
+            return IConstants.OPINION.NEUTRAL;
+        }
+    }
+
+    public void setOpinion(IConstants.OPINION opinion) {
+        switch (opinion) {
+            case LIKED:
+                this.opinion = "1";
+                break;
+            case DISLIKED:
+                this.opinion = "0";
+                break;
+            case NEUTRAL:
+                this.opinion = "null";
+                break;
+        }
+    }
+
+    public void setLikes(int num) {
+        likes = String.valueOf(Integer.parseInt(likes) + num);
+    }
+
+    public void setDislikes(int num) {
+        dislikes = String.valueOf(Integer.parseInt(dislikes) + num);
+    }
+
+    public void setOpinion(String opinion) {
+        this.opinion = opinion;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
-        parcel.writeString(url);
-        parcel.writeString(text);
-        parcel.writeString(likes);
-        parcel.writeString(dislikes);
-        parcel.writeByte((byte) (isDisliked ? 1 : 0));
-        parcel.writeByte((byte) (isLiked ? 1 : 0));
-        parcel.writeByte((byte) (favorite ? 1 : 0));
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(likes);
+        dest.writeString(dislikes);
+        dest.writeString(opinion);
+        dest.writeByte((byte) (favorite ? 1 : 0));
     }
 }

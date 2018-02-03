@@ -3,6 +3,7 @@ package dustit.clientapp.di.component;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import dustit.clientapp.App;
 import dustit.clientapp.di.modules.AppModule;
 import dustit.clientapp.di.modules.ServerModule;
 import dustit.clientapp.mvp.datamanager.DataManager;
@@ -24,8 +25,11 @@ import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
+import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
+import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.activities.MemViewActivity;
+import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.utils.FavoritesUtils;
@@ -84,4 +88,12 @@ public interface AppComponent {
     void inject(UserSettingsDataManager userSettingsDataManager);
 
     void inject(ChooserActivity chooserActivity);
+
+    void inject(FeedActivity feedActivity);
+
+    void inject(SettingsActivity settingsActivity);
+
+    void inject(AccountActivity accountActivity);
+
+    void inject(App app);
 }

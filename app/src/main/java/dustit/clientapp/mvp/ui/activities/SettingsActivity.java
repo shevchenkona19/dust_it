@@ -1,28 +1,63 @@
 package dustit.clientapp.mvp.ui.activities;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ISettingsActivityView;
+import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivityView {
 
     @BindView(R.id.btnSettingsLogout)
     Button btnLogout;
+    @BindView(R.id.tbSettingsToolbar)
+    Toolbar toolbar;
+    @BindView(R.id.flActivitySettingsContainer)
+    FrameLayout flContainer;
+    @BindView(R.id.tvSettingsChooseThemeLabel)
+    TextView tvSettingsChooseThemeLabel;
+    @BindView(R.id.spSettingsThemeChooser)
+    AppCompatSpinner spThemeChooser;
+
+    @Inject
+    ThemeManager themeManager;
+
+    private final int LIGHT = 0;
+    private final int DEFAULT = 1;
+    private final int DARK = 2;
+
     private final SettingsActivityPresenter presenter = new SettingsActivityPresenter();
+    private String themeSubscriberId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
         presenter.bind(this);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -31,11 +66,72 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 presenter.logout();
             }
         });
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spThemeChooser.setAdapter(adapter);
+        spThemeChooser.setSelection(presenter.loadTheme());
+        spThemeChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case LIGHT:
+                        themeManager.setCurrentTheme(ThemeManager.Theme.LIGHT);
+                        presenter.saveTheme(ThemeManager.Theme.LIGHT);
+                        break;
+                    case DEFAULT:
+                        themeManager.setCurrentTheme(ThemeManager.Theme.DEFAULT);
+                        presenter.saveTheme(ThemeManager.Theme.DEFAULT);
+                        break;
+                    case DARK:
+                        themeManager.setCurrentTheme(ThemeManager.Theme.DARK);
+                        presenter.saveTheme(ThemeManager.Theme.DARK);
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        setColors();
+        themeSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
+            }
+        });
+    }
+
+    private void setColors() {
+        toolbar.setTitleTextColor(themeManager.getMainTextMainAppColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tvSettingsChooseThemeLabel.setTextColor(getColor(themeManager.getSecondaryTextMainAppColor()));
+        } else {
+            tvSettingsChooseThemeLabel.setTextColor(getResources().getColor(themeManager.getSecondaryTextMainAppColor()));
+        }
+        animate(themeManager.getPrevBackgroundMainColor(), themeManager.getBackgroundMainColor(), flContainer);
+        animate(themeManager.getPrevPrimaryColor(), themeManager.getPrimaryColor(), toolbar);
+    }
+
+
+    private void animate(int fromColor, int toColor, final View v) {
+        int colorFrom = getResources().getColor(fromColor);
+        int colorTo = getResources().getColor(toColor);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(250); // milliseconds
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                v.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
     }
 
     @Override
     protected void onDestroy() {
         presenter.unbind();
+        themeManager.unsubscribe(themeSubscriberId);
         super.onDestroy();
     }
 

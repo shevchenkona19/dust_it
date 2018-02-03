@@ -52,4 +52,9 @@
     <string name="retry_load_feed">Завантажити ще раз</string>
     <string name="applied">Застосовано</string>
     <string name="empty_set_comments">Тут пока что нет ни одного комментария, а значит ты можешь быть первонахом!</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_default">Стандартная</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="account_settings">Налаштування акаунта</string>
+    <string name="choose_theme">Выберите тему:</string>
 </resources>

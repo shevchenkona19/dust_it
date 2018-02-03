@@ -116,21 +116,22 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     @Override
     public void onLikePostError(String id) {
+        showErrorToast();
     }
 
     @Override
     public void onLikeDeletingError(String id) {
-
+        showErrorToast();
     }
 
     @Override
     public void onDislikePostError(String id) {
-
+        showErrorToast();
     }
 
     @Override
     public void onDislikeDeletingError(String id) {
-
+        showErrorToast();
     }
 
     @Override
@@ -160,7 +161,17 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     @Override
     public void onErrorInAddingToFavorites(String id) {
-        Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+        showErrorToast();
+    }
+
+    @Override
+    public void onErrorInRemovingFromFavorites(String s) {
+        showErrorToast();
+    }
+
+    @Override
+    public void onRemovedFromFavorites(String s) {
+        adapter.onDeletedFromFavorites(s);
     }
 
     @Override
@@ -201,6 +212,16 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
     @Override
     public void addToFavorites(String id) {
         presenter.addToFavorites(id);
+    }
+
+    @Override
+    public void deleteFromFavorites(String id) {
+        presenter.removeFromFavorites(id);
+    }
+
+    @Override
+    public void showErrorToast() {
+        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
     public void passPostLike(String id) {

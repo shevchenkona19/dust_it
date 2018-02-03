@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#192126</color>
-    <color name="colorPrimaryDark">#0b0f11</color>
-    <color name="colorAccent">#fff</color>
+    <color name="colorPrimaryDefault">#192126</color>
+    <color name="colorPrimaryDarkDefault">#0b0f11</color>
+    <color name="colorAccentDefault">#fff</color>
     <color name="colorEditTextHint">#aaeeeeee</color>
     <color name="colorMainText">#f8f2fc</color>
+    <color name="colorMainTextHelloDefault">#f8f2fc</color>
+    <color name="colorSecondaryTextHelloDefault">#a5a5a5</color>
+    <color name="colorMainTextMainAppDefault">#ededed</color>
+    <color name="secondaryTextMainAppColorDefault">#a5a5a5</color>
+    <color name="colorPrimaryLight">#fefefe</color>
+    <color name="colorPrimaryDarkLight">#aeaeae</color>
+    <color name="colorAccentLight">#202020</color>
+    <color name="colorMainTextHelloLight">#fefefe</color>
+    <color name="colorSecondaryTextHelloLight">#dedede</color>
+    <color name="colorMainTextMainAppLight">#303030</color>
+    <color name="secondaryTextMainAppColorLight">#505050</color>
+    <color name="colorPrimaryDark">#404040</color>
+    <color name="colorPrimaryDarkDark">#202020</color>
+    <color name="colorAccentDark">#dedede</color>
+    <color name="colorMainTextHelloDark">#dddddd</color>
+    <color name="colorSecondaryTextHelloDark">#ababab</color>
+    <color name="colorMainTextMainAppDark">#5a5a5a</color>
+    <color name="secondaryTextMainAppColorDark">#1a1a1a</color>
+    <color name="colorBakgroundMainDefault">#ffffff</color>
+    <color name="colorBakgroundMainLight">#ffffff</color>
+    <color name="colorBakgroundMainDark">#555555</color>
+    <color name="colorBackgroundCardDefault">#fff</color>
+    <color name="colorBackgroundCardLight">#fff</color>
+    <color name="colorBackgroundCardDark">#505050</color>
 </resources>

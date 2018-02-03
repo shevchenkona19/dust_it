@@ -29,4 +29,8 @@ public interface IHotFragmentView extends IFragmentView {
     void onAddedToFavorites(String id);
 
     void onErrorInAddingToFavorites(String id);
+
+    void onRemovedFromFavorites(String id);
+
+    void onErrorInRemovingFromFavorites(String id);
 }

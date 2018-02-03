@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -10,11 +11,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
@@ -23,6 +28,7 @@ import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FeedActivity extends AppCompatActivity implements FeedFragment.IFeedFragmentInteractionListener,
         HotFragment.IHotFragmentInteractionListener,
@@ -43,6 +49,12 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     RelativeLayout rvContainer;
     @BindView(R.id.clMainLayout)
     CoordinatorLayout clLayout;
+    @BindView(R.id.rlActivityFeedMainContainer)
+    RelativeLayout rlMainContainer;
+    @BindView(R.id.tvActivityFeedAppName)
+    TextView tvAppName;
+    @BindView(R.id.appBarActivityFeed)
+    AppBarLayout appBar;
 
     private FeedViewPagerAdapter adapter;
     private FeedActivityPresenter presenter;
@@ -50,6 +62,11 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     private boolean isFeed = false;
     private boolean isHot = false;
     private boolean isCategories = false;
+
+    private String themeSubscribeId;
+
+    @Inject
+    ThemeManager themeManager;
 
 
     @Override
@@ -59,6 +76,7 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         presenter = new FeedActivityPresenter();
         presenter.bind(this);
         ButterKnife.bind(this);
+        App.get().getAppComponent().inject(this);
         adapter = new FeedViewPagerAdapter(getSupportFragmentManager());
         vpFeed.setOffscreenPageLimit(3);
         vpFeed.setAdapter(adapter);
@@ -97,12 +115,26 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                 startActivity(intent);
             }
         });
+        setColors();
+        themeSubscribeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
+            }
+        });
+    }
+
+    private void setColors() {
+        rlMainContainer.setBackgroundResource(themeManager.getBackgroundMainColor());
+        tvAppName.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        appBar.setBackgroundResource(themeManager.getPrimaryColor());
     }
 
     @Override
     protected void onDestroy() {
         presenter.unbind();
         adapter.destroy();
+        themeManager.unsubscribe(themeSubscribeId);
         super.onDestroy();
     }
 

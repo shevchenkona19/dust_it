@@ -3,7 +3,7 @@ package dustit.clientapp.mvp.ui.activities;
 import android.animation.LayoutTransition;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,11 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -42,7 +44,6 @@ import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
-import dustit.clientapp.customviews.zoomableview.ZoomableDraweeViewSupport;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
@@ -50,6 +51,8 @@ import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.IConstants;
+import me.relex.photodraweeview.OnViewTapListener;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
  * Created by shevc on 07.10.2017.
@@ -117,7 +120,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     @BindView(R.id.pbLikeLoading)
     ProgressBar pbLikeLoading;
     @BindView(R.id.zdvMem)
-    ZoomableDraweeViewSupport zdvMem;
+    PhotoDraweeView pdvMem;
 
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
@@ -151,7 +154,6 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
             tvCommentEmpty.setVisibility(View.GONE);
         } else {
             //TODO: show empty
-
             rvComments.setVisibility(View.GONE);
             tvCommentEmpty.setVisibility(View.VISIBLE);
         }
@@ -192,41 +194,34 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
 
     @Override
     public void onErrorSendingQuerry() {
-        hideDislikesLoading();
-        hideLikesLoading();
         Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         currentQuarry = null;
     }
 
     @Override
     public void onQuerrySendedSuccessfully(String id) {
+        final IConstants.OPINION opinion = mem.getOpinion();
         switch (currentQuarry) {
             case POST_LIKE:
-                if (mem.isDisliked()) {
-                    mem.setDisliked(false);
-                    mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) - 1));
-                }
-                mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) + 1));
-                mem.setLiked(true);
+                if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1);
+                mem.setLikes(1);
+                mem.setOpinion(IConstants.OPINION.LIKED);
                 listener.passPostLike(id);
                 break;
             case DELETE_LIKE:
-                mem.setLiked(false);
-                mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) - 1));
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                mem.setLikes(-1);
                 listener.passDeleteLike(id);
                 break;
             case POST_DISLIKE:
-                if (mem.isLiked()) {
-                    mem.setLiked(false);
-                    mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) - 1));
-                }
-                mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) + 1));
-                mem.setDisliked(true);
+                if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1);
+                mem.setDislikes(1);
+                mem.setOpinion(IConstants.OPINION.DISLIKED);
                 listener.passPostDislike(id);
                 break;
             case DELETE_DISLIKE:
-                mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) - 1));
-                mem.setDisliked(false);
+                mem.setDislikes(-1);
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
                 listener.passDeleteDislike(id);
                 break;
             default:
@@ -275,13 +270,25 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
             clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         }
         DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
-                .setTapToRetryEnabled(true).build();
+                .setTapToRetryEnabled(true)
+                .setOldController(pdvMem.getController())
+                .setControllerListener(new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                        super.onFinalImageSet(id, imageInfo, animatable);
+                        if (imageInfo == null || pdvMem == null) {
+                            return;
+                        }
+                        pdvMem.update(imageInfo.getWidth(), imageInfo.getHeight());
+                    }
+                })
+                .build();
         GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
-        zdvMem.setController(ctrl);
-        zdvMem.setHierarchy(hierarchy);
+        pdvMem.setController(ctrl);
+        pdvMem.setHierarchy(hierarchy);
         ivExpandComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -294,22 +301,53 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 disExpandComments();
             }
         });
-        if (mem.isLiked()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ivLike.setImageDrawable(this.getDrawable(R.drawable.ic_like));
-            } else {
-                ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
-            }
-        } else if (mem.isDisliked()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ivDislike.setImageDrawable(this.getDrawable(R.drawable.ic_dislike));
-            } else {
-                ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
+        final IConstants.OPINION opinion = mem.getOpinion();
+        if (opinion != null) {
+            switch (opinion) {
+                case LIKED:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like_pressed));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_pressed));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
+                    }
+                    break;
+                case DISLIKED:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike_pressed));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike_pressed));
+                    }
+                    break;
+                case NEUTRAL:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
 
     private void initOnClicks() {
+        final IConstants.OPINION opinion = mem.getOpinion();
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -319,8 +357,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         ivLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLikesLoading();
-                if (mem.isLiked()) {
+                if (opinion == IConstants.OPINION.LIKED) {
                     presenter.deleteLike(mem.getId());
                     currentQuarry = Quarry.DELETE_LIKE;
                 } else {
@@ -332,8 +369,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         ivDislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDislikesLoading();
-                if (mem.isDisliked()) {
+                if (opinion == IConstants.OPINION.DISLIKED) {
                     presenter.deleteDislike(mem.getId());
                     currentQuarry = Quarry.DELETE_DISLIKE;
                 } else {
@@ -342,9 +378,9 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 }
             }
         });
-        zdvMem.setOnClickListener(new View.OnClickListener() {
+        pdvMem.setOnViewTapListener(new OnViewTapListener() {
             @Override
-            public void onClick(View view) {
+            public void onViewTap(View view, float x, float y) {
                 if (isExpanded) {
                     tbLikePanel.setVisibility(View.VISIBLE);
                     tbUpperToolbar.setVisibility(View.VISIBLE);
@@ -356,7 +392,6 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 }
             }
         });
-
         ivSendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -371,8 +406,8 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
 
     private void initSlidr() {
         SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(getResources().getColor(R.color.colorPrimary))
-                .secondaryColor(getResources().getColor(R.color.colorPrimaryDark))
+                .primaryColor(getResources().getColor(R.color.colorPrimaryDefault))
+                .secondaryColor(getResources().getColor(R.color.colorPrimaryDarkDefault))
                 .position(SlidrPosition.VERTICAL)
                 .sensitivity(0.5f)
                 .scrimColor(Color.BLACK)
@@ -402,7 +437,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         clExpandedUpperLayout.setVisibility(View.GONE);
         rvComments.setVisibility(View.GONE);
         cvCommentSendPanel.setVisibility(View.GONE);
-        zdvMem.setVisibility(View.VISIBLE);
+        pdvMem.setVisibility(View.VISIBLE);
     }
 
     private void expandComments() {
@@ -419,34 +454,10 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         clExpandedUpperLayout.setVisibility(View.VISIBLE);
         cvCommentSendPanel.setVisibility(View.VISIBLE);
         presenter.loadCommentsBase(mem.getId());
-        zdvMem.setVisibility(View.GONE);
+        pdvMem.setVisibility(View.GONE);
         srlCommentsRefresh.setVisibility(View.VISIBLE);
         srlCommentsRefresh.setEnabled(true);
         rvComments.setVisibility(View.VISIBLE);
-    }
-
-    private void showLikesLoading() {
-        ivLike.setVisibility(View.INVISIBLE);
-        tvLikeCount.setVisibility(View.INVISIBLE);
-        pbLikeLoading.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLikesLoading() {
-        pbLikeLoading.setVisibility(View.GONE);
-        ivLike.setVisibility(View.VISIBLE);
-        tvLikeCount.setVisibility(View.VISIBLE);
-    }
-
-    private void showDislikesLoading() {
-        ivDislike.setVisibility(View.INVISIBLE);
-        tvDislikeCount.setVisibility(View.INVISIBLE);
-        pbDislikeLoading.setVisibility(View.VISIBLE);
-    }
-
-    private void hideDislikesLoading() {
-        pbDislikeLoading.setVisibility(View.GONE);
-        ivDislike.setVisibility(View.VISIBLE);
-        tvDislikeCount.setVisibility(View.VISIBLE);
     }
 
     @Override

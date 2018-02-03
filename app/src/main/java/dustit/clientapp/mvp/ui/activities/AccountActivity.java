@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -32,12 +33,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.AccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 public class AccountActivity extends AppCompatActivity implements IAccountActivityView {
 
@@ -45,7 +50,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     private static final int PICK_IMAGE = 222;
     private static final int CROPPED_IMAGE = 223;
     private static final int PERMISSION_DIALOG = 1010;
-    @BindView(R.id.tbAccount)
+    @BindView(R.id.tbAccountSettingsToolbar)
     Toolbar tbAccount;
     @BindView(R.id.sdvAccountUserIcon)
     SimpleDraweeView sdvIcon;
@@ -71,7 +76,16 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     TextView tvFavoritesCounter;
     @BindView(R.id.ivAccountToFavorites)
     ImageView ivToFavorites;
+    @BindView(R.id.clAccountSettingsContainer)
+    ConstraintLayout clContainer;
+    @BindView(R.id.cvAccountSettingsCard)
+    CardView cvAccountCard;
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
+
+    private String themeId = "";
+
+    @Inject
+    ThemeManager themeManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +93,10 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
         mPresenter.bind(this);
+        App.get().getAppComponent().inject(this);
         setSupportActionBar(tbAccount);
         mPresenter.getUsername();
         mPresenter.getFavorites();
-        pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         sdvIcon.setImageURI(Uri.parse("http://www.uni-regensburg.de/Fakultaeten/phil_Fak_II/Psychologie/Psy_II/beautycheck/english/durchschnittsgesichter/m(01-32)_gr.jpg"));
         btnReload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,11 +176,32 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 startActivity(new Intent(AccountActivity.this, FavoritesActivity.class));
             }
         });
+        setColors();
+        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
+            }
+        });
+    }
+
+    private void setColors() {
+        tbAccount.setBackgroundResource(themeManager.getPrimaryColor());
+        tvUsername.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        btnEdit.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        btnSettings.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        pbLoading.getIndeterminateDrawable().setColorFilter(themeManager.getPrimaryColor(), PorterDuff.Mode.MULTIPLY);
+        tvFailedToLoad.setTextColor(getResources().getColor(themeManager.getSecondaryTextMainAppColor()));
+        btnReload.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        tvFavoritesCounter.setTextColor(getResources().getColor(themeManager.getSecondaryTextMainAppColor()));
+        clContainer.setBackgroundResource(themeManager.getBackgroundMainColor());
+        cvAccountCard.setCardBackgroundColor(getResources().getColor(themeManager.getCardBackgroundColor()));
     }
 
     @Override
     protected void onDestroy() {
         mPresenter.unbind();
+        themeManager.unsubscribe(themeId);
         super.onDestroy();
     }
 
@@ -203,9 +238,9 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 File image = createImageFile();
                 Uri destinationUri = Uri.fromFile(image);
                 UCrop.Options options = new UCrop.Options();
-                options.setToolbarColor(getResources().getColor(R.color.colorPrimary));
-                options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-                options.setActiveWidgetColor(getResources().getColor(R.color.colorPrimary));
+                options.setToolbarColor(getResources().getColor(R.color.colorPrimaryDefault));
+                options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDarkDefault));
+                options.setActiveWidgetColor(getResources().getColor(R.color.colorPrimaryDefault));
                 options.setToolbarTitle(getString(R.string.crop_photo));
                 UCrop.of(imageSource, destinationUri)
                         .withOptions(options)

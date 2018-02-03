@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 /**
  * Created by shevc on 11.10.2017.
@@ -14,6 +15,9 @@ import dustit.clientapp.utils.L;
  */
 
 public class SharedPreferencesRepository {
+    private static final String DARK_THEME = "dark";
+    private static final String LIGHT_THEME = "light";
+    private static final String DEFAULT_THEME = "default";
     @Inject
     SharedPreferences preferences;
 
@@ -61,5 +65,35 @@ public class SharedPreferencesRepository {
 
     public String loadLanguage() {
         return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "ru");
+    }
+
+    public void saveTheme(ThemeManager.Theme t) {
+        final SharedPreferences.Editor editor = preferences.edit();
+        switch (t) {
+            case DARK:
+                editor.putString(IConstants.IPreferences.THEME_KEY, DARK_THEME);
+                break;
+            case LIGHT:
+                editor.putString(IConstants.IPreferences.THEME_KEY, LIGHT_THEME);
+                break;
+            case DEFAULT:
+                editor.putString(IConstants.IPreferences.THEME_KEY, DEFAULT_THEME);
+                break;
+        }
+        editor.apply();
+    }
+
+    public ThemeManager.Theme loadTheme() {
+        final String theme = preferences.getString(IConstants.IPreferences.THEME_KEY, DEFAULT_THEME);
+        switch (theme) {
+            case DEFAULT_THEME:
+                return ThemeManager.Theme.DEFAULT;
+            case LIGHT_THEME:
+                return ThemeManager.Theme.LIGHT;
+            case DARK_THEME:
+                return ThemeManager.Theme.DARK;
+            default:
+                return null;
+        }
     }
 }

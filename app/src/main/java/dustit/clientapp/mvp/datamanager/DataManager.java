@@ -161,7 +161,6 @@ public class DataManager {
     }
 
     public String getToken() {
-        L.print("Token: " + preferencesRepository.getSavedToken());
         return preferencesRepository.getSavedToken();
     }
 

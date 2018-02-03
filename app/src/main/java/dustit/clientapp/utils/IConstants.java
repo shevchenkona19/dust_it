@@ -14,5 +14,12 @@ public interface IConstants {
         String USERNAME_KEY = "cacheK";
         String USERNAME_CACHED_KEY = "a";
         String LANGUAGE_KEY = "lang ";
+        String THEME_KEY = "Theme";
+    }
+
+    enum OPINION {
+        LIKED,
+        DISLIKED,
+        NEUTRAL
     }
 }

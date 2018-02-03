@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 /**
  * Created by nikita on 27.01.18.
@@ -23,5 +24,13 @@ public class UserSettingsDataManager {
 
     public String loadLanguage() {
         return preferencesRepository.loadLanguage();
+    }
+
+    public void saveTheme(ThemeManager.Theme t) {
+        preferencesRepository.saveTheme(t);
+    }
+
+    public ThemeManager.Theme loadTheme() {
+        return preferencesRepository.loadTheme();
     }
 }

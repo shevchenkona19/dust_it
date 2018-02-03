@@ -15,6 +15,7 @@ import dustit.clientapp.mvp.presenters.interfaces.ICategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.FavoritesUtils;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
 
 public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragmentView> implements ICategoriesFragmentPresenter {
@@ -200,5 +201,33 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
             }
         });
         favoritesUtils.addToFavorites(id);
+    }
+
+    public void removeFromFavorites(String id) {
+        final Container<String> containerId = new Container<>();
+        final Container<Integer> containerMessage = new Container<>();
+        containerId.put(id);
+        addSubscription(dataManager.removeFromFavorites(id)
+                .subscribe(new Subscriber<ResponseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        if (containerMessage.get() != 200) {
+                            getView().onErrorInRemovingFromFavorites(containerId.get());
+                        } else {
+                            getView().onRemovedFromFavorites(containerId.get());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        L.print(e.getMessage());
+                        getView().onErrorInRemovingFromFavorites(containerId.get());
+                    }
+
+                    @Override
+                    public void onNext(ResponseEntity responseEntity) {
+                        containerMessage.put(responseEntity.getResponse());
+                    }
+                }));
     }
 }

@@ -40,7 +40,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             android:text="@string/retry"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDefault"
             android:textSize="20sp"
             android:visibility="gone" />
     </RelativeLayout>
@@ -55,7 +55,7 @@
             android:id="@+id/tbCategoriesToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimaryDefault">
 
             <Spinner
                 android:id="@+id/spCategoriesChooser"

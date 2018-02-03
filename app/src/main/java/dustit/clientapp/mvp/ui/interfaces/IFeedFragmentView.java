@@ -38,4 +38,8 @@ public interface IFeedFragmentView extends IFragmentView {
     void onAddedToFavorites(String id);
 
     void onErrorInAddingToFavorites(String id);
+
+    void onErrorInRemovingFromFavorites(String s);
+
+    void onRemovedFromFavorites(String s);
 }

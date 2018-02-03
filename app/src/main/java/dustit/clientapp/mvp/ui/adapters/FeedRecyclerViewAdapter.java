@@ -31,6 +31,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.containers.Pair;
 
 /**
  * Created by shevc on 05.10.2017.
@@ -47,8 +48,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int offset = 6;
     private int lastPos;
 
-    private boolean flag = false;
-
     @Inject
     DataManager dataManager;
 
@@ -61,70 +60,67 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void onLikePostedSuccesfully(String id) {
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                MemEntity mem = memEntityList.get(i);
-                if (mem.isDisliked()) {
-                    mem.setDisliked(false);
-                    mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) - 1));
-                }
-                mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) + 1));
-                mem.setLiked(true);
-                notifyItemChanged(i);
-                return;
-            }
+        final Pair<Integer, MemEntity> p = findMemAndPositionById(id);
+        final MemEntity mem = p.getMem();
+        final int pos = p.getPosition();
+        final IConstants.OPINION opinion = mem.getOpinion();
+        if (opinion != null) {
+            if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1);
+            mem.setLikes(1);
+            mem.setOpinion(IConstants.OPINION.LIKED);
+            notifyItemChanged(pos);
+        } else {
+            showErrorToast();
         }
     }
 
     public void onLikeDeletedSuccesfully(String id) {
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                MemEntity mem = memEntityList.get(i);
-                mem.setLiked(false);
-                mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) - 1));
-                notifyItemChanged(i);
-                return;
-            }
-        }
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
+        final MemEntity mem = pair.getMem();
+        final int pos = pair.getPosition();
+        mem.setLikes(-1);
+        mem.setOpinion(IConstants.OPINION.NEUTRAL);
+        notifyItemChanged(pos);
     }
 
     public void onDislikePostedSuccesfully(String id) {
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                MemEntity mem = memEntityList.get(i);
-                if (mem.isLiked()) {
-                    mem.setLiked(false);
-                    mem.setLikes(String.valueOf(Integer.parseInt(mem.getLikes()) - 1));
-                }
-                mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) + 1));
-                mem.setDisliked(true);
-                notifyItemChanged(i);
-                return;
-            }
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
+        final MemEntity mem = pair.getMem();
+        final int pos = pair.getPosition();
+        final IConstants.OPINION opinion = mem.getOpinion();
+        if (opinion != null) {
+            if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1);
+            mem.setDislikes(1);
+            mem.setOpinion(IConstants.OPINION.DISLIKED);
+            notifyItemChanged(pos);
+        } else {
+            showErrorToast();
         }
     }
 
     public void onDislikeDeletedSuccesfully(String id) {
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                MemEntity mem = memEntityList.get(i);
-                mem.setDislikes(String.valueOf(Integer.parseInt(mem.getDislikes()) - 1));
-                mem.setDisliked(false);
-                notifyItemChanged(i);
-                return;
-            }
-        }
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
+        final MemEntity mem = pair.getMem();
+        final int pos = pair.getPosition();
+        mem.setDislikes(-1);
+        mem.setOpinion(IConstants.OPINION.NEUTRAL);
+        notifyItemChanged(pos);
     }
 
     public void addedToFavorites(String id) {
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                MemEntity mem = memEntityList.get(i);
-                mem.setFavorite(true);
-                notifyItemChanged(i);
-                return;
-            }
-        }
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
+        final MemEntity mem = pair.getMem();
+        final int pos = pair.getPosition();
+        mem.setFavorite(true);
+        notifyItemChanged(pos);
+    }
+
+    public void onDeletedFromFavorites(String id) {
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
+        final MemEntity mem = pair.getMem();
+        final int pos = pair.getPosition();
+        mem.setFavorite(false);
+        notifyItemChanged(pos);
     }
 
     public interface IFeedInteractionListener {
@@ -143,6 +139,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         void deleteDislike(String id);
 
         void addToFavorites(String id);
+
+        void deleteFromFavorites(String id);
+
+        void showErrorToast();
     }
 
     private IFeedInteractionListener interactionListener;
@@ -168,7 +168,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        int pos = holder.getAdapterPosition();
+        final int pos = holder.getAdapterPosition();
         if (pos % 5 == 0 && pos != 0) {
             if (pos > lastPos) {
                 if (sent && pos == 5) {
@@ -194,49 +194,91 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId()));
             memViewHolder.tvLikeCount.setText(mem.getLikes());
             memViewHolder.tvDislikeCount.setText(mem.getDislikes());
-            if (mem.isLiked()) {
+            if (mem.isFavorite()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
+                    memViewHolder.addToFavorites.setImageDrawable(context.getDrawable(R.drawable.ic_added_to_favourites));
                 } else {
-                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+                    memViewHolder.addToFavorites.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_added_to_favourites));
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like_pressed));
+                    memViewHolder.addToFavorites.setImageDrawable(context.getDrawable(R.drawable.ic_add_to_favourites));
                 } else {
-                    memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_pressed));
+                    memViewHolder.addToFavorites.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_add_to_favourites));
                 }
             }
-            if (mem.isDisliked()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
-                } else {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike_pressed));
-                } else {
-                    memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike_pressed));
+            final IConstants.OPINION opinion = mem.getOpinion();
+            if (opinion != null) {
+                switch (opinion) {
+                    case LIKED:
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like_pressed));
+                        } else {
+                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_pressed));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
+                        } else {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
+                        }
+                        break;
+                    case DISLIKED:
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
+                        } else {
+                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike_pressed));
+                        } else {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike_pressed));
+                        }
+                        break;
+                    case NEUTRAL:
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
+                        } else {
+                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
+                        } else {
+                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
             memViewHolder.ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mem.isLiked()) {
-                        interactionListener.deleteLike(mem.getId());
-                    } else {
-                        interactionListener.postLike(mem.getId());
+                    if (opinion != null) {
+                        switch (opinion) {
+                            case LIKED:
+                                interactionListener.deleteLike(mem.getId());
+                                break;
+                            case DISLIKED:
+                            case NEUTRAL:
+                                interactionListener.postLike(mem.getId());
+                                break;
+                        }
                     }
                 }
             });
             memViewHolder.ivDisliked.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mem.isDisliked()) {
-                        interactionListener.deleteDislike(mem.getId());
-                    } else {
-                        interactionListener.postDislike(mem.getId());
+                    if (opinion != null) {
+                        switch (opinion) {
+                            case DISLIKED:
+                                interactionListener.deleteDislike(mem.getId());
+                                break;
+                            case LIKED:
+                            case NEUTRAL:
+                                interactionListener.postDislike(mem.getId());
+                                break;
+                        }
                     }
                 }
             });
@@ -249,7 +291,11 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.addToFavorites.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    interactionListener.addToFavorites(mem.getId());
+                    if (mem.isFavorite()) {
+                        interactionListener.deleteFromFavorites(mem.getId());
+                    } else {
+                        interactionListener.addToFavorites(mem.getId());
+                    }
                 }
             });
         } else if (holder instanceof FeedFailedToLoadViewHolder) {
@@ -380,4 +426,21 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             ButterKnife.bind(this, itemView);
         }
     }
+
+    private Pair<Integer, MemEntity> findMemAndPositionById(String id) {
+        Pair<Integer, MemEntity> pair = null;
+        for (int i = 0; i < memEntityList.size(); i++) {
+            if (memEntityList.get(i).getId().equals(id)) {
+                MemEntity mem = memEntityList.get(i);
+                pair = new Pair<>(i, mem);
+                break;
+            }
+        }
+        return pair;
+    }
+
+    private void showErrorToast() {
+        interactionListener.showErrorToast();
+    }
+
 }
