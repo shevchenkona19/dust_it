@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clMemViewUpperLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +8,7 @@
     android:background="#fff">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
+        android:id="@+id/abMemViewUpperBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ddffffff"
@@ -30,6 +29,9 @@
                     android:id="@+id/ivMemViewBack"
                     android:layout_width="24dp"
                     android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:tint="#404040"
                     app:srcCompat="@drawable/ic_arrow_left_simple" />
 
@@ -39,6 +41,9 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:tint="#404040"
                     app:srcCompat="@drawable/ic_details" />
             </RelativeLayout>
@@ -75,9 +80,10 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tvMemViewCommentsLabel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center|left"
+                    android:gravity="center|start"
                     android:text="@string/comments"
                     android:textColor="#000"
                     android:textSize="18sp" />
@@ -86,8 +92,12 @@
                     android:id="@+id/ivMemViewExpandedToNotExpanded"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:srcCompat="@drawable/ic_arrow_down_simple" />
             </RelativeLayout>
 
@@ -98,12 +108,16 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginStart="0dp"
+                android:animateLayoutChanges="true"
                 android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/ivMemViewAddToPhotos"
                     android:layout_width="25dp"
                     android:layout_height="0dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -115,6 +129,7 @@
                     android:layout_width="23dp"
                     android:layout_height="0dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:paddingTop="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
@@ -125,7 +140,11 @@
                     android:id="@+id/ivMemViewLike"
                     android:layout_width="30dp"
                     android:layout_height="0dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
@@ -137,6 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="8dp"
                     android:textSize="18sp"
@@ -149,7 +169,11 @@
                     android:id="@+id/ivMemViewDisliked"
                     android:layout_width="30dp"
                     android:layout_height="0dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/ivMemViewLike"
@@ -161,37 +185,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="8dp"
                     android:textSize="18sp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ProgressBar
-                    android:id="@+id/pbDislikeLoading"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="4dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/tvMemViewDislikeCount"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ProgressBar
-                    android:id="@+id/pbLikeLoading"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivMemViewDisliked"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </android.support.constraint.ConstraintLayout>
@@ -262,6 +262,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

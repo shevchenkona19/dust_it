@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.Category;
-import dustit.clientapp.mvp.model.entities.CategoryIdEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IResultActivityPresenter;
@@ -31,7 +31,9 @@ public class ResultActivityPresenter extends BasePresenter<IResultActivityView> 
     @Override
     public void toMemes(String categoryIds) {
         L.print(categoryIds);
-        addSubscription(dataManager.postPersonalCategories(new CategoryIdEntity(categoryIds))
+        getView().onFinishedResultActivity();
+        /*
+        addSubscription(dataManager.postPersonalCategories(new PersonalCategoryUpperEntity(categoryIds))
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
@@ -51,6 +53,7 @@ public class ResultActivityPresenter extends BasePresenter<IResultActivityView> 
                         }
                     }
                 }));
+                */
     }
 
     @Override

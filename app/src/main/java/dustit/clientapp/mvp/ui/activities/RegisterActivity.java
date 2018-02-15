@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.RegisterActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.StringUtil;
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView {
@@ -86,6 +87,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         finish();
     }
 
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
+    }
     @Override
     public void onError(String message) {
         tilRegisterEmail.setVisibility(View.VISIBLE);

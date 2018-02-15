@@ -20,9 +20,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Category;
+import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
+import dustit.clientapp.mvp.ui.adapters.ChangeCategoriesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.ResultRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IChangeCategoriesFragmentView;
+import dustit.clientapp.utils.AlertBuilder;
 
 public class ChangeCategoriesFragment extends Fragment implements IChangeCategoriesFragmentView {
 
@@ -31,7 +34,7 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
     @BindView(R.id.btnChangeCategoriesApply)
     Button btnApply;
 
-    private ResultRecyclerViewAdapter adapter;
+    private ChangeCategoriesRecyclerViewAdapter adapter;
 
     private Unbinder unbinder;
     private final ChangeCategoriesFragmentPresenter presenter = new ChangeCategoriesFragmentPresenter();
@@ -62,8 +65,8 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
         View v = inflater.inflate(R.layout.fragment_change_categories, container, false);
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
-        adapter = new ResultRecyclerViewAdapter(getActivity());
-        rvCategories.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        adapter = new ChangeCategoriesRecyclerViewAdapter(getContext());
+        rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rvCategories.setAdapter(adapter);
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +97,12 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
     }
 
     @Override
-    public void updateCategories(List<Category> listOfChecked) {
-        adapter.updateItems(listOfChecked);
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(getContext());
+    }
+
+    @Override
+    public void updateCategories(List<PersonalCategory> categories) {
+        adapter.updateList(categories);
     }
 }

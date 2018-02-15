@@ -1,7 +1,9 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
@@ -28,6 +30,7 @@ import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FeedActivity extends AppCompatActivity implements FeedFragment.IFeedFragmentInteractionListener,
@@ -126,8 +129,24 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     private void setColors() {
         rlMainContainer.setBackgroundResource(themeManager.getBackgroundMainColor());
-        tvAppName.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        tvAppName.setTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
         appBar.setBackgroundResource(themeManager.getPrimaryColor());
+        tlFeedTabs.setSelectedTabIndicatorColor(getColorFromResources(themeManager.getAccentColor()));
+        if (tlFeedTabs.getTabAt(0) != null && tlFeedTabs.getTabAt(1) != null &&
+                tlFeedTabs.getTabAt(2) != null) {
+            tlFeedTabs.getTabAt(0).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            tlFeedTabs.getTabAt(1).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            tlFeedTabs.getTabAt(2).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+
+        }
+    }
+
+    private int getColorFromResources(int c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getColor(c);
+        } else {
+            return getResources().getColor(c);
+        }
     }
 
     @Override
@@ -142,6 +161,8 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     public void onFeedMemSelected(MemEntity memEntity) {
         //show mem
         isFeed = true;
+        isHot = false;
+        isCategories = false;
         Intent intent = new Intent(this, MemViewActivity.class);
         intent.putExtra(MEM_ENTITY, memEntity);
         startActivity(intent);
@@ -150,12 +171,24 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     @Override
     public void onMemSelected(MemEntity memEntity) {
-
+        isFeed = false;
+        isHot = true;
+        isCategories = false;
+        Intent intent = new Intent(this, MemViewActivity.class);
+        intent.putExtra(MEM_ENTITY, memEntity);
+        startActivity(intent);
+        MemViewActivity.bind(this);
     }
 
     @Override
     public void onMemCategorySelected(MemEntity memEntity) {
-
+        isFeed = false;
+        isHot = false;
+        isCategories = true;
+        Intent intent = new Intent(this, MemViewActivity.class);
+        intent.putExtra(MEM_ENTITY, memEntity);
+        startActivity(intent);
+        MemViewActivity.bind(this);
     }
 
     @Override
@@ -215,5 +248,10 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         } else if (isCategories) {
             adapter.deleteDislikeCategories(id);
         }
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 }

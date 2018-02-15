@@ -21,6 +21,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
+import dustit.clientapp.utils.AlertBuilder;
 
 
 public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
@@ -230,5 +231,10 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
     //Select mem
     public interface IHotFragmentInteractionListener {
         void onMemSelected(MemEntity memEntity);
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(getContext());
     }
 }

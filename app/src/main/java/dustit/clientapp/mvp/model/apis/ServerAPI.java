@@ -1,7 +1,7 @@
 package dustit.clientapp.mvp.model.apis;
 
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.CategoryIdEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
@@ -9,6 +9,7 @@ import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -40,6 +41,11 @@ public interface ServerAPI {
                                        @Query("count") int count,
                                        @Query("offset") int offset);
 
+    @GET("feed/getCategoriesFeed")
+    Observable<MemUpperEntity> getPersonalizedFeed(@Header("Authorization") String token,
+                                                   @Query("count") int count,
+                                                   @Query("offset") int offset);
+
     @GET("/feed/getHotFeed")
     Observable<MemUpperEntity> getHot(@Header("Authorization") String token,
                                       @Query("count") int count,
@@ -56,10 +62,10 @@ public interface ServerAPI {
 
     @POST("/config/postSelectedCategories")
     Observable<ResponseEntity> postSelectedCategories(@Header("Authorization") String token,
-                                                      @Body CategoryIdEntity entity);
+                                                      @Body SelectedCategoriesEntity entity);
 
     @GET("/config/getPersonalCategories")
-    Observable<CategoryIdEntity> getPersonalCategories(@Header("Authorization") String token);
+    Observable<PersonalCategoryUpperEntity> getPersonalCategories(@Header("Authorization") String token);
 
     @GET("/feedback/postLike")
     Observable<ResponseEntity> postLike(@Header("Authorization") String token,

@@ -17,11 +17,11 @@ public interface IMemViewView extends IActivityView {
 
     void onStartLoading();
 
-    void onCommentSentSuccesfully();
+    void onCommentSentSuccessfully();
 
     void onCommentSendFail();
 
-    void onErrorSendingQuerry();
+    void onErrorSendingQuarry();
 
-    void onQuerrySendedSuccessfully(String id);
+    void onQuarrySendedSuccessfully(String id);
 }

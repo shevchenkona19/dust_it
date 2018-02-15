@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -41,6 +42,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.AccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
 
@@ -176,6 +178,12 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 startActivity(new Intent(AccountActivity.this, FavoritesActivity.class));
             }
         });
+        tbAccount.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         setColors();
         themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
             @Override
@@ -187,15 +195,29 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
 
     private void setColors() {
         tbAccount.setBackgroundResource(themeManager.getPrimaryColor());
-        tvUsername.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
-        btnEdit.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
-        btnSettings.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
+        tvUsername.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        btnEdit.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        btnReload.setTextColor(getColorFromResources(themeManager.getOnCardAccentColor()));
+        btnSettings.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
         pbLoading.getIndeterminateDrawable().setColorFilter(themeManager.getPrimaryColor(), PorterDuff.Mode.MULTIPLY);
-        tvFailedToLoad.setTextColor(getResources().getColor(themeManager.getSecondaryTextMainAppColor()));
-        btnReload.setTextColor(getResources().getColor(themeManager.getMainTextMainAppColor()));
-        tvFavoritesCounter.setTextColor(getResources().getColor(themeManager.getSecondaryTextMainAppColor()));
+        tvFailedToLoad.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
+        btnReload.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        tvFavoritesCounter.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
         clContainer.setBackgroundResource(themeManager.getBackgroundMainColor());
-        cvAccountCard.setCardBackgroundColor(getResources().getColor(themeManager.getCardBackgroundColor()));
+        cvAccountCard.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
+        ivToFavorites.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        btnEdit.getCompoundDrawables()[2].setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        btnSettings.getCompoundDrawables()[2].setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        tbAccount.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        tbAccount.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
+    }
+
+    private int getColorFromResources(int c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getColor(c);
+        } else {
+            return  getResources().getColor(c);
+        }
     }
 
     @Override
@@ -327,6 +349,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     @Override
     public void updateFavorites(int i) {
         tvFavoritesCounter.setText(String.valueOf(i));
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 }
 

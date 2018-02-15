@@ -24,6 +24,7 @@ import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 
 public class FavoritesActivity extends AppCompatActivity implements IFavoriteActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback {
     @BindView(R.id.tbFavoritesToolbar)
@@ -124,6 +125,12 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
 
     @Override
     public void onFavoriteSelected(String id) {
+        //TODO: implement this
+        Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 }

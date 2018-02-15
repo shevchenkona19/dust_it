@@ -6,10 +6,6 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.managers.ThemeManager;
 
-/**
- * Created by nikita on 27.01.18.
- */
-
 public class UserSettingsDataManager {
     @Inject
     SharedPreferencesRepository preferencesRepository;
@@ -32,5 +28,13 @@ public class UserSettingsDataManager {
 
     public ThemeManager.Theme loadTheme() {
         return preferencesRepository.loadTheme();
+    }
+
+    public boolean isRegistered() {
+        return preferencesRepository.isRegistered();
+    }
+
+    public void setRegistered(boolean registered) {
+        preferencesRepository.setRegistered(registered);
     }
 }

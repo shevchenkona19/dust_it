@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Category;
+import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.utils.L;
 
 /**

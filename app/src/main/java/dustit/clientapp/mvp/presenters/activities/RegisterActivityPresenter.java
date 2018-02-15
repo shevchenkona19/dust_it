@@ -1,11 +1,10 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -18,6 +17,8 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public RegisterActivityPresenter() {
         App.get().getAppComponent().inject(this);
@@ -29,6 +30,7 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
+                        userSettingsDataManager.setRegistered(true);
                         getView().onRegisteredSuccessfully();
                     }
 
@@ -39,9 +41,7 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
-                        L.print("WTF WHERE IS TOKEN? : " + tokenEntity.getToken());
                         dataManager.saveToken(tokenEntity.getToken());
-                        L.print("CHO SA HUY?");
                     }
                 }));
     }

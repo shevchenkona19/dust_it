@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -16,19 +17,23 @@ import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import rx.Subscriber;
 
-/**
- * Created by Никита on 11.11.2017.
- */
 
 public class AccountActivityPresenter extends BasePresenter<IAccountActivityView> implements IAccountActivityPresenter, ProgressRequestBody.UploadCallbacks {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public AccountActivityPresenter() {
         App.get().getAppComponent().inject(this);
     }
+
     @Override
     public void uploadImage(File file) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
         addSubscription(dataManager.postPhoto(requestBody, file.getName())
                 .subscribe(new Subscriber<ResponseEntity>() {
@@ -54,6 +59,10 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getUsername() {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onUsernameArrived("");
+            return;
+        }
         if (dataManager.isUsernameCached()) {
             getView().onUsernameArrived(dataManager.getCachedUsername());
         } else {
@@ -83,25 +92,29 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getFavorites() {
-       final int[] size = new int[1];
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().updateFavorites(0);
+            return;
+        }
+        final int[] size = new int[1];
         addSubscription(dataManager.getAllFavorites()
-        .subscribe(new Subscriber<FavoritesUpperEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().updateFavorites(size[0]);
-            }
+                .subscribe(new Subscriber<FavoritesUpperEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        getView().updateFavorites(size[0]);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().onErrorLoadingFavorites();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onErrorLoadingFavorites();
+                    }
 
-            @Override
-            public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
-                favoritesUpperEntity.initList();
-                size[0] = favoritesUpperEntity.getList().size();
-            }
-        }));
+                    @Override
+                    public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
+                        favoritesUpperEntity.initList();
+                        size[0] = favoritesUpperEntity.getList().size();
+                    }
+                }));
     }
 
     @Override

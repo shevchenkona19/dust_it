@@ -50,7 +50,9 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.managers.ThemeManager;
 import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -113,22 +115,24 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     SwipeRefreshLayout srlCommentsRefresh;
     @BindView(R.id.pbIMemViewCommentSendingLoading)
     ProgressBar pbCommentSend;
-    @BindView(R.id.appBarLayout)
+    @BindView(R.id.abMemViewUpperBarLayout)
     AppBarLayout toolbar;
-    @BindView(R.id.pbDislikeLoading)
-    ProgressBar pbDislikeLoading;
-    @BindView(R.id.pbLikeLoading)
-    ProgressBar pbLikeLoading;
     @BindView(R.id.zdvMem)
     PhotoDraweeView pdvMem;
+    @BindView(R.id.tvMemViewCommentsLabel)
+    TextView tvCommentsLabel;
+    @BindView(R.id.ivMemViewAddToPhotos)
+    ImageView ivAddToFavourites;
+
+    @Inject
+    ThemeManager themeManager;
+    @Inject
+    DataManager dataManager;
 
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
-
-    @Inject
-    DataManager dataManager;
     private boolean isExpanded = false;
-
+    private String themeManagerSubscriberId;
 
     public interface IMemViewRatingInteractionListener {
         void passPostLike(String id);
@@ -176,7 +180,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     }
 
     @Override
-    public void onCommentSentSuccesfully() {
+    public void onCommentSentSuccessfully() {
         etComment.setText("");
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
@@ -193,13 +197,13 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     }
 
     @Override
-    public void onErrorSendingQuerry() {
+    public void onErrorSendingQuarry() {
         Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         currentQuarry = null;
     }
 
     @Override
-    public void onQuerrySendedSuccessfully(String id) {
+    public void onQuarrySendedSuccessfully(String id) {
         final IConstants.OPINION opinion = mem.getOpinion();
         switch (currentQuarry) {
             case POST_LIKE:
@@ -225,8 +229,57 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 listener.passDeleteDislike(id);
                 break;
             default:
-                onErrorSendingQuerry();
+                onErrorSendingQuarry();
                 break;
+        }
+        refreshUi();
+    }
+
+    private void refreshUi() {
+        tvLikeCount.setText(mem.getLikes());
+        tvDislikeCount.setText(mem.getDislikes());
+        final IConstants.OPINION opinion = mem.getOpinion();
+        if (opinion != null) {
+            switch (opinion) {
+                case LIKED:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like_pressed));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_pressed));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
+                    }
+                    break;
+                case DISLIKED:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike_pressed));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike_pressed));
+                    }
+                    break;
+                case NEUTRAL:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    } else {
+                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
+                    } else {
+                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -247,16 +300,12 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         setContentView(R.layout.activity_mem_view);
         App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
-        pbDislikeLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-        pbLikeLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         presenter.bind(this);
         commentAdapter = new CommentsRecyclerViewAdapter(this, this);
         mem = getIntent().getExtras().getParcelable(FeedActivity.MEM_ENTITY);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initSlidr();
         initOnClicks();
-        tvLikeCount.setText(mem.getLikes());
-        tvDislikeCount.setText(mem.getDislikes());
         rvComments.setAdapter(commentAdapter);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(this));
         srlCommentsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -301,48 +350,42 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 disExpandComments();
             }
         });
-        final IConstants.OPINION opinion = mem.getOpinion();
-        if (opinion != null) {
-            switch (opinion) {
-                case LIKED:
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like_pressed));
-                    } else {
-                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_pressed));
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
-                    } else {
-                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
-                    }
-                    break;
-                case DISLIKED:
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
-                    } else {
-                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike_pressed));
-                    } else {
-                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike_pressed));
-                    }
-                    break;
-                case NEUTRAL:
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivLike.setImageDrawable(getDrawable(R.drawable.ic_like));
-                    } else {
-                        ivLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like));
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ivDislike.setImageDrawable(getDrawable(R.drawable.ic_dislike));
-                    } else {
-                        ivDislike.setImageDrawable(getResources().getDrawable(R.drawable.ic_dislike));
-                    }
-                    break;
-                default:
-                    break;
+        refreshUi();
+        setColors();
+        themeManagerSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
             }
+        });
+    }
+
+    private void setColors() {
+        toolbar.setBackgroundResource(themeManager.getPrimaryColor());
+        clUpperLayout.setBackgroundResource(themeManager.getBackgroundMainColor());
+        tbLikePanel.setBackgroundResource(themeManager.getPrimaryColor());
+        tvCommentsLabel.setTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
+        tvLikeCount.setTextColor(getColorFromResources(themeManager.getAccentColor()));
+        tvDislikeCount.setTextColor(getColorFromResources(themeManager.getAccentColor()));
+        cvCommentSendPanel.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
+        tvCommentEmpty.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
+        etComment.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        etComment.setHintTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
+        ivBack.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivMenu.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivDisexpand.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivAddToFavourites.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivExpandComments.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivLike.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        ivDislike.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+
+    }
+
+    private int getColorFromResources(int c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getColor(c);
+        } else {
+            return getResources().getColor(c);
         }
     }
 
@@ -443,7 +486,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     private void expandComments() {
         ConstraintSet set = new ConstraintSet();
         set.clone(clUpperLayout);
-        set.connect(R.id.ablExpandablePanel, ConstraintSet.TOP, R.id.appBarLayout, ConstraintSet.BOTTOM, 0);
+        set.connect(R.id.ablExpandablePanel, ConstraintSet.TOP, R.id.abMemViewUpperBarLayout, ConstraintSet.BOTTOM, 0);
         set.clear(R.id.ablExpandablePanel, ConstraintSet.BOTTOM);
         set.applyTo(clUpperLayout);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -461,9 +504,15 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     }
 
     @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
+    }
+
+    @Override
     protected void onDestroy() {
         presenter.unbind();
         listener = null;
+        themeManager.unsubscribe(themeManagerSubscriberId);
         super.onDestroy();
     }
 }

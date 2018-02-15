@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.CategoryIdEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
@@ -13,6 +13,7 @@ import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -50,6 +51,11 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<MemUpperEntity> getPersonilizedFeed(String token, int count, int offset) {
+        return serverAPI.getPersonalizedFeed(token, count, offset)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Observable<MemUpperEntity> getHot(String token,
                                              int count,
                                              int offset) {
@@ -71,12 +77,12 @@ public class ServerRepository {
     }
 
     public Observable<ResponseEntity> postSelectedCategories(String token,
-                                                             CategoryIdEntity entity) {
+                                                             SelectedCategoriesEntity entity) {
         return serverAPI.postSelectedCategories(token, entity)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<CategoryIdEntity> getPersonalCategories(String token) {
+    public Observable<PersonalCategoryUpperEntity> getPersonalCategories(String token) {
         return serverAPI.getPersonalCategories(token)
                 .observeOn(AndroidSchedulers.mainThread());
     }

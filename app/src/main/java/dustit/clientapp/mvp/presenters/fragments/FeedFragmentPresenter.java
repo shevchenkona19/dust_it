@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -25,6 +26,8 @@ import rx.Subscriber;
 public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> implements IFeedFragmentPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public FeedFragmentPresenter() {
         App.get().getAppComponent().inject(this);
@@ -82,6 +85,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void postLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.postLike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -105,6 +112,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void deleteLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.deleteLike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -128,6 +139,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void postDislike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.postDislike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -151,6 +166,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void deleteDislike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.deleteDislike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -174,6 +193,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void addToFavorites(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         FavoritesUtils favoritesUtils = new FavoritesUtils(dataManager);
         favoritesUtils.addCallback(new FavoritesUtils.IFavoriteCallback() {
             @Override
@@ -190,6 +213,10 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
     }
 
     public void removeFromFavorites(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final Container<String> containerId = new Container<>();
         final Container<Integer> containerMessage = new Container<>();
         containerId.put(id);

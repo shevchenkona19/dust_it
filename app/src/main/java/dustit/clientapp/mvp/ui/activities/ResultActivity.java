@@ -20,8 +20,9 @@ import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.ResultRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IResultActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 
-public class ResultActivity extends AppCompatActivity implements IResultActivityView{
+public class ResultActivity extends AppCompatActivity implements IResultActivityView {
     @BindView(R.id.ivResultIcon)
     ImageView ivIcon;
     @BindView(R.id.rvResultThemes)
@@ -51,7 +52,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
         ButterKnife.bind(this);
         presenter.bind(this);
         interestedCategoriesIds = getIntent().getExtras().getStringArray(TestActivity.CATEGORY_LIST_KEY);
-        rvThemes.setLayoutManager(new GridLayoutManager(this,2));
+        rvThemes.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new ResultRecyclerViewAdapter(this);
         rvThemes.setAdapter(adapter);
         btnGo.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +61,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
                 rvThemes.setVisibility(View.GONE);
                 tvDescription.setVisibility(View.GONE);
                 pbLoading.setVisibility(View.VISIBLE);
-             presenter.toMemes(adapter.getChecked());
+                presenter.toMemes(adapter.getChecked());
             }
         });
         btnReloadCategories.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +117,11 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 
     @Override

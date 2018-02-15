@@ -19,6 +19,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.customviews.TouchImageView;
 import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 
 public class FavoriteViewActivity extends AppCompatActivity implements IFavoriteViewActivityView {
@@ -125,5 +126,10 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     protected void onDestroy() {
         mPresenter.unbind();
         super.onDestroy();
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 }

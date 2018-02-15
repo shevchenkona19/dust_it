@@ -8,6 +8,8 @@ package dustit.clientapp.utils;
 public interface IConstants {
     String BASE_URL = "http://testmemspace.herokuapp.com";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
+    String NO_REGISTRATION_USERNAME = "test";
+    String NO_REGISTRATION_PASSWORD = "test";
 
     interface IPreferences {
         String TOKEN_KEY = "token";
@@ -15,6 +17,7 @@ public interface IConstants {
         String USERNAME_CACHED_KEY = "a";
         String LANGUAGE_KEY = "lang ";
         String THEME_KEY = "Theme";
+        String REGISTRATION_KEY = "REGISTRATION";
     }
 
     enum OPINION {

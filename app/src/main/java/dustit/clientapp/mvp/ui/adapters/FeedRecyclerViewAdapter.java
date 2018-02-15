@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,9 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 /**
  * Created by shevc on 05.10.2017.
@@ -49,7 +52,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int lastPos;
 
     @Inject
-    DataManager dataManager;
+    ThemeManager themeManager;
+
 
     public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener listener) {
         memEntityList = new ArrayList<>();
@@ -152,7 +156,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         switch (viewType) {
             case 0:
                 View v = inflater.inflate(R.layout.item_feed, parent, false);
-                return new FeedMemViewHolder(v);
+                return new FeedMemViewHolder(v, themeManager);
             case 1:
                 if (isLoading) {
                     View v1 = inflater.inflate(R.layout.item_feed_loading, parent, false);
@@ -314,6 +318,15 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof FeedMemViewHolder) {
+            FeedMemViewHolder memHolder = (FeedMemViewHolder) holder;
+            themeManager.unsubscribe(memHolder.id);
+        }
+        super.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
     public int getItemCount() {
         return memEntityList.size();
     }
@@ -399,10 +412,42 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         ImageView ivDisliked;
         @BindView(R.id.tvItemFeedDislikeCount)
         TextView tvDislikeCount;
+        @BindView(R.id.cvItemFeed)
+        CardView cvCard;
+        private View parent;
+        private ThemeManager themeManager;
+        String id;
 
-        FeedMemViewHolder(View itemView) {
+        FeedMemViewHolder(View itemView, ThemeManager themeManager) {
             super(itemView);
+            parent = itemView;
             ButterKnife.bind(this, itemView);
+            this.themeManager = themeManager;
+            id = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+                @Override
+                public void notifyThemeChanged(ThemeManager.Theme t) {
+                    setColors();
+                }
+            });
+            setColors();
+        }
+
+        private void setColors() {
+            ivLike.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            tvLikeCount.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+            ivMore.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            addToFavorites.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            cvCard.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
+            ivDisliked.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
+            tvDislikeCount.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        }
+
+        private int getColorFromResources(int c) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return parent.getContext().getColor(c);
+            } else {
+                return parent.getResources().getColor(c);
+            }
         }
     }
 

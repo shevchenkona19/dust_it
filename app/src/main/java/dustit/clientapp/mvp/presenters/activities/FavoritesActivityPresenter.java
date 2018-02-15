@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -15,12 +16,18 @@ import rx.Subscriber;
 public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityView> implements IFavoritesActivityPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public FavoritesActivityPresenter() {
         App.get().getAppComponent().inject(this);
     }
     @Override
     public void loadFavorites() {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         /*List<FavoritesUpperEntity.FavoriteEntity> list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             list.add(new FavoritesUpperEntity.FavoriteEntity("http://www.gettyimages.com/gi-resources/images/VR/GettyImages-500977426.jpg"));
@@ -55,6 +62,10 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
 
     @Override
     public void removeFromFavorites(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         addSubscription(dataManager.removeFromFavorites(id)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override

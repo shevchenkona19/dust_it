@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
@@ -21,6 +22,8 @@ import rx.Subscriber;
 public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragmentView> implements ICategoriesFragmentPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public CategoriesFragmentPresenter() {
         App.get().getAppComponent().inject(this);
@@ -96,6 +99,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void postLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.postLike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -119,6 +126,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void deleteLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.deleteLike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -142,6 +153,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void postDislike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.postDislike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -165,6 +180,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void deleteDislike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final int[] code = {0};
         addSubscription(dataManager.deleteDislike(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -188,6 +207,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void addToFavorites(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         FavoritesUtils favoritesUtils = new FavoritesUtils(dataManager);
         favoritesUtils.addCallback(new FavoritesUtils.IFavoriteCallback() {
             @Override
@@ -204,6 +227,10 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
     }
 
     public void removeFromFavorites(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final Container<String> containerId = new Container<>();
         final Container<Integer> containerMessage = new Container<>();
         containerId.put(id);

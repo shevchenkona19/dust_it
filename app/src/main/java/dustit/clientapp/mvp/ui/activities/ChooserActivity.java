@@ -3,13 +3,18 @@ package dustit.clientapp.mvp.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -22,6 +27,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IChooserActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 
 public class ChooserActivity extends AppCompatActivity implements IChooserActivityView {
     @BindView(R.id.btnChooserLogin)
@@ -32,6 +38,12 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     ImageView ivIcon;
     @BindView(R.id.ibChooserChangeLanguage)
     ImageButton ibChangeLanguage;
+    @BindView(R.id.tvChooserContinueWithoutRegistration)
+    TextView tvNoRegistration;
+    @BindView(R.id.clChooserLayout)
+    ConstraintLayout clMainLayout;
+    @BindView(R.id.rlChooserLoadingLayout)
+    RelativeLayout rlLoadingLayout;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
@@ -104,6 +116,30 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
                 builder.create().show();
             }
         });
+        tvNoRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
+                        .setTitle(getString(R.string.continue_without_registration))
+                        .setMessage(getString(R.string.continue_without_registration_message))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPresenter.continueNoRegistration();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .create();
+               alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                   @Override
+                   public void onShow(DialogInterface dialog) {
+                       alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+                       alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                   }
+               });
+               alertDialog.show();
+            }
+        });
     }
 
     public void restartActivity() {
@@ -121,5 +157,34 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     @Override
     public void userAlreadyRegistered() {
         startActivity(new Intent(this, FeedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        finish();
+    }
+
+    @Override
+    public void onNoRegistrationCompleted() {
+        startActivity(new Intent(this, FeedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        finish();
+    }
+
+    @Override
+    public void showLoading() {
+        clMainLayout.setVisibility(View.GONE);
+        rlLoadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        clMainLayout.setVisibility(View.VISIBLE);
+        rlLoadingLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onErrorNoRegistration() {
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 }

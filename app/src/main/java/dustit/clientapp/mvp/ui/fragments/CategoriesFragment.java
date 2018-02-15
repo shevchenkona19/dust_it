@@ -32,6 +32,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
+import dustit.clientapp.utils.AlertBuilder;
 
 public class CategoriesFragment extends Fragment implements ICategoriesFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
@@ -59,6 +60,7 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     private Category currentCategory;
     private boolean isFirstTimeVisible = true;
     private boolean isLoaded = false;
+
 
     public interface ICategoriesFragmentInteractionListener {
         void onMemCategorySelected(MemEntity memEntity);
@@ -316,5 +318,10 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
 
     public void passDeleteDislike(String id) {
         adapter.onDislikeDeletedSuccesfully(id);
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(getContext());
     }
 }

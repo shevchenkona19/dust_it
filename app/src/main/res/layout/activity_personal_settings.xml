@@ -2,28 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flPersonalSettings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/flPersonalSettings"
     tools:context="dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity">
-    <android.support.constraint.ConstraintLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbPersonalSettingsToolbar"
         android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDefault"
+        app:navigationIcon="@drawable/ic_arrow_left_simple"
+        app:title="@string/personalSettings" />
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/clPersonalSettingsChangeCategories"
-        android:layout_height="60dp">
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/tbPersonalSettingsToolbar">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvPersonalCategoriesChangeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:text="Изменить избранные категории"
+            android:text="@string/change_selected_categories"
             android:textAppearance="@android:style/TextAppearance.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivPersonalSettingsToChangeCat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
@@ -44,6 +54,6 @@
     <FrameLayout
         android:id="@+id/flPersonalSettingsContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

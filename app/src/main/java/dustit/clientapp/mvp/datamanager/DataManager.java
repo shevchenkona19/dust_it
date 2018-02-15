@@ -1,23 +1,24 @@
 package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
-import android.util.Log;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.CategoryIdEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
@@ -38,9 +39,10 @@ import rx.functions.Func1;
 public class DataManager {
     @Inject
     ServerRepository serverRepository;
-
     @Inject
     SharedPreferencesRepository preferencesRepository;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     @Inject
     public Context context;
@@ -58,13 +60,23 @@ public class DataManager {
     }
 
     public Observable<MemEntity> getFeed(int count, int offset) {
-        return serverRepository.getFeed(getToken(), count, offset)
-                .flatMap(new Func1<MemUpperEntity, Observable<MemEntity>>() {
-                    @Override
-                    public Observable<MemEntity> call(MemUpperEntity memUpperEntity) {
-                        return Observable.from(memUpperEntity.getMemEntities());
-                    }
-                });
+        if (userSettingsDataManager.isRegistered()) {
+            return serverRepository.getPersonilizedFeed(getToken(), count, offset)
+                    .flatMap(new Func1<MemUpperEntity, Observable<MemEntity>>() {
+                        @Override
+                        public Observable<MemEntity> call(MemUpperEntity memUpperEntity) {
+                            return Observable.from(memUpperEntity.getMemEntities());
+                        }
+                    });
+        } else {
+            return serverRepository.getFeed(getToken(), count, offset)
+                    .flatMap(new Func1<MemUpperEntity, Observable<MemEntity>>() {
+                        @Override
+                        public Observable<MemEntity> call(MemUpperEntity memUpperEntity) {
+                            return Observable.from(memUpperEntity.getMemEntities());
+                        }
+                    });
+        }
     }
 
     public Observable<MemEntity> getHot(int count, int offset) {
@@ -97,12 +109,18 @@ public class DataManager {
                 });
     }
 
-    public Observable<ResponseEntity> postPersonalCategories(CategoryIdEntity entity) {
+    public Observable<ResponseEntity> postPersonalCategories(SelectedCategoriesEntity entity) {
         return serverRepository.postSelectedCategories(getToken(), entity);
     }
 
-    public Observable<CategoryIdEntity> getPersonalCategories() {
-        return serverRepository.getPersonalCategories(getToken());
+    public Observable<PersonalCategory> getPersonalCategories() {
+        return serverRepository.getPersonalCategories(getToken())
+                .flatMap(new Func1<PersonalCategoryUpperEntity, Observable<PersonalCategory>>() {
+                    @Override
+                    public Observable<PersonalCategory> call(PersonalCategoryUpperEntity personalCategoryUpperEntity) {
+                        return Observable.from(personalCategoryUpperEntity.getCategories());
+                    }
+                });
     }
 
     public Observable<ResponseEntity> postLike(String id) {
@@ -161,6 +179,7 @@ public class DataManager {
     }
 
     public String getToken() {
+        L.print("TOKEN: " + preferencesRepository.getSavedToken());
         return preferencesRepository.getSavedToken();
     }
 

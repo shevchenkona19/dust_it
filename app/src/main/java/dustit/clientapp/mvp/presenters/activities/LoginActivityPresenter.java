@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -19,6 +20,8 @@ import rx.Subscriber;
 public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> implements ILoginActivityPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public LoginActivityPresenter() {
         App.get().getAppComponent().inject(this);
@@ -29,6 +32,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
+                        userSettingsDataManager.setRegistered(true);
                         getView().onLoggedSuccessfully();
                     }
 

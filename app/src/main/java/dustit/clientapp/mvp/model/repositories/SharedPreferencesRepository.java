@@ -30,9 +30,15 @@ public class SharedPreferencesRepository {
     }
 
     public void saveToken(String token) {
-        preferences.edit()
-                .putString(IConstants.IPreferences.TOKEN_KEY, "JWT " + token)
-                .apply();
+        if (!token.equals("")) {
+            preferences.edit()
+                    .putString(IConstants.IPreferences.TOKEN_KEY, "JWT " + token)
+                    .apply();
+        } else {
+            preferences.edit()
+                    .putString(IConstants.IPreferences.TOKEN_KEY, token)
+                    .apply();
+        }
     }
 
     public boolean isUsernameCached() {
@@ -95,5 +101,15 @@ public class SharedPreferencesRepository {
             default:
                 return null;
         }
+    }
+
+    public boolean isRegistered() {
+        return preferences.getBoolean(IConstants.IPreferences.REGISTRATION_KEY, false);
+    }
+
+    public void setRegistered(boolean registered) {
+        preferences.edit()
+                .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered)
+                .apply();
     }
 }

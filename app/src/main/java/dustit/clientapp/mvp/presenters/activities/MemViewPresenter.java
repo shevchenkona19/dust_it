@@ -1,6 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
@@ -25,6 +25,8 @@ import rx.Subscriber;
 public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMemViewPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public MemViewPresenter() {
         App.get().getAppComponent().inject(this);
@@ -82,12 +84,16 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void postComment(String id, String text) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         PostCommentEntity commentEntity = new PostCommentEntity(text);
         dataManager.postComment(id, commentEntity)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
-                        getView().onCommentSentSuccesfully();
+                        getView().onCommentSentSuccessfully();
                     }
 
                     @Override
@@ -107,22 +113,38 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void postLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         processLikeDislike(dataManager.postLike(id), id);
     }
 
     @Override
     public void deleteLike(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         processLikeDislike(dataManager.deleteLike(id), id);
 
     }
 
     @Override
     public void postDislike(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         processLikeDislike(dataManager.postDislike(id), id);
     }
 
     @Override
     public void deleteDislike(String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         processLikeDislike(dataManager.deleteDislike(id), id);
     }
 
@@ -131,23 +153,23 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     }
 
     private void processLikeDislike(Observable<ResponseEntity> subscriber, final String id) {
-        subscriber.subscribe(new Subscriber<ResponseEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().onQuerrySendedSuccessfully(id);
-                    }
+        addSubscription(subscriber.subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onQuarrySendedSuccessfully(id);
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onErrorSendingQuerry();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorSendingQuarry();
+            }
 
-                    @Override
-                    public void onNext(ResponseEntity responseEntity) {
-                        if (isNotSuccess(responseEntity.getResponse())) {
-                            getView().onErrorSendingQuerry();
-                        }
-                    }
-                });
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                if (isNotSuccess(responseEntity.getResponse())) {
+                    getView().onErrorSendingQuarry();
+                }
+            }
+        }));
     }
 }

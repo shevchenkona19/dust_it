@@ -8,4 +8,11 @@ package dustit.clientapp.mvp.ui.interfaces;
 public interface IChooserActivityView extends IActivityView {
     void userAlreadyRegistered();
 
+    void onNoRegistrationCompleted();
+
+    void showLoading();
+
+    void hideLoading();
+
+    void onErrorNoRegistration();
 }

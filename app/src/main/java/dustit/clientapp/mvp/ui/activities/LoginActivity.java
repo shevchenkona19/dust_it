@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ILoginActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.StringUtil;
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivityView {
@@ -42,8 +43,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        etUsername.setText("test");
-        etPassword.setText("test1");
+        etUsername.setText("admin");
+        etPassword.setText("admin");
         loginActivityPresenter.bind(this);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,4 +91,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
+    }
 }

@@ -2,12 +2,9 @@ package dustit.clientapp.utils.managers;
 
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import dustit.clientapp.R;
 
@@ -34,18 +31,21 @@ public class ThemeManager {
     private int prevSecondaryTextHelloScreenColor = R.color.colorSecondaryTextHelloDefault;
     private int prevMainTextMainAppColor = R.color.colorMainTextMainAppDefault;
     private int prevSecondaryTextMainAppColor = R.color.secondaryTextMainAppColorDefault;
-    private int prevBackgroundMainColor = R.color.colorBakgroundMainDefault;
+    private int prevBackgroundMainColor = R.color.colorBackgroundMainDefault;
     private int prevCardBackgroundColor = R.color.colorBackgroundCardDefault;
+    private int prevMainTextToolbarColor = R.color.colorMainTextToolbarDefault;
 
     private int primaryColor = R.color.colorPrimaryDefault;
     private int primaryDarkColor = R.color.colorPrimaryDarkDefault;
     private int accentColor = R.color.colorAccentDefault;
     private int mainTextHelloScreenColor = R.color.colorMainTextHelloDefault;
     private int secondaryTextHelloScreenColor = R.color.colorSecondaryTextHelloDefault;
+    private int mainTextToolbarColor = R.color.colorMainTextToolbarDefault;
     private int mainTextMainAppColor = R.color.colorMainTextMainAppDefault;
     private int secondaryTextMainAppColor = R.color.secondaryTextMainAppColorDefault;
-    private int backgroundMainColor = R.color.colorBakgroundMainDefault;
+    private int backgroundMainColor = R.color.colorBackgroundMainDefault;
     private int cardBackgroundColor = R.color.colorBackgroundCardDefault;
+    private int onCardAccentColor = R.color.colorCardAccentDefault;
 
     public interface IThemable {
         void notifyThemeChanged(Theme t);
@@ -67,6 +67,7 @@ public class ThemeManager {
 
     public void setCurrentTheme(Theme t) {
         currentTheme = t;
+        savePreviousColors();
         switch (currentTheme) {
             case DEFAULT:
                 setDefaultColors();
@@ -81,7 +82,7 @@ public class ThemeManager {
         notifyThemeChanged();
     }
 
-    private void setDefaultColors() {
+    private void savePreviousColors() {
         prevPrimaryColor = primaryColor;
         prevPrimaryDarkColor = primaryDarkColor;
         prevAccentColor = accentColor;
@@ -91,6 +92,10 @@ public class ThemeManager {
         prevSecondaryTextMainAppColor = secondaryTextMainAppColor;
         prevBackgroundMainColor = backgroundMainColor;
         prevCardBackgroundColor = cardBackgroundColor;
+        prevMainTextToolbarColor = mainTextToolbarColor;
+    }
+
+    private void setDefaultColors() {
         primaryColor = R.color.colorPrimaryDefault;
         primaryDarkColor = R.color.colorPrimaryDarkDefault;
         accentColor = R.color.colorAccentDefault;
@@ -98,20 +103,13 @@ public class ThemeManager {
         secondaryTextHelloScreenColor = R.color.colorSecondaryTextHelloDefault;
         mainTextMainAppColor = R.color.colorMainTextMainAppDefault;
         secondaryTextMainAppColor = R.color.secondaryTextMainAppColorDefault;
-        backgroundMainColor = R.color.colorBakgroundMainDefault;
+        backgroundMainColor = R.color.colorBackgroundMainDefault;
         cardBackgroundColor = R.color.colorBackgroundCardDefault;
+        mainTextToolbarColor = R.color.colorMainTextToolbarDefault;
+        onCardAccentColor = R.color.colorCardAccentDefault;
     }
 
     private void setLightColors() {
-        prevPrimaryColor = primaryColor;
-        prevPrimaryDarkColor = primaryDarkColor;
-        prevAccentColor = accentColor;
-        prevMainTextHelloScreenColor = mainTextHelloScreenColor;
-        prevSecondaryTextHelloScreenColor = secondaryTextHelloScreenColor;
-        prevMainTextMainAppColor = mainTextMainAppColor;
-        prevSecondaryTextMainAppColor = secondaryTextMainAppColor;
-        prevBackgroundMainColor = backgroundMainColor;
-        prevCardBackgroundColor = cardBackgroundColor;
         primaryColor = R.color.colorPrimaryLight;
         primaryDarkColor = R.color.colorPrimaryDarkLight;
         accentColor = R.color.colorAccentLight;
@@ -119,20 +117,13 @@ public class ThemeManager {
         secondaryTextHelloScreenColor = R.color.colorSecondaryTextHelloLight;
         mainTextMainAppColor = R.color.colorMainTextMainAppLight;
         secondaryTextMainAppColor = R.color.secondaryTextMainAppColorLight;
-        backgroundMainColor = R.color.colorBakgroundMainLight;
+        backgroundMainColor = R.color.colorBackgroundMainLight;
         cardBackgroundColor = R.color.colorBackgroundCardLight;
+        mainTextToolbarColor = R.color.colorMainTextToolbarLight;
+        onCardAccentColor = R.color.colorCardAccentLight;
     }
 
     private void setDarkColors() {
-        prevPrimaryColor = primaryColor;
-        prevPrimaryDarkColor = primaryDarkColor;
-        prevAccentColor = accentColor;
-        prevMainTextHelloScreenColor = mainTextHelloScreenColor;
-        prevSecondaryTextHelloScreenColor = secondaryTextHelloScreenColor;
-        prevMainTextMainAppColor = mainTextMainAppColor;
-        prevSecondaryTextMainAppColor = secondaryTextMainAppColor;
-        prevBackgroundMainColor = backgroundMainColor;
-        prevCardBackgroundColor = cardBackgroundColor;
         primaryColor = R.color.colorPrimaryDark;
         primaryDarkColor = R.color.colorPrimaryDarkDark;
         accentColor = R.color.colorAccentDark;
@@ -140,8 +131,10 @@ public class ThemeManager {
         secondaryTextHelloScreenColor = R.color.colorSecondaryTextHelloDark;
         mainTextMainAppColor = R.color.colorMainTextMainAppDark;
         secondaryTextMainAppColor = R.color.secondaryTextMainAppColorDark;
-        backgroundMainColor = R.color.colorBakgroundMainDark;
+        backgroundMainColor = R.color.colorBackgroundMainDark;
         cardBackgroundColor = R.color.colorBackgroundCardDark;
+        mainTextToolbarColor = R.color.colorMainTextToolbarDark;
+        onCardAccentColor = R.color.colorCardAccentDark;
     }
 
     private void notifyThemeChanged() {
@@ -231,5 +224,17 @@ public class ThemeManager {
 
     public int getPrevCardBackgroundColor() {
         return prevCardBackgroundColor;
+    }
+
+    public int getPrevMainTextToolbarColor() {
+        return prevMainTextToolbarColor;
+    }
+
+    public int getMainTextToolbarColor() {
+        return mainTextToolbarColor;
+    }
+
+    public int getOnCardAccentColor() {
+        return onCardAccentColor;
     }
 }

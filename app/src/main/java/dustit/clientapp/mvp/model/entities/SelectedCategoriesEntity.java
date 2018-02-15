@@ -4,24 +4,24 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Никита on 03.11.2017.
+ * Created by User on 08.02.2018.
  */
 
-public class CategoryIdEntity {
+public class SelectedCategoriesEntity {
 
     @SerializedName("Ids")
     @Expose
-    private String ids;
+    private String[] ids;
 
-    public CategoryIdEntity(String ids) {
+    public SelectedCategoriesEntity(String[] ids) {
         this.ids = ids;
     }
 
-    public String getIds() {
+    public String[] getIds() {
         return ids;
     }
 
-    public void setIds(String ids) {
+    public void setIds(String[] ids) {
         this.ids = ids;
     }
 }

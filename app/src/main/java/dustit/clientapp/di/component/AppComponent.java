@@ -29,6 +29,7 @@ import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
 import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.activities.MemViewActivity;
+import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
@@ -96,4 +97,6 @@ public interface AppComponent {
     void inject(AccountActivity accountActivity);
 
     void inject(App app);
+
+    void inject(PersonalSettingsActivity personalSettingsActivity);
 }

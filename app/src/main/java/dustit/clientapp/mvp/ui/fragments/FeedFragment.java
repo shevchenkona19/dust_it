@@ -21,6 +21,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView;
+import dustit.clientapp.utils.AlertBuilder;
 
 
 public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
@@ -242,5 +243,10 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     public interface IFeedFragmentInteractionListener {
         void onFeedMemSelected(MemEntity memEntity);
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(getContext());
     }
 }

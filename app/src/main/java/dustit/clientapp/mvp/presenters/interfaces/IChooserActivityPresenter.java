@@ -7,4 +7,6 @@ package dustit.clientapp.mvp.presenters.interfaces;
 
 public interface IChooserActivityPresenter {
     void checkIfRegistered();
+
+    void continueNoRegistration();
 }

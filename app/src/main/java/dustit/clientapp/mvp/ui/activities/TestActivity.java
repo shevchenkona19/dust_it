@@ -23,6 +23,7 @@ import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.TestViewPagerAdapter;
 import dustit.clientapp.mvp.ui.fragments.MemTestFragment;
 import dustit.clientapp.mvp.ui.interfaces.ITestActivityView;
+import dustit.clientapp.utils.AlertBuilder;
 
 public class TestActivity extends AppCompatActivity implements MemTestFragment.IMemTestFragmentInteractionListener, ITestActivityView {
 
@@ -171,6 +172,11 @@ public class TestActivity extends AppCompatActivity implements MemTestFragment.I
         pbLoading.setVisibility(View.GONE);
         pbProgress.setVisibility(View.VISIBLE);
         vpTest.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(this);
     }
 
     @Override

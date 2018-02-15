@@ -2,27 +2,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flActivitySettingsContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/flActivitySettingsContainer"
     tools:context="dustit.clientapp.mvp.ui.activities.SettingsActivity">
 
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/tbSettingsToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimaryDefault"
         app:navigationIcon="@drawable/ic_arrow_left_simple"
         app:title="@string/settings"
-        android:id="@+id/tbSettingsToolbar"
         app:titleTextColor="@color/colorMainTextMainAppDefault" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:paddingLeft="8dp"
         android:animateLayoutChanges="true"
+        android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
         <Button
@@ -39,6 +39,7 @@
             tools:layout_constraintTop_creator="1" />
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="0dp"
             android:layout_height="70dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,13 +61,44 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
+
+            <View
+                android:id="@+id/vSettingsRazdelitel"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorPrimaryDefault" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlSettingsLanguagePicker"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+            <TextView
+                android:id="@+id/tvSettingChangeLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/pick_language"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tvSettingsCurrentLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/colorPrimaryDefault"
                 android:layout_alignParentBottom="true"
-                android:id="@+id/vSettingsRazdelitel"
-                />
+                android:background="@color/colorPrimaryDefault" />
         </RelativeLayout>
     </android.support.constraint.ConstraintLayout>
 
