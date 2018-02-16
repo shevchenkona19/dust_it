@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.animation.LayoutTransition;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
@@ -16,6 +18,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -132,6 +135,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
     private boolean isExpanded = false;
+    private boolean isCommentsExpanded = false;
     private String themeManagerSubscriberId;
 
     public interface IMemViewRatingInteractionListener {
@@ -161,6 +165,15 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
             rvComments.setVisibility(View.GONE);
             tvCommentEmpty.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isCommentsExpanded) {
+            disExpandComments();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -439,9 +452,9 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
             @Override
             public void onClick(View view) {
                 if (!etComment.getText().toString().equals("")) {
-                    presenter.postComment(mem.getId(), etComment.getText().toString());
                     pbCommentSend.setVisibility(View.VISIBLE);
                     ivSendComment.setVisibility(View.INVISIBLE);
+                    presenter.postComment(mem.getId(), etComment.getText().toString());
                 }
             }
         });
@@ -465,6 +478,12 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     }
 
     private void disExpandComments() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         srlCommentsRefresh.setVisibility(View.GONE);
         srlCommentsRefresh.setEnabled(false);
         ConstraintSet set = new ConstraintSet();
@@ -481,6 +500,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         rvComments.setVisibility(View.GONE);
         cvCommentSendPanel.setVisibility(View.GONE);
         pdvMem.setVisibility(View.VISIBLE);
+        isCommentsExpanded = false;
     }
 
     private void expandComments() {
@@ -501,10 +521,14 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         srlCommentsRefresh.setVisibility(View.VISIBLE);
         srlCommentsRefresh.setEnabled(true);
         rvComments.setVisibility(View.VISIBLE);
+        isCommentsExpanded = true;
     }
 
     @Override
     public void onNotRegistered() {
+        etComment.setText("");
+        pbCommentSend.setVisibility(View.GONE);
+        ivSendComment.setVisibility(View.VISIBLE);
         AlertBuilder.showNotRegisteredPrompt(this);
     }
 

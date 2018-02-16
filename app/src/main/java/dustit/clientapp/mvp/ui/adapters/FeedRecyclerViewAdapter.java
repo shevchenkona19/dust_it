@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -319,10 +320,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        if (holder instanceof FeedMemViewHolder) {
-            FeedMemViewHolder memHolder = (FeedMemViewHolder) holder;
-            themeManager.unsubscribe(memHolder.id);
-        }
         super.onViewDetachedFromWindow(holder);
     }
 

@@ -2,7 +2,10 @@ package dustit.clientapp;
 
 import android.app.Application;
 
+import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.cache.MemoryCacheParams;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +44,7 @@ public class App extends Application {
             return;
         }
         LeakCanary.install(this);
+
         Fresco.initialize(this);
         Picasso.with(this).setLoggingEnabled(true);
         instance = this;

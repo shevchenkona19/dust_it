@@ -99,7 +99,6 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         setSupportActionBar(tbAccount);
         mPresenter.getUsername();
         mPresenter.getFavorites();
-        sdvIcon.setImageURI(Uri.parse("http://www.uni-regensburg.de/Fakultaeten/phil_Fak_II/Psychologie/Psy_II/beautycheck/english/durchschnittsgesichter/m(01-32)_gr.jpg"));
         btnReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +215,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return getColor(c);
         } else {
-            return  getResources().getColor(c);
+            return getResources().getColor(c);
         }
     }
 
@@ -326,6 +325,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         tvUsername.setText(username);
         clAccountLoading.setVisibility(View.GONE);
         clAccount.setVisibility(View.VISIBLE);
+        sdvIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + username));
     }
 
     @Override

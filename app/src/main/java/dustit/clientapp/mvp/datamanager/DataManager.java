@@ -61,7 +61,7 @@ public class DataManager {
 
     public Observable<MemEntity> getFeed(int count, int offset) {
         if (userSettingsDataManager.isRegistered()) {
-            return serverRepository.getPersonilizedFeed(getToken(), count, offset)
+            return serverRepository.getPersonalisedFeed(getToken(), count, offset)
                     .flatMap(new Func1<MemUpperEntity, Observable<MemEntity>>() {
                         @Override
                         public Observable<MemEntity> call(MemUpperEntity memUpperEntity) {
@@ -179,7 +179,6 @@ public class DataManager {
     }
 
     public String getToken() {
-        L.print("TOKEN: " + preferencesRepository.getSavedToken());
         return preferencesRepository.getSavedToken();
     }
 

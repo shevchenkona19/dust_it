@@ -6,4 +6,8 @@ package dustit.clientapp.mvp.ui.interfaces;
  */
 
 public interface IFeedActivityView extends IActivityView {
+    void onError();
+
+    void onUsernameArrived(String s);
+
 }

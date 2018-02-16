@@ -26,6 +26,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
+import dustit.clientapp.utils.IConstants;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -97,8 +98,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             CommentEntity comment = list.get(pos);
             commentViewHolder.tvUsername.setText(comment.getUsername());
             commentViewHolder.tvText.setText(comment.getText());
-            commentViewHolder.sdvUserPhoto.setImageURI(Uri.parse("http://www.uni-regensburg.de/Fakultaeten/phil_Fak_II/Psychologie/Psy_II/beautycheck/english/durchschnittsgesichter/m(01-32)_gr.jpg"));
-            /*commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/client/getUserPhoto?token=" + dataManager.getToken() + "&targetUsername=" + comment.getUsername())*/;
+            commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + comment.getUsername());
             commentViewHolder.tvDateStamp.setText(comment.getDateOfPost());
         } else if (holder instanceof FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) {
             final FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder failedToLoadViewHolder = (FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) holder;

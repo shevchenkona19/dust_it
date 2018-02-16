@@ -44,6 +44,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginBottom="8dp"
                         android:layout_marginRight="16dp"
+                        app:actualImageScaleType="centerInside"
                         android:layout_marginTop="8dp"
                         app:roundAsCircle="true"
                         app:roundingBorderColor="#eee" />

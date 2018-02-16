@@ -51,10 +51,11 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<MemUpperEntity> getPersonilizedFeed(String token, int count, int offset) {
+    public Observable<MemUpperEntity> getPersonalisedFeed(String token, int count, int offset) {
         return serverAPI.getPersonalizedFeed(token, count, offset)
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 
     public Observable<MemUpperEntity> getHot(String token,
                                              int count,

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -23,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedViewPagerAdapter;
@@ -31,6 +33,7 @@ import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FeedActivity extends AppCompatActivity implements FeedFragment.IFeedFragmentInteractionListener,
@@ -70,7 +73,8 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     @Inject
     ThemeManager themeManager;
-
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,7 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         adapter = new FeedViewPagerAdapter(getSupportFragmentManager());
         vpFeed.setOffscreenPageLimit(3);
         vpFeed.setAdapter(adapter);
+        presenter.getMyUsername();
         vpFeed.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlFeedTabs));
         tlFeedTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -110,7 +115,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
             }
         });
-        sdvUserIcon.setImageURI(Uri.parse("http://www.uni-regensburg.de/Fakultaeten/phil_Fak_II/Psychologie/Psy_II/beautycheck/english/durchschnittsgesichter/m(01-32)_gr.jpg"));
         sdvUserIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -253,5 +257,15 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, getText(R.string.error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onUsernameArrived(String s) {
+        sdvUserIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + s));
     }
 }
