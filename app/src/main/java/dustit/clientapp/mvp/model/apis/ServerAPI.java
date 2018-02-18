@@ -53,7 +53,7 @@ public interface ServerAPI {
 
     @GET("/feed/getCategoryFeed")
     Observable<MemUpperEntity> getCategoriesFeed(@Header("Authorization") String token,
-                                                 @Query("category") String categoryId,
+                                                 @Query("categoryname") String categoryId,
                                                  @Query("count") int count,
                                                  @Query("offset") int offset);
 

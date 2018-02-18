@@ -176,7 +176,7 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 currentCategory = categoryList.get(i);
-                presenter.loadBase(currentCategory.getId());
+                presenter.loadBase(currentCategory.getName());
             }
 
             @Override
