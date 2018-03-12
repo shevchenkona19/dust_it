@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 
 public class MemEntity implements Parcelable {
 
@@ -29,6 +28,9 @@ public class MemEntity implements Parcelable {
     @SerializedName("IsFavorite")
     @Expose
     private boolean favorite;
+    @SerializedName("source")
+    @Expose
+    private String source;
 
     /**
      * No args constructor for use in serialization
@@ -36,12 +38,13 @@ public class MemEntity implements Parcelable {
     public MemEntity() {
     }
 
-    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite) {
+    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite, String source) {
         this.id = id;
         this.likes = likes;
         this.dislikes = dislikes;
         this.favorite = favorite;
         this.opinion = opinion;
+        this.source = source;
     }
 
     protected MemEntity(Parcel in) {
@@ -50,6 +53,22 @@ public class MemEntity implements Parcelable {
         dislikes = in.readString();
         opinion = in.readString();
         favorite = in.readByte() != 0;
+        source = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(likes);
+        dest.writeString(dislikes);
+        dest.writeString(opinion);
+        dest.writeByte((byte) (favorite ? 1 : 0));
+        dest.writeString(source);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MemEntity> CREATOR = new Creator<MemEntity>() {
@@ -138,17 +157,11 @@ public class MemEntity implements Parcelable {
         this.opinion = opinion;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getSource() {
+        return source;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(likes);
-        dest.writeString(dislikes);
-        dest.writeString(opinion);
-        dest.writeByte((byte) (favorite ? 1 : 0));
+    public void setSource(String source) {
+        this.source = source;
     }
 }

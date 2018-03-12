@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
+import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -51,7 +52,7 @@ public class ChangeCategoriesFragmentPresenter extends BasePresenter<IChangeCate
 
     @Override
     public void sendCategories(String[] ids) {
-        final SelectedCategoriesEntity entity = new SelectedCategoriesEntity(ids);
+        final PostSelectedCategoriesUpperEntity entity = new PostSelectedCategoriesUpperEntity(ids);
         addSubscription(dataManager.postPersonalCategories(entity).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {

@@ -2,7 +2,8 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,14 +18,22 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.L;
+
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 
-public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+
+    public static final String HEIGHT_APPBAR = "HEIGHT";
+    private int appBarHeight;
 
     @BindView(R.id.rvFeed)
     RecyclerView rvFeed;
@@ -37,27 +46,66 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     private FeedFragmentPresenter presenter;
 
+    private RecyclerView.OnScrollListener scrollListener;
 
     private IFeedFragmentInteractionListener interactionListener;
+
+    private WrapperLinearLayoutManager linearLayoutManager;
 
     public FeedFragment() {
         // Required empty public constructor
     }
 
-    public static FeedFragment newInstance() {
-        return new FeedFragment();
+    public void setFavoritesList(List<FavoriteEntity> list) {
+        adapter.setFavoritesList(list);
+    }
+
+    public static FeedFragment newInstance(int appBarHeight) {
+        Bundle args = new Bundle();
+        args.putInt(HEIGHT_APPBAR, appBarHeight);
+        final FeedFragment fragment = new FeedFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        appBarHeight = args.getInt(HEIGHT_APPBAR);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        L.print("onAttach");
+        bindWithBase(context);
+        if (context instanceof IFeedFragmentInteractionListener) {
+            interactionListener = (IFeedFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        L.print("onResume");
+        super.onResume();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        L.print("onCreateView");
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, v);
-        rvFeed.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
-        adapter = new FeedRecyclerViewAdapter(getContext(), this);
+        linearLayoutManager = new WrapperLinearLayoutManager(getContext());
+        rvFeed.setLayoutManager(linearLayoutManager);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         rvFeed.setAdapter(adapter);
         presenter = new FeedFragmentPresenter();
         presenter.bind(this);
+        srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
         presenter.loadBase();
         srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -66,25 +114,38 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
                 presenter.loadBase();
             }
         });
+        scrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == SCROLL_STATE_IDLE) {
+                    notifyFeedScrollIdle(true);
+                    if (rvFeed.getChildAt(0) != null)
+                        if (rvFeed.getChildAt(0).getTop() == appBarHeight && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            if (!srlRefresh.isRefreshing())
+                                notifyFeedOnTop();
+                        }
+                } else {
+                    notifyFeedScrollIdle(false);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                notifyFeedScrollChanged(dy);
+            }
+        };
+        rvFeed.addOnScrollListener(scrollListener);
         return v;
     }
 
     @Override
     public void onDestroyView() {
+        rvFeed.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof IFeedFragmentInteractionListener) {
-            interactionListener = (IFeedFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -157,6 +218,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     @Override
     public void onAddedToFavorites(String id) {
+        notifyBase(id);
         adapter.addedToFavorites(id);
     }
 
@@ -187,7 +249,13 @@ public class FeedFragment extends Fragment implements IFeedFragmentView, FeedRec
 
     @Override
     public void onMemSelected(MemEntity mem) {
+        launchMemView(mem);
         interactionListener.onFeedMemSelected(mem);
+    }
+
+    @Override
+    public void onMemSelected(View view, String transitionName, MemEntity mem) {
+        launchMemView(view, transitionName, mem);
     }
 
     @Override

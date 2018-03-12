@@ -54,6 +54,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/tbCategoriesToolbar"
             android:layout_width="match_parent"
+            android:visibility="visible"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimaryDefault">
 
@@ -66,8 +67,8 @@
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srlCategoriesRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tbCategoriesToolbar">
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvCategoriesFeed"

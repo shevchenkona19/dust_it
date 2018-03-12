@@ -45,9 +45,11 @@
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".mvp.ui.activities.AccountActivity" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".mvp.ui.activities.AccountActivity"
+            android:theme="@style/AppTheme" />
         <activity android:name=".mvp.ui.activities.SettingsActivity" />
         <activity android:name=".mvp.ui.activities.PersonalSettingsActivity" />
         <activity
@@ -55,7 +57,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".mvp.ui.activities.MemViewActivity"
+            android:name=".mvp.ui.fragments.MemViewActivity"
             android:theme="@style/DismissableActivity" />
         <activity android:name=".mvp.ui.activities.FavoritesActivity" />
         <activity

@@ -2,7 +2,7 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,31 +17,49 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
+public class HotFragment extends BaseFeedFragment implements IHotFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+
+    private static final String HEIGHT_APPBAR = "HEIGHT";
     private IHotFragmentInteractionListener interactionListener;
     private Unbinder unbinder;
     private FeedRecyclerViewAdapter adapter;
     private final HotFragmentPresenter presenter = new HotFragmentPresenter();
     private boolean isFirstTimeVisible = true;
+    private RecyclerView.OnScrollListener scrollListener;
+    private WrapperLinearLayoutManager linearLayoutManager;
 
     @BindView(R.id.rvHot)
     RecyclerView rvHot;
     @BindView(R.id.srlHotRefresh)
     SwipeRefreshLayout srlRefresh;
+    private int appBarHeight;
 
     public HotFragment() {
     }
 
-    public static HotFragment newInstance() {
-        return new HotFragment();
+    public static HotFragment newInstance(int appBarHeight) {
+        Bundle args = new Bundle();
+        args.putInt(HEIGHT_APPBAR, appBarHeight);
+        final HotFragment fragment = new HotFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        appBarHeight = args.getInt(HEIGHT_APPBAR);
     }
 
     @Override
@@ -49,10 +67,12 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_hot, container, false);
         unbinder = ButterKnife.bind(this, v);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this);
-        rvHot.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        linearLayoutManager = new WrapperLinearLayoutManager(getContext());
+        rvHot.setLayoutManager(linearLayoutManager);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
+        srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -60,7 +80,34 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
                 presenter.loadBase();
             }
         });
+        scrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == SCROLL_STATE_IDLE) {
+                    notifyFeedScrollIdle(true);
+                    if (rvHot.getChildAt(0) != null)
+                        if (rvHot.getChildAt(0).getTop() == appBarHeight && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            if (!srlRefresh.isRefreshing())
+                                notifyFeedOnTop();
+                        }
+                } else {
+                    notifyFeedScrollIdle(false);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                notifyFeedScrollChanged(dy);
+            }
+        };
+        rvHot.addOnScrollListener(scrollListener);
         return v;
+    }
+
+    public void setFavoritesList(List<FavoriteEntity> list) {
+        adapter.setFavoritesList(list);
     }
 
     @Override
@@ -75,6 +122,7 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        bindWithBase(context);
         if (context instanceof IHotFragmentInteractionListener) {
             interactionListener = (IHotFragmentInteractionListener) context;
         } else {
@@ -85,6 +133,7 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
 
     @Override
     public void onDestroyView() {
+        rvHot.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
         super.onDestroyView();
@@ -144,6 +193,7 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
 
     @Override
     public void onAddedToFavorites(String id) {
+        notifyBase(id);
         adapter.addedToFavorites(id);
     }
 
@@ -170,6 +220,11 @@ public class HotFragment extends Fragment implements IHotFragmentView, FeedRecyc
     @Override
     public void reloadFeedBase() {
         presenter.loadBase();
+    }
+
+    @Override
+    public void onMemSelected(View animStart, String transitionName, MemEntity mem) {
+        launchMemView(animStart, transitionName, mem);
     }
 
     @Override

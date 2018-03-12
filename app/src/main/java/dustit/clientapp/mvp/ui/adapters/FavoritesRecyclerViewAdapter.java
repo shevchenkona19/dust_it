@@ -22,7 +22,7 @@ import dustit.clientapp.utils.IConstants;
  */
 
 public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<FavoritesRecyclerViewAdapter.FavoriteViewHolder> {
-    private List<FavoriteEntity> list;
+    private final List<FavoriteEntity> list = new ArrayList<>();
     private LayoutInflater inflater;
     private String token;
 
@@ -36,7 +36,6 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
     public FavoritesRecyclerViewAdapter(Context context, IFavoritesCallback iFavoriteCallback, String token) {
         inflater = LayoutInflater.from(context);
-        list = new ArrayList<>();
         this.token = token;
         callback = iFavoriteCallback;
     }
@@ -49,12 +48,11 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
     @Override
     public void onBindViewHolder(final FavoriteViewHolder holder, int position) {
-        holder.sdvImage.setImageURI(IConstants.BASE_URL + "/client/getFavorite?token=" + token + "&id=" + list.get(position).getId());
+        holder.sdvImage.setImageURI(IConstants.BASE_URL + "/feed/imgs?id=" + list.get(position).getId());
         /*holder.sdvImage.setImageURI(list.get(position).getId());*/
         holder.sdvImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 callback.onFavoriteChosen(list.get(holder.getAdapterPosition()).getId());
             }
         });

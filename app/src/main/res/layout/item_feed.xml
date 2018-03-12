@@ -8,7 +8,9 @@
         android:id="@+id/cvItemFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -19,7 +21,6 @@
                 android:id="@+id/sdvItemFeed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
                 app:actualImageScaleType="fitXY"
                 app:failureImage="@drawable/ic_reload"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -27,93 +28,129 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/clItemFeedMoreLayout"
+                android:layout_width="0dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sdvItemFeed">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_mem_message"
+                    android:layout_marginLeft="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvItemFeedSrc" />
+
+                <TextView
+                    android:id="@+id/tvItemFeedSrc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView10"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
             <ImageView
                 android:id="@+id/ivItemFeedIsLiked"
                 android:layout_width="30dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
+                android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tvItemFeedLikeCount"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_like" />
 
             <TextView
                 android:id="@+id/tvItemFeedLikeCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:text="435"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed" />
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout" />
 
             <ImageView
                 android:id="@+id/ivItemFeedMore"
-                android:layout_width="24dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:adjustViewBounds="false"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:cropToPadding="false"
                 android:focusable="true"
+                android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_details" />
 
             <ImageView
                 android:id="@+id/ivItemFeedAddToFavorites"
-                android:layout_width="24dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
+                android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/ivItemFeedMore"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_add_to_favourites" />
 
             <ImageView
                 android:id="@+id/ivItemFeedDisliked"
                 android:layout_width="30dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
+                android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/ivItemFeedIsLiked"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_dislike" />
 
             <TextView
                 android:id="@+id/tvItemFeedDislikeCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:text="435"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/ivItemFeedDisliked"
-                app:layout_constraintTop_toBottomOf="@+id/sdvItemFeed"
+                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:layout_constraintVertical_bias="0.444" />
 
         </android.support.constraint.ConstraintLayout>

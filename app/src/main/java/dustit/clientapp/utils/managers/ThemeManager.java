@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import dustit.clientapp.R;
+import dustit.clientapp.utils.L;
 
 public class ThemeManager {
 

@@ -63,7 +63,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
     @Override
     public void downloadImage(String id) {
         Picasso.with(dataManager.getContext())
-                .load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + dataManager.getToken() + "&id=" + id))
+                .load(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + id))
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

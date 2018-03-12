@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     @BindView(R.id.tbSettingsToolbar)
     Toolbar toolbar;
     @BindView(R.id.flActivitySettingsContainer)
-    FrameLayout flContainer;
+    ViewGroup flContainer;
     @BindView(R.id.tvSettingsChooseThemeLabel)
     TextView tvSettingsChooseThemeLabel;
     @BindView(R.id.tvSettingChangeLanguage)
@@ -52,9 +55,13 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     @BindView(R.id.tvSettingsCurrentLanguage)
     TextView tvCurrentLanguage;
     @BindView(R.id.rlSettingsLanguagePicker)
-    RelativeLayout rlLanguagePicker;
+    ViewGroup rlLanguagePicker;
     @BindView(R.id.spSettingsThemeChooser)
     AppCompatSpinner spThemeChooser;
+    @BindView(R.id.rlSettingsUseImmersive)
+    ViewGroup vgUseImmersive;
+    @BindView(R.id.cbSettingsUseImmersive)
+    CheckBox cbUseImmersive;
 
     @Inject
     ThemeManager themeManager;
@@ -161,6 +168,20 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 builder.create().show();
             }
         });
+        cbUseImmersive.setChecked(userSettingsDataManager.useImmersiveMode());
+        cbUseImmersive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                userSettingsDataManager.setUseImmersiveMode(isChecked);
+            }
+        });
+        vgUseImmersive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cbUseImmersive.setChecked(!cbUseImmersive.isChecked());
+                userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
+            }
+        });
         setColors();
         themeSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
             @Override
@@ -171,6 +192,8 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private void setColors() {
+        cbUseImmersive.setBackgroundColor(getColorFromResources(themeManager.getAccentColor()));
+        toolbar.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
         toolbar.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
         toolbar.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
         tvSettingsChooseThemeLabel.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
@@ -229,7 +252,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
     @Override
     public void onSuccessfullyLogout() {
-        startActivity(new Intent(this, ChooserActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(this, ChooserActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 }

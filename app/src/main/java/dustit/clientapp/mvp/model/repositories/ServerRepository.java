@@ -11,6 +11,7 @@ import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
+import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
@@ -78,7 +79,7 @@ public class ServerRepository {
     }
 
     public Observable<ResponseEntity> postSelectedCategories(String token,
-                                                             SelectedCategoriesEntity entity) {
+                                                             PostSelectedCategoriesUpperEntity entity) {
         return serverAPI.postSelectedCategories(token, entity)
                 .observeOn(AndroidSchedulers.mainThread());
     }

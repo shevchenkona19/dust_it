@@ -21,7 +21,7 @@
     <color name="colorAccentDark">#fff</color>
     <color name="colorMainTextHelloDark">#dddddd</color>
     <color name="colorSecondaryTextHelloDark">#ababab</color>
-    <color name="colorMainTextMainAppDark">#5a5a5a</color>
+    <color name="colorMainTextMainAppDark">#ddd</color>
     <color name="secondaryTextMainAppColorDark">#1a1a1a</color>
     <color name="colorBackgroundMainDefault">#fafafa</color>
     <color name="colorBackgroundMainLight">#fafafa</color>

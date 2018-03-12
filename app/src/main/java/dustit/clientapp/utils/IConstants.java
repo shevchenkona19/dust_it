@@ -10,6 +10,7 @@ public interface IConstants {
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "test";
     String NO_REGISTRATION_PASSWORD = "test";
+    String SHARED_TRANSITION_NAME_KEY = "sh";
 
     interface IPreferences {
         String TOKEN_KEY = "token";
@@ -18,6 +19,7 @@ public interface IConstants {
         String LANGUAGE_KEY = "lang ";
         String THEME_KEY = "Theme";
         String REGISTRATION_KEY = "REGISTRATION";
+        String IMMERSIVE_KEY = "immersive";
     }
 
     enum OPINION {

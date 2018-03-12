@@ -46,4 +46,20 @@ public class AlertBuilder {
         });
         alertDialog.show();
     }
+
+    public static void showMemSource(final Context context, final String src) {
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.about_mem_title))
+                .setMessage(context.getString(R.string.about_mem_message) + " " + src)
+                .setPositiveButton(context.getString(R.string.ok), null)
+                .setCancelable(true)
+                .create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog1) {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+            }
+        });
+        dialog.show();
+    }
 }

@@ -15,6 +15,7 @@ import dustit.clientapp.mvp.presenters.interfaces.IAccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
+import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
 
 
@@ -92,27 +93,30 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getFavorites() {
+        L.print("GET FAVORITES!");
         if (!userSettingsDataManager.isRegistered()) {
             getView().updateFavorites(0);
             return;
         }
-        final int[] size = new int[1];
+        final Container<Integer> container = new Container<>();
         addSubscription(dataManager.getAllFavorites()
                 .subscribe(new Subscriber<FavoritesUpperEntity>() {
                     @Override
                     public void onCompleted() {
-                        getView().updateFavorites(size[0]);
+                        getView().updateFavorites(container.get());
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        L.print("Error: " + e.getMessage());
                         getView().onErrorLoadingFavorites();
                     }
 
                     @Override
                     public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
-                        favoritesUpperEntity.initList();
-                        size[0] = favoritesUpperEntity.getList().size();
+                        L.print("Received!");
+                        container.put(favoritesUpperEntity.getIds().length);
+                        L.print("Size: " + container.get());
                     }
                 }));
     }

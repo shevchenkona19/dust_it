@@ -16,6 +16,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
+import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
@@ -109,7 +110,7 @@ public class DataManager {
                 });
     }
 
-    public Observable<ResponseEntity> postPersonalCategories(SelectedCategoriesEntity entity) {
+    public Observable<ResponseEntity> postPersonalCategories(PostSelectedCategoriesUpperEntity entity) {
         return serverRepository.postSelectedCategories(getToken(), entity);
     }
 

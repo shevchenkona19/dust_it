@@ -1,9 +1,14 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
+import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFeedActivityPresenter;
@@ -58,5 +63,32 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             }));
         }
     }
+
+    @Override
+    public void getMyFavorites() {
+        final Container<FavoritesUpperEntity> container = new Container<>();
+        addSubscription(dataManager.getAllFavorites().subscribe(new Subscriber<FavoritesUpperEntity>() {
+            @Override
+            public void onCompleted() {
+                final List<FavoriteEntity> list = new ArrayList<>();
+                for (String id :
+                        container.get().getIds()) {
+                    list.add(new FavoriteEntity(id));
+                }
+                getView().onFavoritesArrived(list);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print(e.getMessage());
+            }
+
+            @Override
+            public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
+                container.put(favoritesUpperEntity);
+            }
+        }));
+    }
+
 
 }

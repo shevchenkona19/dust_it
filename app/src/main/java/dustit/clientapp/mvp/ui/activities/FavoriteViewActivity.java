@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -21,12 +30,13 @@ import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 public class FavoriteViewActivity extends AppCompatActivity implements IFavoriteViewActivityView {
     public static final String ID_KEY = "idket";
 
     @BindView(R.id.tivFavoriteViewImage)
-    TouchImageView tivImage;
+    PhotoDraweeView tivImage;
     @BindView(R.id.ivFavoriteBack)
     ImageView ivBack;
     @BindView(R.id.ivFavoriteViewDeleteFromFavorite)
@@ -46,11 +56,26 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         ButterKnife.bind(this);
         mPresenter.bind(this);
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
-        Picasso.with(this)
-                .load(Uri.parse(IConstants.BASE_URL + "/client/getFavorite?token=" + mPresenter.getToken() + "&id=" + mFavoriteId))
-                .noFade()
-                .noPlaceholder()
-                .into(tivImage);
+        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId)
+                .setTapToRetryEnabled(true)
+                .setOldController(tivImage.getController())
+                .setControllerListener(new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                        super.onFinalImageSet(id, imageInfo, animatable);
+                        if (imageInfo == null || mFavoriteId == null) {
+                            return;
+                        }
+                        tivImage.update(imageInfo.getWidth(), imageInfo.getHeight());
+                    }
+                })
+                .build();
+        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
+                .setProgressBarImage(new ProgressBarDrawable())
+                .build();
+        tivImage.setController(ctrl);
+        tivImage.setHierarchy(hierarchy);
         initClicks();
         initSlidr();
     }

@@ -5,10 +5,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 04.10.2017
@@ -17,30 +21,33 @@ import dustit.clientapp.mvp.ui.fragments.HotFragment;
 
 public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
-    public FeedViewPagerAdapter(FragmentManager fm) {
+    public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight) {
         super(fm);
+        appbarHeight = appBarHeight;
     }
-
+    private int appbarHeight;
     private WeakReference<FeedFragment> feedFragment;
     private WeakReference<HotFragment> hotFragment;
     private WeakReference<CategoriesFragment> categoriesFragment;
+    private final List<FavoriteEntity> list = new ArrayList<>();
 
     @Override
     public Fragment getItem(int position) {
+        L.print("getItem");
         Fragment selectedFragment;
         switch (position) {
             case 0:
-                FeedFragment feedFragment = FeedFragment.newInstance();
+                FeedFragment feedFragment = FeedFragment.newInstance(appbarHeight);
                 this.feedFragment = new WeakReference<>(feedFragment);
                 selectedFragment = feedFragment;
                 break;
             case 1:
-                HotFragment hotFragment = HotFragment.newInstance();
+                HotFragment hotFragment = HotFragment.newInstance(appbarHeight);
                 this.hotFragment = new WeakReference<>(hotFragment);
                 selectedFragment = hotFragment;
                 break;
             case 2:
-                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance();
+                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance(appbarHeight);
                 this.categoriesFragment = new WeakReference<>(categoriesFragment);
                 selectedFragment = categoriesFragment;
                 break;
@@ -107,5 +114,12 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         if (feedFragment != null) feedFragment.clear();
         if (hotFragment != null) hotFragment.clear();
         if (categoriesFragment != null) categoriesFragment.clear();
+    }
+
+    public void setFavoritesList(List<FavoriteEntity> favoriteEntityList) {
+        list.addAll(favoriteEntityList);
+        if (feedFragment != null) feedFragment.get().setFavoritesList(list);
+        if (hotFragment != null) hotFragment.get().setFavoritesList(list);
+        if (categoriesFragment != null) categoriesFragment.get().setFavoritesList(list);
     }
 }

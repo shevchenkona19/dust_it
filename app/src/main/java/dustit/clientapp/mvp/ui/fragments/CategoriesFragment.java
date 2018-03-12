@@ -3,14 +3,18 @@ package dustit.clientapp.mvp.ui.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,20 +26,29 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
 import dustit.clientapp.mvp.model.entities.Category;
+import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.managers.ThemeManager;
 
-public class CategoriesFragment extends Fragment implements ICategoriesFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
+public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+
+    private static final String HEIGHT_APPBAR = "HEIGHT";
     @BindView(R.id.rlCategoriesFeed)
     RelativeLayout rlFeed;
     @BindView(R.id.rlCategoriesLoading)
@@ -52,6 +65,11 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     SwipeRefreshLayout srlRefresh;
     @BindView(R.id.rvCategoriesFeed)
     RecyclerView rvFeed;
+    @BindView(R.id.tbCategoriesToolbar)
+    Toolbar tbPlank;
+
+    @Inject
+    ThemeManager themeManager;
 
     private Unbinder unbinder;
     private ICategoriesFragmentInteractionListener listener;
@@ -60,6 +78,10 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     private Category currentCategory;
     private boolean isFirstTimeVisible = true;
     private boolean isLoaded = false;
+    private String themeId;
+    private RecyclerView.OnScrollListener scrollListener;
+    private WrapperLinearLayoutManager linearLayoutManager;
+    private int appBarHeight;
 
 
     public interface ICategoriesFragmentInteractionListener {
@@ -74,16 +96,33 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
         // Required empty public constructor
     }
 
-    public static CategoriesFragment newInstance() {
-        return new CategoriesFragment();
+    public static CategoriesFragment newInstance(int appBarHeight) {
+        Bundle args = new Bundle();
+        args.putInt(HEIGHT_APPBAR, appBarHeight);
+        final CategoriesFragment fragment = new CategoriesFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        appBarHeight = args.getInt(HEIGHT_APPBAR);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        bindWithBase(context);
         if (context instanceof ICategoriesFragmentInteractionListener) {
             listener = (ICategoriesFragmentInteractionListener) context;
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        App.get().getAppComponent().inject(this);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -91,16 +130,22 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
         View v = inflater.inflate(R.layout.fragment_categories, container, false);
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this);
-        rvFeed.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
+        linearLayoutManager = new WrapperLinearLayoutManager(getContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tbPlank.setElevation(9);
+        }
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, 0);
+        spChooser.setTop(appBarHeight);
+        rvFeed.setLayoutManager(linearLayoutManager);
         rvFeed.setAdapter(adapter);
+        srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         srlRefresh.setEnabled(false);
         srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 srlRefresh.setRefreshing(true);
-                presenter.loadBase(currentCategory.getId());
+                presenter.loadBase(currentCategory.getName());
             }
         });
         btnReload.setOnClickListener(new View.OnClickListener() {
@@ -109,29 +154,96 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
                 presenter.getCategories();
             }
         });
+        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
+            }
+        });
+        scrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == SCROLL_STATE_IDLE) {
+                    notifyFeedScrollIdle(true);
+                    if (rvFeed.getChildAt(0) != null)
+                        if (rvFeed.getChildAt(0).getTop() == 0 && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            if (!srlRefresh.isRefreshing())
+                                notifyFeedOnTop();
+                        }
+                } else {
+                    notifyFeedScrollIdle(false);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                notifyFeedScrollChanged(dy);
+            }
+        };
+        rvFeed.addOnScrollListener(scrollListener);
+        setColors();
         return v;
+    }
+
+    private void setColors() {
+        tbPlank.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
+    }
+
+    private int getColorFromResources(int c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getResources().getColor(c);
+        } else {
+            return getResources().getColor(c);
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isLoaded) {
             listener.setScrollFlags();
+            final Animation slideFromUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+            slideFromUp.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tbPlank.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            tbPlank.startAnimation(slideFromUp);
         }
         if (isVisibleToUser && isFirstTimeVisible && !isLoaded) {
             presenter.getCategories();
             isFirstTimeVisible = false;
-        } else if (!isVisibleToUser) {
+        }
+        if (!isVisibleToUser) {
+            if (tbPlank != null) {
+                tbPlank.setVisibility(View.GONE);
+            }
             if (listener != null) {
                 listener.resetScrollFlags();
             }
         }
+
         super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
     public void onDestroyView() {
+        rvFeed.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
+        themeManager.unsubscribe(themeId);
         super.onDestroyView();
     }
 
@@ -186,6 +298,10 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
         });
     }
 
+    public void setFavoritesList(List<FavoriteEntity> list) {
+        adapter.setFavoritesList(list);
+    }
+
     @Override
     public void onCategoriesFailedToLoad() {
         srlRefresh.setEnabled(false);
@@ -236,6 +352,7 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
 
     @Override
     public void onAddedToFavorites(String id) {
+        notifyBase(id);
         adapter.addedToFavorites(id);
     }
 
@@ -262,6 +379,11 @@ public class CategoriesFragment extends Fragment implements ICategoriesFragmentV
     @Override
     public void reloadFeedBase() {
         presenter.loadBase(currentCategory.getId());
+    }
+
+    @Override
+    public void onMemSelected(View animStart, String transitionName, MemEntity mem) {
+        launchMemView(animStart, transitionName, mem);
     }
 
     @Override

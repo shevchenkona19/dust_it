@@ -8,4 +8,5 @@ package dustit.clientapp.mvp.presenters.interfaces;
 public interface IFeedActivityPresenter {
     void postLike(String id);
     void getMyUsername();
+    void getMyFavorites();
 }

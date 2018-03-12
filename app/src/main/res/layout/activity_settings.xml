@@ -17,7 +17,8 @@
         app:title="@string/settings"
         app:titleTextColor="@color/colorMainTextMainAppDefault" />
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -25,22 +26,9 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
-        <Button
-            android:id="@+id/btnSettingsLogout"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:text="@string/logout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:layout_constraintBottom_creator="1"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
-
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="70dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -72,7 +60,7 @@
 
         <RelativeLayout
             android:id="@+id/rlSettingsLanguagePicker"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="70dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,6 +88,48 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorPrimaryDefault" />
         </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
+        <RelativeLayout
+            android:id="@+id/rlSettingsUseImmersive"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+            <TextView
+                android:id="@+id/tvSettingChangeLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/use_immersive_mode"
+                tools:ignore="RelativeOverlap" />
+
+            <CheckBox
+                android:id="@+id/cbSettingsUseImmersive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorPrimaryDefault" />
+        </RelativeLayout>
+        <Button
+            android:id="@+id/btnSettingsLogout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="@string/logout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+    </LinearLayout>
 
 </FrameLayout>

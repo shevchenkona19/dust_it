@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -18,13 +19,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.yalantis.ucrop.UCrop;
@@ -46,9 +52,8 @@ import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
 
+
 public class AccountActivity extends AppCompatActivity implements IAccountActivityView {
-
-
     private static final int PICK_IMAGE = 222;
     private static final int CROPPED_IMAGE = 223;
     private static final int PERMISSION_DIALOG = 1010;
@@ -91,9 +96,25 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            supportRequestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            Transition fade = new android.transition.Fade();
+            fade.excludeTarget(android.R.id.statusBarBackground, true);
+            fade.excludeTarget(android.R.id.navigationBarBackground, true);
+            Window window = getWindow();
+            window.setEnterTransition(fade);
+            window.setReturnTransition(fade);
+            window.setExitTransition(fade);
+            TransitionSet transitionSet = DraweeTransition
+                    .createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
+                            ScalingUtils.ScaleType.CENTER_CROP);
+            window.setSharedElementEnterTransition(transitionSet);
+            window.setSharedElementExitTransition(transitionSet);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
+        sdvIcon.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mPresenter.bind(this);
         App.get().getAppComponent().inject(this);
         setSupportActionBar(tbAccount);
@@ -109,6 +130,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 mPresenter.getFavorites();
             }
         });
+        sdvIcon.setLegacyVisibilityHandlingEnabled(true);
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,7 +166,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                                 } else {
                                     Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                                     getIntent.setType("image/*");
-                                    Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                     pickIntent.setType("image/*");
                                     Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
@@ -180,7 +202,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         tbAccount.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                unRevealActivity();
             }
         });
         setColors();
@@ -190,11 +212,16 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 setColors();
             }
         });
+
+    }
+
+    protected void unRevealActivity() {
+        supportFinishAfterTransition();
     }
 
     private void setColors() {
         tbAccount.setBackgroundResource(themeManager.getPrimaryColor());
-        tvUsername.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        tvUsername.setTextColor(getColorFromResources(themeManager.getAccentColor()));
         btnEdit.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
         btnReload.setTextColor(getColorFromResources(themeManager.getOnCardAccentColor()));
         btnSettings.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
@@ -220,7 +247,13 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     }
 
     @Override
+    public void onBackPressed() {
+        unRevealActivity();
+    }
+
+    @Override
     protected void onDestroy() {
+        sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
         mPresenter.unbind();
         themeManager.unsubscribe(themeId);
         super.onDestroy();

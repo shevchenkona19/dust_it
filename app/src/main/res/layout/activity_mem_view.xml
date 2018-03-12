@@ -37,6 +37,8 @@
 
                 <ImageView
                     android:id="@+id/ivMemViewMenu"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -45,15 +47,47 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:tint="#404040"
-                    app:srcCompat="@drawable/ic_details" />
+                    app:srcCompat="@drawable/anim_from_menu_to_cross" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clMemViewMoreLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/about_mem_message"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvMemViewSrc" />
+
+            <TextView
+                android:id="@+id/tvMemViewSrc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="3333"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView10"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.AppBarLayout>
 
     <me.relex.photodraweeview.PhotoDraweeView
         android:id="@+id/zdvMem"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:transitionName="@string/mem_feed_transition_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -203,9 +237,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_marginTop="8dp"
         android:text="@string/empty_set_comments"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

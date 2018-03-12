@@ -3,7 +3,9 @@ package dustit.clientapp.mvp.ui.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,14 +19,18 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FavoritesActivity extends AppCompatActivity implements IFavoriteActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback {
     @BindView(R.id.tbFavoritesToolbar)
@@ -41,7 +47,12 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     TextView tvEmptyText;
     @BindView(R.id.ivFavoritesEmpty)
     ImageView ivEmptyPic;
+    @BindView(R.id.clFavoritesParent)
+    ConstraintLayout clParent;
 
+    @Inject
+    ThemeManager themeManager;
+    private String themeId = "";
 
     private FavoritesRecyclerViewAdapter mAdapter;
     private final FavoritesActivityPresenter mPresenter = new FavoritesActivityPresenter();
@@ -50,10 +61,9 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+        App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
         mPresenter.bind(this);
-        toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorMainText));
         setSupportActionBar(toolbar);
         mAdapter = new FavoritesRecyclerViewAdapter(this,this, mPresenter.getToken());
         rvFavorites.setAdapter(mAdapter);
@@ -67,6 +77,38 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
                 hideError();
             }
         });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
+            @Override
+            public void notifyThemeChanged(ThemeManager.Theme t) {
+                setColors();
+            }
+        });
+        setColors();
+    }
+
+    private void setColors() {
+        toolbar.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
+        toolbar.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
+        toolbar.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
+        clParent.setBackgroundColor(getColorFromResources(themeManager.getBackgroundMainColor()));
+        tvError.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        tvEmptyText.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        btnReload.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
+        btnReload.setBackgroundColor(getColorFromResources(themeManager.getAccentColor()));
+    }
+
+    private int getColorFromResources(int c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getColor(c);
+        } else {
+            return getResources().getColor(c);
+        }
     }
 
     @Override
@@ -115,6 +157,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     @Override
     protected void onDestroy() {
         mPresenter.unbind();
+        themeManager.unsubscribe(themeId);
         super.onDestroy();
     }
 

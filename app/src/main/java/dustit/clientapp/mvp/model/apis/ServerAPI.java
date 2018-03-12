@@ -7,6 +7,7 @@ import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
+import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
@@ -62,7 +63,7 @@ public interface ServerAPI {
 
     @POST("/config/postSelectedCategories")
     Observable<ResponseEntity> postSelectedCategories(@Header("Authorization") String token,
-                                                      @Body SelectedCategoriesEntity entity);
+                                                      @Body PostSelectedCategoriesUpperEntity entity);
 
     @GET("/config/getPersonalCategories")
     Observable<PersonalCategoryUpperEntity> getPersonalCategories(@Header("Authorization") String token);

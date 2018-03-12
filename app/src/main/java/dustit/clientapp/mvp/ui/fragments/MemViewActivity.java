@@ -1,4 +1,4 @@
-package dustit.clientapp.mvp.ui.activities;
+package dustit.clientapp.mvp.ui.fragments;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
@@ -17,7 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,11 +53,14 @@ import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
+import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ThemeManager;
+import me.relex.photodraweeview.OnScaleChangeListener;
 import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -126,6 +131,10 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     TextView tvCommentsLabel;
     @BindView(R.id.ivMemViewAddToPhotos)
     ImageView ivAddToFavourites;
+    @BindView(R.id.clMemViewMoreLayout)
+    ViewGroup vgMoreLayout;
+    @BindView(R.id.tvMemViewSrc)
+    TextView tvSrc;
 
     @Inject
     ThemeManager themeManager;
@@ -137,6 +146,10 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     private boolean isExpanded = false;
     private boolean isCommentsExpanded = false;
     private String themeManagerSubscriberId;
+    private boolean isMoreLayoutVisible = false;
+
+    private int imageWidth = -1;
+    private int imageHeight = -1;
 
     public interface IMemViewRatingInteractionListener {
         void passPostLike(String id);
@@ -310,6 +323,9 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Slide());
+        }
         setContentView(R.layout.activity_mem_view);
         App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
@@ -328,9 +344,8 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 presenter.loadCommentsBase(mem.getId());
             }
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        }
+        clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+
         DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
                 .setTapToRetryEnabled(true)
                 .setOldController(pdvMem.getController())
@@ -365,10 +380,32 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
         });
         refreshUi();
         setColors();
+        initAutoHide();
         themeManagerSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
             @Override
             public void notifyThemeChanged(ThemeManager.Theme t) {
                 setColors();
+            }
+        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setExitTransition(new Slide());
+        }
+    }
+
+    private void initAutoHide() {
+        pdvMem.setOnScaleChangeListener(new OnScaleChangeListener() {
+            @Override
+            public void onScaleChange(float scaleFactor, float focusX, float focusY) {
+                if ((imageHeight == -1 && imageWidth == -1)) {
+                    imageHeight = pdvMem.getHeight() / 2;
+                    imageWidth = pdvMem.getWidth() / 2;
+                }
+                if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
+                    //hide ui
+                    tbUpperToolbar.setVisibility(View.GONE);
+                    tbLikePanel.setVisibility(View.GONE);
+                    isExpanded = true;
+                }
             }
         });
     }
@@ -420,6 +457,13 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                     presenter.postLike(mem.getId());
                     currentQuarry = Quarry.POST_LIKE;
                 }
+            }
+        });
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
+                isMoreLayoutVisible = !isMoreLayoutVisible;
             }
         });
         ivDislike.setOnClickListener(new View.OnClickListener() {
