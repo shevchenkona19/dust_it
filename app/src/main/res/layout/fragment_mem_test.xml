@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@null"
-
     tools:context="dustit.clientapp.mvp.ui.fragments.MemTestFragment">
 
     <android.support.v7.widget.CardView

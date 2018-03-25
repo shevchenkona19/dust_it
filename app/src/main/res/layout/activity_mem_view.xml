@@ -4,14 +4,13 @@
     android:id="@+id/clMemViewUpperLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="#fff">
+    android:animateLayoutChanges="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/abMemViewUpperBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ddffffff"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,16 +28,13 @@
                     android:id="@+id/ivMemViewBack"
                     android:layout_width="24dp"
                     android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:tint="#404040"
                     app:srcCompat="@drawable/ic_arrow_left_simple" />
 
                 <ImageView
                     android:id="@+id/ivMemViewMenu"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -46,7 +42,8 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:tint="#404040"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
                     app:srcCompat="@drawable/anim_from_menu_to_cross" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
@@ -97,7 +94,7 @@
         android:id="@+id/ablExpandablePanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ddffffff"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -119,7 +116,6 @@
                     android:layout_height="match_parent"
                     android:gravity="center|start"
                     android:text="@string/comments"
-                    android:textColor="#000"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -132,7 +128,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    app:srcCompat="@drawable/ic_arrow_down_simple" />
+                    app:srcCompat="@drawable/ic_delete_comment" />
             </RelativeLayout>
 
 
@@ -164,6 +160,9 @@
                     android:layout_height="0dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:paddingTop="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
@@ -268,7 +267,9 @@
         android:id="@+id/cvMemViewCommentSendView"
         android:layout_width="0dp"
         android:layout_height="60dp"
+        android:elevation="90dp"
         android:visibility="gone"
+        app:cardElevation="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -296,8 +297,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="?attr/selectableItemBackground"
                 android:clickable="true"
+                android:focusable="true"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

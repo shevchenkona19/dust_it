@@ -298,7 +298,7 @@ public class DefaultZoomableController
    */
   private void mapRelativeToAbsolute(float[] destPoints, float[] srcPoints, int numPoints) {
     for (int i = 0; i < numPoints; i++) {
-      destPoints[i * 2 + 0] = srcPoints[i * 2 + 0] * mImageBounds.width() + mImageBounds.left;
+      destPoints[i * 2] = srcPoints[i * 2] * mImageBounds.width() + mImageBounds.left;
       destPoints[i * 2 + 1] = srcPoints[i * 2 + 1] * mImageBounds.height() + mImageBounds.top;
     }
   }

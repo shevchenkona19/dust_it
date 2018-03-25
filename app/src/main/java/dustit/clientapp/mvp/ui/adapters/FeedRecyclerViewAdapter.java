@@ -36,6 +36,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.DoubleClickListener;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
@@ -48,7 +49,6 @@ import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final List<MemEntity> memEntityList = new ArrayList<>();
-    private final List<String> themeIds = new ArrayList<>();
     private final List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
     private LayoutInflater inflater;
     private Context context;
@@ -58,9 +58,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int offset = 6;
     private int lastPos;
     private int appBarHeight;
-
-    @Inject
-    ThemeManager themeManager;
 
 
     public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener listener, int appBarHeight) {
@@ -157,9 +154,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         void reloadFeedBase();
 
-        void onMemSelected(View animStart, String transitionName, MemEntity mem);
-
-        void onMemSelected(MemEntity mem);
+        void onMemSelected(View animStart, MemEntity mem);
 
         void postLike(String id);
 
@@ -184,8 +179,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         switch (viewType) {
             case 0:
                 View v = inflater.inflate(R.layout.item_feed, parent, false);
-                final FeedMemViewHolder holder = new FeedMemViewHolder(v, themeManager);
-                themeIds.add(holder.getId());
+                final FeedMemViewHolder holder = new FeedMemViewHolder(v);
                 return holder;
             case 1:
                 if (isLoading) {
@@ -238,7 +232,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.isMoreLayoutVisible = false;
             memViewHolder.vgMoreLayout.setVisibility(View.GONE);
             final MemEntity mem = memEntityList.get(position);
-            ViewCompat.setTransitionName(memViewHolder.sdvMemImage, "trans" + holder.getAdapterPosition());
             memViewHolder.sdvMemImage.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             memViewHolder.sdvMemImage.getHierarchy().setRetryImage(context.getResources().getDrawable(R.drawable.ic_reload));
             memViewHolder.sdvMemImage.setController(
@@ -266,7 +259,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             memViewHolder.ivMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransitionManager.beginDelayedTransition((ViewGroup)memViewHolder.itemView);
+                    TransitionManager.beginDelayedTransition((ViewGroup) memViewHolder.itemView);
                     memViewHolder.vgMoreLayout.setVisibility(memViewHolder.isMoreLayoutVisible ? View.GONE : View.VISIBLE);
                     memViewHolder.isMoreLayoutVisible = !memViewHolder.isMoreLayoutVisible;
                 }
@@ -346,13 +339,23 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     }
                 }
             });
-            memViewHolder.sdvMemImage.setOnClickListener(new View.OnClickListener() {
+            memViewHolder.sdvMemImage.setOnClickListener(new DoubleClickListener() {
                 @Override
-                public void onClick(View view) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        interactionListener.onMemSelected(view, ViewCompat.getTransitionName(view), mem);
-                    } else {
-                        interactionListener.onMemSelected(mem);
+                public void onSingleClick(View view) {
+                    interactionListener.onMemSelected(memViewHolder.itemView, mem);
+                }
+
+                @Override
+                public void onDoubleClick(View v) {
+                    if (opinion != null) {
+                        switch (opinion) {
+                            case DISLIKED:
+                            case NEUTRAL:
+                                interactionListener.postLike(mem.getId());
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             });
@@ -478,42 +481,15 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public boolean isMoreLayoutVisible = false;
 
-        private ThemeManager themeManager;
         public String id;
 
-        FeedMemViewHolder(View itemView, ThemeManager themeManager1) {
+        FeedMemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.themeManager = themeManager1;
-            id = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-                @Override
-                public void notifyThemeChanged(ThemeManager.Theme t) {
-                    setColors();
-                }
-            });
-            setColors();
         }
 
         public String getId() {
             return id;
-        }
-
-        private void setColors() {
-            ivLike.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            tvLikeCount.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-            ivMore.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            addToFavorites.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            cvCard.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
-            ivDisliked.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            tvDislikeCount.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        }
-
-        private int getColorFromResources(int c) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return itemView.getContext().getColor(c);
-            } else {
-                return itemView.getResources().getColor(c);
-            }
         }
     }
 
@@ -552,14 +528,5 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private void showErrorToast() {
         interactionListener.showErrorToast();
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        for (final String id :
-                themeIds) {
-            themeManager.unsubscribe(id);
-        }
-        super.onDetachedFromRecyclerView(recyclerView);
     }
 }

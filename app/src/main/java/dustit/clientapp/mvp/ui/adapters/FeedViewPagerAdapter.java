@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
     private WeakReference<CategoriesFragment> categoriesFragment;
     private final List<FavoriteEntity> list = new ArrayList<>();
 
+    private boolean isCategoriesLoaded;
+
     @Override
     public Fragment getItem(int position) {
         L.print("getItem");
@@ -47,7 +50,7 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
                 selectedFragment = hotFragment;
                 break;
             case 2:
-                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance(appbarHeight);
+                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance(appbarHeight, isCategoriesLoaded);
                 this.categoriesFragment = new WeakReference<>(categoriesFragment);
                 selectedFragment = categoriesFragment;
                 break;
@@ -55,6 +58,10 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
                 selectedFragment = null;
         }
         return selectedFragment;
+    }
+
+    public void setCategoriesLoaded(boolean categoriesLoaded) {
+        isCategoriesLoaded = categoriesLoaded;
     }
 
     @Override

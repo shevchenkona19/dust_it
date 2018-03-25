@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
         android:layout_centerInParent="true">
 
         <android.support.constraint.ConstraintLayout
@@ -32,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="11dp"
                 android:layout_marginStart="8dp"
-                android:text="HiIAmHArry"
                 app:layout_constraintBottom_toTopOf="@+id/tvItemCommentText"
                 app:layout_constraintStart_toEndOf="@+id/sdvItemCommentsUserPhoto"
                 app:layout_constraintTop_toTopOf="@+id/sdvItemCommentsUserPhoto" />
@@ -45,7 +43,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:textColor="#202020"
                 app:layout_constraintBottom_toTopOf="@+id/tvItemCommentDateStamp"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@id/sdvItemCommentsUserPhoto"
@@ -59,7 +56,6 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvItemCommentText" />

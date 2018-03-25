@@ -27,14 +27,15 @@ import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
+import dustit.clientapp.mvp.ui.activities.FavoriteViewActivity;
 import dustit.clientapp.mvp.ui.activities.FavoritesActivity;
 import dustit.clientapp.mvp.ui.activities.FeedActivity;
-import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
+import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.utils.FavoritesUtils;
 
@@ -108,4 +109,6 @@ public interface AppComponent {
     void inject(CategoriesFragment categoriesFragment);
 
     void inject(MemViewFragment memViewFragment);
+
+    void inject(FavoriteViewActivity favoriteViewActivity);
 }

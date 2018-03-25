@@ -3,6 +3,7 @@ package dustit.clientapp.utils;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
 import java.io.File;
@@ -38,7 +39,7 @@ public class ProgressRequestBody extends RequestBody {
     @Override
     public MediaType contentType() {
         // i want to upload only images
-        return MediaType.parse("image/jpeg");
+        return MediaType.parse("image/*");
     }
 
     @Override
@@ -48,13 +49,12 @@ public class ProgressRequestBody extends RequestBody {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void writeTo(BufferedSink sink) throws IOException {
+    public void writeTo(@NonNull BufferedSink sink) throws IOException {
         long fileLength = mFile.length();
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long uploaded = 0;
-        FileInputStream in = new FileInputStream(mFile);
 
-        try {
+        try (FileInputStream in = new FileInputStream(mFile)) {
             int read;
             Handler handler = new Handler(Looper.getMainLooper());
             while ((read = in.read(buffer)) != -1) {
@@ -65,8 +65,6 @@ public class ProgressRequestBody extends RequestBody {
                 uploaded += read;
                 sink.write(buffer, 0, read);
             }
-        } finally {
-            in.close();
         }
     }
 

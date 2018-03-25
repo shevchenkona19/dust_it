@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
     tools:context="dustit.clientapp.mvp.ui.activities.FavoriteViewActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar2"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#fff">
+        android:layout_height="56dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

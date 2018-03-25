@@ -148,6 +148,52 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
         processLikeDislike(dataManager.deleteDislike(id), id);
     }
 
+    @Override
+    public void addToFavourites(String id) {
+        addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onAddedToFavourites();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print(e.getMessage());
+                getView().onError();
+            }
+
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                if (isNotSuccess(responseEntity.getResponse())) {
+                    getView().onError();
+                }
+            }
+        }));
+    }
+
+    @Override
+    public void removeFromFavourites(String id) {
+        addSubscription(dataManager.removeFromFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onRemovedFromFavourites();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print(e.getMessage());
+                getView().onError();
+            }
+
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                if (isNotSuccess(responseEntity.getResponse())) {
+                    getView().onError();
+                }
+            }
+        }));
+    }
+
     private boolean isNotSuccess(int code) {
         return code != 200;
     }

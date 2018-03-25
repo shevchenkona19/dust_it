@@ -1,9 +1,5 @@
 package dustit.clientapp.mvp.presenters.interfaces;
 
-/**
- * Created by Никита on 11.11.2017.
- */
-
 public interface IMemViewPresenter {
     void loadCommentsBase(String id);
     void loadCommentsWithOffset(String id, int offset);
@@ -12,4 +8,6 @@ public interface IMemViewPresenter {
     void deleteLike(String id);
     void postDislike(String id);
     void deleteDislike(String id);
+    void addToFavourites(String id);
+    void removeFromFavourites(String id);
 }

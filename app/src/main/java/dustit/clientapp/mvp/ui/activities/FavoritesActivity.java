@@ -52,7 +52,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
 
     @Inject
     ThemeManager themeManager;
-    private String themeId = "";
 
     private FavoritesRecyclerViewAdapter mAdapter;
     private final FavoritesActivityPresenter mPresenter = new FavoritesActivityPresenter();
@@ -60,8 +59,8 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites);
         App.get().getAppComponent().inject(this);
+        setContentView(R.layout.activity_favorites);
         ButterKnife.bind(this);
         mPresenter.bind(this);
         setSupportActionBar(toolbar);
@@ -83,32 +82,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
                 finish();
             }
         });
-        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
-        setColors();
-    }
-
-    private void setColors() {
-        toolbar.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
-        toolbar.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-        toolbar.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        clParent.setBackgroundColor(getColorFromResources(themeManager.getBackgroundMainColor()));
-        tvError.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        tvEmptyText.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        btnReload.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        btnReload.setBackgroundColor(getColorFromResources(themeManager.getAccentColor()));
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
     }
 
     @Override
@@ -157,7 +130,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     @Override
     protected void onDestroy() {
         mPresenter.unbind();
-        themeManager.unsubscribe(themeId);
         super.onDestroy();
     }
 

@@ -2,20 +2,39 @@ package dustit.clientapp.utils.managers;
 
 import android.content.Context;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import dustit.clientapp.R;
-import dustit.clientapp.utils.L;
 
 public class ThemeManager {
+    private Context context;
 
     public enum Theme {
         LIGHT,
-        DARK,
-        DEFAULT
+        NIGHT,
     }
+
+    private Theme currentTheme = Theme.LIGHT;
+
+    public ThemeManager(Context bundle) {
+        context = bundle;
+    }
+
+    public Theme getCurrentTheme() {
+        return currentTheme;
+    }
+
+    public String[] getThemeList() {
+        return new String[]{
+                context.getString(R.string.theme_light),
+                context.getString(R.string.theme_dark)
+        };
+    }
+
+    public void setCurrentTheme(Theme t) {
+        currentTheme = t;
+    }
+
+/*
+
 
     public ThemeManager(Context context) {
         this.context = context;
@@ -237,5 +256,5 @@ public class ThemeManager {
 
     public int getOnCardAccentColor() {
         return onCardAccentColor;
-    }
+    }*/
 }

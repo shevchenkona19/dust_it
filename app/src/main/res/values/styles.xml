@@ -23,6 +23,8 @@
     </style>
     <style name="HelloTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/main_gradient_color</item>
+        <item name="colorAccent">#fff</item>
+        <item name="android:statusBarColor">@null</item>
     </style>
 
     <style name="SplashScreenStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -35,9 +37,16 @@
     <style name="TextLabel" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorMainText</item>
     </style>
-    
+
     <style name="BlackColorButton" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/colorPrimaryDefault</item>
         <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/colorPrimaryDefault</item>
     </style>
+
+    <style name="AppThemeDayNight" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

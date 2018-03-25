@@ -46,23 +46,23 @@
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppThemeDayNight"/>
         <activity
             android:name=".mvp.ui.activities.AccountActivity"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".mvp.ui.activities.SettingsActivity" />
-        <activity android:name=".mvp.ui.activities.PersonalSettingsActivity" />
+            android:theme="@style/AppThemeDayNight" />
+        <activity android:name=".mvp.ui.activities.SettingsActivity"
+            android:theme="@style/AppThemeDayNight"/>
+        <activity android:name=".mvp.ui.activities.PersonalSettingsActivity"
+            android:theme="@style/AppThemeDayNight"/>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".mvp.ui.fragments.MemViewActivity"
-            android:theme="@style/DismissableActivity" />
-        <activity android:name=".mvp.ui.activities.FavoritesActivity" />
+        <activity android:name=".mvp.ui.activities.FavoritesActivity"
+            android:theme="@style/AppThemeDayNight"/>
         <activity
             android:name=".mvp.ui.activities.FavoriteViewActivity"
-            android:theme="@style/DismissableActivity" />
+            android:theme="@style/AppThemeDayNight" />
     </application>
 
 </manifest>

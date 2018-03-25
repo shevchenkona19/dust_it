@@ -2,15 +2,15 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -20,8 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +35,6 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ISettingsActivityView;
 import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivityView {
@@ -46,8 +43,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     Button btnLogout;
     @BindView(R.id.tbSettingsToolbar)
     Toolbar toolbar;
-    @BindView(R.id.flActivitySettingsContainer)
-    ViewGroup flContainer;
     @BindView(R.id.tvSettingsChooseThemeLabel)
     TextView tvSettingsChooseThemeLabel;
     @BindView(R.id.tvSettingChangeLanguage)
@@ -69,17 +64,16 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     UserSettingsDataManager userSettingsDataManager;
 
     private final int LIGHT = 0;
-    private final int DEFAULT = 1;
-    private final int DARK = 2;
+    private final int NIGHT = 1;
+    private boolean isFirstLaunch = true;
 
     private final SettingsActivityPresenter presenter = new SettingsActivityPresenter();
-    private String themeSubscriberId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
         App.get().getAppComponent().inject(this);
+        setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         presenter.bind(this);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -99,15 +93,20 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                     case LIGHT:
                         themeManager.setCurrentTheme(ThemeManager.Theme.LIGHT);
                         presenter.saveTheme(ThemeManager.Theme.LIGHT);
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                         break;
-                    case DEFAULT:
-                        themeManager.setCurrentTheme(ThemeManager.Theme.DEFAULT);
-                        presenter.saveTheme(ThemeManager.Theme.DEFAULT);
+                    case NIGHT:
+                        themeManager.setCurrentTheme(ThemeManager.Theme.NIGHT);
+                        presenter.saveTheme(ThemeManager.Theme.NIGHT);
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                         break;
-                    case DARK:
-                        themeManager.setCurrentTheme(ThemeManager.Theme.DARK);
-                        presenter.saveTheme(ThemeManager.Theme.DARK);
-                        break;
+                    default:
+                        return;
+                }
+                if (!isFirstLaunch) {
+                    restartCurrentAndBackstack();
+                } else {
+                    isFirstLaunch = false;
                 }
             }
 
@@ -182,26 +181,15 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
             }
         });
-        setColors();
-        themeSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
     }
 
-    private void setColors() {
-        cbUseImmersive.setBackgroundColor(getColorFromResources(themeManager.getAccentColor()));
-        toolbar.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
-        toolbar.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-        toolbar.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        tvSettingsChooseThemeLabel.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        tvCurrentLanguage.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
-        tvChangeLanguage.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        animate(themeManager.getPrevBackgroundMainColor(), themeManager.getBackgroundMainColor(), flContainer);
-        animate(themeManager.getPrevPrimaryColor(), themeManager.getPrimaryColor(), toolbar);
-
+    private void restartCurrentAndBackstack() {
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
+                .addNextIntent(new Intent(this, FeedActivity.class))
+                .addNextIntent(new Intent(this, AccountActivity.class))
+                .addNextIntent(new Intent(this, SettingsActivity.class));
+        stackBuilder.startActivities();
+        finish();
     }
 
     public void restartActivity() {
@@ -236,7 +224,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     @Override
     protected void onDestroy() {
         presenter.unbind();
-        themeManager.unsubscribe(themeSubscriberId);
         super.onDestroy();
     }
 

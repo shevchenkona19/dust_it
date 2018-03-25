@@ -145,8 +145,8 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> postPhoto(String token, MultipartBody.Part body) {
-        return serverAPI.postPhoto(token, body).observeOn(AndroidSchedulers.mainThread());
+    public Observable<ResponseEntity> postPhoto(String token, MultipartBody.Part image) {
+        return serverAPI.postPhoto(token, image).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<UsernameEntity> getMyUsername(String token) {

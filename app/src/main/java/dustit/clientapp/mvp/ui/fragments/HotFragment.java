@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -24,6 +26,7 @@ import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -44,6 +47,9 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
     @BindView(R.id.srlHotRefresh)
     SwipeRefreshLayout srlRefresh;
     private int appBarHeight;
+
+    @Inject
+    ThemeManager themeManager;
 
     public HotFragment() {
     }
@@ -223,13 +229,8 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
     }
 
     @Override
-    public void onMemSelected(View animStart, String transitionName, MemEntity mem) {
-        launchMemView(animStart, transitionName, mem);
-    }
-
-    @Override
-    public void onMemSelected(MemEntity mem) {
-        interactionListener.onMemSelected(mem);
+    public void onMemSelected(View animStart, MemEntity mem) {
+        launchMemView(animStart, mem);
     }
 
     @Override

@@ -18,10 +18,6 @@ public interface ICategoriesFragmentView extends IFragmentView {
 
     void onStartLoading();
 
-    void onCategoriesLoaded(List<Category> categoryList);
-
-    void onCategoriesFailedToLoad();
-
     void onLikePostError(String id);
 
     void onLikeDeletingError(String id);

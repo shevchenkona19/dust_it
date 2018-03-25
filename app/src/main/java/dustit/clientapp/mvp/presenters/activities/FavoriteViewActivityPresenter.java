@@ -53,7 +53,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
 
                     @Override
                     public void onNext(ResponseEntity responseEntity) {
-                        if (responseEntity.getResponse() == 200) {
+                        if (responseEntity.getResponse() != 200) {
                             getView().onErrorRemovingFromFavorites();
                         }
                     }
@@ -62,7 +62,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
 
     @Override
     public void downloadImage(String id) {
-        Picasso.with(dataManager.getContext())
+        Picasso.get()
                 .load(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + id))
                 .into(new Target() {
                     @Override
@@ -77,7 +77,7 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
                     }
 
                     @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                         getView().onDownloadFailed();
                     }
 

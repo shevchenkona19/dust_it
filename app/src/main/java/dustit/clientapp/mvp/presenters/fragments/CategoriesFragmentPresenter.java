@@ -76,28 +76,6 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
     }
 
     @Override
-    public void getCategories() {
-        final List<Category> categoryList = new ArrayList<>();
-        addSubscription(dataManager.getCategories()
-                .subscribe(new Subscriber<Category>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().onCategoriesLoaded(categoryList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onCategoriesFailedToLoad();
-                    }
-
-                    @Override
-                    public void onNext(Category category) {
-                        categoryList.add(category);
-                    }
-                }));
-    }
-
-    @Override
     public void postLike(final String id) {
         if (!userSettingsDataManager.isRegistered()) {
             getView().onNotRegistered();

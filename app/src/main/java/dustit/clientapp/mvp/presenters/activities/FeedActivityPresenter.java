@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -29,7 +30,6 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
     public FeedActivityPresenter() {
         App.get().getAppComponent().inject(this);
     }
-
 
 
     @Override
@@ -86,6 +86,27 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             @Override
             public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
                 container.put(favoritesUpperEntity);
+            }
+        }));
+    }
+
+    @Override
+    public void getCategories() {
+        final List<Category> categories = new ArrayList<>();
+        addSubscription(dataManager.getCategories().subscribe(new Subscriber<Category>() {
+            @Override
+            public void onCompleted() {
+                getView().onCategoriesArrived(categories);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Category category) {
+                categories.add(category);
             }
         }));
     }

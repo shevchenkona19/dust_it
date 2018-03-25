@@ -1,10 +1,12 @@
 package dustit.clientapp.mvp.presenters.activities;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
+import dustit.clientapp.customviews.zoomableview.MultiGestureListener;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
@@ -16,6 +18,7 @@ import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import dustit.clientapp.utils.containers.Container;
+import okhttp3.MultipartBody;
 import rx.Subscriber;
 
 
@@ -123,6 +126,7 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void onProgressUpdate(int percentage) {
+        L.print("UPLOAD PROG: " + percentage);
         getView().updateUploadingProgress(percentage);
     }
 

@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -99,7 +102,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.tvUsername.setText(comment.getUsername());
             commentViewHolder.tvText.setText(comment.getText());
             commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + comment.getUsername());
-            commentViewHolder.tvDateStamp.setText(comment.getDateOfPost());
+            final String monthDay = comment.getDateOfPost().substring(
+                    comment.getDateOfPost().indexOf('T') - 5, comment.getDateOfPost().indexOf('T'));
+            final String hourMinute = comment.getDateOfPost().substring(
+                    comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
+            commentViewHolder.tvDateStamp.setText(hourMinute + " " + monthDay);
         } else if (holder instanceof FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) {
             final FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder failedToLoadViewHolder = (FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) holder;
             failedToLoadViewHolder.btnRetry.setOnClickListener(new View.OnClickListener() {

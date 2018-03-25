@@ -63,4 +63,7 @@
     <string name="about_mem_message">Цей мем було узято з</string>
     <string name="ok">Окей</string>
     <string name="use_immersive_mode">Использовать Immersive режим</string>
+    <string name="choose_categories">Выбирайте категории</string>
+    <string name="accept">Применить</string>
+    <string name="share_image">Поделиться мемом:</string>
 </resources>

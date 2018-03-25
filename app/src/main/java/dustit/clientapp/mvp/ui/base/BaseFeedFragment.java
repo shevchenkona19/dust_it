@@ -19,7 +19,7 @@ public abstract class BaseFeedFragment extends Fragment {
 
         void notifyOnScrollChanged(int distance);
 
-        void launchMemView(View animStart, String transitionName, MemEntity memEntity);
+        void launchMemView(View holder, MemEntity memEntity);
 
         void launchMemView(MemEntity memEntity);
 
@@ -39,8 +39,8 @@ public abstract class BaseFeedFragment extends Fragment {
         }
     }
 
-    public void launchMemView(View view, String transitionName, MemEntity memEntity) {
-        fragmentInteraction.launchMemView(view, transitionName, memEntity);
+    public void launchMemView(View view, MemEntity memEntity) {
+        fragmentInteraction.launchMemView(view, memEntity);
     }
 
     public void launchMemView(MemEntity memEntity) {

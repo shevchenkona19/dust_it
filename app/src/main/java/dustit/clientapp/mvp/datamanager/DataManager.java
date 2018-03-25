@@ -188,7 +188,7 @@ public class DataManager {
     }
 
     public Observable<ResponseEntity> postPhoto(ProgressRequestBody requestBody, String fileName) {
-        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", fileName, requestBody);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", fileName, requestBody);
         return serverRepository.postPhoto(getToken(), body);
     }
 

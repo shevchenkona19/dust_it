@@ -4,11 +4,8 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -17,32 +14,30 @@ import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.ChangeBounds;
-import android.transition.Explode;
-import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.LinearLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.transitionseverywhere.ArcMotion;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.TransitionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,23 +49,22 @@ import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
+import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedViewPagerAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
-import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ThemeManager;
 
-public class FeedActivity extends AppCompatActivity implements FeedFragment.IFeedFragmentInteractionListener,
+public class FeedActivity extends AppCompatActivity implements
         HotFragment.IHotFragmentInteractionListener,
         CategoriesFragment.ICategoriesFragmentInteractionListener,
         IFeedActivityView,
@@ -106,6 +100,8 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     ViewGroup container;
     @BindView(R.id.tbFeedActivity)
     android.support.v7.widget.Toolbar toolbar;
+    @BindView(R.id.spCategoriesChooser)
+    Spinner spCategoriesChooser;
 
     private FeedViewPagerAdapter adapter;
     private FeedActivityPresenter presenter;
@@ -113,6 +109,8 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     private boolean isFeed = false;
     private boolean isHot = false;
     private boolean isCategories = false;
+
+    private boolean isFirstLaunch = true;
 
     private boolean isToolbarCollapsed = false;
     private boolean animIsPlaying = false;
@@ -128,8 +126,15 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     private final List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
 
-    private String themeSubscribeId;
     private final int[] ids = {R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_categories_pressed};
+
+    public interface ICategoriesSpinnerInteractionListener {
+        void onCategoriesArrived();
+
+        void onCategorySelected(Category category);
+    }
+
+    private ICategoriesSpinnerInteractionListener spinnerInteractionListener;
 
     @Inject
     ThemeManager themeManager;
@@ -139,13 +144,12 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_feed);
         presenter = new FeedActivityPresenter();
         presenter.bind(this);
         ButterKnife.bind(this);
         presenter.getMyFavorites();
-        App.get().getAppComponent().inject(this);
-        vpFeed.setOffscreenPageLimit(3);
         sdvUserIcon.setLegacyVisibilityHandlingEnabled(true);
         presenter.getMyUsername();
         clLayout.getHitRect(screenBounds);
@@ -163,8 +167,84 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                         vpFeed.setCurrentItem(1, true);
                         break;
                     case 2:
+                        final Animation fromCenterToLeft = AnimationUtils.loadAnimation(FeedActivity.this, R.anim.from_center_to_left);
+                        final Animation fromRightToCenter = AnimationUtils.loadAnimation(FeedActivity.this, R.anim.from_right_to_center);
+                        fromCenterToLeft.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                tvAppName.setVisibility(View.GONE);
+                                fromRightToCenter.setAnimationListener(new Animation.AnimationListener() {
+                                    @Override
+                                    public void onAnimationStart(Animation animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animation animation) {
+                                        spCategoriesChooser.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animation animation) {
+
+                                    }
+                                });
+                                spCategoriesChooser.startAnimation(fromRightToCenter);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        tvAppName.startAnimation(fromCenterToLeft);
                         vpFeed.setCurrentItem(2, true);
-                        break;
+                        return;
+                }
+                if (tvAppName.getVisibility() != View.VISIBLE) {
+                    final Animation fromCenterToRight = AnimationUtils.loadAnimation(FeedActivity.this,
+                            R.anim.from_center_to_right);
+                    final Animation fromLeftToCenter = AnimationUtils.loadAnimation(FeedActivity.this,
+                            R.anim.from_left_to_center);
+                    fromCenterToRight.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            spCategoriesChooser.setVisibility(View.GONE);
+                            fromLeftToCenter.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    tvAppName.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            tvAppName.startAnimation(fromLeftToCenter);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    spCategoriesChooser.startAnimation(fromCenterToRight);
                 }
             }
 
@@ -184,13 +264,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                 revealAccount(v);
             }
         });
-        setColors(themeManager.getCurrentTheme());
-        themeSubscribeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors(t);
-            }
-        });
         fabColapsed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,6 +277,7 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         layoutTransition.setDuration(LayoutTransition.CHANGING, 100);
         clLayout.setLayoutTransition(layoutTransition);
+        presenter.getCategories();
     }
 
     @Override
@@ -215,9 +289,12 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+        if (hasFocus && isFirstLaunch) {
+            isFirstLaunch = false;
             adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), appBar.getHeight());
-            vpFeed.setAdapter(adapter);
+            if (vpFeed.getAdapter() == null)
+                vpFeed.setAdapter(adapter);
+            vpFeed.setOffscreenPageLimit(3);
             SHOWN_TOOLBAR_Y = 0;
             HIDDEN_TOOLBAR_Y = 0 - toolbar.getHeight();
         }
@@ -235,9 +312,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                 fabColapsed.setImageResource(ids[2]);
                 break;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fabColapsed.setImageTintList(ColorStateList.valueOf(getColorFromResources(themeManager.getAccentColor())));
-        }
     }
 
     private void revealAccount(View view) {
@@ -249,47 +323,11 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         startActivity(intent, options.toBundle());
     }
 
-    private void setColors(ThemeManager.Theme t) {
-        fabColapsed.setBackgroundTintList(ColorStateList.valueOf(getColorFromResources(themeManager.getPrimaryColor())));
-        tvAppName.setTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-        appBar.setBackgroundResource(themeManager.getPrimaryColor());
-        tlFeedTabs.setSelectedTabIndicatorColor(getColorFromResources(themeManager.getAccentColor()));
-        if (tlFeedTabs.getTabAt(0) != null && tlFeedTabs.getTabAt(1) != null &&
-                tlFeedTabs.getTabAt(2) != null) {
-            tlFeedTabs.getTabAt(0).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            tlFeedTabs.getTabAt(1).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-            tlFeedTabs.getTabAt(2).getIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fabColapsed.setImageTintList(ColorStateList.valueOf(getColorFromResources(themeManager.getAccentColor())));
-        }
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         presenter.unbind();
         adapter.destroy();
-        themeManager.unsubscribe(themeSubscribeId);
         super.onDestroy();
-    }
-
-    @Override
-    public void onFeedMemSelected(MemEntity memEntity) {
-        //show mem
-        isFeed = true;
-        isHot = false;
-        isCategories = false;
-        final Intent intent = new Intent(this, MemViewActivity.class);
-        intent.putExtra(MEM_ENTITY, memEntity);
-        startActivity(intent);
     }
 
     @Override
@@ -300,39 +338,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         final Intent intent = new Intent(this, MemViewActivity.class);
         intent.putExtra(MEM_ENTITY, memEntity);
         startActivity(intent);
-    }
-
-    @Override
-    public void onMemCategorySelected(MemEntity memEntity) {
-        isFeed = false;
-        isHot = false;
-        isCategories = true;
-        final Intent intent = new Intent(this, MemViewActivity.class);
-        intent.putExtra(MEM_ENTITY, memEntity);
-        startActivity(intent);
-    }
-
-    @Override
-    public void setScrollFlags() {
-        final AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) tlFeedTabs.getLayoutParams();
-        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        tlFeedTabs.setLayoutParams(params);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBar.setElevation(0);
-        }
-    }
-
-    @Override
-    public void resetScrollFlags() {
-        final AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) tlFeedTabs.getLayoutParams();
-        params.setScrollFlags(0);
-        tlFeedTabs.setLayoutParams(params);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBar.setElevation(9);
-        }
     }
 
     @Override
@@ -402,8 +407,41 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         notifyFragments();
     }
 
+    @Override
+    public void onCategoriesArrived(final List<Category> categoryList) {
+        adapter.setCategoriesLoaded(true);
+        final List<String> categoryNames = new ArrayList<>();
+        for (Category category : categoryList) categoryNames.add(category.getName());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, categoryNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategoriesChooser.setAdapter(adapter);
+        spCategoriesChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (spinnerInteractionListener != null) {
+                    spinnerInteractionListener.onCategorySelected(categoryList.get(position));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        if (spinnerInteractionListener != null)
+            spinnerInteractionListener.onCategoriesArrived();
+    }
+
+    @Override
+    public void onCategoriesFailedToLoad() {
+        adapter.setCategoriesLoaded(false);
+        onError();
+    }
+
     private void notifyFragments() {
-        adapter.setFavoritesList(favoriteEntityList);
+        if (adapter != null)
+            adapter.setFavoritesList(favoriteEntityList);
     }
 
     @Override
@@ -414,7 +452,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     @Override
     public void notifyOnScrollChanged(int distance) {
-        boolean isScrollGoingUp = distance < 0;
         if (canToolbarCollapse) {
             if (!animIsPlaying) {
                 if (!isToolbarCollapsed) {
@@ -436,61 +473,36 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                         if (fabColapsed.getY() == fabScrollYNormalPos) return;
                         fabColapsed.setY(fabScrollYNormalPos);
                     }
-                    if (isScrollGoingUp && fabColapsed.getY() != fabScrollYNormalPos && fabColapsed.getY() != FAB_HIDDEN_Y) {
-                        if (isFeedScrollIdle) {
-                            if (fabColapsed.getLocalVisibleRect(screenBounds)) {
-                                ValueAnimator animator = ValueAnimator.ofFloat(fabColapsed.getY(), FAB_HIDDEN_Y);
-                                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                        fabColapsed.setY((float) animation.getAnimatedValue());
-                                    }
-                                });
-                                animator.start();
-                            }
-                        }
-                    }
                 }
             }
         } else {
             float setY = distance > 0 ? appBar.getY() - FAB_STEP : appBar.getY() + FAB_STEP;
             if (setY <= HIDDEN_TOOLBAR_Y) {
-                if (appBar.getY() == HIDDEN_TOOLBAR_Y) return;
-                appBar.setY(HIDDEN_TOOLBAR_Y);
-                return;
-            }
-            if (setY <= SHOWN_TOOLBAR_Y) {
+                if (appBar.getY() != HIDDEN_TOOLBAR_Y) {
+                    appBar.setY(HIDDEN_TOOLBAR_Y);
+                }
+            } else if (setY <= SHOWN_TOOLBAR_Y) {
                 appBar.setY(setY);
             } else {
-                if (fabColapsed.getY() == SHOWN_TOOLBAR_Y) return;
+                if (appBar.getY() == SHOWN_TOOLBAR_Y) return;
                 appBar.setY(SHOWN_TOOLBAR_Y);
-            }
-            if (isScrollGoingUp && appBar.getY() != SHOWN_TOOLBAR_Y && appBar.getY() != HIDDEN_TOOLBAR_Y) {
-                if (isFeedScrollIdle) {
-                    if (appBar.getLocalVisibleRect(screenBounds)) {
-                        ValueAnimator animator = ValueAnimator.ofFloat(appBar.getY(), HIDDEN_TOOLBAR_Y);
-                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                appBar.setY((float) animation.getAnimatedValue());
-                            }
-                        });
-                        animator.start();
-                    }
-                }
             }
         }
     }
 
     @Override
-    public void launchMemView(View animStart, String transitionName, MemEntity memEntity) {
-        final Fragment fragment = MemViewFragment.newInstance(memEntity, transitionName);
-        fragment.setSharedElementEnterTransition(new DetailsTransition());
-        fragment.setEnterTransition(new Fade());
-        fragment.setSharedElementReturnTransition(new DetailsTransition());
+    public void launchMemView(View holder, MemEntity memEntity) {
+        final View v = holder.findViewById(R.id.sdvItemFeed);
+        ViewCompat.setTransitionName(v, getString(R.string.mem_feed_transition_name));
+        final Fragment fragment = MemViewFragment.newInstance(memEntity);
+        Transition transition = TransitionInflater
+                .from(this).inflateTransition(R.transition.mem_view_transition);
+        fragment.setSharedElementEnterTransition(transition);
+        fragment.setSharedElementReturnTransition(transition);
         getSupportFragmentManager()
                 .beginTransaction()
-                .addSharedElement(animStart, transitionName)
+                .setReorderingAllowed(true)
+                .addSharedElement(v, getString(R.string.mem_feed_transition_name))
                 .replace(R.id.feedContainer, fragment)
                 .addToBackStack(null)
                 .commit();
@@ -516,7 +528,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     @Override
     public void launchMemView(MemEntity memEntity) {
-        container.bringToFront();
         final Intent intent = new Intent(this, MemViewActivity.class);
         intent.putExtra(MEM_ENTITY, memEntity);
         startActivity(intent);
@@ -525,24 +536,52 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
     @Override
     public void notifyFeedScrollIdle(boolean b) {
         isFeedScrollIdle = b;
-        if (isFeedScrollIdle) {
-            if (fabColapsed.getLocalVisibleRect(screenBounds)) {
-                ValueAnimator animator = ValueAnimator.ofFloat(fabColapsed.getY(), fabScrollYNormalPos);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        fabColapsed.setY((float) animation.getAnimatedValue());
-                    }
-                });
-                animator.start();
+        if (canToolbarCollapse) {
+            if (isFeedScrollIdle) {
+                if (fabColapsed.getLocalVisibleRect(screenBounds) && fabColapsed.getY() != fabScrollYNormalPos) {
+                    ValueAnimator animator = ValueAnimator.ofFloat(fabColapsed.getY(), fabScrollYNormalPos);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            fabColapsed.setY((float) animation.getAnimatedValue());
+                        }
+                    });
+                    animator.start();
+                }
+            }
+        } else {
+            if (isFeedScrollIdle) {
+                if (appBar.getY() != SHOWN_TOOLBAR_Y && appBar.getY() != HIDDEN_TOOLBAR_Y) {
+                    ValueAnimator animator = ValueAnimator.ofFloat(appBar.getY(), SHOWN_TOOLBAR_Y);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            appBar.setY((float) animation.getAnimatedValue());
+                        }
+                    });
+                    animator.start();
+                }
             }
         }
     }
 
     @Override
     public void notifyFeedOnTop() {
-        if (isToolbarCollapsed)
-            setToolbarCollapsed(false);
+        if (canToolbarCollapse) {
+            if (isToolbarCollapsed)
+                setToolbarCollapsed(false);
+        } else {
+            if (appBar.getY() != SHOWN_TOOLBAR_Y) {
+                ValueAnimator animator = ValueAnimator.ofFloat(appBar.getY(), SHOWN_TOOLBAR_Y);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        appBar.setY((float) animation.getAnimatedValue());
+                    }
+                });
+                animator.start();
+            }
+        }
     }
 
     private void setToolbarCollapsed(boolean collapseToolbar) {
@@ -557,10 +596,10 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void revealToolbar() {
-        appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         isToolbarCollapsed = false;
-        int x = (int) (fabColapsed.getX() + fabColapsed.getWidth() / 2);
-        int y = (int) (fabColapsed.getY() + fabColapsed.getHeight() / 2);
+        final int x = (int) (fabColapsed.getX() + fabColapsed.getWidth() / 2);
+        final int y = (int) (fabColapsed.getY() + fabColapsed.getHeight() / 2);
+        appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         int endRadius = (int) Math.hypot(appBar.getWidth(), appBar.getHeight());
         Animator revealAnim = ViewAnimationUtils.createCircularReveal(appBar, x, y, 28, endRadius);
         revealAnim.setDuration(500);
@@ -590,6 +629,12 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         fabColapsed.setVisibility(View.GONE);
         appBar.setVisibility(View.VISIBLE);
         revealAnim.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fabColapsed.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -629,6 +674,16 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
         unrevealAnim.start();
     }
 
+    @Override
+    public void onAttachToActivity(ICategoriesSpinnerInteractionListener listener) {
+        spinnerInteractionListener = listener;
+    }
+
+    @Override
+    public void onDetachFromActivity() {
+        spinnerInteractionListener = null;
+    }
+
     private void setCooldown() {
         cooldownPassed[0] = false;
         handler.postDelayed(new Runnable() {
@@ -637,12 +692,5 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.IFee
                 cooldownPassed[0] = true;
             }
         }, 300);
-    }
-
-    private class DetailsTransition extends TransitionSet {
-        DetailsTransition() {
-            setOrdering(ORDERING_TOGETHER);
-            addTransition(new ChangeBounds());
-        }
     }
 }

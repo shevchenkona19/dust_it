@@ -2,7 +2,6 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,16 +19,19 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
-import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dustit.clientapp.App;
 import dustit.clientapp.R;
-import dustit.clientapp.customviews.TouchImageView;
 import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.ImageShareUtils;
+import dustit.clientapp.utils.managers.ThemeManager;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class FavoriteViewActivity extends AppCompatActivity implements IFavoriteViewActivityView {
@@ -46,17 +48,25 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @BindView(R.id.ivFavoriteViewDownload)
     ImageView ivDownload;
 
+    @Inject
+    ThemeManager themeManager;
+
     private final FavoriteViewActivityPresenter mPresenter = new FavoriteViewActivityPresenter();
     private String mFavoriteId;
+    private String imageUrl;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_favorite_view);
         ButterKnife.bind(this);
         mPresenter.bind(this);
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId)
+        imageUrl = IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId;
+        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
                 .setTapToRetryEnabled(true)
                 .setOldController(tivImage.getController())
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -102,7 +112,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         ivShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(FavoriteViewActivity.this, "NE RABOTAET", Toast.LENGTH_SHORT).show();
+                ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this);
             }
         });
     }

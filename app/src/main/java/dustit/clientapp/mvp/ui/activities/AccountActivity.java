@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,11 +88,6 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     CardView cvAccountCard;
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
 
-    private String themeId = "";
-
-    @Inject
-    ThemeManager themeManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -112,11 +106,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             window.setSharedElementExitTransition(transitionSet);
         }
         super.onCreate(savedInstanceState);
+        App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
         sdvIcon.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mPresenter.bind(this);
-        App.get().getAppComponent().inject(this);
         setSupportActionBar(tbAccount);
         mPresenter.getUsername();
         mPresenter.getFavorites();
@@ -205,45 +199,15 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 unRevealActivity();
             }
         });
-        setColors();
-        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     protected void unRevealActivity() {
         supportFinishAfterTransition();
-    }
-
-    private void setColors() {
-        tbAccount.setBackgroundResource(themeManager.getPrimaryColor());
-        tvUsername.setTextColor(getColorFromResources(themeManager.getAccentColor()));
-        btnEdit.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        btnReload.setTextColor(getColorFromResources(themeManager.getOnCardAccentColor()));
-        btnSettings.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        pbLoading.getIndeterminateDrawable().setColorFilter(themeManager.getPrimaryColor(), PorterDuff.Mode.MULTIPLY);
-        tvFailedToLoad.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
-        btnReload.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        tvFavoritesCounter.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
-        clContainer.setBackgroundResource(themeManager.getBackgroundMainColor());
-        cvAccountCard.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
-        ivToFavorites.setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        btnEdit.getCompoundDrawables()[2].setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        btnSettings.getCompoundDrawables()[2].setColorFilter(getColorFromResources(themeManager.getOnCardAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        tbAccount.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        tbAccount.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
     }
 
     @Override
@@ -255,7 +219,6 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     protected void onDestroy() {
         sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
         mPresenter.unbind();
-        themeManager.unsubscribe(themeId);
         super.onDestroy();
     }
 
@@ -296,9 +259,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDarkDefault));
                 options.setActiveWidgetColor(getResources().getColor(R.color.colorPrimaryDefault));
                 options.setToolbarTitle(getString(R.string.crop_photo));
-                UCrop.of(imageSource, destinationUri)
-                        .withOptions(options)
-                        .start(this, CROPPED_IMAGE);
+                if (imageSource != null) {
+                    UCrop.of(imageSource, destinationUri)
+                            .withOptions(options)
+                            .start(this, CROPPED_IMAGE);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -313,7 +278,10 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 return;
             }
             Uri croppedImage = UCrop.getOutput(data);
-            File file = new File(croppedImage.getPath());
+            File file = null;
+            if (croppedImage != null) {
+                file = new File(croppedImage.getPath());
+            }
             mPresenter.uploadImage(file);
             sdvIcon.setVisibility(View.GONE);
             cpbPhotoLoading.setVisibility(View.VISIBLE);

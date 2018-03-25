@@ -1,6 +1,7 @@
 package dustit.clientapp;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -46,12 +47,21 @@ public class App extends Application {
         LeakCanary.install(this);
 
         Fresco.initialize(this);
-        Picasso.with(this).setLoggingEnabled(true);
+        Picasso.get().setLoggingEnabled(true);
         instance = this;
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
         appComponent.inject(this);
         themeManager.setCurrentTheme(userSettingsDataManager.loadTheme());
+        switch (themeManager.getCurrentTheme()) {
+            case LIGHT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case NIGHT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+        }
+
     }
 }

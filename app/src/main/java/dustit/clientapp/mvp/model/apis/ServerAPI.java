@@ -110,12 +110,14 @@ public interface ServerAPI {
 
     @Multipart
     @POST("/config/postPhoto")
-    Observable<ResponseEntity> postPhoto(@Header("Authorization") String token, @Part MultipartBody.Part photo);
+    Observable<ResponseEntity> postPhoto(@Header("Authorization") String token,
+                                         @Part MultipartBody.Part photo);
 
     @GET("/account/getMyUsername")
     Observable<UsernameEntity> getMyUsername(@Header("Authorization") String token);
 
     @GET("/favorites/removeFromFavorites")
-    Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token, @Query("id") String id);
+    Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token,
+                                                   @Query("id") String id);
 
 }

@@ -69,8 +69,8 @@ import me.relex.photodraweeview.PhotoDraweeView;
  * Let's GO!
  */
 
-public class MemViewActivity extends AppCompatActivity implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView {
-
+public class MemViewActivity/* extends AppCompatActivity implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView */{
+/*
     private MemEntity mem;
 
     private enum Quarry {
@@ -135,9 +135,6 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     ViewGroup vgMoreLayout;
     @BindView(R.id.tvMemViewSrc)
     TextView tvSrc;
-
-    @Inject
-    ThemeManager themeManager;
     @Inject
     DataManager dataManager;
 
@@ -379,14 +376,7 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
             }
         });
         refreshUi();
-        setColors();
         initAutoHide();
-        themeManagerSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setExitTransition(new Slide());
         }
@@ -408,35 +398,6 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
                 }
             }
         });
-    }
-
-    private void setColors() {
-        toolbar.setBackgroundResource(themeManager.getPrimaryColor());
-        clUpperLayout.setBackgroundResource(themeManager.getBackgroundMainColor());
-        tbLikePanel.setBackgroundResource(themeManager.getPrimaryColor());
-        tvCommentsLabel.setTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-        tvLikeCount.setTextColor(getColorFromResources(themeManager.getAccentColor()));
-        tvDislikeCount.setTextColor(getColorFromResources(themeManager.getAccentColor()));
-        cvCommentSendPanel.setCardBackgroundColor(getColorFromResources(themeManager.getCardBackgroundColor()));
-        tvCommentEmpty.setTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
-        etComment.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        etComment.setHintTextColor(getColorFromResources(themeManager.getSecondaryTextMainAppColor()));
-        ivBack.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivMenu.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivDisexpand.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivAddToFavourites.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivExpandComments.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivLike.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        ivDislike.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
     }
 
     private void initOnClicks() {
@@ -580,7 +541,6 @@ public class MemViewActivity extends AppCompatActivity implements CommentsRecycl
     protected void onDestroy() {
         presenter.unbind();
         listener = null;
-        themeManager.unsubscribe(themeManagerSubscriberId);
         super.onDestroy();
-    }
+    }*/
 }

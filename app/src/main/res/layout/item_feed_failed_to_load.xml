@@ -24,7 +24,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:text="@string/retry_load_feed"
-        android:textColor="#303030"
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/textView8"/>

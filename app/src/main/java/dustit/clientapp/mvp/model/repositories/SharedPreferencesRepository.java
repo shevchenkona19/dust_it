@@ -15,9 +15,8 @@ import dustit.clientapp.utils.managers.ThemeManager;
  */
 
 public class SharedPreferencesRepository {
-    private static final String DARK_THEME = "dark";
+    private static final String NIGHT_THEME = "dark";
     private static final String LIGHT_THEME = "light";
-    private static final String DEFAULT_THEME = "default";
     @Inject
     SharedPreferences preferences;
 
@@ -76,28 +75,23 @@ public class SharedPreferencesRepository {
     public void saveTheme(ThemeManager.Theme t) {
         final SharedPreferences.Editor editor = preferences.edit();
         switch (t) {
-            case DARK:
-                editor.putString(IConstants.IPreferences.THEME_KEY, DARK_THEME);
+            case NIGHT:
+                editor.putString(IConstants.IPreferences.THEME_KEY, NIGHT_THEME);
                 break;
             case LIGHT:
                 editor.putString(IConstants.IPreferences.THEME_KEY, LIGHT_THEME);
-                break;
-            case DEFAULT:
-                editor.putString(IConstants.IPreferences.THEME_KEY, DEFAULT_THEME);
                 break;
         }
         editor.apply();
     }
 
     public ThemeManager.Theme loadTheme() {
-        final String theme = preferences.getString(IConstants.IPreferences.THEME_KEY, DEFAULT_THEME);
+        final String theme = preferences.getString(IConstants.IPreferences.THEME_KEY, LIGHT_THEME);
         switch (theme) {
-            case DEFAULT_THEME:
-                return ThemeManager.Theme.DEFAULT;
             case LIGHT_THEME:
                 return ThemeManager.Theme.LIGHT;
-            case DARK_THEME:
-                return ThemeManager.Theme.DARK;
+            case NIGHT_THEME:
+                return ThemeManager.Theme.NIGHT;
             default:
                 return null;
         }

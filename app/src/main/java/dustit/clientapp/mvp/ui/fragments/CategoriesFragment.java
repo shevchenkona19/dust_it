@@ -3,25 +3,16 @@ package dustit.clientapp.mvp.ui.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -38,6 +29,7 @@ import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
+import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
@@ -49,24 +41,18 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
+    private static final String IS_CATEGORIES_LOADED = "ISCATLOAD";
+
     @BindView(R.id.rlCategoriesFeed)
     RelativeLayout rlFeed;
     @BindView(R.id.rlCategoriesLoading)
     RelativeLayout rlLoadingLayout;
     @BindView(R.id.pbCategoriesLoading)
     ProgressBar pbLoading;
-    @BindView(R.id.tvCategoriesFailedToLoad)
-    TextView tvFailedToLoad;
-    @BindView(R.id.btnCategoriesReload)
-    Button btnReload;
-    @BindView(R.id.spCategoriesChooser)
-    Spinner spChooser;
     @BindView(R.id.srlCategoriesRefresh)
     SwipeRefreshLayout srlRefresh;
     @BindView(R.id.rvCategoriesFeed)
     RecyclerView rvFeed;
-    @BindView(R.id.tbCategoriesToolbar)
-    Toolbar tbPlank;
 
     @Inject
     ThemeManager themeManager;
@@ -75,30 +61,27 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private ICategoriesFragmentInteractionListener listener;
     private final CategoriesFragmentPresenter presenter = new CategoriesFragmentPresenter();
     private FeedRecyclerViewAdapter adapter;
-    private Category currentCategory;
-    private boolean isFirstTimeVisible = true;
-    private boolean isLoaded = false;
-    private String themeId;
     private RecyclerView.OnScrollListener scrollListener;
     private WrapperLinearLayoutManager linearLayoutManager;
     private int appBarHeight;
+    private Category currentCategory;
+    private boolean isCategoriesLoaded;
 
 
     public interface ICategoriesFragmentInteractionListener {
-        void onMemCategorySelected(MemEntity memEntity);
+        void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
 
-        void setScrollFlags();
-
-        void resetScrollFlags();
+        void onDetachFromActivity();
     }
 
     public CategoriesFragment() {
         // Required empty public constructor
     }
 
-    public static CategoriesFragment newInstance(int appBarHeight) {
+    public static CategoriesFragment newInstance(int appBarHeight, boolean isCategoriesLoaded) {
         Bundle args = new Bundle();
         args.putInt(HEIGHT_APPBAR, appBarHeight);
+        args.putBoolean(IS_CATEGORIES_LOADED, isCategoriesLoaded);
         final CategoriesFragment fragment = new CategoriesFragment();
         fragment.setArguments(args);
         return fragment;
@@ -107,7 +90,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
-        appBarHeight = args.getInt(HEIGHT_APPBAR);
+        if (args != null) {
+            appBarHeight = args.getInt(HEIGHT_APPBAR);
+            isCategoriesLoaded = args.getBoolean(IS_CATEGORIES_LOADED);
+        }
     }
 
     @Override
@@ -131,11 +117,8 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tbPlank.setElevation(9);
-        }
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, 0);
-        spChooser.setTop(appBarHeight);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight
+        );
         rvFeed.setLayoutManager(linearLayoutManager);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
@@ -148,18 +131,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 presenter.loadBase(currentCategory.getName());
             }
         });
-        btnReload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.getCategories();
-            }
-        });
-        themeId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
+        if (isCategoriesLoaded) {
+            rlLoadingLayout.setVisibility(View.GONE);
+            rlFeed.setVisibility(View.VISIBLE);
+        }
         scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -167,7 +142,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 if (newState == SCROLL_STATE_IDLE) {
                     notifyFeedScrollIdle(true);
                     if (rvFeed.getChildAt(0) != null)
-                        if (rvFeed.getChildAt(0).getTop() == 0 && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                        if (rvFeed.getChildAt(0).getTop() == appBarHeight && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
                             if (!srlRefresh.isRefreshing())
                                 notifyFeedOnTop();
                         }
@@ -182,60 +157,22 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 notifyFeedScrollChanged(dy);
             }
         };
+        listener.onAttachToActivity(new FeedActivity.ICategoriesSpinnerInteractionListener() {
+            @Override
+            public void onCategoriesArrived() {
+                rlLoadingLayout.setVisibility(View.GONE);
+                rlFeed.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCategorySelected(Category category) {
+                currentCategory = category;
+                srlRefresh.setEnabled(true);
+                presenter.loadBase(category.getName());
+            }
+        });
         rvFeed.addOnScrollListener(scrollListener);
-        setColors();
         return v;
-    }
-
-    private void setColors() {
-        tbPlank.setBackgroundColor(getColorFromResources(themeManager.getPrimaryColor()));
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getResources().getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isLoaded) {
-            listener.setScrollFlags();
-            final Animation slideFromUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideFromUp.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    tbPlank.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            tbPlank.startAnimation(slideFromUp);
-        }
-        if (isVisibleToUser && isFirstTimeVisible && !isLoaded) {
-            presenter.getCategories();
-            isFirstTimeVisible = false;
-        }
-        if (!isVisibleToUser) {
-            if (tbPlank != null) {
-                tbPlank.setVisibility(View.GONE);
-            }
-            if (listener != null) {
-                listener.resetScrollFlags();
-            }
-        }
-
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
@@ -243,7 +180,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         rvFeed.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
-        themeManager.unsubscribe(themeId);
+        listener.onDetachFromActivity();
         super.onDestroyView();
     }
 
@@ -262,7 +199,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     public void onErrorInLoading() {
         srlRefresh.setRefreshing(false);
         adapter.onFailedToLoad();
-        isLoaded = false;
     }
 
     @Override
@@ -270,44 +206,9 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         adapter.onStartLoading();
     }
 
-    @Override
-    public void onCategoriesLoaded(final List<Category> categoryList) {
-        isLoaded = true;
-        listener.setScrollFlags();
-        rlLoadingLayout.setVisibility(View.GONE);
-        rlFeed.setVisibility(View.VISIBLE);
-        srlRefresh.setEnabled(true);
-        String categories[] = new String[categoryList.size()];
-        for (int i = 0; i < categoryList.size(); i++) {
-            categories[i] = categoryList.get(i).getName();
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spChooser.setAdapter(adapter);
-        spChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                currentCategory = categoryList.get(i);
-                presenter.loadBase(currentCategory.getName());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
 
     public void setFavoritesList(List<FavoriteEntity> list) {
         adapter.setFavoritesList(list);
-    }
-
-    @Override
-    public void onCategoriesFailedToLoad() {
-        srlRefresh.setEnabled(false);
-        pbLoading.setVisibility(View.GONE);
-        tvFailedToLoad.setVisibility(View.VISIBLE);
-        btnReload.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -382,13 +283,8 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     }
 
     @Override
-    public void onMemSelected(View animStart, String transitionName, MemEntity mem) {
-        launchMemView(animStart, transitionName, mem);
-    }
-
-    @Override
-    public void onMemSelected(MemEntity mem) {
-        listener.onMemCategorySelected(mem);
+    public void onMemSelected(View animStart, MemEntity mem) {
+        launchMemView(animStart, mem);
     }
 
     @Override

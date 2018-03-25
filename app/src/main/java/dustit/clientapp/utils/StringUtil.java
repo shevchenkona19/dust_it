@@ -14,7 +14,7 @@ import dustit.clientapp.R;
 
 public class StringUtil {
     private final Context context;
-    private String emailPattern = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+    private String emailPattern = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
     private Pattern pattern = Pattern.compile(emailPattern);
 
     public StringUtil(Context context) {

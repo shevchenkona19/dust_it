@@ -61,12 +61,10 @@ public class SettingsActivityPresenter extends BasePresenter<ISettingsActivityVi
     public int loadTheme() {
         final ThemeManager.Theme theme = userSettingsDataManager.loadTheme();
         switch (theme) {
-            case DEFAULT:
-                return 1;
             case LIGHT:
                 return 0;
-            case DARK:
-                return 2;
+            case NIGHT:
+                return 1;
             default:
                 return -1;
         }

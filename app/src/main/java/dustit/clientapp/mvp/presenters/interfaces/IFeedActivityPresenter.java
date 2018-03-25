@@ -9,4 +9,5 @@ public interface IFeedActivityPresenter {
     void postLike(String id);
     void getMyUsername();
     void getMyFavorites();
+    void getCategories();
 }

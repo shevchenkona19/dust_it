@@ -65,10 +65,13 @@
     <string name="function_disabled_not_registered">Функция не доступна - потому что, вы не зарегестрировались в MemSpace. Не плачьте слишком долго - вы всегда можете создать аккаунт! Создать один?</string>
     <string name="i_will_think">Я подумаю</string>
     <string name="favorites">Избранное</string>
-    <string name="mem_feed_transition_name">mem</string>
+    <string name="mem_feed_transition_name">animation1</string>
     <string name="account_photo_transition">photo</string>
     <string name="about_mem_title">Выдомосты про мем</string>
     <string name="about_mem_message">Цей мем було узято з</string>
     <string name="ok">Окей</string>
     <string name="use_immersive_mode">Использовать Immersive режим</string>
+    <string name="choose_categories">Выбирайте категории</string>
+    <string name="accept">Применить</string>
+    <string name="share_image">Поделиться мемом:</string>
 </resources>

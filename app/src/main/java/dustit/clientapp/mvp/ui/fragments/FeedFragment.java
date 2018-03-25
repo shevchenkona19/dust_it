@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -26,6 +28,7 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -48,9 +51,10 @@ public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView,
 
     private RecyclerView.OnScrollListener scrollListener;
 
-    private IFeedFragmentInteractionListener interactionListener;
-
     private WrapperLinearLayoutManager linearLayoutManager;
+
+    @Inject
+    ThemeManager themeManager;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -71,32 +75,21 @@ public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView,
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
-        appBarHeight = args.getInt(HEIGHT_APPBAR);
+        if (args != null) {
+            appBarHeight = args.getInt(HEIGHT_APPBAR);
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        L.print("onAttach");
         bindWithBase(context);
-        if (context instanceof IFeedFragmentInteractionListener) {
-            interactionListener = (IFeedFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onResume() {
-        L.print("onResume");
-        super.onResume();
+        L.print("onAttach");
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        L.print("onCreateView");
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, v);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
@@ -151,7 +144,6 @@ public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView,
     @Override
     public void onDetach() {
         super.onDetach();
-        interactionListener = null;
     }
 
     @Override
@@ -248,14 +240,8 @@ public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView,
     }
 
     @Override
-    public void onMemSelected(MemEntity mem) {
-        launchMemView(mem);
-        interactionListener.onFeedMemSelected(mem);
-    }
-
-    @Override
-    public void onMemSelected(View view, String transitionName, MemEntity mem) {
-        launchMemView(view, transitionName, mem);
+    public void onMemSelected(View view, MemEntity mem) {
+        launchMemView(view, mem);
     }
 
     @Override
@@ -308,11 +294,6 @@ public class FeedFragment extends BaseFeedFragment implements IFeedFragmentView,
     public void passDeleteDislike(String id) {
         adapter.onDislikeDeletedSuccesfully(id);
     }
-
-    public interface IFeedFragmentInteractionListener {
-        void onFeedMemSelected(MemEntity memEntity);
-    }
-
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(getContext());

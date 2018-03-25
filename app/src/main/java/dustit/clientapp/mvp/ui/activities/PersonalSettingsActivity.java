@@ -1,12 +1,11 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,20 +31,20 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
     TextView tvChangeLabel;
     @BindView(R.id.ivPersonalSettingsToChangeCat)
     ImageView ivToChangeCat;
+    @BindView(R.id.flPersonalSettingsContainer)
+    ViewGroup container;
 
-    @Inject
-    UserSettingsDataManager userSettingsDataManager;
     @Inject
     ThemeManager themeManager;
-
-    private String themeManagerSubscriberId;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_personal_settings);
         ButterKnife.bind(this);
-        App.get().getAppComponent().inject(this);
         clChangeCategories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +57,7 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
                         .addToBackStack(CATEGORIES_FRAGMENT)
                         .add(R.id.flPersonalSettingsContainer, ChangeCategoriesFragment.newInstance())
                         .commit();
+                container.setVisibility(View.VISIBLE);
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -66,35 +66,13 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
                 finish();
             }
         });
-        setColors();
-        themeManagerSubscriberId = themeManager.subscribeToThemeChanges(new ThemeManager.IThemable() {
-            @Override
-            public void notifyThemeChanged(ThemeManager.Theme t) {
-                setColors();
-            }
-        });
-    }
-
-    private void setColors() {
-        toolbar.setBackgroundResource(themeManager.getPrimaryColor());
-        toolbar.getNavigationIcon().setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC_ATOP);
-        toolbar.setTitleTextColor(getColorFromResources(themeManager.getMainTextToolbarColor()));
-        tvChangeLabel.setTextColor(getColorFromResources(themeManager.getMainTextMainAppColor()));
-        ivToChangeCat.setColorFilter(getColorFromResources(themeManager.getAccentColor()), PorterDuff.Mode.SRC);
-    }
-
-    private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
     }
 
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStackImmediate();
+            container.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
@@ -103,6 +81,7 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
     @Override
     public void closeChangeCategoriesFragment() {
         getSupportFragmentManager().popBackStackImmediate();
+        container.setVisibility(View.GONE);
     }
 
     public void onNotRegistered() {
@@ -111,7 +90,6 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
 
     @Override
     protected void onDestroy() {
-        themeManager.unsubscribe(themeManagerSubscriberId);
         super.onDestroy();
     }
 }

@@ -20,54 +20,17 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" />
 
-        <TextView
-            android:id="@+id/tvCategoriesFailedToLoad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="@string/cant_connect_to_server"
-            android:textSize="18sp"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnCategoriesReload"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvCategoriesFailedToLoad"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="@string/retry"
-            android:textColor="@color/colorPrimaryDefault"
-            android:textSize="20sp"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rlCategoriesFeed"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/tbCategoriesToolbar"
-            android:layout_width="match_parent"
-            android:visibility="visible"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDefault">
-
-            <Spinner
-                android:id="@+id/spCategoriesChooser"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v7.widget.Toolbar>
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srlCategoriesRefresh"
             android:layout_width="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
