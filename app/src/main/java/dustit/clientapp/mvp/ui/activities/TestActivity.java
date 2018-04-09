@@ -62,26 +62,13 @@ public class TestActivity extends AppCompatActivity implements MemTestFragment.I
         vpTest.setAdapter(adapter);
         vpTest.setOffscreenPageLimit(1);
         presenter.loadTest();
-        btnSkipAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onTestFinished();
-            }
-        });
-        btnCorrect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                correctPrevious();
-            }
-        });
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnRetry.setVisibility(View.GONE);
-                tvFailedToLoad.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.VISIBLE);
-                presenter.loadTest();
-            }
+        btnSkipAll.setOnClickListener(view -> onTestFinished());
+        btnCorrect.setOnClickListener(view -> correctPrevious());
+        btnRetry.setOnClickListener(view -> {
+            btnRetry.setVisibility(View.GONE);
+            tvFailedToLoad.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.VISIBLE);
+            presenter.loadTest();
         });
     }
 

@@ -91,30 +91,10 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initClicks() {
-        ivDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.removeFromFavorites(mFavoriteId);
-            }
-        });
-        ivDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.downloadImage(mFavoriteId);
-            }
-        });
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        ivShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this);
-            }
-        });
+        ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
+        ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
+        ivBack.setOnClickListener(view -> finish());
+        ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
     }
 
     private void initSlidr() {

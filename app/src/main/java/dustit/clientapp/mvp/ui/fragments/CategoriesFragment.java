@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -38,7 +39,8 @@ import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView,
+        FeedRecyclerViewAdapter.IFeedInteractionListener{
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
     private static final String IS_CATEGORIES_LOADED = "ISCATLOAD";
@@ -66,7 +68,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private int appBarHeight;
     private Category currentCategory;
     private boolean isCategoriesLoaded;
-
 
     public interface ICategoriesFragmentInteractionListener {
         void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
@@ -117,19 +118,15 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight
-        );
         rvFeed.setLayoutManager(linearLayoutManager);
+        adapter = new FeedRecyclerViewAdapter(rvFeed, this, Objects.requireNonNull(getContext()),appBarHeight);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         srlRefresh.setEnabled(false);
-        srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlRefresh.setRefreshing(true);
-                presenter.loadBase(currentCategory.getName());
-            }
+        srlRefresh.setOnRefreshListener(() -> {
+            srlRefresh.setRefreshing(true);
+            presenter.loadBase(currentCategory.getName());
         });
         if (isCategoriesLoaded) {
             rlLoadingLayout.setVisibility(View.GONE);
@@ -201,12 +198,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         adapter.onFailedToLoad();
     }
 
-    @Override
-    public void onStartLoading() {
-        adapter.onStartLoading();
-    }
-
-
     public void setFavoritesList(List<FavoriteEntity> list) {
         adapter.setFavoritesList(list);
     }
@@ -273,47 +264,42 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     }
 
     @Override
-    public void reloadFeedPartial(int offset) {
-        presenter.loadWithOffset(currentCategory.getId(), offset);
-    }
-
-    @Override
     public void reloadFeedBase() {
         presenter.loadBase(currentCategory.getId());
     }
 
     @Override
-    public void onMemSelected(View animStart, MemEntity mem) {
+    public void onMemSelected(@NonNull View animStart,@NonNull MemEntity mem) {
         launchMemView(animStart, mem);
     }
 
     @Override
-    public void postLike(String id) {
+    public void postLike(@NonNull String id) {
         presenter.postLike(id);
     }
 
     @Override
-    public void deleteLike(String id) {
+    public void deleteLike(@NonNull String id) {
         presenter.deleteLike(id);
     }
 
     @Override
-    public void postDislike(String id) {
+    public void postDislike(@NonNull String id) {
         presenter.postDislike(id);
     }
 
     @Override
-    public void deleteDislike(String id) {
+    public void deleteDislike(@NonNull String id) {
         presenter.deleteDislike(id);
     }
 
     @Override
-    public void addToFavorites(String id) {
+    public void addToFavorites(@NonNull String id) {
         presenter.addToFavorites(id);
     }
 
     @Override
-    public void deleteFromFavorites(String id) {
+    public void deleteFromFavorites(@NonNull String id) {
         presenter.removeFromFavorites(id);
     }
 
@@ -341,5 +327,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(getContext());
+    }
+
+    @Override
+    public void loadMore(int offset) {
+        presenter.loadWithOffset(currentCategory.getId(), offset);
+
     }
 }

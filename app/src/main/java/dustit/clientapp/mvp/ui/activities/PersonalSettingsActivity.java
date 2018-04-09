@@ -45,27 +45,19 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
         App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_personal_settings);
         ButterKnife.bind(this);
-        clChangeCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!userSettingsDataManager.isRegistered()) {
-                    onNotRegistered();
-                    return;
-                }
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(CATEGORIES_FRAGMENT)
-                        .add(R.id.flPersonalSettingsContainer, ChangeCategoriesFragment.newInstance())
-                        .commit();
-                container.setVisibility(View.VISIBLE);
+        clChangeCategories.setOnClickListener(view -> {
+            if (!userSettingsDataManager.isRegistered()) {
+                onNotRegistered();
+                return;
             }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(CATEGORIES_FRAGMENT)
+                    .add(R.id.flPersonalSettingsContainer, ChangeCategoriesFragment.newInstance())
+                    .commit();
+            container.setVisibility(View.VISIBLE);
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

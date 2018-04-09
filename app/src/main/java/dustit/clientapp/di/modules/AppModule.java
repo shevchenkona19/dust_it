@@ -19,7 +19,6 @@ import dustit.clientapp.utils.managers.ThemeManager;
  * Let's GO!
  */
 @Module
-@Singleton
 public class AppModule {
 
     private final Application application;

@@ -31,7 +31,6 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void loadBase(String categoryId) {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getCategoriesFeed(categoryId, 6, 0)
                 .subscribe(new Subscriber<MemEntity>() {
@@ -54,7 +53,6 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
 
     @Override
     public void loadWithOffset(String categoryId, int offset) {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getCategoriesFeed(categoryId, 5, offset)
                 .subscribe(new Subscriber<MemEntity>() {

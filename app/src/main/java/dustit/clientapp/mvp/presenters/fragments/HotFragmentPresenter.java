@@ -36,7 +36,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
     @Override
     public void loadBase() {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getHot(6, 0)
                 .subscribe(new Subscriber<MemEntity>() {
@@ -60,7 +59,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
     @Override
     public void loadWithOffset(int offset) {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getHot(5, offset)
                 .subscribe(new Subscriber<MemEntity>() {

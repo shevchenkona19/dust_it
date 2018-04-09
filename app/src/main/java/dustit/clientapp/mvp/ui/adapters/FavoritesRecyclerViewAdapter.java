@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,22 +41,17 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
         callback = iFavoriteCallback;
     }
 
+    @NonNull
     @Override
-    public FavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.item_each_favorite, parent, false);
         return new FavoriteViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final FavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final FavoriteViewHolder holder, int position) {
         holder.sdvImage.setImageURI(IConstants.BASE_URL + "/feed/imgs?id=" + list.get(position).getId());
-        /*holder.sdvImage.setImageURI(list.get(position).getId());*/
-        holder.sdvImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                callback.onFavoriteChosen(list.get(holder.getAdapterPosition()).getId());
-            }
-        });
+        holder.sdvImage.setOnClickListener(view -> callback.onFavoriteChosen(list.get(holder.getAdapterPosition()).getId()));
     }
 
     @Override

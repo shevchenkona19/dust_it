@@ -35,7 +35,6 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void loadBase() {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         /*list.add(new MemEntity("0","https://www.picmonkey.com/_/static/images/index/picmonkey_twitter_02.24fd38f81e59.jpg", "","20","30", true, false, false));
         getView().onBaseUpdated(list);*/
@@ -61,7 +60,6 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
 
     @Override
     public void loadWithOffset(int offset) {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getFeed(5, offset)
                 .subscribe(new Subscriber<MemEntity>() {

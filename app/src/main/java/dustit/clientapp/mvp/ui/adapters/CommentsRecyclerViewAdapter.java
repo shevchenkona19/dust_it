@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,8 +63,9 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private ICommentInteraction interactionListener;
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case 0:
                 View v = inflater.inflate(R.layout.item_comments_comment, parent, false);
@@ -82,7 +84,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         int pos = holder.getAdapterPosition();
         if (pos % 5 == 0 && pos != 0) {
             if (pos > lastPos) {
@@ -109,14 +111,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.tvDateStamp.setText(hourMinute + " " + monthDay);
         } else if (holder instanceof FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) {
             final FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder failedToLoadViewHolder = (FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) holder;
-            failedToLoadViewHolder.btnRetry.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (list.size() > 1) {
-                        interactionListener.loadCommentsPartial(list.size());
-                    } else {
-                        interactionListener.loadCommentsBase();
-                    }
+            failedToLoadViewHolder.btnRetry.setOnClickListener(view -> {
+                if (list.size() > 1) {
+                    interactionListener.loadCommentsPartial(list.size());
+                } else {
+                    interactionListener.loadCommentsBase();
                 }
             });
         }
@@ -141,19 +140,9 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         isLoading = true;
         if (!list.contains(null)) {
             list.add(null);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(list.size() - 1);
-                }
-            }, 100);
+            handler.postDelayed(() -> notifyItemInserted(list.size() - 1), 100);
         } else {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemChanged(list.size() - 1);
-                }
-            }, 100);
+            handler.postDelayed(() -> notifyItemChanged(list.size() - 1), 100);
         }
     }
 

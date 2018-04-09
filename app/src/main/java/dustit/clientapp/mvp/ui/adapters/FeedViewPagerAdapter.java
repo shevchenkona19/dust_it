@@ -3,7 +3,6 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
-import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 04.10.2017
@@ -36,11 +34,10 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        L.print("getItem");
         Fragment selectedFragment;
         switch (position) {
             case 0:
-                FeedFragment feedFragment = FeedFragment.newInstance(appbarHeight);
+                FeedFragment feedFragment = FeedFragment.Companion.newInstance(appbarHeight);
                 this.feedFragment = new WeakReference<>(feedFragment);
                 selectedFragment = feedFragment;
                 break;

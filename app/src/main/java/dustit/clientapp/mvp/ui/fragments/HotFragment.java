@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -31,7 +33,8 @@ import dustit.clientapp.utils.managers.ThemeManager;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 
-public class HotFragment extends BaseFeedFragment implements IHotFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
+public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
+        FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
     private IHotFragmentInteractionListener interactionListener;
@@ -69,22 +72,19 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_hot, container, false);
         unbinder = ButterKnife.bind(this, v);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
+        adapter = new FeedRecyclerViewAdapter(rvHot, this, Objects.requireNonNull(getContext()), appBarHeight);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
-        srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlRefresh.setRefreshing(true);
-                presenter.loadBase();
-            }
+        srlRefresh.setOnRefreshListener(() -> {
+            srlRefresh.setRefreshing(true);
+            presenter.loadBase();
         });
         scrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -169,11 +169,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
     }
 
     @Override
-    public void onStartLoading() {
-        adapter.onStartLoading();
-    }
-
-    @Override
     public void onLikePostError(String id) {
         /*adapter.onLikePostError(id);*/
         showErrorToast();
@@ -219,47 +214,42 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
     }
 
     @Override
-    public void reloadFeedPartial(int offset) {
-        presenter.loadWithOffset(offset);
-    }
-
-    @Override
     public void reloadFeedBase() {
         presenter.loadBase();
     }
 
     @Override
-    public void onMemSelected(View animStart, MemEntity mem) {
+    public void onMemSelected(@NonNull View animStart, @NonNull MemEntity mem) {
         launchMemView(animStart, mem);
     }
 
     @Override
-    public void postLike(String id) {
+    public void postLike(@NonNull String id) {
         presenter.postLike(id);
     }
 
     @Override
-    public void deleteLike(String id) {
+    public void deleteLike(@NonNull String id) {
         presenter.deleteLike(id);
     }
 
     @Override
-    public void postDislike(String id) {
+    public void postDislike(@NonNull String id) {
         presenter.postDislike(id);
     }
 
     @Override
-    public void deleteDislike(String id) {
+    public void deleteDislike(@NonNull String id) {
         presenter.deleteDislike(id);
     }
 
     @Override
-    public void addToFavorites(String id) {
+    public void addToFavorites(@NonNull String id) {
         presenter.addToFavorites(id);
     }
 
     @Override
-    public void deleteFromFavorites(String id) {
+    public void deleteFromFavorites(@NonNull String id) {
         presenter.deleteFromFavorites(id);
     }
 
@@ -282,6 +272,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView, F
 
     public void passDeleteDislike(String id) {
         adapter.onDislikeDeletedSuccesfully(id);
+    }
+
+    @Override
+    public void loadMore(int offset) {
+        presenter.loadWithOffset(offset);
     }
 
     //Select mem

@@ -48,30 +48,22 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         presenter.bind(this);
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stringUtil.hideError(tilRegisterPassword, tilRegisterUsername, tilRegisterEmail);
-                if (stringUtil.isCorrectInput(etEmail, etPassword, etUsername)) {
-                    tilRegisterEmail.setVisibility(View.GONE);
-                    tilRegisterPassword.setVisibility(View.GONE);
-                    tilRegisterUsername.setVisibility(View.GONE);
-                    btnRegister.setVisibility(View.GONE);
-                    pbLoading.setVisibility(View.VISIBLE);
-                    presenter.registerUser(etUsername.getText().toString(),
-                            etPassword.getText().toString(), etEmail.getText().toString());
-                } else {
-                    stringUtil.showError(etEmail, etPassword, etUsername, tilRegisterEmail,
-                            tilRegisterPassword, tilRegisterUsername);
-                }
+        btnRegister.setOnClickListener(view -> {
+            stringUtil.hideError(tilRegisterPassword, tilRegisterUsername, tilRegisterEmail);
+            if (stringUtil.isCorrectInput(etEmail, etPassword, etUsername)) {
+                tilRegisterEmail.setVisibility(View.GONE);
+                tilRegisterPassword.setVisibility(View.GONE);
+                tilRegisterUsername.setVisibility(View.GONE);
+                btnRegister.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.VISIBLE);
+                presenter.registerUser(etUsername.getText().toString(),
+                        etPassword.getText().toString(), etEmail.getText().toString());
+            } else {
+                stringUtil.showError(etEmail, etPassword, etUsername, tilRegisterEmail,
+                        tilRegisterPassword, tilRegisterUsername);
             }
         });
-        tvRegistered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            }
-        });
+        tvRegistered.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
     }
 
     @Override

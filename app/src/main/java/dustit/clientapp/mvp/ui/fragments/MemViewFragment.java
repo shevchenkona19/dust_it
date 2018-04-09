@@ -59,8 +59,6 @@ import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
-import me.relex.photodraweeview.OnScaleChangeListener;
-import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView {
@@ -194,12 +192,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         initOnClicks();
         rvComments.setAdapter(commentAdapter);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
-        srlCommentsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlCommentsRefresh.setRefreshing(true);
-                presenter.loadCommentsBase(mem.getId());
-            }
+        srlCommentsRefresh.setOnRefreshListener(() -> {
+            srlCommentsRefresh.setRefreshing(true);
+            presenter.loadCommentsBase(mem.getId());
         });
         clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
@@ -212,7 +207,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         if (imageInfo == null || pdvMem == null) {
                             return;
                         }
-                        ActivityCompat.startPostponedEnterTransition(getActivity());
+                        if (getActivity() != null) {
+                            ActivityCompat.startPostponedEnterTransition(getActivity());
+                        }
                         pdvMem.update(imageInfo.getWidth(), imageInfo.getHeight());
                     }
                 })
@@ -236,19 +233,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void initAutoHide() {
-        pdvMem.setOnScaleChangeListener(new OnScaleChangeListener() {
-            @Override
-            public void onScaleChange(float scaleFactor, float focusX, float focusY) {
-                if ((imageHeight == -1 && imageWidth == -1)) {
-                    imageHeight = pdvMem.getHeight() / 2;
-                    imageWidth = pdvMem.getWidth() / 2;
-                }
-                if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
-                    //hide ui
-                    toolbar.setVisibility(View.GONE);
-                    tbLikePanel.setVisibility(View.GONE);
-                    isExpanded = true;
-                }
+        pdvMem.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
+            if ((imageHeight == -1 && imageWidth == -1)) {
+                imageHeight = pdvMem.getHeight() / 2;
+                imageWidth = pdvMem.getWidth() / 2;
+            }
+            if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
+                //hide ui
+                toolbar.setVisibility(View.GONE);
+                tbLikePanel.setVisibility(View.GONE);
+                isExpanded = true;
             }
         });
     }
@@ -285,103 +279,67 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void initOnClicks() {
-        ivExpandComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expandComments();
+        ivExpandComments.setOnClickListener(view -> expandComments());
+        ivDisexpand.setOnClickListener(view -> disExpandComments());
+        ivMenu.setOnClickListener(v -> {
+            Drawable drawable = ivMenu.getDrawable();
+            if (drawable instanceof Animatable) {
+                ((Animatable) drawable).start();
             }
-        });
-        ivDisexpand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                disExpandComments();
-            }
-        });
-        ivMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Drawable drawable = ivMenu.getDrawable();
-                if (drawable instanceof Animatable) {
-                    ((Animatable) drawable).start();
-                }
-                vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
-                isMoreLayoutVisible = !isMoreLayoutVisible;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (getContext() != null) {
-                            if (isMoreLayoutVisible) {
-                                setImageDrawable(ivMenu, R.drawable.anim_from_cross_to_menu);
-                            } else {
-                                setImageDrawable(ivMenu, R.drawable.anim_from_menu_to_cross);
-                            }
-                        }
+            vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
+            isMoreLayoutVisible = !isMoreLayoutVisible;
+            handler.postDelayed(() -> {
+                if (getContext() != null) {
+                    if (isMoreLayoutVisible) {
+                        setImageDrawable(ivMenu, R.drawable.anim_from_cross_to_menu);
+                    } else {
+                        setImageDrawable(ivMenu, R.drawable.anim_from_menu_to_cross);
                     }
-                }, 300);
-            }
-        });
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                interactionListener.closeMemView();
-            }
-        });
-        ivLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mem.getOpinion() == IConstants.OPINION.LIKED) {
-                    presenter.deleteLike(mem.getId());
-                    currentQuarry = Quarry.DELETE_LIKE;
-                } else {
-                    presenter.postLike(mem.getId());
-                    currentQuarry = Quarry.POST_LIKE;
                 }
+            }, 300);
+        });
+        ivBack.setOnClickListener(view -> interactionListener.closeMemView());
+        ivLike.setOnClickListener(view -> {
+            if (mem.getOpinion() == IConstants.OPINION.LIKED) {
+                presenter.deleteLike(mem.getId());
+                currentQuarry = Quarry.DELETE_LIKE;
+            } else {
+                presenter.postLike(mem.getId());
+                currentQuarry = Quarry.POST_LIKE;
             }
         });
-        ivDislike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
-                    presenter.deleteDislike(mem.getId());
-                    currentQuarry = Quarry.DELETE_DISLIKE;
-                } else {
-                    presenter.postDislike(mem.getId());
-                    currentQuarry = Quarry.POST_DISLIKE;
-                }
+        ivDislike.setOnClickListener(view -> {
+            if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
+                presenter.deleteDislike(mem.getId());
+                currentQuarry = Quarry.DELETE_DISLIKE;
+            } else {
+                presenter.postDislike(mem.getId());
+                currentQuarry = Quarry.POST_DISLIKE;
             }
         });
-        pdvMem.setOnViewTapListener(new OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                if (isExpanded) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    tbLikePanel.setVisibility(View.VISIBLE);
-                    isExpanded = false;
-                } else {
-                    toolbar.setVisibility(View.GONE);
-                    tbLikePanel.setVisibility(View.GONE);
-                    isExpanded = true;
-                }
+        pdvMem.setOnViewTapListener((view, x, y) -> {
+            if (isExpanded) {
+                toolbar.setVisibility(View.VISIBLE);
+                tbLikePanel.setVisibility(View.VISIBLE);
+                isExpanded = false;
+            } else {
+                toolbar.setVisibility(View.GONE);
+                tbLikePanel.setVisibility(View.GONE);
+                isExpanded = true;
             }
         });
-        ivSendComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!etComment.getText().toString().equals("")) {
-                    pbCommentSend.setVisibility(View.VISIBLE);
-                    ivSendComment.setVisibility(View.INVISIBLE);
-                    presenter.postComment(mem.getId(), etComment.getText().toString());
-                }
+        ivSendComment.setOnClickListener(view -> {
+            if (!etComment.getText().toString().equals("")) {
+                pbCommentSend.setVisibility(View.VISIBLE);
+                ivSendComment.setVisibility(View.INVISIBLE);
+                presenter.postComment(mem.getId(), etComment.getText().toString());
             }
         });
-        ivAddToFavourites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mem.isFavorite()) {
-                    presenter.removeFromFavourites(mem.getId());
-                } else {
-                    presenter.addToFavourites(mem.getId());
-                }
+        ivAddToFavourites.setOnClickListener(v -> {
+            if (mem.isFavorite()) {
+                presenter.removeFromFavourites(mem.getId());
+            } else {
+                presenter.addToFavourites(mem.getId());
             }
         });
     }

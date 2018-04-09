@@ -76,12 +76,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         presenter.bind(this);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.logout();
-            }
-        });
+        btnLogout.setOnClickListener(view -> presenter.logout());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spThemeChooser.setAdapter(adapter);
@@ -115,12 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
         String langToSet = "";
         switch (userSettingsDataManager.loadLanguage()) {
             case "ru":
@@ -134,52 +124,38 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 break;
         }
         tvCurrentLanguage.setText(langToSet);
-        rlLanguagePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                builder.setTitle(getString(R.string.pick_language));
-                builder.setItems(new String[]{"English", "Українська", "Русский"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String langToLoad = "";
-                        switch (which) {
-                            case 0:
-                                langToLoad = "en";
-                                break;
-                            case 1:
-                                langToLoad = "uk";
-                                break;
-                            case 2:
-                                langToLoad = "ru";
-                                break;
-                        }
-                        Locale locale = new Locale(langToLoad);
-                        Locale.setDefault(locale);
-                        Configuration config = new Configuration();
-                        config.locale = locale;
-                        getBaseContext().getResources().updateConfiguration(config,
-                                getBaseContext().getResources().getDisplayMetrics());
-                        userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                        restartActivity();
-                    }
-                });
-                builder.create().show();
-            }
+        rlLanguagePicker.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle(getString(R.string.pick_language));
+            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
+                String langToLoad = "";
+                switch (which) {
+                    case 0:
+                        langToLoad = "en";
+                        break;
+                    case 1:
+                        langToLoad = "uk";
+                        break;
+                    case 2:
+                        langToLoad = "ru";
+                        break;
+                }
+                Locale locale = new Locale(langToLoad);
+                Locale.setDefault(locale);
+                Configuration config = new Configuration();
+                config.locale = locale;
+                getBaseContext().getResources().updateConfiguration(config,
+                        getBaseContext().getResources().getDisplayMetrics());
+                userSettingsDataManager.saveNewLanguagePref(langToLoad);
+                restartActivity();
+            });
+            builder.create().show();
         });
         cbUseImmersive.setChecked(userSettingsDataManager.useImmersiveMode());
-        cbUseImmersive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                userSettingsDataManager.setUseImmersiveMode(isChecked);
-            }
-        });
-        vgUseImmersive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cbUseImmersive.setChecked(!cbUseImmersive.isChecked());
-                userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
-            }
+        cbUseImmersive.setOnCheckedChangeListener((buttonView, isChecked) -> userSettingsDataManager.setUseImmersiveMode(isChecked));
+        vgUseImmersive.setOnClickListener(v -> {
+            cbUseImmersive.setChecked(!cbUseImmersive.isChecked());
+            userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
         });
     }
 
@@ -212,12 +188,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         int colorTo = getColorFromResources(toColor);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(250);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                v.setBackgroundColor((int) animator.getAnimatedValue());
-            }
-        });
+        colorAnimation.addUpdateListener(animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
         colorAnimation.start();
     }
 

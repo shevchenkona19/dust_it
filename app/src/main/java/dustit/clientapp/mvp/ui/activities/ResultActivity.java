@@ -55,32 +55,23 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
         rvThemes.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new ResultRecyclerViewAdapter(this);
         rvThemes.setAdapter(adapter);
-        btnGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rvThemes.setVisibility(View.GONE);
-                tvDescription.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.VISIBLE);
-                presenter.toMemes(adapter.getChecked());
-            }
+        btnGo.setOnClickListener(view -> {
+            rvThemes.setVisibility(View.GONE);
+            tvDescription.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.VISIBLE);
+            presenter.toMemes(adapter.getChecked());
         });
-        btnReloadCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tvResultFailedToLoadCategories.setVisibility(View.GONE);
-                btnReloadCategories.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.VISIBLE);
-                presenter.loadCategories();
-            }
+        btnReloadCategories.setOnClickListener(view -> {
+            tvResultFailedToLoadCategories.setVisibility(View.GONE);
+            btnReloadCategories.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.VISIBLE);
+            presenter.loadCategories();
         });
-        btnRetrySending.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tvResultFailedToLoadCategories.setVisibility(View.GONE);
-                btnRetrySending.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.VISIBLE);
-                presenter.toMemes(adapter.getChecked());
-            }
+        btnRetrySending.setOnClickListener(view -> {
+            tvResultFailedToLoadCategories.setVisibility(View.GONE);
+            btnRetrySending.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.VISIBLE);
+            presenter.toMemes(adapter.getChecked());
         });
         presenter.loadCategories();
     }

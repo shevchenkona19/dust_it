@@ -69,19 +69,11 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
         mPresenter.loadFavorites();
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-        btnReload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.loadFavorites();
-                hideError();
-            }
+        btnReload.setOnClickListener(view -> {
+            mPresenter.loadFavorites();
+            hideError();
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

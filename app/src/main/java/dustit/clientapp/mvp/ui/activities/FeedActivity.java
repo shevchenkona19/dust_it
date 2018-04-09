@@ -149,7 +149,6 @@ public class FeedActivity extends AppCompatActivity implements
         presenter = new FeedActivityPresenter();
         presenter.bind(this);
         ButterKnife.bind(this);
-        presenter.getMyFavorites();
         sdvUserIcon.setLegacyVisibilityHandlingEnabled(true);
         presenter.getMyUsername();
         clLayout.getHitRect(screenBounds);
@@ -258,18 +257,8 @@ public class FeedActivity extends AppCompatActivity implements
                 setToolbarCollapsed(true);
             }
         });
-        sdvUserIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                revealAccount(v);
-            }
-        });
-        fabColapsed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setToolbarCollapsed(false);
-            }
-        });
+        sdvUserIcon.setOnClickListener(this::revealAccount);
+        fabColapsed.setOnClickListener(v -> setToolbarCollapsed(false));
         animateFabIcon(0);
         final LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.disableTransitionType(LayoutTransition.DISAPPEARING);
@@ -291,6 +280,7 @@ public class FeedActivity extends AppCompatActivity implements
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && isFirstLaunch) {
             isFirstLaunch = false;
+            presenter.getMyFavorites();
             adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), appBar.getHeight());
             if (vpFeed.getAdapter() == null)
                 vpFeed.setAdapter(adapter);
@@ -507,12 +497,9 @@ public class FeedActivity extends AppCompatActivity implements
                 .addToBackStack(null)
                 .commit();
         hideControls();
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getSupportFragmentManager().getBackStackEntryCount() == 0)
-                    clLayout.setVisibility(View.VISIBLE);
-            }
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0)
+                clLayout.setVisibility(View.VISIBLE);
         });
     }
 
@@ -540,12 +527,7 @@ public class FeedActivity extends AppCompatActivity implements
             if (isFeedScrollIdle) {
                 if (fabColapsed.getLocalVisibleRect(screenBounds) && fabColapsed.getY() != fabScrollYNormalPos) {
                     ValueAnimator animator = ValueAnimator.ofFloat(fabColapsed.getY(), fabScrollYNormalPos);
-                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            fabColapsed.setY((float) animation.getAnimatedValue());
-                        }
-                    });
+                    animator.addUpdateListener(animation -> fabColapsed.setY((float) animation.getAnimatedValue()));
                     animator.start();
                 }
             }
@@ -553,12 +535,7 @@ public class FeedActivity extends AppCompatActivity implements
             if (isFeedScrollIdle) {
                 if (appBar.getY() != SHOWN_TOOLBAR_Y && appBar.getY() != HIDDEN_TOOLBAR_Y) {
                     ValueAnimator animator = ValueAnimator.ofFloat(appBar.getY(), SHOWN_TOOLBAR_Y);
-                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            appBar.setY((float) animation.getAnimatedValue());
-                        }
-                    });
+                    animator.addUpdateListener(animation -> appBar.setY((float) animation.getAnimatedValue()));
                     animator.start();
                 }
             }
@@ -573,12 +550,7 @@ public class FeedActivity extends AppCompatActivity implements
         } else {
             if (appBar.getY() != SHOWN_TOOLBAR_Y) {
                 ValueAnimator animator = ValueAnimator.ofFloat(appBar.getY(), SHOWN_TOOLBAR_Y);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        appBar.setY((float) animation.getAnimatedValue());
-                    }
-                });
+                animator.addUpdateListener(animation -> appBar.setY((float) animation.getAnimatedValue()));
                 animator.start();
             }
         }
@@ -686,11 +658,6 @@ public class FeedActivity extends AppCompatActivity implements
 
     private void setCooldown() {
         cooldownPassed[0] = false;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                cooldownPassed[0] = true;
-            }
-        }, 300);
+        handler.postDelayed(() -> cooldownPassed[0] = true, 300);
     }
 }

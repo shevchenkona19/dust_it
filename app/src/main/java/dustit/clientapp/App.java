@@ -3,10 +3,7 @@ package dustit.clientapp;
 import android.app.Application;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.cache.MemoryCacheParams;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.Picasso;
 

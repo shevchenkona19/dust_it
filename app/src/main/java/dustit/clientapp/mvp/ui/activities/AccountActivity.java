@@ -114,91 +114,61 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         setSupportActionBar(tbAccount);
         mPresenter.getUsername();
         mPresenter.getFavorites();
-        btnReload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tvFailedToLoad.setVisibility(View.GONE);
-                btnReload.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.VISIBLE);
-                mPresenter.getUsername();
-                mPresenter.getFavorites();
-            }
+        btnReload.setOnClickListener(view -> {
+            tvFailedToLoad.setVisibility(View.GONE);
+            btnReload.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.VISIBLE);
+            mPresenter.getUsername();
+            mPresenter.getFavorites();
         });
         sdvIcon.setLegacyVisibilityHandlingEnabled(true);
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AccountActivity.this, PersonalSettingsActivity.class);
-                startActivity(intent);
-            }
+        btnEdit.setOnClickListener(view -> {
+            Intent intent = new Intent(AccountActivity.this, PersonalSettingsActivity.class);
+            startActivity(intent);
         });
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(AccountActivity.this, SettingsActivity.class);
-                startActivity(i);
-            }
+        btnSettings.setOnClickListener(view -> {
+            Intent i = new Intent(AccountActivity.this, SettingsActivity.class);
+            startActivity(i);
         });
-        sdvIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
-                        .setTitle(getString(R.string.change_profile_pic_title))
-                        .setMessage(getString(R.string.change_profile_pic_question))
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE);
-                                int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                                if (permCheckRead != PackageManager.PERMISSION_GRANTED
-                                        && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(AccountActivity.this,
-                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            PERMISSION_DIALOG);
-                                } else {
-                                    Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                                    getIntent.setType("image/*");
-                                    Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    pickIntent.setType("image/*");
-                                    Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
-                                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                                    startActivityForResult(chooserIntent, PICK_IMAGE);
-                                }
+        sdvIcon.setOnClickListener(view -> {
+            final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
+                    .setTitle(getString(R.string.change_profile_pic_title))
+                    .setMessage(getString(R.string.change_profile_pic_question))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE);
+                            int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                            if (permCheckRead != PackageManager.PERMISSION_GRANTED
+                                    && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(AccountActivity.this,
+                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        PERMISSION_DIALOG);
+                            } else {
+                                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                                getIntent.setType("image/*");
+                                Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                pickIntent.setType("image/*");
+                                Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+                                startActivityForResult(chooserIntent, PICK_IMAGE);
                             }
-                        })
-                        .setNegativeButton(getString(R.string.no), null)
-                        .create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-                    }
-                });
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .create();
+            dialog.setOnShowListener(dialogInterface -> {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+            });
 
-                dialog.show();
-            }
+            dialog.show();
         });
-        ivToFavorites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AccountActivity.this, FavoritesActivity.class));
-            }
-        });
-        tvFavoritesCounter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AccountActivity.this, FavoritesActivity.class));
-            }
-        });
-        tbAccount.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                unRevealActivity();
-            }
-        });
+        ivToFavorites.setOnClickListener(view -> startActivity(new Intent(AccountActivity.this, FavoritesActivity.class)));
+        tvFavoritesCounter.setOnClickListener(view -> startActivity(new Intent(AccountActivity.this, FavoritesActivity.class)));
+        tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
     }
 
     @Override

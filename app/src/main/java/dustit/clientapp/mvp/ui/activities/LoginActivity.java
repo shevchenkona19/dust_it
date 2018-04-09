@@ -46,27 +46,19 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         etUsername.setText("koker");
         etPassword.setText("koker1");
         loginActivityPresenter.bind(this);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stringUtil.hideError(tilLoginPassword, tilLoginUsername);
-                if (stringUtil.isCorrectInput(etPassword, etUsername)) {
-                    tilLoginPassword.setVisibility(View.GONE);
-                    tilLoginUsername.setVisibility(View.GONE);
-                    pbLoading.setVisibility(View.VISIBLE);
-                    loginActivityPresenter.loginUser(etUsername.getText().toString(),
-                            etPassword.getText().toString());
-                } else {
-                    stringUtil.showError(etPassword, etUsername, tilLoginPassword, tilLoginUsername);
-                }
+        btnLogin.setOnClickListener(view -> {
+            stringUtil.hideError(tilLoginPassword, tilLoginUsername);
+            if (stringUtil.isCorrectInput(etPassword, etUsername)) {
+                tilLoginPassword.setVisibility(View.GONE);
+                tilLoginUsername.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.VISIBLE);
+                loginActivityPresenter.loginUser(etUsername.getText().toString(),
+                        etPassword.getText().toString());
+            } else {
+                stringUtil.showError(etPassword, etUsername, tilLoginPassword, tilLoginUsername);
             }
         });
-        tvNotRegistered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
+        tvNotRegistered.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     @Override
