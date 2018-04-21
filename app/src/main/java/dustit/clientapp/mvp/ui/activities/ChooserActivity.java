@@ -80,43 +80,38 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         ibChangeLanguage.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
             builder.setTitle(getString(R.string.pick_language));
-            builder.setItems(new String[]{"English", "Українська", "Русский"}, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String langToLoad = "";
-                    switch (which) {
-                        case 0:
-                            langToLoad = "en";
-                            break;
-                        case 1:
-                            langToLoad = "uk";
-                            break;
-                        case 2:
-                            langToLoad = "ru";
-                            break;
-                    }
-                    Locale locale = new Locale(langToLoad);
-                    Locale.setDefault(locale);
-                    Configuration config = new Configuration();
-                    config.locale = locale;
-                    getBaseContext().getResources().updateConfiguration(config,
-                            getBaseContext().getResources().getDisplayMetrics());
-                    userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                    restartActivity();
+            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
+                String langToLoad = "";
+                switch (which) {
+                    case 0:
+                        langToLoad = "en";
+                        break;
+                    case 1:
+                        langToLoad = "uk";
+                        break;
+                    case 2:
+                        langToLoad = "ru";
+                        break;
                 }
+                Locale locale = new Locale(langToLoad);
+                Locale.setDefault(locale);
+                Configuration config = new Configuration();
+                config.locale = locale;
+                getBaseContext().getResources().updateConfiguration(config,
+                        getBaseContext().getResources().getDisplayMetrics());
+                userSettingsDataManager.saveNewLanguagePref(langToLoad);
+                restartActivity();
             });
-            builder.create().show();
+            builder.setNegativeButton(getString(R.string.cancel), null);
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialog0 -> dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000")));
+            dialog.show();
         });
         tvNoRegistration.setOnClickListener(v -> {
            final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
                     .setTitle(getString(R.string.continue_without_registration))
                     .setMessage(getString(R.string.continue_without_registration_message))
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mPresenter.continueNoRegistration();
-                        }
-                    })
+                    .setPositiveButton(getString(R.string.yes), (dialog, which) -> mPresenter.continueNoRegistration())
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
            alertDialog.setOnShowListener(dialog -> {

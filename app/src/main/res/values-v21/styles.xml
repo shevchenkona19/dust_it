@@ -15,6 +15,18 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">#000</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+    
+    <style name="MasterDayNight" parent="AppThemeDayNight">
+        <item name="android:windowExitTransition">@transition/main_exit</item>
+        <item name="android:windowReenterTransition">@transition/main_reenter</item>
+    </style>
+
+    <style name="DetailDayNight" parent="AppThemeDayNight">
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowEnterTransition">@transition/detail_enter</item>
     </style>
 
     <style name="HelloTheme" parent="AppTheme">
@@ -22,5 +34,9 @@
         <item name="colorAccent">#fff</item>
         <item name="android:statusBarColor">@null</item>
         <item name="android:colorControlNormal">#fff</item>
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
 </resources>

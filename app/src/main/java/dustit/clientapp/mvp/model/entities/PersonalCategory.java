@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PersonalCategory {
-    @SerializedName("categoryname")
+    @SerializedName("categoryName")
     @Expose
     private
     String categoryName;

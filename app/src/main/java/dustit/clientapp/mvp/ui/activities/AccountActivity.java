@@ -12,8 +12,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -28,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -88,6 +92,8 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     CardView cvAccountCard;
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
 
+    private String myUsername = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -134,27 +140,24 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
                     .setTitle(getString(R.string.change_profile_pic_title))
                     .setMessage(getString(R.string.change_profile_pic_question))
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE);
-                            int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                            if (permCheckRead != PackageManager.PERMISSION_GRANTED
-                                    && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(AccountActivity.this,
-                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        PERMISSION_DIALOG);
-                            } else {
-                                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                                getIntent.setType("image/*");
-                                Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                pickIntent.setType("image/*");
-                                Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
-                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                                startActivityForResult(chooserIntent, PICK_IMAGE);
-                            }
+                    .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
+                        int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE);
+                        int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        if (permCheckRead != PackageManager.PERMISSION_GRANTED
+                                && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(AccountActivity.this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    PERMISSION_DIALOG);
+                        } else {
+                            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                            getIntent.setType("image/*");
+                            Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            pickIntent.setType("image/*");
+                            Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+                            startActivityForResult(chooserIntent, PICK_IMAGE);
                         }
                     })
                     .setNegativeButton(getString(R.string.no), null)
@@ -166,7 +169,13 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
 
             dialog.show();
         });
-        ivToFavorites.setOnClickListener(view -> startActivity(new Intent(AccountActivity.this, FavoritesActivity.class)));
+        ivToFavorites.setOnClickListener(view -> {
+            final Intent intent = new Intent(this, FavoritesActivity.class);
+            final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                    cvAccountCard,
+                    ViewCompat.getTransitionName(cvAccountCard));
+            startActivity(intent, options.toBundle());
+        });
         tvFavoritesCounter.setOnClickListener(view -> startActivity(new Intent(AccountActivity.this, FavoritesActivity.class)));
         tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
     }
@@ -238,7 +247,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 e.printStackTrace();
             }
         } else if (requestCode == CROPPED_IMAGE) {
-            if (resultCode == UCrop.RESULT_ERROR) {
+            if (resultCode == UCrop.RESULT_ERROR || data == null) {
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                 try {
                     throw UCrop.getError(data);
@@ -247,15 +256,18 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 }
                 return;
             }
-            Uri croppedImage = UCrop.getOutput(data);
-            File file = null;
-            if (croppedImage != null) {
-                file = new File(croppedImage.getPath());
+            Uri croppedImage;
+            try {
+                croppedImage = UCrop.getOutput(data);
+            } catch (Exception e) {
+                Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                return;
             }
-            mPresenter.uploadImage(file);
-            sdvIcon.setVisibility(View.GONE);
-            cpbPhotoLoading.setVisibility(View.VISIBLE);
-
+            if (croppedImage != null) {
+                mPresenter.uploadImage(croppedImage.getPath());
+                sdvIcon.setVisibility(View.GONE);
+                cpbPhotoLoading.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -281,7 +293,8 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         cpbPhotoLoading.setProgress(100);
         cpbPhotoLoading.setVisibility(View.GONE);
         sdvIcon.setVisibility(View.VISIBLE);
-        sdvIcon.setImageURI(IConstants.BASE_URL + "getUserPhoto?token=" + mPresenter.getToken());
+        Fresco.getImagePipeline().evictFromCache(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername));
+        sdvIcon.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername);
     }
 
     @Override
@@ -293,10 +306,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
 
     @Override
     public void onUsernameArrived(String username) {
-        tvUsername.setText(username);
+        myUsername = username;
+        tvUsername.setText(myUsername);
         clAccountLoading.setVisibility(View.GONE);
         clAccount.setVisibility(View.VISIBLE);
-        sdvIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + username));
+        sdvIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername));
     }
 
     @Override

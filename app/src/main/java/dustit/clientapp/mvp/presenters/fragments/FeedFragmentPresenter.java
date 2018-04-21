@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFeedFragmentPresenter;
@@ -210,29 +213,53 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
         favoritesUtils.addToFavorites(id);
     }
 
-    public void removeFromFavorites(String id) {
+    @Override
+    public void refreshMem(final String id) {
         if (!userSettingsDataManager.isRegistered()) {
             getView().onNotRegistered();
             return;
         }
-        final Container<String> containerId = new Container<>();
+        final Container<RefreshedMem> refreshedMemContainer = new Container<>();
+        addSubscription(dataManager.refreshMem(id).subscribe(new Subscriber<RefreshedMem>() {
+            @Override
+            public void onCompleted() {
+                getView().onMemRefreshed(refreshedMemContainer.get(), id);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().onErrorInRefreshingMem();
+            }
+
+            @Override
+            public void onNext(RefreshedMem refreshedMem) {
+                refreshedMemContainer.put(refreshedMem);
+            }
+        }));
+    }
+
+    public void removeFromFavorites(final String id) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         final Container<Integer> containerMessage = new Container<>();
-        containerId.put(id);
         addSubscription(dataManager.removeFromFavorites(id)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
                         if (containerMessage.get() != 200) {
-                            getView().onErrorInRemovingFromFavorites(containerId.get());
+                            getView().onErrorInRemovingFromFavorites(id);
                         } else {
-                            getView().onRemovedFromFavorites(containerId.get());
+                            getView().onRemovedFromFavorites(id);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         L.print(e.getMessage());
-                        getView().onErrorInRemovingFromFavorites(containerId.get());
+                        getView().onErrorInRemovingFromFavorites(id);
                     }
 
                     @Override

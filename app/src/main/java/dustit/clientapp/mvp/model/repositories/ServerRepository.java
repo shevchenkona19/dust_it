@@ -10,8 +10,10 @@ import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
+import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
@@ -89,22 +91,22 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> postLike(String token, String id) {
+    public Observable<RefreshedMem> postLike(String token, String id) {
         return serverAPI.postLike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> deleteLike(String token, String id) {
+    public Observable<RefreshedMem> deleteLike(String token, String id) {
         return serverAPI.deleteLike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> postDislike(String token, String id) {
+    public Observable<RefreshedMem> postDislike(String token, String id) {
         return serverAPI.postDislike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> deleteDislike(String token, String id) {
+    public Observable<RefreshedMem> deleteDislike(String token, String id) {
         return serverAPI.deleteDislike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -145,7 +147,7 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> postPhoto(String token, MultipartBody.Part image) {
+    public Observable<ResponseEntity> postPhoto(String token, PhotoBody image) {
         return serverAPI.postPhoto(token, image).observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -156,4 +158,9 @@ public class ServerRepository {
     public Observable<ResponseEntity> removeFromFavorites(String token, String id) {
         return serverAPI.removeFromFavorites(token, id).observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Observable<RefreshedMem> refreshMem(String token, String id) {
+        return serverAPI.refreshMem(token, id).observeOn(AndroidSchedulers.mainThread());
+    }
+
 }

@@ -1,214 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clAccountSettingsContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="dustit.clientapp.mvp.ui.activities.AccountActivity">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tbAccountSettingsToolbar"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_arrow_left_simple"
-        app:title="@string/account_settings"/>
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        app:expanded="false"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cvAccountSettingsCard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tbAccountSettingsToolbar">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:fitsSystemWindows="true"
+            app:toolbarId="@+id/toolbar">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/tbAccountSettingsToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_arrow_left_simple"
+                app:title="@string/account_settings" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.v7.widget.CardView
+                android:id="@+id/cvAccountSettingsCard"
+                android:layout_width="400dp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="400dp"
+                android:layout_margin="8dp"
+                android:transitionName="trans1"
+                app:cardCornerRadius="12dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/clAccountLoadingLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                        <ProgressBar
+                            android:id="@+id/pbAccountLoading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <Button
+                            android:id="@+id/btnAccountReload"
+                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:text="@string/try_to_load_one_more_time"
+                            android:textSize="16sp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                        <TextView
+                            android:id="@+id/tvAccountFailedToLoad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="52dp"
+                            android:text="@string/sry_cant_load_account"
+                            android:textSize="14sp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/btnAccountReload"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/clAccountLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/sdvAccountUserIcon"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="24dp"
+                            android:transitionName="@string/account_photo_transition"
+                            app:layout_constraintBottom_toTopOf="@+id/cpbAccountLoadingPhoto"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:roundAsCircle="true" />
+
+                        <TextView
+                            android:id="@+id/tvAccountUsername"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toTopOf="@+id/ivAccountToFavorites"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintLeft_toLeftOf="@+id/sdvAccountUserIcon"
+                            app:layout_constraintRight_toRightOf="@+id/sdvAccountUserIcon"
+                            app:layout_constraintTop_toBottomOf="@+id/cpbAccountLoadingPhoto" />
+
+                        <ImageView
+                            android:id="@+id/ivAccountToFavorites"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:layout_constraintBottom_toTopOf="@+id/tvAccountFavoritesCounter"
+                            app:layout_constraintEnd_toEndOf="@+id/tvAccountUsername"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintLeft_toRightOf="@+id/sdvAccountUserIcon"
+                            app:layout_constraintStart_toStartOf="@+id/tvAccountUsername"
+                            app:layout_constraintTop_toBottomOf="@+id/tvAccountUsername"
+                            app:srcCompat="@drawable/ic_add_to_favourites" />
+
+                        <com.github.rahatarmanahmed.cpv.CircularProgressView
+                            android:id="@+id/cpbAccountLoadingPhoto"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:visibility="gone"
+                            app:cpv_animAutostart="false"
+                            app:cpv_animSyncDuration="500"
+                            app:cpv_color="#000"
+                            app:cpv_maxProgress="100"
+                            app:layout_constraintBottom_toTopOf="@+id/tvAccountUsername"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintLeft_toLeftOf="@id/sdvAccountUserIcon"
+                            app:layout_constraintRight_toRightOf="@id/sdvAccountUserIcon"
+                            app:layout_constraintTop_toBottomOf="@+id/sdvAccountUserIcon" />
+
+                        <TextView
+                            android:id="@+id/tvAccountFavoritesCounter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/ivAccountToFavorites"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="@+id/ivAccountToFavorites"
+                            app:layout_constraintTop_toBottomOf="@+id/ivAccountToFavorites" />
+                    </android.support.constraint.ConstraintLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/clAccountLoadingLayout"
+                android:id="@+id/clAccountSettingsContainer"
                 android:layout_width="match_parent"
+                android:layout_below="@id/cvAccountSettingsCard"
                 android:layout_height="match_parent"
-                android:visibility="visible">
-
-                <ProgressBar
-                    android:id="@+id/pbAccountLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
+                tools:context="dustit.clientapp.mvp.ui.activities.AccountActivity">
 
                 <Button
-                    android:id="@+id/btnAccountReload"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:id="@+id/btnAccountEdit"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:text="@string/try_to_load_one_more_time"
-                    android:textColor="@color/colorPrimaryDefault"
+                    android:drawableEnd="@drawable/ic_arrow_right_simple"
+                    android:text="@string/edit_account"
                     android:textSize="16sp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" />
-
-                <TextView
-                    android:id="@+id/tvAccountFailedToLoad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="52dp"
-                    android:text="@string/sry_cant_load_account"
-                    android:textSize="14sp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/btnAccountReload"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:drawablePadding="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-            </android.support.constraint.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/clAccountLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/sdvAccountUserIcon"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="24dp"
-                    android:transitionName="@string/account_photo_transition"
-                    app:layout_constraintBottom_toTopOf="@+id/cpbAccountLoadingPhoto"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    app:roundAsCircle="true" />
-
-                <TextView
-                    android:id="@+id/tvAccountUsername"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:textColor="@color/colorPrimaryDefault"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/ivAccountToFavorites"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintLeft_toLeftOf="@+id/sdvAccountUserIcon"
-                    app:layout_constraintRight_toRightOf="@+id/sdvAccountUserIcon"
-                    app:layout_constraintTop_toBottomOf="@+id/cpbAccountLoadingPhoto" />
-
-                <ImageView
-                    android:id="@+id/ivAccountToFavorites"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:tint="#aaa"
-                    app:layout_constraintBottom_toTopOf="@+id/tvAccountFavoritesCounter"
-                    app:layout_constraintEnd_toEndOf="@+id/tvAccountUsername"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintLeft_toRightOf="@+id/sdvAccountUserIcon"
-                    app:layout_constraintStart_toStartOf="@+id/tvAccountUsername"
-                    app:layout_constraintTop_toBottomOf="@+id/tvAccountUsername"
-                    app:srcCompat="@drawable/ic_add_to_favourites" />
-
-                <com.github.rahatarmanahmed.cpv.CircularProgressView
-                    android:id="@+id/cpbAccountLoadingPhoto"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:visibility="gone"
-                    app:cpv_animAutostart="false"
-                    app:cpv_animSyncDuration="500"
-                    app:cpv_color="#000"
-                    app:cpv_maxProgress="100"
-                    app:layout_constraintBottom_toTopOf="@+id/tvAccountUsername"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintLeft_toLeftOf="@id/sdvAccountUserIcon"
-                    app:layout_constraintRight_toRightOf="@id/sdvAccountUserIcon"
-                    app:layout_constraintTop_toBottomOf="@+id/sdvAccountUserIcon" />
-
-                <TextView
-                    android:id="@+id/tvAccountFavoritesCounter"
+                <Button
+                    android:id="@+id/btnAccountSettings"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
+                    android:drawablePadding="8dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/ivAccountToFavorites"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="@+id/ivAccountToFavorites"
-                    app:layout_constraintTop_toBottomOf="@+id/ivAccountToFavorites" />
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:drawableRight="@drawable/ic_arrow_right_simple"
+                    android:text="@string/settings"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit" />
+
             </android.support.constraint.ConstraintLayout>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
-
-    <Button
-        android:id="@+id/btnAccountEdit"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:drawableRight="@drawable/ic_arrow_right_simple"
-        android:text="@string/edit_account"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAccountSettings"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvAccountSettingsCard"
-        app:layout_constraintVertical_chainStyle="spread" />
-
-    <Button
-        android:id="@+id/btnAccountSettings"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:drawableRight="@drawable/ic_arrow_right_simple"
-        android:text="@string/settings"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit" />
-
-</android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

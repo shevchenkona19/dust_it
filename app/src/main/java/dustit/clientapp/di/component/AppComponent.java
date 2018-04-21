@@ -7,6 +7,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.di.modules.AppModule;
 import dustit.clientapp.di.modules.ServerModule;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
@@ -111,4 +112,6 @@ public interface AppComponent {
     void inject(MemViewFragment memViewFragment);
 
     void inject(FavoriteViewActivity favoriteViewActivity);
+
+    void inject(FeedbackManager feedbackManager);
 }

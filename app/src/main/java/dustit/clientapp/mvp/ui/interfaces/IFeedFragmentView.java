@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.interfaces;
 import java.util.List;
 
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
 
 /**
  * Created by shevc on 05.10.2017.
@@ -40,4 +41,8 @@ public interface IFeedFragmentView extends IFragmentView {
     void onErrorInRemovingFromFavorites(String s);
 
     void onRemovedFromFavorites(String s);
+
+    void onMemRefreshed(RefreshedMem refreshedMem, String id);
+
+    void onErrorInRefreshingMem();
 }

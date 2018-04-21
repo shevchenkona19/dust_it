@@ -60,10 +60,10 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
     }
 
     public void setChecks(String[] ids) {
-        for (String id :
+        for (String name :
                 ids) {
             for (int i = 0; i < categoryList.size(); i++) {
-                if (categoryList.get(i).getId().equals(id)) {
+                if (categoryList.get(i).getName().equals(name)) {
                     categoryList.get(i).setChecked(true);
                     break;
                 }

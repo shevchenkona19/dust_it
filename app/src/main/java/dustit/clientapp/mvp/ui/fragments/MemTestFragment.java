@@ -9,7 +9,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -105,26 +104,13 @@ public class MemTestFragment extends Fragment implements GestureListener.IFragme
         final GestureDetector gestureDetector = new GestureDetector(getContext(), gestureListener);
         View v = inflater.inflate(R.layout.fragment_mem_test, container, false);
         unbinder = ButterKnife.bind(this, v);
-        ivMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/client/imgs?token=" + token + "&id=" + memEntity.getMemId()));
-        ibInterested.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onInterested();
-            }
-        });
-        ibNotInterested.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onNotInterested();
-            }
-        });
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                gestureDetector.onTouchEvent(motionEvent);
-                view.performClick();
-                return  true;
-            }
+        ivMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + memEntity.getMemId()));
+        ibInterested.setOnClickListener(view -> onInterested());
+        ibNotInterested.setOnClickListener(view -> onNotInterested());
+        v.setOnTouchListener((view, motionEvent) -> {
+            gestureDetector.onTouchEvent(motionEvent);
+            view.performClick();
+            return  true;
         });
         return v;
     }
@@ -141,12 +127,7 @@ public class MemTestFragment extends Fragment implements GestureListener.IFragme
             public void onAnimationEnd(Animation animation) {
                 clLayout.setVisibility(View.GONE);
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        memTestFragmentInteractionListener.onInterested(position, memEntity.getCategoryId());
-                    }
-                }, 100);
+                handler.postDelayed(() -> memTestFragmentInteractionListener.onInterested(position, memEntity.getCategoryName()), 100);
 
             }
 
@@ -172,12 +153,7 @@ public class MemTestFragment extends Fragment implements GestureListener.IFragme
             public void onAnimationEnd(Animation animation) {
                 clLayout.setVisibility(View.GONE);
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        memTestFragmentInteractionListener.onNotInterested(position);
-                    }
-                }, 100);
+                handler.postDelayed(() -> memTestFragmentInteractionListener.onNotInterested(position), 100);
             }
 
             @Override

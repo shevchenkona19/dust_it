@@ -27,41 +27,55 @@
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.LoginActivity"
+            android:launchMode="singleTask"
             android:theme="@style/HelloTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".mvp.ui.activities.RegisterActivity"
+            android:launchMode="singleTask"
             android:theme="@style/HelloTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".mvp.ui.activities.PreTestActivity"
+            android:launchMode="singleTask"
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.TestActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.ResultActivity"
+            android:launchMode="singleTask"
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeDayNight"/>
+            android:theme="@style/AppThemeDayNight" />
         <activity
             android:name=".mvp.ui.activities.AccountActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/MasterDayNight" />
+        <activity
+            android:name=".mvp.ui.activities.SettingsActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppThemeDayNight" />
-        <activity android:name=".mvp.ui.activities.SettingsActivity"
-            android:theme="@style/AppThemeDayNight"/>
-        <activity android:name=".mvp.ui.activities.PersonalSettingsActivity"
-            android:theme="@style/AppThemeDayNight"/>
+        <activity
+            android:name=".mvp.ui.activities.PersonalSettingsActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppThemeDayNight" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".mvp.ui.activities.FavoritesActivity"
-            android:theme="@style/AppThemeDayNight"/>
+        <activity
+            android:name=".mvp.ui.activities.FavoritesActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/DetailDayNight" />
         <activity
             android:name=".mvp.ui.activities.FavoriteViewActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppThemeDayNight" />
     </application>
 

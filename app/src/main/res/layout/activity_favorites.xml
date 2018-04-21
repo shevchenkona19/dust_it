@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clFavoritesParent"
+    android:transitionName="trans1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="dustit.clientapp.mvp.ui.activities.FavoritesActivity">
@@ -17,9 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_left_simple"
-        app:title="@string/favorites">
-
-    </android.support.v7.widget.Toolbar>
+        app:title="@string/favorites"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvFavoritesList"

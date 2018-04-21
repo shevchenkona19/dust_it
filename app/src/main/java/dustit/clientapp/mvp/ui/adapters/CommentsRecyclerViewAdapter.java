@@ -103,14 +103,14 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             CommentEntity comment = list.get(pos);
             commentViewHolder.tvUsername.setText(comment.getUsername());
             commentViewHolder.tvText.setText(comment.getText());
-            commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/getUserPhoto?targetUsername=" + comment.getUsername());
+            commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + comment.getUsername());
             final String monthDay = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') - 5, comment.getDateOfPost().indexOf('T'));
             final String hourMinute = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
             commentViewHolder.tvDateStamp.setText(hourMinute + " " + monthDay);
-        } else if (holder instanceof FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) {
-            final FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder failedToLoadViewHolder = (FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder) holder;
+        } else if (holder instanceof CommentsRecyclerViewAdapter.FeedFailedToLoadViewHolder) {
+            final CommentsRecyclerViewAdapter.FeedFailedToLoadViewHolder failedToLoadViewHolder = (CommentsRecyclerViewAdapter.FeedFailedToLoadViewHolder) holder;
             failedToLoadViewHolder.btnRetry.setOnClickListener(view -> {
                 if (list.size() > 1) {
                     interactionListener.loadCommentsPartial(list.size());

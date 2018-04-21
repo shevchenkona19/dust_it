@@ -1,15 +1,18 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import java.io.File;
-import java.io.IOException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
-import dustit.clientapp.customviews.zoomableview.MultiGestureListener;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -18,7 +21,6 @@ import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import dustit.clientapp.utils.containers.Container;
-import okhttp3.MultipartBody;
 import rx.Subscriber;
 
 
@@ -33,13 +35,18 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
     }
 
     @Override
-    public void uploadImage(File file) {
+    public void uploadImage(String path) {
         if (!userSettingsDataManager.isRegistered()) {
             getView().onNotRegistered();
             return;
         }
-        final ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
-        addSubscription(dataManager.postPhoto(requestBody, file.getName())
+        final PhotoBody photoBody = new PhotoBody();
+        final Bitmap bm = BitmapFactory.decodeFile(path);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, baos); //bm is the bitmap object
+        final byte[] b = baos.toByteArray();
+        photoBody.setPhoto(Base64.encodeToString(b, Base64.DEFAULT));
+        addSubscription(dataManager.postPhoto(photoBody)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
@@ -126,7 +133,6 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void onProgressUpdate(int percentage) {
-        L.print("UPLOAD PROG: " + percentage);
         getView().updateUploadingProgress(percentage);
     }
 

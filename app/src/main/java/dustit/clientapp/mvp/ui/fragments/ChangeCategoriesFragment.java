@@ -68,12 +68,7 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
         adapter = new ChangeCategoriesRecyclerViewAdapter(getContext());
         rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rvCategories.setAdapter(adapter);
-        btnApply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.sendCategories(adapter.getChecked());
-            }
-        });
+        btnApply.setOnClickListener(view -> presenter.sendCategories(adapter.getChecked()));
         presenter.getCategories();
         return v;
     }

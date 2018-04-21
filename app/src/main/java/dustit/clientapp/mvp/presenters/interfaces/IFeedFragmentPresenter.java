@@ -13,4 +13,5 @@ public interface IFeedFragmentPresenter {
     void postDislike(String id);
     void deleteDislike(String id);
     void addToFavorites(String id);
+    void refreshMem(String id);
 }

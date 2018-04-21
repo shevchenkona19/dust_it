@@ -9,23 +9,24 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.drawable.ProgressBarDrawable
 import dustit.clientapp.R
 import dustit.clientapp.mvp.model.entities.FavoriteEntity
 import dustit.clientapp.mvp.model.entities.MemEntity
+import dustit.clientapp.mvp.model.entities.RefreshedMem
 import dustit.clientapp.utils.DoubleClickListener
 import dustit.clientapp.utils.IConstants
 import dustit.clientapp.utils.containers.Pair
 import kotlinx.android.synthetic.main.item_feed.view.*
+import kotlinx.android.synthetic.main.item_feed_failed_to_load.view.*
+import java.util.*
 
 
-class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListener: IFeedInteractionListener, private val context: Context, private val appBarHeight: Int)
+class FeedRecyclerViewAdapter(rv: RecyclerView,
+                              private val feedInteractionListener: IFeedInteractionListener,
+                              private val context: Context,
+                              private val appBarHeight: Int)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -35,6 +36,7 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
     private var isLoading: Boolean = true
     private var totalItemCount: Int = 0
     private var lastVisibleItem: Int = 0
+    private var isMemesEnded: Boolean = false
 
     private val visibleThreshold: Byte = 2
 
@@ -56,11 +58,13 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
         rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                totalItemCount = linearLayoutManager.itemCount
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    feedInteractionListener.loadMore(entityList.size - 1)
-                    isLoading = true
+                if (!isMemesEnded) {
+                    totalItemCount = linearLayoutManager.itemCount
+                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
+                    if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                        feedInteractionListener.loadMore(entityList.size - 1)
+                        isLoading = true
+                    }
                 }
             }
         })
@@ -99,7 +103,6 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
             val mem: MemEntity = entityList[adapterPosition]!!
             val opinion = mem.opinion
             holder.bind(mem)
-            holder.itemView.sdvItemFeed.hierarchy.setRetryImage(ContextCompat.getDrawable(context, R.drawable.ic_reload))
             if (mem.isFavorite) {
                 holder.itemView.ivItemFeedAddToFavorites.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_added_to_favourites))
             } else {
@@ -181,7 +184,7 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
         entityList.clear()
         entityList.addAll(list)
         notifyDataSetChanged()
-        findAndReload()
+        findAndReloadFavorites()
     }
 
     fun updateListAtEnding(list: List<MemEntity>) {
@@ -189,10 +192,10 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
         val currPos = entityList.size - 2
         entityList.addAll(list)
         notifyItemRangeInserted(currPos, list.size)
-        findAndReload()
+        findAndReloadFavorites()
     }
 
-    private fun findAndReload() {
+    private fun findAndReloadFavorites() {
         if (entityList.size == 0) return
         for (i in favoriteEntityList.indices) {
             val pair = findMemAndPositionById(favoriteEntityList[i].id)
@@ -288,13 +291,27 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
         feedInteractionListener.showErrorToast()
     }
 
+    fun memesEnded() {
+        isMemesEnded = true
+    }
+
+    fun refreshMem(refreshedMem: RefreshedMem, id: String?) {
+        val pair: Pair<Int, MemEntity>? = findMemAndPositionById(id!!)
+        if (pair != null) {
+            pair.mem.likes = refreshedMem.likes
+            pair.mem.dislikes = refreshedMem.dislikes
+            pair.mem.opinion = refreshedMem.opinion
+            notifyItemChanged(pair.position)
+        }
+    }
+
     internal class MemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var isMoreLayoutVisible = false
 
         fun bind(mem: MemEntity) {
             isMoreLayoutVisible = false
             itemView.clItemFeedMoreLayout.visibility = View.GONE
-            itemView.sdvItemFeed.hierarchy.setProgressBarImage(ProgressBarDrawable())
+            itemView.sdvItemFeed.aspectRatio = mem.width.toFloat() / mem.height
             itemView.sdvItemFeed.controller = Fresco.newDraweeControllerBuilder()
                     .setTapToRetryEnabled(true)
                     .setUri(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.id))
@@ -311,25 +328,11 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,private val feedInteractionListen
         }
     }
 
-    internal class FeedLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.pbItemFeedLoading)
-        lateinit var pbLoading: ProgressBar
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    internal class FeedLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     internal class FeedFailedToLoadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.btnItemFeedRetry)
-        lateinit var btnRetry: Button
-
         fun bind(listener: () -> Unit) {
-            btnRetry.setOnClickListener { listener() }
-        }
-
-        init {
-            ButterKnife.bind(this, itemView)
+            itemView.btnItemFeedRetry.setOnClickListener { listener() }
         }
     }
 }

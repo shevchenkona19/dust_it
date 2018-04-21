@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
+import dustit.clientapp.utils.L;
 
 public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<ChangeCategoriesRecyclerViewAdapter.RowViewHolder> {
     private final List<PersonalCategory> categories = new ArrayList<>();
@@ -34,6 +35,7 @@ public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<Ch
     @Override
     public void onBindViewHolder(RowViewHolder holder, int position) {
         final PersonalCategory category = categories.get(position);
+        L.print("name: " + category.getCategoryName());
         holder.cbItem.setText(category.getCategoryName());
         holder.cbItem.setChecked(category.isChecked());
         holder.cbItem.setOnCheckedChangeListener((buttonView, isChecked) -> category.setChecked(isChecked));
