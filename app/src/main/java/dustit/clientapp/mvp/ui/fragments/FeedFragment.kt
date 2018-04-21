@@ -11,11 +11,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import butterknife.ButterKnife
 import butterknife.Unbinder
+import dustit.clientapp.App
 import dustit.clientapp.R
 import dustit.clientapp.customviews.WrapperLinearLayoutManager
+import dustit.clientapp.mvp.datamanager.FeedbackManager
 import dustit.clientapp.mvp.model.entities.FavoriteEntity
 import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.model.entities.RefreshedMem
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
@@ -26,16 +29,7 @@ import kotlinx.android.synthetic.main.fragment_feed.view.*
 import javax.inject.Inject
 
 
-class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
-
-    override fun onMemRefreshed(refreshedMem: RefreshedMem, id: String?) {
-        adapter?.refreshMem(refreshedMem, id)
-    }
-
-    override fun onErrorInRefreshingMem() {
-        showErrorToast()
-    }
-
+class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener, FeedbackManager.IFeedbackInteraction {
     private var appBarHeight: Int = 0
 
     internal var rvFeed: RecyclerView? = null
@@ -52,7 +46,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     private var linearLayoutManager: WrapperLinearLayoutManager? = null
 
     @Inject
-    lateinit var themeManager: ThemeManager
+    lateinit var feedbackManager: FeedbackManager
 
     fun setFavoritesList(list: List<FavoriteEntity>) {
         adapter!!.setFavoritesList(list)
@@ -73,6 +67,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_feed, container, false)
+        App.get().appComponent.inject(this)
         rvFeed = v.rvFeed
         srlRefresh = v.srlFeedRefresh
         unbinder = ButterKnife.bind(this, v)
@@ -109,10 +104,12 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             }
         }
         rvFeed!!.addOnScrollListener(scrollListener)
+        feedbackManager.subscribe(this)
         return v
     }
 
     override fun onDestroyView() {
+        feedbackManager.unsubscribe(this)
         rvFeed!!.removeOnScrollListener(scrollListener)
         unbinder!!.unbind()
         presenter!!.unbind()
@@ -132,41 +129,34 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         adapter!!.updateListAtEnding(list)
     }
 
+    override fun postLike(mem: MemEntity) {
+        feedbackManager.postLike(mem)
+    }
+
+    override fun deleteLike(mem: MemEntity) {
+        feedbackManager.deleteLike(mem)
+    }
+
+    override fun postDislike(mem: MemEntity) {
+        feedbackManager.postDislike(mem)
+    }
+
+    override fun deleteDislike(mem: MemEntity) {
+        feedbackManager.deleteDislike(mem)
+    }
+
+    override fun changedFeedback(refreshedMem: RefreshedMem) {
+        adapter?.refreshMem(refreshedMem)
+    }
+
+    override fun onError(restoreMemEntity: RestoreMemEntity?) {
+        adapter?.restoreMem(restoreMemEntity!!)
+        showErrorToast()
+    }
+
     override fun onErrorInLoading() {
         srlRefresh!!.isRefreshing = false
         adapter!!.onFailedToLoad()
-    }
-
-    override fun onLikePostError(id: String) {
-        showErrorToast()
-    }
-
-    override fun onLikeDeletingError(id: String) {
-        showErrorToast()
-    }
-
-    override fun onDislikePostError(id: String) {
-        showErrorToast()
-    }
-
-    override fun onDislikeDeletingError(id: String) {
-        showErrorToast()
-    }
-
-    override fun onLikePostedSuccessfully(id: String) {
-        presenter!!.refreshMem(id)
-    }
-
-    override fun onLikeDeletedSuccessfully(id: String) {
-        presenter!!.refreshMem(id)
-    }
-
-    override fun onDislikePostedSuccessfully(id: String) {
-        presenter!!.refreshMem(id)
-    }
-
-    override fun onDislikeDeletedSuccessfully(id: String) {
-        presenter!!.refreshMem(id)
     }
 
     override fun onAddedToFavorites(id: String) {
@@ -192,22 +182,6 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun onMemSelected(animStart: View, mem: MemEntity) {
         launchMemView(animStart, mem)
-    }
-
-    override fun postLike(id: String) {
-        presenter!!.postLike(id)
-    }
-
-    override fun deleteLike(id: String) {
-        presenter!!.deleteLike(id)
-    }
-
-    override fun postDislike(id: String) {
-        presenter!!.postDislike(id)
-    }
-
-    override fun deleteDislike(id: String) {
-        presenter!!.deleteDislike(id)
     }
 
     override fun addToFavorites(id: String) {

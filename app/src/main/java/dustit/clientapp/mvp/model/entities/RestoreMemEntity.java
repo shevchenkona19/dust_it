@@ -17,6 +17,30 @@ public class RestoreMemEntity {
         id = memEntity.getId();
     }
 
+    public String getLikes() {
+        return likes;
+    }
+
+    public void setLikes(String likes) {
+        this.likes = likes;
+    }
+
+    public String getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(String dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Nullable
     public IConstants.OPINION getOpinion() {
         if (opinion != null) {

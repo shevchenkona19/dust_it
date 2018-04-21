@@ -18,22 +18,6 @@ public interface IFeedFragmentView extends IFragmentView {
 
     void onErrorInLoading();
 
-    void onLikePostError(String id);
-
-    void onLikeDeletingError(String id);
-
-    void onDislikePostError(String id);
-
-    void onDislikeDeletingError(String id);
-
-    void onLikePostedSuccessfully(String id);
-
-    void onLikeDeletedSuccessfully(String id);
-
-    void onDislikePostedSuccessfully(String id);
-
-    void onDislikeDeletedSuccessfully(String id);
-
     void onAddedToFavorites(String id);
 
     void onErrorInAddingToFavorites(String id);
@@ -41,8 +25,4 @@ public interface IFeedFragmentView extends IFragmentView {
     void onErrorInRemovingFromFavorites(String s);
 
     void onRemovedFromFavorites(String s);
-
-    void onMemRefreshed(RefreshedMem refreshedMem, String id);
-
-    void onErrorInRefreshingMem();
 }

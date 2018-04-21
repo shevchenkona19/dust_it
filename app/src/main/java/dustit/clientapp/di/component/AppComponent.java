@@ -1,5 +1,7 @@
 package dustit.clientapp.di.component;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -36,6 +38,7 @@ import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
+import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.utils.FavoritesUtils;
@@ -114,4 +117,6 @@ public interface AppComponent {
     void inject(FavoriteViewActivity favoriteViewActivity);
 
     void inject(FeedbackManager feedbackManager);
+
+    void inject(@NotNull FeedFragment feedFragment);
 }

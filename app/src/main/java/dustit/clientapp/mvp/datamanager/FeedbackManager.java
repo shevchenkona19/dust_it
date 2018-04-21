@@ -29,9 +29,9 @@ public class FeedbackManager {
     }
 
     @Inject
-    public ServerAPI serverAPI;
+    ServerAPI serverAPI;
     @Inject
-    public SharedPreferencesRepository sharedPreferencesRepository;
+    SharedPreferencesRepository sharedPreferencesRepository;
 
     public FeedbackManager() {
         App.get().getAppComponent().inject(this);
