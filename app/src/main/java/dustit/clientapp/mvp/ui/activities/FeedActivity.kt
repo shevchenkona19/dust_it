@@ -49,7 +49,7 @@ import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
 import javax.inject.Inject
 
-class FeedActivity : AppCompatActivity(), HotFragment.IHotFragmentInteractionListener, CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
+class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
 
     private var isFeedScrollIdle = true
     internal lateinit var vpFeed: ViewPager
@@ -233,48 +233,6 @@ class FeedActivity : AppCompatActivity(), HotFragment.IHotFragmentInteractionLis
         super.onDestroy()
     }
 
-    override fun onMemSelected(memEntity: MemEntity) {
-        isFeed = false
-        isHot = true
-        isCategories = false
-        val intent = Intent(this, MemViewActivity::class.java)
-        intent.putExtra(MEM_ENTITY, memEntity)
-        startActivity(intent)
-    }
-
-    override fun passPostLike(id: String) {
-        when {
-            isFeed -> adapter!!.postLikeFeed(id)
-            isHot -> adapter!!.postLikeHot(id)
-            isCategories -> adapter!!.postLikeCategories(id)
-        }
-    }
-
-    override fun passDeleteLike(id: String) {
-        when {
-            isFeed -> adapter!!.deleteLikeFeed(id)
-            isHot -> adapter!!.deleteLikeHot(id)
-            isCategories -> adapter!!.deleteLikeCategories(id)
-        }
-    }
-
-    override fun passPostDislike(id: String) {
-        when {
-            isFeed -> adapter!!.postDislikeFeed(id)
-            isHot -> adapter!!.postDislikeHot(id)
-            isCategories -> adapter!!.postDislikeCategories(id)
-        }
-    }
-
-    override fun passDeleteDislike(id: String) {
-        when {
-            isFeed -> adapter!!.deleteDislikeFeed(id)
-            isHot -> adapter!!.deleteDislikeHot(id)
-            isCategories -> adapter!!.deleteDislikeCategories(id)
-        }
-    }
-
-
     override fun onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this)
     }
@@ -382,26 +340,14 @@ class FeedActivity : AppCompatActivity(), HotFragment.IHotFragmentInteractionLis
                 .replace(R.id.feedContainer, fragment)
                 .addToBackStack(null)
                 .commit()
-        //hideControls()
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0)
                 clLayout.visibility = View.VISIBLE
         }
     }
-
-    private fun hideControls() {
-        clLayout.visibility = View.GONE
-    }
-
     override fun closeMemView() {
         clLayout.visibility = View.VISIBLE
         supportFragmentManager.popBackStack()
-    }
-
-    override fun launchMemView(memEntity: MemEntity) {
-        val intent = Intent(this, MemViewActivity::class.java)
-        intent.putExtra(MEM_ENTITY, memEntity)
-        startActivity(intent)
     }
 
     override fun notifyFeedScrollIdle(b: Boolean) {

@@ -10,6 +10,7 @@ import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
+import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
@@ -29,7 +30,7 @@ public class FeedbackManager {
     }
 
     @Inject
-    ServerAPI serverAPI;
+    ServerRepository serverRepository;
     @Inject
     SharedPreferencesRepository sharedPreferencesRepository;
 
@@ -44,25 +45,25 @@ public class FeedbackManager {
     }
 
     public void postLike(final MemEntity memEntity) {
-        subscriptions.add(serverAPI.postLike(getToken(), memEntity.getId())
+        subscriptions.add(serverRepository.postLike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void postDislike(final MemEntity memEntity) {
-        subscriptions.add(serverAPI.postDislike(getToken(), memEntity.getId())
+        subscriptions.add(serverRepository.postDislike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void deleteLike(MemEntity memEntity) {
-        subscriptions.add(serverAPI.deleteLike(getToken(), memEntity.getId())
+        subscriptions.add(serverRepository.deleteLike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void deleteDislike(MemEntity memEntity) {
-        subscriptions.add(serverAPI.deleteDislike(getToken(), memEntity.getId())
+        subscriptions.add(serverRepository.deleteDislike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
@@ -72,9 +73,11 @@ public class FeedbackManager {
         return new Subscriber<RefreshedMem>() {
             @Override
             public void onCompleted() {
+                final RefreshedMem refreshedMem = container.get();
+                refreshedMem.setId(memEntity.getId());
                 for (IFeedbackInteraction interaction :
                         interactionList) {
-                    interaction.changedFeedback(container.get().setId(memEntity.getId()));
+                    interaction.changedFeedback(refreshedMem);
                 }
             }
 

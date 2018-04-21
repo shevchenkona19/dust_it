@@ -37,6 +37,7 @@ import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
@@ -119,4 +120,6 @@ public interface AppComponent {
     void inject(FeedbackManager feedbackManager);
 
     void inject(@NotNull FeedFragment feedFragment);
+
+    void inject(BaseFeedFragment baseFeedFragment);
 }

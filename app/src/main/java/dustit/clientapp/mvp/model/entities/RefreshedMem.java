@@ -32,9 +32,8 @@ public class RefreshedMem {
         return id;
     }
 
-    public RefreshedMem setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getLikes() {
@@ -81,5 +80,10 @@ public class RefreshedMem {
                 this.opinion = "null";
                 break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Likes: " + likes +"; Dislikes: " + dislikes + "; Opinion: " + opinion;
     }
 }

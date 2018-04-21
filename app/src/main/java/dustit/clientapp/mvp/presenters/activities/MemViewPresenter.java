@@ -112,43 +112,6 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     }
 
     @Override
-    public void postLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        processLikeDislike(dataManager.postLike(id), id);
-    }
-
-    @Override
-    public void deleteLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        processLikeDislike(dataManager.deleteLike(id), id);
-
-    }
-
-    @Override
-    public void postDislike(String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        processLikeDislike(dataManager.postDislike(id), id);
-    }
-
-    @Override
-    public void deleteDislike(String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        processLikeDislike(dataManager.deleteDislike(id), id);
-    }
-
-    @Override
     public void addToFavourites(String id) {
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -196,26 +159,5 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     private boolean isNotSuccess(int code) {
         return code != 200;
-    }
-
-    private void processLikeDislike(Observable<ResponseEntity> subscriber, final String id) {
-        addSubscription(subscriber.subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().onQuarrySendedSuccessfully(id);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().onErrorSendingQuarry();
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                if (isNotSuccess(responseEntity.getResponse())) {
-                    getView().onErrorSendingQuarry();
-                }
-            }
-        }));
     }
 }

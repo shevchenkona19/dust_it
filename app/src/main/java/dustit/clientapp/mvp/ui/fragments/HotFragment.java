@@ -37,9 +37,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
-    private IHotFragmentInteractionListener interactionListener;
     private Unbinder unbinder;
-    private FeedRecyclerViewAdapter adapter;
     private final HotFragmentPresenter presenter = new HotFragmentPresenter();
     private boolean isFirstTimeVisible = true;
     private RecyclerView.OnScrollListener scrollListener;
@@ -51,8 +49,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     SwipeRefreshLayout srlRefresh;
     private int appBarHeight;
 
-    @Inject
-    ThemeManager themeManager;
 
     public HotFragment() {
     }
@@ -109,6 +105,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
             }
         };
         rvHot.addOnScrollListener(scrollListener);
+        subscribeToFeedbackChanges();
         return v;
     }
 
@@ -129,26 +126,15 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     public void onAttach(Context context) {
         super.onAttach(context);
         bindWithBase(context);
-        if (context instanceof IHotFragmentInteractionListener) {
-            interactionListener = (IHotFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDestroyView() {
+        unsubscribeFromFeedbackChanges();
         rvHot.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        interactionListener = null;
     }
 
     @Override
@@ -166,30 +152,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     public void onErrorInLoading() {
         srlRefresh.setRefreshing(false);
         adapter.onFailedToLoad();
-    }
-
-    @Override
-    public void onLikePostError(String id) {
-        /*adapter.onLikePostError(id);*/
-        showErrorToast();
-    }
-
-    @Override
-    public void onLikeDeletingError(String id) {
-        /*adapter.onLikeDeletingError(id);*/
-        showErrorToast();
-    }
-
-    @Override
-    public void onDislikePostError(String id) {
-        /*adapter.onDislikePostError(id);*/
-        showErrorToast();
-    }
-
-    @Override
-    public void onDislikeDeletingError(String id) {
-        /*adapter.onDislikeDeletingError(id);*/
-        showErrorToast();
     }
 
     @Override
@@ -219,31 +181,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     }
 
     @Override
-    public void onMemSelected(@NonNull View animStart, @NonNull MemEntity mem) {
-        launchMemView(animStart, mem);
-    }
-
-    @Override
-    public void postLike(@NonNull String id) {
-        presenter.postLike(id);
-    }
-
-    @Override
-    public void deleteLike(@NonNull String id) {
-        presenter.deleteLike(id);
-    }
-
-    @Override
-    public void postDislike(@NonNull String id) {
-        presenter.postDislike(id);
-    }
-
-    @Override
-    public void deleteDislike(@NonNull String id) {
-        presenter.deleteDislike(id);
-    }
-
-    @Override
     public void addToFavorites(@NonNull String id) {
         presenter.addToFavorites(id);
     }
@@ -258,30 +195,9 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 
-    public void passPostLike(String id) {
-        adapter.onLikePostedSuccesfully(id);
-    }
-
-    public void passDeleteLike(String id) {
-        adapter.onLikeDeletedSuccesfully(id);
-    }
-
-    public void passPostDislike(String id) {
-        adapter.onDislikePostedSuccesfully(id);
-    }
-
-    public void passDeleteDislike(String id) {
-        adapter.onDislikeDeletedSuccesfully(id);
-    }
-
     @Override
     public void loadMore(int offset) {
         presenter.loadWithOffset(offset);
-    }
-
-    //Select mem
-    public interface IHotFragmentInteractionListener {
-        void onMemSelected(MemEntity memEntity);
     }
 
     @Override

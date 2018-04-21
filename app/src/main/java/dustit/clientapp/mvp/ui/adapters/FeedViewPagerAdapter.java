@@ -66,54 +66,6 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
-    public void postLikeFeed(String id) {
-        feedFragment.get().passPostLike(id);
-    }
-
-    public void postLikeHot(String id) {
-        hotFragment.get().passPostLike(id);
-    }
-
-    public void deleteLikeFeed(String id) {
-        feedFragment.get().passDeleteLike(id);
-    }
-
-    public void deleteLikeHot(String id) {
-        hotFragment.get().passDeleteLike(id);
-    }
-
-    public void postDislikeFeed(String id) {
-        feedFragment.get().passPostDislike(id);
-    }
-
-    public void postDislikeHot(String id) {
-        hotFragment.get().passPostDislike(id);
-    }
-
-    public void deleteDislikeFeed(String id) {
-        feedFragment.get().passDeleteDislike(id);
-    }
-
-    public void deleteDislikeHot(String id) {
-        hotFragment.get().passDeleteDislike(id);
-    }
-
-    public void postLikeCategories(String id) {
-        categoriesFragment.get().passPostLike(id);
-    }
-
-    public void deleteLikeCategories(String id) {
-        categoriesFragment.get().passDeleteLike(id);
-    }
-
-    public void postDislikeCategories(String id) {
-        categoriesFragment.get().passPostDislike(id);
-    }
-
-    public void deleteDislikeCategories(String id) {
-        categoriesFragment.get().passDeleteDislike(id);
-    }
-
     public void destroy() {
         if (feedFragment != null) feedFragment.clear();
         if (hotFragment != null) hotFragment.clear();

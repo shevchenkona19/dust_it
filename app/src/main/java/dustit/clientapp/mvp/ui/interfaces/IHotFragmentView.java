@@ -16,14 +16,6 @@ public interface IHotFragmentView extends IFragmentView {
 
     void onErrorInLoading();
 
-    void onLikePostError(String id);
-
-    void onLikeDeletingError(String id);
-
-    void onDislikePostError(String id);
-
-    void onDislikeDeletingError(String id);
-
     void onAddedToFavorites(String id);
 
     void onErrorInAddingToFavorites(String id);

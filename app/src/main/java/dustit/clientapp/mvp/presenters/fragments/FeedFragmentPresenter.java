@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
-import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFeedFragmentPresenter;
@@ -85,114 +82,6 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
     }
 
     @Override
-    public void postLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.postLike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] == 200) {
-                    getView().onLikePostedSuccessfully(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void deleteLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.deleteLike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] == 200) {
-                    getView().onLikeDeletedSuccessfully(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void postDislike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.postDislike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] == 200) {
-                    getView().onDislikePostedSuccessfully(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void deleteDislike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.deleteDislike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] == 200) {
-                    getView().onDislikeDeletedSuccessfully(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
     public void addToFavorites(String id) {
         if (!userSettingsDataManager.isRegistered()) {
             getView().onNotRegistered();
@@ -213,31 +102,6 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
         favoritesUtils.addToFavorites(id);
     }
 
-    @Override
-    public void refreshMem(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final Container<RefreshedMem> refreshedMemContainer = new Container<>();
-        addSubscription(dataManager.refreshMem(id).subscribe(new Subscriber<RefreshedMem>() {
-            @Override
-            public void onCompleted() {
-                getView().onMemRefreshed(refreshedMemContainer.get(), id);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                getView().onErrorInRefreshingMem();
-            }
-
-            @Override
-            public void onNext(RefreshedMem refreshedMem) {
-                refreshedMemContainer.put(refreshedMem);
-            }
-        }));
-    }
 
     public void removeFromFavorites(final String id) {
         if (!userSettingsDataManager.isRegistered()) {

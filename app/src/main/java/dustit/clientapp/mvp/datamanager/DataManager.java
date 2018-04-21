@@ -98,19 +98,19 @@ public class DataManager {
                 .flatMap((Func1<PersonalCategoryUpperEntity, Observable<PersonalCategory>>) personalCategoryUpperEntity -> Observable.from(personalCategoryUpperEntity.getCategories()));
     }
 
-    public Observable<ResponseEntity> postLike(String id) {
+    public Observable<RefreshedMem> postLike(String id) {
         return serverRepository.postLike(preferencesRepository.getSavedToken(), id);
     }
 
-    public Observable<ResponseEntity> deleteLike(String id) {
+    public Observable<RefreshedMem> deleteLike(String id) {
         return serverRepository.deleteLike(preferencesRepository.getSavedToken(), id);
     }
 
-    public Observable<ResponseEntity> postDislike(String id) {
+    public Observable<RefreshedMem> postDislike(String id) {
         return serverRepository.postDislike(preferencesRepository.getSavedToken(), id);
     }
 
-    public Observable<ResponseEntity> deleteDislike(String id) {
+    public Observable<RefreshedMem> deleteDislike(String id) {
         return serverRepository.deleteDislike(preferencesRepository.getSavedToken(), id);
     }
 

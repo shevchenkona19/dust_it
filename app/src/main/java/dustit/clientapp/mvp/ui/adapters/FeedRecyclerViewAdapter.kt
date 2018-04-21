@@ -18,6 +18,7 @@ import dustit.clientapp.mvp.model.entities.RefreshedMem
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity
 import dustit.clientapp.utils.DoubleClickListener
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.L
 import dustit.clientapp.utils.containers.Pair
 import kotlinx.android.synthetic.main.item_feed.view.*
 import kotlinx.android.synthetic.main.item_feed_failed_to_load.view.*
@@ -125,14 +126,34 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
             }
             holder.itemView.ivItemFeedIsLiked.setOnClickListener {
                 when (opinion) {
-                    IConstants.OPINION.LIKED -> feedInteractionListener.deleteLike(mem)
-                    IConstants.OPINION.DISLIKED, IConstants.OPINION.NEUTRAL -> feedInteractionListener.postLike(mem)
+                    IConstants.OPINION.LIKED -> {
+                        mem.setLikes(-1)
+                        mem.opinion = IConstants.OPINION.NEUTRAL
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.deleteLike(mem)
+                    }
+                    IConstants.OPINION.DISLIKED, IConstants.OPINION.NEUTRAL -> {
+                        mem.setLikes(1)
+                        mem.opinion = IConstants.OPINION.LIKED
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.postLike(mem)
+                    }
                 }
             }
             holder.itemView.ivItemFeedDisliked.setOnClickListener {
                 when (opinion) {
-                    IConstants.OPINION.DISLIKED -> feedInteractionListener.deleteDislike(mem)
-                    IConstants.OPINION.LIKED, IConstants.OPINION.NEUTRAL -> feedInteractionListener.postDislike(mem)
+                    IConstants.OPINION.DISLIKED -> {
+                        mem.setDislikes(-1)
+                        mem.opinion = IConstants.OPINION.NEUTRAL
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.deleteDislike(mem)
+                    }
+                    IConstants.OPINION.LIKED, IConstants.OPINION.NEUTRAL -> {
+                        mem.setDislikes(1)
+                        mem.opinion = IConstants.OPINION.DISLIKED
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.postDislike(mem)
+                    }
                 }
             }
             holder.itemView.sdvItemFeed.setOnClickListener(object : DoubleClickListener() {
@@ -240,75 +261,26 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
         notifyItemChanged(pos)
     }
 
-    fun onLikePostedSuccesfully(id: String) {
-        val p = findMemAndPositionById(id)
-        val mem = p!!.mem
-        val pos = p.position
-        val opinion = mem.opinion
-        if (opinion != null) {
-            if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1)
-            mem.setLikes(1)
-            mem.opinion = IConstants.OPINION.LIKED
-            notifyItemChanged(pos)
-        } else {
-            showErrorToast()
-        }
-    }
-
-    fun onLikeDeletedSuccesfully(id: String) {
-        val pair = findMemAndPositionById(id)
-        val mem = pair!!.mem
-        val pos = pair.position
-        mem.setLikes(-1)
-        mem.opinion = IConstants.OPINION.NEUTRAL
-        notifyItemChanged(pos)
-    }
-
-    fun onDislikePostedSuccesfully(id: String) {
-        val pair = findMemAndPositionById(id)
-        val mem = pair!!.mem
-        val pos = pair.position
-        val opinion = mem.opinion
-        if (opinion != null) {
-            if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1)
-            mem.setDislikes(1)
-            mem.opinion = IConstants.OPINION.DISLIKED
-            notifyItemChanged(pos)
-        } else {
-            showErrorToast()
-        }
-    }
-
-    fun onDislikeDeletedSuccesfully(id: String) {
-        val pair = findMemAndPositionById(id)
-        val mem = pair!!.mem
-        val pos = pair.position
-        mem.setDislikes(-1)
-        mem.opinion = IConstants.OPINION.NEUTRAL
-        notifyItemChanged(pos)
-    }
-
-    private fun showErrorToast() {
-        feedInteractionListener.showErrorToast()
-    }
-
     fun memesEnded() {
         isMemesEnded = true
     }
 
     fun refreshMem(refreshedMem: RefreshedMem) {
+        L.print("refresh mem!")
+        L.print("Refreshed mem: " + refreshedMem.toString())
         val pair: Pair<Int, MemEntity>? = findMemAndPositionById(refreshedMem.id)
         if (pair != null) {
             pair.mem.likes = refreshedMem.likes
             pair.mem.dislikes = refreshedMem.dislikes
             pair.mem.opinion = refreshedMem.opinion
+            L.print("Notify!")
             notifyItemChanged(pair.position)
         }
     }
 
     fun restoreMem(restoreMemEntity: RestoreMemEntity) {
         val memAndPos: Pair<Int, MemEntity>? = findMemAndPositionById(restoreMemEntity.id)
-        if(memAndPos != null) {
+        if (memAndPos != null) {
             val mem: MemEntity = memAndPos.mem
             val pos = memAndPos.position
             mem.likes = restoreMemEntity.likes

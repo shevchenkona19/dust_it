@@ -51,8 +51,11 @@ import butterknife.Unbinder;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
@@ -61,7 +64,7 @@ import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView {
+public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
     private static final String SHARED_TRANSITION_KEY = "sd";
     private MemEntity mem;
@@ -77,24 +80,23 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private int imageWidth = -1;
     private int imageHeight = -1;
 
-    private enum Quarry {
-        POST_LIKE,
-        DELETE_LIKE,
-        POST_DISLIKE,
-        DELETE_DISLIKE
+    @Override
+    public void changedFeedback(RefreshedMem refreshedMem) {
+        mem.setLikes(refreshedMem.getLikes());
+        mem.setDislikes(refreshedMem.getDislikes());
+        mem.setOpinion(refreshedMem.getOpinion());
+        refreshUi();
     }
 
-    private MemViewFragment.Quarry currentQuarry;
+    @Override
+    public void onError(RestoreMemEntity restoreMemEntity) {
+        mem.setLikes(restoreMemEntity.getLikes());
+        mem.setDislikes(restoreMemEntity.getDislikes());
+        mem.setOpinion(restoreMemEntity.getOpinion());
+        refreshUi();
+    }
 
     public interface IMemViewRatingInteractionListener {
-        void passPostLike(String id);
-
-        void passDeleteLike(String id);
-
-        void passPostDislike(String id);
-
-        void passDeleteDislike(String id);
-
         void closeMemView();
     }
 
@@ -154,7 +156,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     TextView tvSrc;
 
     @Inject
-    ThemeManager themeManager;
+    FeedbackManager feedbackManager;
 
     public static MemViewFragment newInstance(MemEntity mem) {
         Bundle args = new Bundle();
@@ -190,6 +192,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
+        feedbackManager.subscribe(this);
         rvComments.setAdapter(commentAdapter);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
         srlCommentsRefresh.setOnRefreshListener(() -> {
@@ -229,6 +232,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Override
     public void onDestroyView() {
         unbinder.unbind();
+        feedbackManager.unsubscribe(this);
         super.onDestroyView();
     }
 
@@ -301,21 +305,27 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         ivBack.setOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
-                presenter.deleteLike(mem.getId());
-                currentQuarry = Quarry.DELETE_LIKE;
+                feedbackManager.deleteLike(mem);
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                mem.setLikes(-1);
             } else {
-                presenter.postLike(mem.getId());
-                currentQuarry = Quarry.POST_LIKE;
+                feedbackManager.postLike(mem);
+                mem.setLikes(1);
+                mem.setOpinion(IConstants.OPINION.LIKED);
             }
+            refreshUi();
         });
         ivDislike.setOnClickListener(view -> {
             if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
-                presenter.deleteDislike(mem.getId());
-                currentQuarry = Quarry.DELETE_DISLIKE;
+                feedbackManager.deleteDislike(mem);
+                mem.setDislikes(-1);
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
             } else {
-                presenter.postDislike(mem.getId());
-                currentQuarry = Quarry.POST_DISLIKE;
+                feedbackManager.postDislike(mem);
+                mem.setDislikes(1);
+                mem.setOpinion(IConstants.OPINION.DISLIKED);
             }
+            refreshUi();
         });
         pdvMem.setOnViewTapListener((view, x, y) -> {
             if (isExpanded) {
@@ -396,45 +406,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onErrorSendingQuarry() {
-        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-        currentQuarry = null;
-    }
-
-    @Override
-    public void onQuarrySendedSuccessfully(String id) {
-        final IConstants.OPINION opinion = mem.getOpinion();
-        switch (currentQuarry) {
-            case POST_LIKE:
-                if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1);
-                mem.setLikes(1);
-                mem.setOpinion(IConstants.OPINION.LIKED);
-                interactionListener.passPostLike(id);
-                break;
-            case DELETE_LIKE:
-                mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                mem.setLikes(-1);
-                interactionListener.passDeleteLike(id);
-                break;
-            case POST_DISLIKE:
-                if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1);
-                mem.setDislikes(1);
-                mem.setOpinion(IConstants.OPINION.DISLIKED);
-                interactionListener.passPostDislike(id);
-                break;
-            case DELETE_DISLIKE:
-                mem.setDislikes(-1);
-                mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                interactionListener.passDeleteDislike(id);
-                break;
-            default:
-                onErrorSendingQuarry();
-                break;
-        }
-        refreshUi();
     }
 
     @Override

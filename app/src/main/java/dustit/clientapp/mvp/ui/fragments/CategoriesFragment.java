@@ -62,7 +62,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private Unbinder unbinder;
     private ICategoriesFragmentInteractionListener listener;
     private final CategoriesFragmentPresenter presenter = new CategoriesFragmentPresenter();
-    private FeedRecyclerViewAdapter adapter;
     private RecyclerView.OnScrollListener scrollListener;
     private WrapperLinearLayoutManager linearLayoutManager;
     private int appBarHeight;
@@ -162,18 +161,20 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
             }
 
             @Override
-            public void onCategorySelected(Category category) {
+            public void onCategorySelected(@NonNull Category category) {
                 currentCategory = category;
                 srlRefresh.setEnabled(true);
                 presenter.loadBase(category.getName());
             }
         });
         rvFeed.addOnScrollListener(scrollListener);
+        subscribeToFeedbackChanges();
         return v;
     }
 
     @Override
     public void onDestroyView() {
+        unsubscribeFromFeedbackChanges();
         rvFeed.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
@@ -203,46 +204,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     }
 
     @Override
-    public void onLikePostError(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onLikeDeletingError(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onDislikePostError(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onDislikeDeletingError(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onLikePostedSuccessfully(String id) {
-        adapter.onLikePostedSuccesfully(id);
-    }
-
-    @Override
-    public void onLikeDeletedSuccessfully(String id) {
-        adapter.onLikeDeletedSuccesfully(id);
-    }
-
-    @Override
-    public void onDislikePostedSuccessfully(String id) {
-        adapter.onDislikePostedSuccesfully(id);
-    }
-
-    @Override
-    public void onDislikeDeletedSuccessfully(String id) {
-        adapter.onDislikeDeletedSuccesfully(id);
-    }
-
-    @Override
     public void onAddedToFavorites(String id) {
         notifyBase(id);
         adapter.addedToFavorites(id);
@@ -269,31 +230,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     }
 
     @Override
-    public void onMemSelected(@NonNull View animStart,@NonNull MemEntity mem) {
-        launchMemView(animStart, mem);
-    }
-
-    @Override
-    public void postLike(@NonNull String id) {
-        presenter.postLike(id);
-    }
-
-    @Override
-    public void deleteLike(@NonNull String id) {
-        presenter.deleteLike(id);
-    }
-
-    @Override
-    public void postDislike(@NonNull String id) {
-        presenter.postDislike(id);
-    }
-
-    @Override
-    public void deleteDislike(@NonNull String id) {
-        presenter.deleteDislike(id);
-    }
-
-    @Override
     public void addToFavorites(@NonNull String id) {
         presenter.addToFavorites(id);
     }
@@ -306,22 +242,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void showErrorToast() {
         Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-    }
-
-    public void passPostLike(String id) {
-        adapter.onLikePostedSuccesfully(id);
-    }
-
-    public void passDeleteLike(String id) {
-        adapter.onLikeDeletedSuccesfully(id);
-    }
-
-    public void passPostDislike(String id) {
-        adapter.onDislikePostedSuccesfully(id);
-    }
-
-    public void passDeleteDislike(String id) {
-        adapter.onDislikeDeletedSuccesfully(id);
     }
 
     @Override
