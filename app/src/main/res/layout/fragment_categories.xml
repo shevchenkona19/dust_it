@@ -5,38 +5,14 @@
     android:animateLayoutChanges="true"
     tools:context="dustit.clientapp.mvp.ui.fragments.CategoriesFragment">
 
-    <RelativeLayout
-        android:id="@+id/rlCategoriesLoading"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlCategoriesRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:visibility="visible">
+        android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/pbCategoriesLoading"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlCategoriesFeed"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/srlCategoriesRefresh"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvCategoriesFeed"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvCategoriesFeed"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </RelativeLayout>
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

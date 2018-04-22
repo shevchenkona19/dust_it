@@ -45,19 +45,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private static final String HEIGHT_APPBAR = "HEIGHT";
     private static final String IS_CATEGORIES_LOADED = "ISCATLOAD";
 
-    @BindView(R.id.rlCategoriesFeed)
-    RelativeLayout rlFeed;
-    @BindView(R.id.rlCategoriesLoading)
-    RelativeLayout rlLoadingLayout;
-    @BindView(R.id.pbCategoriesLoading)
-    ProgressBar pbLoading;
     @BindView(R.id.srlCategoriesRefresh)
     SwipeRefreshLayout srlRefresh;
     @BindView(R.id.rvCategoriesFeed)
     RecyclerView rvFeed;
-
-    @Inject
-    ThemeManager themeManager;
 
     private Unbinder unbinder;
     private ICategoriesFragmentInteractionListener listener;
@@ -121,16 +112,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         adapter = new FeedRecyclerViewAdapter(rvFeed, this, Objects.requireNonNull(getContext()),appBarHeight);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
-        pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         srlRefresh.setEnabled(false);
         srlRefresh.setOnRefreshListener(() -> {
             srlRefresh.setRefreshing(true);
             presenter.loadBase(currentCategory.getName());
         });
-        if (isCategoriesLoaded) {
-            rlLoadingLayout.setVisibility(View.GONE);
-            rlFeed.setVisibility(View.VISIBLE);
-        }
         scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -156,8 +142,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         listener.onAttachToActivity(new FeedActivity.ICategoriesSpinnerInteractionListener() {
             @Override
             public void onCategoriesArrived() {
-                rlLoadingLayout.setVisibility(View.GONE);
-                rlFeed.setVisibility(View.VISIBLE);
             }
 
             @Override
