@@ -26,7 +26,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-import butterknife.ButterKnife
+import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
 import dustit.clientapp.App
 import dustit.clientapp.R
 import dustit.clientapp.mvp.datamanager.FeedbackManager
@@ -38,8 +38,6 @@ import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter
 import dustit.clientapp.mvp.ui.adapters.FeedViewPagerAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment
-import dustit.clientapp.mvp.ui.fragments.HotFragment
-import dustit.clientapp.mvp.ui.fragments.MemViewActivity
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
@@ -55,17 +53,15 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     internal lateinit var vpFeed: ViewPager
     private lateinit var clLayout: RelativeLayout
     internal lateinit var tvAppName: TextView
-    internal lateinit var appBar: AppBarLayout
+    internal lateinit var appBar: ViewGroup
     internal lateinit var fabColapsed: FloatingActionButton
     internal lateinit var container: ViewGroup
     internal lateinit var toolbar: android.support.v7.widget.Toolbar
+    internal lateinit var showHideBar: FABToolbarLayout
 
     private var adapter: FeedViewPagerAdapter? = null
     private val presenter: FeedActivityPresenter = FeedActivityPresenter()
 
-    private var isFeed = false
-    private var isHot = false
-    private var isCategories = false
     private var isFirstLaunch = true
     private var isToolbarCollapsed = false
     private var animIsPlaying = false
@@ -189,6 +185,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         fabColapsed = fabToolbarCollapsed
         container = feedContainer
         toolbar = tbFeedActivity
+        showHideBar = fabShowHideBar
     }
 
     override fun onStart() {
@@ -396,7 +393,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun revealToolbar() {
-        isToolbarCollapsed = false
+        showHideBar.show()
+        /*isToolbarCollapsed = false
         val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
         val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
         appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
@@ -420,7 +418,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         })
         fabColapsed.visibility = View.GONE
         appBar.visibility = View.VISIBLE
-        revealAnim.start()
+        revealAnim.start()*/
     }
 
     override fun onResume() {
@@ -430,7 +428,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun unrevealToolbar() {
-        appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        showHideBar.hide()
+        /*appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
         val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
         val startRadius = Math.hypot(appBar.width.toDouble(), appBar.height.toDouble()).toInt()
@@ -454,7 +453,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
             override fun onAnimationRepeat(animation: Animator) {}
         })
-        unrevealAnim.start()
+        unrevealAnim.start()*/
     }
 
     override fun onAttachToActivity(listener: ICategoriesSpinnerInteractionListener) {
@@ -471,7 +470,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     companion object {
-        const val MEM_ENTITY = "kek"
         private const val MIN_DISTANCE_THRESHOLD = 15
         private const val FAB_STEP = 10f
         private const val FAB_HIDDEN_Y = -200

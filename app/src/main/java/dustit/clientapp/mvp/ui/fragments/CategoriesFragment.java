@@ -57,7 +57,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private WrapperLinearLayoutManager linearLayoutManager;
     private int appBarHeight;
     private Category currentCategory;
-    private boolean isCategoriesLoaded;
 
     public interface ICategoriesFragmentInteractionListener {
         void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
@@ -83,7 +82,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.setArguments(args);
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
-            isCategoriesLoaded = args.getBoolean(IS_CATEGORIES_LOADED);
         }
     }
 

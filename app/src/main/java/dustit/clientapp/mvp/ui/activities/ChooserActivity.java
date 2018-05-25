@@ -42,8 +42,8 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     TextView tvNoRegistration;
     @BindView(R.id.clChooserLayout)
     ConstraintLayout clMainLayout;
-    @BindView(R.id.rlChooserLoadingLayout)
-    RelativeLayout rlLoadingLayout;
+    @BindView(R.id.pbChooserLoading)
+    View rlLoadingLayout;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
@@ -55,9 +55,9 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
         if (!userSettingsDataManager.loadLanguage().equals(getResources().getConfiguration().locale.getLanguage())) {
-            Locale locale = new Locale(userSettingsDataManager.loadLanguage());
+            final Locale locale = new Locale(userSettingsDataManager.loadLanguage());
             Locale.setDefault(locale);
-            Configuration config = new Configuration();
+            final Configuration config = new Configuration();
             config.locale = locale;
             getBaseContext().getResources().updateConfiguration(config,
                     getBaseContext().getResources().getDisplayMetrics());
@@ -68,17 +68,17 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         mPresenter.bind(this);
         mPresenter.checkIfRegistered();
         btnLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(ChooserActivity.this, LoginActivity.class);
+            final Intent intent = new Intent(ChooserActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 
         btnRegister.setOnClickListener(view -> {
-            Intent intent = new Intent(ChooserActivity.this, RegisterActivity.class);
+            final Intent intent = new Intent(ChooserActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 
         ibChangeLanguage.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
             builder.setTitle(getString(R.string.pick_language));
             builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
                 String langToLoad = "";
@@ -123,7 +123,7 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     }
 
     public void restartActivity() {
-        Intent intent = new Intent(ChooserActivity.this, ChooserActivity.class);
+        final Intent intent = new Intent(ChooserActivity.this, ChooserActivity.class);
         startActivity(intent);
         finish();
     }

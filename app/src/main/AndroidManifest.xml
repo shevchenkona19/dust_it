@@ -9,7 +9,7 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
@@ -34,7 +34,7 @@
             android:name=".mvp.ui.activities.RegisterActivity"
             android:launchMode="singleTask"
             android:theme="@style/HelloTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".mvp.ui.activities.PreTestActivity"
             android:launchMode="singleTask"
@@ -77,6 +77,7 @@
             android:name=".mvp.ui.activities.FavoriteViewActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppThemeDayNight" />
+        <activity android:name=".mvp.ui.activities.HelloActivity"></activity>
     </application>
 
 </manifest>

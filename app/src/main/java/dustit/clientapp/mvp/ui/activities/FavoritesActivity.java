@@ -131,12 +131,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     }
 
     @Override
-    public void onFavoriteSelected(String id) {
-        //TODO: implement this
-        Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
     }

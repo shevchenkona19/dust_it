@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         ButterKnife.bind(this);
         etUsername.setText("zaza21");
         etPassword.setText("zaza12");
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#f98098"), PorterDuff.Mode.MULTIPLY);
         loginActivityPresenter.bind(this);
         btnLogin.setOnClickListener(view -> {
             stringUtil.hideError(tilLoginPassword, tilLoginUsername);
@@ -69,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
 
     @Override
     public void onLoggedSuccessfully() {
-        Intent intent = new Intent(this, FeedActivity.class);
+        final Intent intent = new Intent(this, FeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

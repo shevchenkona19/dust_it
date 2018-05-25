@@ -77,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         ButterKnife.bind(this);
         presenter.bind(this);
         btnLogout.setOnClickListener(view -> presenter.logout());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spThemeChooser.setAdapter(adapter);
         spThemeChooser.setSelection(presenter.loadTheme());
@@ -125,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         }
         tvCurrentLanguage.setText(langToSet);
         rlLanguagePicker.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
             builder.setTitle(getString(R.string.pick_language));
             builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
                 String langToLoad = "";
@@ -140,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                         langToLoad = "ru";
                         break;
                 }
-                Locale locale = new Locale(langToLoad);
+                final Locale locale = new Locale(langToLoad);
                 Locale.setDefault(locale);
                 Configuration config = new Configuration();
                 config.locale = locale;
@@ -160,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private void restartCurrentAndBackstack() {
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
+        final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, FeedActivity.class))
                 .addNextIntent(new Intent(this, AccountActivity.class))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
@@ -169,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     public void restartActivity() {
-        Intent intent = new Intent(this, FeedActivity.class);
+        final Intent intent = new Intent(this, FeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

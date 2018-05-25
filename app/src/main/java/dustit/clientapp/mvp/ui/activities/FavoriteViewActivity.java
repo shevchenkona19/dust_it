@@ -66,7 +66,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         mPresenter.bind(this);
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
         imageUrl = IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId;
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
+        final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
                 .setTapToRetryEnabled(true)
                 .setOldController(tivImage.getController())
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -80,7 +80,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
                     }
                 })
                 .build();
-        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
@@ -98,7 +98,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initSlidr() {
-        SlidrConfig config = new SlidrConfig.Builder()
+        final SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(getResources().getColor(R.color.colorPrimaryDefault))
                 .secondaryColor(getResources().getColor(R.color.colorPrimaryDarkDefault))
                 .position(SlidrPosition.VERTICAL)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,9 +9,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/clMainLayout"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:visibility="visible">
 
         <android.support.design.widget.AppBarLayout
@@ -34,8 +35,8 @@
                     <Spinner
                         android:id="@+id/spCategoriesChooser"
                         android:layout_width="200dp"
-                        android:visibility="gone"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tvActivityFeedAppName"
@@ -44,29 +45,74 @@
                         android:layout_centerVertical="true"
                         android:text="@string/app_name"
                         android:textColor="?attr/colorAccent"
-                        android:visibility="visible"
                         android:textSize="22sp"
+                        android:visibility="visible"
                         tools:ignore="RelativeOverlap" />
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/sdvUserIcon"
-                        android:layout_width="70dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="4dp"
                         app:actualImageScaleType="centerInside"
                         app:roundAsCircle="true"
                         app:roundingBorderColor="#eee" />
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpFeedPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
+
+        <com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
+            android:id="@+id/fabShowHideBar"
+            android:layout_width="match_parent"
+            android:layout_height="76dp"
+            android:layout_alignParentBottom="true"
+            app:containerId="@+id/fabtoolbar_container"
+            app:fabId="@+id/fabToolbarCollapsed"
+            app:fabToolbarId="@+id/tlFeedTabs"
+            app:fadeInFraction="1"
+            app:hideDuration="300"
+            app:showDuration="600">
+
+            <RelativeLayout
+                android:id="@+id/fabtoolbar_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabToolbarCollapsed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:backgroundTint="#000"
+                    app:fabCustomSize="20dp"
+                    app:useCompatPadding="true" />
+
+            </RelativeLayout>
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/tlFeedTabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_hello_accent"
+                android:clipToPadding="false"
+                android:elevation="3dp"
                 android:visibility="visible"
+                app:tabIndicatorColor="#00000000"
                 app:tabMode="fixed">
 
                 <android.support.design.widget.TabItem
@@ -87,26 +133,7 @@
                     android:layout_height="wrap_content"
                     android:icon="@drawable/slc_tab_categories" />
             </android.support.design.widget.TabLayout>
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vpFeedPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabToolbarCollapsed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:elevation="10dp"
-            android:visibility="invisible"
-            tools:ignore="RelativeOverlap" />
+        </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
 
     </RelativeLayout>
 
@@ -114,4 +141,5 @@
         android:id="@+id/feedContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </merge>

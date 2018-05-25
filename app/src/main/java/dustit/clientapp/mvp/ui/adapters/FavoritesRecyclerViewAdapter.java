@@ -30,7 +30,6 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
     public interface IFavoritesCallback {
         void onFavoriteChosen(String id);
-        void onFavoriteSelected(String id);
     }
 
     private IFavoritesCallback callback;

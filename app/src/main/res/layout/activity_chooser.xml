@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="10"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true">
 
     <ImageView
         android:id="@+id/ivChooserIcon"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="6"
         android:padding="50dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/icon_no_background" />
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_memspace" />
 
-    <RelativeLayout
-        android:id="@+id/rlChooserLoadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:visibility="gone">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/pbChooserLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/clChooserLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="4"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4"
         tools:context="dustit.clientapp.mvp.ui.activities.ChooserActivity">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnChooserLogin"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/btn_hello_accent"
+            android:elevation="9dp"
             android:text="@string/login"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/btnChooserRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,11 +65,11 @@
 
         <Button
             android:id="@+id/btnChooserRegister"
-            android:layout_width="292dp"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
             android:background="@drawable/btn_regular_primary"
             android:text="@string/register"
-            android:textColor="#aaeeeeee"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/ibChooserChangeLanguage"
             app:layout_constraintEnd_toEndOf="@+id/btnChooserLogin"
             app:layout_constraintStart_toStartOf="@+id/btnChooserLogin"
@@ -76,21 +85,21 @@
 
         <ImageButton
             android:id="@+id/ibChooserChangeLanguage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/btnChooserRegister"
-            app:layout_constraintTop_toBottomOf="@+id/btnChooserRegister"
             app:srcCompat="@drawable/ic_language" />
 
         <TextView
             android:id="@+id/tvChooserContinueWithoutRegistration"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
@@ -99,8 +108,14 @@
             android:textColor="@color/colorSecondaryTextHelloDefault"
             app:layout_constraintBottom_toBottomOf="@+id/ibChooserChangeLanguage"
             app:layout_constraintEnd_toEndOf="@+id/btnChooserRegister"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/ibChooserChangeLanguage"
             app:layout_constraintTop_toTopOf="@+id/ibChooserChangeLanguage" />
     </android.support.constraint.ConstraintLayout>
-</LinearLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+</android.support.constraint.ConstraintLayout>

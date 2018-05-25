@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -116,6 +118,7 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
             pbLoading.setVisibility(View.VISIBLE);
             presenter.loadTest();
         });
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#f98098"), PorterDuff.Mode.MULTIPLY);
     }
 
     private void checkFinished() {
@@ -129,21 +132,18 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
         isLastMemLiked = true;
         interestedCategories.add(arrivedCategories.get(currentIndex).getCategoryName());
         currentIndex++;
-        L.print("index check: " + currentIndex);
         updateProgress(currentIndex);
     }
 
     private void dislikeCurrent() {
         isLastMemLiked = false;
         currentIndex++;
-        L.print("index check: " + currentIndex);
         updateProgress(currentIndex);
     }
 
     private void correctPrevious() {
         csvTestDeck.reverse();
         currentIndex--;
-        L.print("index check: " + currentIndex);
         hideCorrectButton();
         canShowCorrectButton = true;
         if (isLastMemLiked) {
@@ -168,7 +168,7 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
 
     private void onTestFinished() {
         csvTestDeck.setVisibility(View.GONE);
-        Intent intent = new Intent(this, ResultActivity.class);
+        final Intent intent = new Intent(this, ResultActivity.class);
         String[] array = new String[interestedCategories.size()];
         array = interestedCategories.toArray(array);
         intent.putExtra(CATEGORY_LIST_KEY, array);
@@ -179,7 +179,7 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
 
     private void setupCorrectButton() {
         btnCorrect.setVisibility(View.VISIBLE);
-        ConstraintSet set = new ConstraintSet();
+        final ConstraintSet set = new ConstraintSet();
         set.clone(clTest);
         set.clear(R.id.btnTestSkipAll, ConstraintSet.RIGHT);
         set.clear(R.id.btnTestSkipAll, ConstraintSet.LEFT);
@@ -192,7 +192,7 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
 
     private void hideCorrectButton() {
         btnCorrect.setVisibility(View.GONE);
-        ConstraintSet set = new ConstraintSet();
+        final ConstraintSet set = new ConstraintSet();
         set.clone(clTest);
         set.connect(R.id.btnTestSkipAll, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 16);
         set.connect(R.id.btnTestSkipAll, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 16);

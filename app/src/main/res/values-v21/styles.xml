@@ -30,10 +30,10 @@
     </style>
 
     <style name="HelloTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/main_gradient_color</item>
-        <item name="colorAccent">#fff</item>
+        <item name="android:windowBackground">@drawable/background_gradient</item>
+        <item name="colorAccent">#b375e0</item>
         <item name="android:statusBarColor">@null</item>
-        <item name="android:colorControlNormal">#fff</item>
+        <item name="android:colorControlNormal">#b375e0</item>
         <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
         <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
         <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>

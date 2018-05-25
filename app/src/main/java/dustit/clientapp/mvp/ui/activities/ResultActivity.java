@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -51,7 +53,12 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
         setContentView(R.layout.activity_result);
         ButterKnife.bind(this);
         presenter.bind(this);
-        interestedCategoriesIds = getIntent().getExtras().getStringArray(TestActivity.CATEGORY_LIST_KEY);
+        final Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            interestedCategoriesIds = bundle.getStringArray(TestActivity.CATEGORY_LIST_KEY);
+        } else {
+            interestedCategoriesIds = new String[]{};
+        }
         rvThemes.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new ResultRecyclerViewAdapter(this);
         rvThemes.setAdapter(adapter);
@@ -74,6 +81,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
             presenter.toMemes(adapter.getChecked());
         });
         presenter.loadCategories();
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#f98098"), PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
@@ -104,7 +112,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
 
     @Override
     public void onFinishedResultActivity() {
-        Intent intent = new Intent(ResultActivity.this, FeedActivity.class);
+        final Intent intent = new Intent(ResultActivity.this, FeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

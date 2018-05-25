@@ -308,6 +308,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 feedbackManager.deleteLike(mem);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
                 mem.setLikes(-1);
+            } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED){
+                feedbackManager.postLike(mem);
+                mem.setLikes(1);
+                mem.setDislikes(-1);
+                mem.setOpinion(IConstants.OPINION.LIKED);
             } else {
                 feedbackManager.postLike(mem);
                 mem.setLikes(1);
@@ -320,6 +325,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 feedbackManager.deleteDislike(mem);
                 mem.setDislikes(-1);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
+            } else if (mem.getOpinion() == IConstants.OPINION.LIKED){
+                feedbackManager.postDislike(mem);
+                mem.setDislikes(1);
+                mem.setLikes(-1);
+                mem.setOpinion(IConstants.OPINION.DISLIKED);
             } else {
                 feedbackManager.postDislike(mem);
                 mem.setDislikes(1);

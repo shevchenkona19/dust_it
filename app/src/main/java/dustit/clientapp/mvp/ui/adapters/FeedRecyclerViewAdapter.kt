@@ -17,13 +17,13 @@ import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.model.entities.RefreshedMem
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity
 import dustit.clientapp.utils.DoubleClickListener
-import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.IConstants.BASE_URL
+import dustit.clientapp.utils.IConstants.OPINION.*
 import dustit.clientapp.utils.L
 import dustit.clientapp.utils.containers.Pair
 import kotlinx.android.synthetic.main.item_feed.view.*
 import kotlinx.android.synthetic.main.item_feed_failed_to_load.view.*
 import java.util.*
-
 
 class FeedRecyclerViewAdapter(rv: RecyclerView,
                               private val feedInteractionListener: IFeedInteractionListener,
@@ -111,30 +111,37 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
                 holder.itemView.ivItemFeedAddToFavorites.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_add_to_favourites))
             }
             when (opinion) {
-                IConstants.OPINION.LIKED -> {
+                LIKED -> {
                     holder.itemView.ivItemFeedIsLiked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_pressed))
                     holder.itemView.ivItemFeedDisliked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_dislike))
                 }
-                IConstants.OPINION.DISLIKED -> {
+                DISLIKED -> {
                     holder.itemView.ivItemFeedIsLiked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like))
                     holder.itemView.ivItemFeedDisliked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_dislike_pressed))
                 }
-                IConstants.OPINION.NEUTRAL -> {
+                NEUTRAL -> {
                     holder.itemView.ivItemFeedIsLiked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like))
                     holder.itemView.ivItemFeedDisliked.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_dislike))
                 }
             }
             holder.itemView.ivItemFeedIsLiked.setOnClickListener {
                 when (opinion) {
-                    IConstants.OPINION.LIKED -> {
+                    LIKED -> {
                         mem.setLikes(-1)
-                        mem.opinion = IConstants.OPINION.NEUTRAL
+                        mem.opinion = NEUTRAL
                         notifyItemChanged(holder.adapterPosition)
                         feedInteractionListener.deleteLike(mem)
                     }
-                    IConstants.OPINION.DISLIKED, IConstants.OPINION.NEUTRAL -> {
+                    DISLIKED -> {
+                        mem.setDislikes(-1)
                         mem.setLikes(1)
-                        mem.opinion = IConstants.OPINION.LIKED
+                        mem.opinion =LIKED
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.postLike(mem)
+                    }
+                    NEUTRAL -> {
+                        mem.setLikes(1)
+                        mem.opinion = LIKED
                         notifyItemChanged(holder.adapterPosition)
                         feedInteractionListener.postLike(mem)
                     }
@@ -142,15 +149,22 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
             }
             holder.itemView.ivItemFeedDisliked.setOnClickListener {
                 when (opinion) {
-                    IConstants.OPINION.DISLIKED -> {
+                   DISLIKED -> {
                         mem.setDislikes(-1)
-                        mem.opinion = IConstants.OPINION.NEUTRAL
+                        mem.opinion = NEUTRAL
                         notifyItemChanged(holder.adapterPosition)
                         feedInteractionListener.deleteDislike(mem)
                     }
-                    IConstants.OPINION.LIKED, IConstants.OPINION.NEUTRAL -> {
+                    LIKED -> {
+                        mem.setLikes(-1)
                         mem.setDislikes(1)
-                        mem.opinion = IConstants.OPINION.DISLIKED
+                        mem.opinion = DISLIKED
+                        notifyItemChanged(holder.adapterPosition)
+                        feedInteractionListener.postDislike(mem)
+                    }
+                    NEUTRAL -> {
+                        mem.setDislikes(1)
+                        mem.opinion = DISLIKED
                         notifyItemChanged(holder.adapterPosition)
                         feedInteractionListener.postDislike(mem)
                     }
@@ -163,7 +177,7 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
 
                 override fun onDoubleClick(v: View) {
                     when (opinion) {
-                        IConstants.OPINION.DISLIKED, IConstants.OPINION.NEUTRAL -> feedInteractionListener.postLike(mem)
+                        DISLIKED, NEUTRAL -> feedInteractionListener.postLike(mem)
                         else -> {
                         }
                     }
@@ -266,8 +280,6 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
     }
 
     fun refreshMem(refreshedMem: RefreshedMem) {
-        L.print("refresh mem!")
-        L.print("Refreshed mem: " + refreshedMem.toString())
         val pair: Pair<Int, MemEntity>? = findMemAndPositionById(refreshedMem.id)
         if (pair != null) {
             pair.mem.likes = refreshedMem.likes
@@ -299,10 +311,10 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
             itemView.sdvItemFeed.aspectRatio = mem.width.toFloat() / mem.height
             itemView.sdvItemFeed.controller = Fresco.newDraweeControllerBuilder()
                     .setTapToRetryEnabled(true)
-                    .setUri(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.id))
+                    .setUri(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
                     .build()
             itemView.tvItemFeedSrc.text = mem.source
-            itemView.sdvItemFeed.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.id))
+            itemView.sdvItemFeed.setImageURI(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
             itemView.tvItemFeedLikeCount.text = mem.likes
             itemView.tvItemFeedDislikeCount.text = mem.dislikes
             itemView.ivItemFeedMore.setOnClickListener({

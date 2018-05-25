@@ -74,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
     @Override
     public void onRegisteredSuccessfully() {
-        Intent intent = new Intent(this, PreTestActivity.class);
+        final Intent intent = new Intent(this, PreTestActivity.class);
         startActivity(intent);
         finish();
     }

@@ -98,14 +98,14 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             supportRequestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-            Transition fade = new android.transition.Fade();
+            final Transition fade = new android.transition.Fade();
             fade.excludeTarget(android.R.id.statusBarBackground, true);
             fade.excludeTarget(android.R.id.navigationBarBackground, true);
-            Window window = getWindow();
+            final Window window = getWindow();
             window.setEnterTransition(fade);
             window.setReturnTransition(fade);
             window.setExitTransition(fade);
-            TransitionSet transitionSet = DraweeTransition
+            final TransitionSet transitionSet = DraweeTransition
                     .createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
                             ScalingUtils.ScaleType.CENTER_CROP);
             window.setSharedElementEnterTransition(transitionSet);
@@ -129,11 +129,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         });
         sdvIcon.setLegacyVisibilityHandlingEnabled(true);
         btnEdit.setOnClickListener(view -> {
-            Intent intent = new Intent(AccountActivity.this, PersonalSettingsActivity.class);
+            final Intent intent = new Intent(AccountActivity.this, PersonalSettingsActivity.class);
             startActivity(intent);
         });
         btnSettings.setOnClickListener(view -> {
-            Intent i = new Intent(AccountActivity.this, SettingsActivity.class);
+            final Intent i = new Intent(AccountActivity.this, SettingsActivity.class);
             startActivity(i);
         });
         sdvIcon.setOnClickListener(view -> {
@@ -141,9 +141,9 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                     .setTitle(getString(R.string.change_profile_pic_title))
                     .setMessage(getString(R.string.change_profile_pic_question))
                     .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
-                        int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
+                        final int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
                                 Manifest.permission.READ_EXTERNAL_STORAGE);
-                        int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
+                        final int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
                         if (permCheckRead != PackageManager.PERMISSION_GRANTED
                                 && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
@@ -151,11 +151,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                     PERMISSION_DIALOG);
                         } else {
-                            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                            final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                             getIntent.setType("image/*");
-                            Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             pickIntent.setType("image/*");
-                            Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                            final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
                             startActivityForResult(chooserIntent, PICK_IMAGE);
                         }
@@ -208,11 +208,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                        final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                         getIntent.setType("image/*");
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        final Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         pickIntent.setType("image/*");
-                        Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                        final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
                         startActivityForResult(chooserIntent, PICK_IMAGE);
                     }
@@ -229,10 +229,10 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                 return;
             }
-            Uri imageSource = data.getData();
+            final Uri imageSource = data.getData();
             try {
-                File image = createImageFile();
-                Uri destinationUri = Uri.fromFile(image);
+                final File image = createImageFile();
+                final Uri destinationUri = Uri.fromFile(image);
                 UCrop.Options options = new UCrop.Options();
                 options.setToolbarColor(getResources().getColor(R.color.colorPrimaryDefault));
                 options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDarkDefault));
@@ -249,6 +249,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         } else if (requestCode == CROPPED_IMAGE) {
             if (resultCode == UCrop.RESULT_ERROR || data == null) {
                 Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+
                 try {
                     throw UCrop.getError(data);
                 } catch (Throwable throwable) {
@@ -273,9 +274,9 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        final String imageFileName = "JPEG_" + timeStamp + "_";
+        final File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
