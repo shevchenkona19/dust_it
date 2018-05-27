@@ -105,8 +105,8 @@
 
             <ImageView
                 android:id="@+id/ivItemFeedMore"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="40dp"
+                android:layout_height="0dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
