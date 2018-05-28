@@ -79,29 +79,30 @@
             app:containerId="@+id/fabtoolbar_container"
             app:fabId="@+id/fabToolbarCollapsed"
             app:fabToolbarId="@+id/tlFeedTabs"
-            app:fadeInFraction="1"
+            app:fadeInFraction="0.2"
+            app:verticalMargin="0dp"
+            app:horizontalMargin="0dp"
             app:hideDuration="300"
             app:showDuration="600">
 
             <RelativeLayout
-                android:id="@+id/fabtoolbar_container"
+                android:id="@id/fabtoolbar_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp">
+                android:layout_alignParentEnd="true">
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabToolbarCollapsed"
+                    android:id="@id/fabToolbarCollapsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
                     app:backgroundTint="#000"
-                    app:fabCustomSize="20dp"
                     app:useCompatPadding="true" />
 
             </RelativeLayout>
 
             <android.support.design.widget.TabLayout
-                android:id="@+id/tlFeedTabs"
+                android:id="@id/tlFeedTabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="16dp"
