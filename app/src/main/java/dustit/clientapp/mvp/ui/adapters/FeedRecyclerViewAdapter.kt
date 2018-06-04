@@ -5,11 +5,16 @@ import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.transition.Fade
+import android.transition.Transition
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.TransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.facebook.drawee.backends.pipeline.Fresco
 import dustit.clientapp.R
 import dustit.clientapp.mvp.model.entities.FavoriteEntity
@@ -308,13 +313,10 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
         fun bind(mem: MemEntity) {
             isMoreLayoutVisible = false
             itemView.clItemFeedMoreLayout.visibility = View.GONE
-            itemView.sdvItemFeed.aspectRatio = mem.width.toFloat() / mem.height
-            itemView.sdvItemFeed.controller = Fresco.newDraweeControllerBuilder()
-                    .setTapToRetryEnabled(true)
-                    .setUri(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
-                    .build()
+            Glide.with(itemView).load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
+                    .apply(RequestOptions().placeholder(R.drawable.mem_placeholder).override(mem.width, mem.height))
+                    .into(itemView.sdvItemFeed)
             itemView.tvItemFeedSrc.text = mem.source
-            itemView.sdvItemFeed.setImageURI(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
             itemView.tvItemFeedLikeCount.text = mem.likes
             itemView.tvItemFeedDislikeCount.text = mem.dislikes
             itemView.ivItemFeedMore.setOnClickListener({
