@@ -8,7 +8,7 @@
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="#50000000">
+    app:cardBackgroundColor="#30000000">
 
     <ImageView
         android:id="@+id/imageView2"
