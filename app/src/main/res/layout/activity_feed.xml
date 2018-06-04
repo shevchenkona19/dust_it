@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/clMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,70 +69,51 @@
             android:layout_height="match_parent"
             tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
 
-        <com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
-            android:id="@+id/fabShowHideBar"
-            android:layout_width="match_parent"
-            android:layout_height="76dp"
-            android:layout_alignParentBottom="true"
-            app:containerId="@+id/fabtoolbar_container"
-            app:fabId="@+id/fabToolbarCollapsed"
-            app:fabToolbarId="@+id/tlFeedTabs"
-            app:fadeInFraction="0.2"
-            app:verticalMargin="0dp"
-            app:horizontalMargin="0dp"
-            app:hideDuration="300"
-            app:showDuration="600">
 
-            <RelativeLayout
-                android:id="@id/fabtoolbar_container"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabToolbarCollapsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible"
+            app:backgroundTint="#000"
+            app:useCompatPadding="true" />
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tlFeedTabs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/btn_hello_accent"
+            android:clipToPadding="false"
+            android:visibility="invisible"
+            app:tabIndicatorColor="#00000000"
+            app:tabMode="fixed">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true">
+                android:icon="@drawable/slc_tab_feed" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@id/fabToolbarCollapsed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:backgroundTint="#000"
-                    app:useCompatPadding="true" />
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedHot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/slc_tab_hot" />
 
-            </RelativeLayout>
-
-            <android.support.design.widget.TabLayout
-                android:id="@id/tlFeedTabs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/btn_hello_accent"
-                android:clipToPadding="false"
-                android:elevation="3dp"
-                android:visibility="visible"
-                app:tabIndicatorColor="#00000000"
-                app:tabMode="fixed">
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_feed" />
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedHot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_hot" />
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedCategories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_categories" />
-            </android.support.design.widget.TabLayout>
-        </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedCategories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/slc_tab_categories" />
+        </android.support.design.widget.TabLayout>
 
     </RelativeLayout>
 
@@ -143,4 +122,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</merge>
+</RelativeLayout>

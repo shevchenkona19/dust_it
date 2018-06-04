@@ -1,17 +1,18 @@
 package dustit.clientapp.mvp.ui.activities
 
-import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.LayoutTransition
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Path
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.AppBarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityOptionsCompat
@@ -19,14 +20,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.transition.Transition
 import android.transition.TransitionInflater
+import android.transition.TransitionManager
+import android.util.Property
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
 import dustit.clientapp.App
 import dustit.clientapp.R
 import dustit.clientapp.mvp.datamanager.FeedbackManager
@@ -42,6 +45,7 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.animation.ArcTranslateAnimation
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
@@ -53,11 +57,11 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     internal lateinit var vpFeed: ViewPager
     private lateinit var clLayout: RelativeLayout
     internal lateinit var tvAppName: TextView
-    internal lateinit var appBar: ViewGroup
-    internal lateinit var fabColapsed: FloatingActionButton
+    private lateinit var appBar: ViewGroup
+    private lateinit var fabColapsed: FloatingActionButton
     internal lateinit var container: ViewGroup
     internal lateinit var toolbar: android.support.v7.widget.Toolbar
-    internal lateinit var showHideBar: FABToolbarLayout
+    private lateinit var tabs: android.support.design.widget.TabLayout
 
     private var adapter: FeedViewPagerAdapter? = null
     private val presenter: FeedActivityPresenter = FeedActivityPresenter()
@@ -185,7 +189,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         fabColapsed = fabToolbarCollapsed
         container = feedContainer
         toolbar = tbFeedActivity
-        showHideBar = fabShowHideBar
+        tabs = tlFeedTabs
     }
 
     override fun onStart() {
@@ -342,6 +346,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                 clLayout.visibility = View.VISIBLE
         }
     }
+
     override fun closeMemView() {
         clLayout.visibility = View.VISIBLE
         supportFragmentManager.popBackStack()
@@ -393,7 +398,20 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun revealToolbar() {
-        showHideBar.show()
+        val fabX = fabColapsed.x + fabColapsed.width / 2
+        val fabY = fabColapsed.y + fabColapsed.height / 2
+        val tabsX = tabs.x + tabs.width / 2
+        val tabsY = tabs.y + tabs.height / 2
+        val toX = tabsX - fabX
+        val toY = tabsY - fabY
+        val animatorSet = AnimatorSet()
+        val xAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationX", toX)
+        val yAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationY", toY)
+        animatorSet.play(xAnim).with(yAnim)
+        animatorSet.duration = 300
+        animatorSet.start()
+
+
         /*isToolbarCollapsed = false
         val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
         val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
@@ -421,14 +439,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         revealAnim.start()*/
     }
 
-    override fun onResume() {
-        super.onResume()
-        fabColapsed.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
-    }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun unrevealToolbar() {
-        showHideBar.hide()
         /*appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
         val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
@@ -454,6 +466,11 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             override fun onAnimationRepeat(animation: Animator) {}
         })
         unrevealAnim.start()*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fabColapsed.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
     }
 
     override fun onAttachToActivity(listener: ICategoriesSpinnerInteractionListener) {
