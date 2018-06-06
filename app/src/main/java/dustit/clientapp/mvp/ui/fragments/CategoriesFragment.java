@@ -107,7 +107,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         presenter.bind(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
-        adapter = new FeedRecyclerViewAdapter(rvFeed, this, Objects.requireNonNull(getContext()),appBarHeight);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this,appBarHeight);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
         srlRefresh.setEnabled(false);
@@ -167,12 +167,12 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void onBaseUpdated(List<MemEntity> list) {
         srlRefresh.setRefreshing(false);
-        adapter.updateListWhole(list);
+        adapter.updateWhole(list);
     }
 
     @Override
     public void onPartialUpdate(List<MemEntity> list) {
-        adapter.updateListAtEnding(list);
+        adapter.updateAtEnding(list);
     }
 
     @Override
@@ -181,44 +181,9 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         adapter.onFailedToLoad();
     }
 
-    public void setFavoritesList(List<FavoriteEntity> list) {
-        adapter.setFavoritesList(list);
-    }
-
-    @Override
-    public void onAddedToFavorites(String id) {
-        notifyBase(id);
-        adapter.addedToFavorites(id);
-    }
-
-    @Override
-    public void onErrorInAddingToFavorites(String id) {
-        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onErrorInRemovingFromFavorites(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onRemovedFromFavorites(String id) {
-        adapter.onDeletedFromFavorites(id);
-    }
-
     @Override
     public void reloadFeedBase() {
         presenter.loadBase(currentCategory.getId());
-    }
-
-    @Override
-    public void addToFavorites(@NonNull String id) {
-        presenter.addToFavorites(id);
-    }
-
-    @Override
-    public void deleteFromFavorites(@NonNull String id) {
-        presenter.removeFromFavorites(id);
     }
 
     @Override

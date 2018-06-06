@@ -43,38 +43,6 @@
                 android:contentDescription="mem"
                 tools:ignore="HardcodedText" />
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/clItemFeedMoreLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sdvItemFeed">
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/about_mem_message"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvItemFeedSrc" />
-
-                <TextView
-                    android:id="@+id/tvItemFeedSrc"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView10"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </android.support.constraint.ConstraintLayout>
-
             <ImageView
                 android:id="@+id/ivItemFeedIsLiked"
                 android:layout_width="30dp"
@@ -87,7 +55,6 @@
                 android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tvItemFeedLikeCount"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_like" />
 
             <TextView
@@ -101,8 +68,7 @@
                 android:textColor="#b3b3b3"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout" />
+                app:layout_constraintRight_toRightOf="parent"/>
 
             <ImageView
                 android:id="@+id/ivItemFeedComments"
@@ -119,24 +85,7 @@
                 android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_comment" />
-
-            <ImageView
-                android:id="@+id/ivItemFeedAddToFavorites"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/ivItemFeedComments"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
-                app:srcCompat="@drawable/ic_add_to_favourites" />
 
             <ImageView
                 android:id="@+id/ivItemFeedDisliked"
@@ -150,7 +99,6 @@
                 android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/ivItemFeedIsLiked"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:srcCompat="@drawable/ic_dislike" />
 
             <TextView
@@ -165,7 +113,6 @@
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/ivItemFeedDisliked"
-                app:layout_constraintTop_toBottomOf="@+id/clItemFeedMoreLayout"
                 app:layout_constraintVertical_bias="0.444" />
 
         </android.support.constraint.ConstraintLayout>

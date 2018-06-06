@@ -7,7 +7,6 @@ import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Path
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -20,12 +19,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.transition.Transition
 import android.transition.TransitionInflater
-import android.transition.TransitionManager
-import android.util.Property
 import android.view.View
-import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -35,7 +30,6 @@ import dustit.clientapp.R
 import dustit.clientapp.mvp.datamanager.FeedbackManager
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager
 import dustit.clientapp.mvp.model.entities.Category
-import dustit.clientapp.mvp.model.entities.FavoriteEntity
 import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter
 import dustit.clientapp.mvp.ui.adapters.FeedViewPagerAdapter
@@ -45,7 +39,6 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
-import dustit.clientapp.utils.animation.ArcTranslateAnimation
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
@@ -75,7 +68,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     private val screenBounds = Rect()
     private var cooldownPassed = true
     private val handler = Handler()
-    private val favoriteEntityList = ArrayList<FavoriteEntity>()
     private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_categories_pressed)
     private var spinnerInteractionListener: ICategoriesSpinnerInteractionListener? = null
 
@@ -201,7 +193,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus && isFirstLaunch) {
             isFirstLaunch = false
-            presenter.getMyFavorites()
             adapter = FeedViewPagerAdapter(supportFragmentManager, appBar.height)
             if (vpFeed.adapter == null)
                 vpFeed.adapter = adapter
@@ -246,12 +237,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         sdvUserIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + s))
     }
 
-    override fun onFavoritesArrived(list: List<FavoriteEntity>) {
-        this.favoriteEntityList.clear()
-        this.favoriteEntityList.addAll(list)
-        notifyFragments()
-    }
-
     override fun onCategoriesArrived(categoryList: List<Category>) {
         val categoryNames = ArrayList<String>()
         for (category in categoryList) categoryNames.add(category.name)
@@ -275,16 +260,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     override fun onCategoriesFailedToLoad() {
         adapter!!.setCategoriesLoaded(false)
         onError()
-    }
-
-    private fun notifyFragments() {
-        if (adapter != null)
-            adapter!!.setFavoritesList(favoriteEntityList)
-    }
-
-    override fun notifyFavoriteAdded(favoriteEntity: FavoriteEntity) {
-        favoriteEntityList.add(favoriteEntity)
-        notifyFragments()
     }
 
     override fun notifyOnScrollChanged(distance: Int) {
@@ -410,62 +385,22 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         animatorSet.play(xAnim).with(yAnim)
         animatorSet.duration = 300
         animatorSet.start()
-
-
-        /*isToolbarCollapsed = false
-        val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
-        val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
-        appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        val endRadius = Math.hypot(appBar.width.toDouble(), appBar.height.toDouble()).toInt()
-        val revealAnim = ViewAnimationUtils.createCircularReveal(appBar, x, y, 28f, endRadius.toFloat())
-        revealAnim.duration = 500
-        revealAnim.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {
-                animIsPlaying = true
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                animIsPlaying = false
-                fabColapsed.y = fabScrollYNormalPos
-                appBar.setLayerType(View.LAYER_TYPE_NONE, null)
-            }
-
-            override fun onAnimationCancel(animation: Animator) {}
-
-            override fun onAnimationRepeat(animation: Animator) {}
-        })
-        fabColapsed.visibility = View.GONE
-        appBar.visibility = View.VISIBLE
-        revealAnim.start()*/
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun unrevealToolbar() {
-        /*appBar.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        val x = (fabColapsed.x + fabColapsed.width / 2).toInt()
-        val y = (fabColapsed.y + fabColapsed.height / 2).toInt()
-        val startRadius = Math.hypot(appBar.width.toDouble(), appBar.height.toDouble()).toInt()
-        val endRadius = fabColapsed.width / 2
-        val unrevealAnim = ViewAnimationUtils.createCircularReveal(appBar, x, y, startRadius.toFloat(), endRadius.toFloat())
-        unrevealAnim.duration = 500
-        unrevealAnim.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {
-                animIsPlaying = true
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                appBar.setLayerType(View.LAYER_TYPE_NONE, null)
-                isToolbarCollapsed = true
-                animIsPlaying = false
-                fabColapsed.visibility = View.VISIBLE
-                appBar.visibility = View.GONE
-            }
-
-            override fun onAnimationCancel(animation: Animator) {}
-
-            override fun onAnimationRepeat(animation: Animator) {}
-        })
-        unrevealAnim.start()*/
+        val fabX = fabColapsed.x + fabColapsed.width / 2
+        val fabY = fabColapsed.y + fabColapsed.height / 2
+        val tabsX = tabs.x + tabs.width / 2
+        val tabsY = tabs.y + tabs.height / 2
+        val toX = tabsX - fabX
+        val toY = tabsY - fabY
+        val animatorSet = AnimatorSet()
+        val xAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationX", toX)
+        val yAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationY", toY)
+        animatorSet.play(xAnim).with(yAnim)
+        animatorSet.duration = 300
+        animatorSet.start()
     }
 
     override fun onResume() {

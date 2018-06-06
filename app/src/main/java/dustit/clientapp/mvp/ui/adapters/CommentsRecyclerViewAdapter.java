@@ -73,10 +73,10 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             case 1:
                 if (isLoading) {
                     View v1 = inflater.inflate(R.layout.item_feed_loading, parent, false);
-                    return new FeedRecyclerViewAdapter.FeedLoadingViewHolder(v1);
+                    return new FeedRecyclerViewAdapter.LoadingViewHolder(v1);
                 } else {
                     View v2 = inflater.inflate(R.layout.item_feed_failed_to_load, parent, false);
-                    return new FeedRecyclerViewAdapter.FeedFailedToLoadViewHolder(v2);
+                    return new FeedRecyclerViewAdapter.FailedViewHolder(v2);
                 }
             default:
                 return null;
@@ -176,10 +176,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public List<CommentEntity> getList() {
         return list;
-    }
-
-    public CommentEntity getItem(int position) {
-        return list.get(position);
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {

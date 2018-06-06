@@ -7,5 +7,4 @@ package dustit.clientapp.mvp.presenters.interfaces;
 public interface ICategoriesFragmentPresenter {
     void loadBase(String categoryId);
     void loadWithOffset(String categoryId, int offset);
-    void addToFavorites(String id);
 }

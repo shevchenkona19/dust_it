@@ -31,12 +31,6 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
         App.get().getAppComponent().inject(this);
     }
 
-
-    @Override
-    public void postLike(String id) {
-        dataManager.postLike(id);
-    }
-
     @Override
     public void getMyUsername() {
         if (dataManager.isUsernameCached()) {
@@ -65,32 +59,6 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
     }
 
     @Override
-    public void getMyFavorites() {
-        final Container<FavoritesUpperEntity> container = new Container<>();
-        addSubscription(dataManager.getAllFavorites().subscribe(new Subscriber<FavoritesUpperEntity>() {
-            @Override
-            public void onCompleted() {
-                final List<FavoriteEntity> list = new ArrayList<>();
-                for (String id :
-                        container.get().getIds()) {
-                    list.add(new FavoriteEntity(id));
-                }
-                getView().onFavoritesArrived(list);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print(e.getMessage());
-            }
-
-            @Override
-            public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
-                container.put(favoritesUpperEntity);
-            }
-        }));
-    }
-
-    @Override
     public void getCategories() {
         final List<Category> categories = new ArrayList<>();
         addSubscription(dataManager.getCategories().subscribe(new Subscriber<Category>() {
@@ -110,6 +78,4 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             }
         }));
     }
-
-
 }

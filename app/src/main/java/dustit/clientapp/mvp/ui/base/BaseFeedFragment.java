@@ -33,8 +33,6 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
     public FeedRecyclerViewAdapter adapter;
 
     public interface IBaseFragmentInteraction {
-        void notifyFavoriteAdded(FavoriteEntity favoriteEntity);
-
         void notifyOnScrollChanged(int distance);
 
         void launchMemView(View holder, MemEntity memEntity);
@@ -69,10 +67,6 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
     public void notifyFeedScrollChanged(int scrollY) {
         fragmentInteraction.notifyOnScrollChanged(scrollY);
-    }
-
-    public void notifyBase(String id) {
-        fragmentInteraction.notifyFavoriteAdded(new FavoriteEntity(id));
     }
 
     public void notifyFeedScrollIdle(boolean b) {

@@ -74,7 +74,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         unbinder = ButterKnife.bind(this, v);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
-        adapter = new FeedRecyclerViewAdapter(rvHot, this, Objects.requireNonNull(getContext()), appBarHeight);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
         srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
@@ -109,10 +109,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         return v;
     }
 
-    public void setFavoritesList(List<FavoriteEntity> list) {
-        adapter.setFavoritesList(list);
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isFirstTimeVisible) {
@@ -139,13 +135,13 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
     @Override
     public void onBaseUpdated(List<MemEntity> list) {
-        adapter.updateListWhole(list);
+        adapter.updateWhole(list);
         srlRefresh.setRefreshing(false);
     }
 
     @Override
     public void onPartialUpdate(List<MemEntity> list) {
-        adapter.updateListAtEnding(list);
+        adapter.updateAtEnding(list);
     }
 
     @Override
@@ -155,39 +151,8 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     }
 
     @Override
-    public void onAddedToFavorites(String id) {
-        notifyBase(id);
-        adapter.addedToFavorites(id);
-    }
-
-    @Override
-    public void onErrorInAddingToFavorites(String id) {
-        showErrorToast();
-    }
-
-    @Override
-    public void onRemovedFromFavorites(String id) {
-        adapter.onDeletedFromFavorites(id);
-    }
-
-    @Override
-    public void onErrorInRemovingFromFavorites(String id) {
-        showErrorToast();
-    }
-
-    @Override
     public void reloadFeedBase() {
         presenter.loadBase();
-    }
-
-    @Override
-    public void addToFavorites(@NonNull String id) {
-        presenter.addToFavorites(id);
-    }
-
-    @Override
-    public void deleteFromFavorites(@NonNull String id) {
-        presenter.deleteFromFavorites(id);
     }
 
     @Override

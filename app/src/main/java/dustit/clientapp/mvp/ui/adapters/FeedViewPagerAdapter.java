@@ -5,10 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
@@ -28,7 +25,6 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
     private WeakReference<FeedFragment> feedFragment;
     private WeakReference<HotFragment> hotFragment;
     private WeakReference<CategoriesFragment> categoriesFragment;
-    private final List<FavoriteEntity> list = new ArrayList<>();
 
     private boolean isCategoriesLoaded;
 
@@ -70,12 +66,5 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         if (feedFragment != null) feedFragment.clear();
         if (hotFragment != null) hotFragment.clear();
         if (categoriesFragment != null) categoriesFragment.clear();
-    }
-
-    public void setFavoritesList(List<FavoriteEntity> favoriteEntityList) {
-        list.addAll(favoriteEntityList);
-        if (feedFragment != null) feedFragment.get().setFavoritesList(list);
-        if (hotFragment != null) hotFragment.get().setFavoritesList(list);
-        if (categoriesFragment != null) categoriesFragment.get().setFavoritesList(list);
     }
 }

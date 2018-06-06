@@ -11,22 +11,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import butterknife.ButterKnife
 import butterknife.Unbinder
-import dustit.clientapp.App
 import dustit.clientapp.R
 import dustit.clientapp.customviews.WrapperLinearLayoutManager
-import dustit.clientapp.mvp.datamanager.FeedbackManager
-import dustit.clientapp.mvp.model.entities.FavoriteEntity
 import dustit.clientapp.mvp.model.entities.MemEntity
-import dustit.clientapp.mvp.model.entities.RefreshedMem
-import dustit.clientapp.mvp.model.entities.RestoreMemEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
 import dustit.clientapp.utils.AlertBuilder
-import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.fragment_feed.view.*
-import javax.inject.Inject
 
 
 class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
@@ -37,10 +30,6 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     private var presenter: FeedFragmentPresenter? = null
     private var scrollListener: RecyclerView.OnScrollListener? = null
     private var linearLayoutManager: WrapperLinearLayoutManager? = null
-
-    fun setFavoritesList(list: List<FavoriteEntity>) {
-        adapter!!.setFavoritesList(list)
-    }
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
@@ -62,7 +51,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         unbinder = ButterKnife.bind(this, v)
         linearLayoutManager = WrapperLinearLayoutManager(context)
         rvFeed!!.layoutManager = linearLayoutManager
-        adapter = context?.let { FeedRecyclerViewAdapter(rvFeed!!, this, it, appBarHeight) }
+        adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
         rvFeed!!.adapter = adapter
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
@@ -107,15 +96,15 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun onBaseUpdated(list: List<MemEntity>) {
         srlRefresh!!.isRefreshing = false
-        adapter!!.updateListWhole(list)
+        adapter!!.updateWhole(list)
     }
 
     override fun onPartialUpdate(list: List<MemEntity>) {
         if (list.isEmpty()) {
-            adapter!!.memesEnded()
+            adapter!!.onMemesEnded()
             return
         }
-        adapter!!.updateListAtEnding(list)
+        adapter!!.updateAtEnding(list)
     }
 
     override fun onErrorInLoading() {
@@ -123,35 +112,9 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         adapter!!.onFailedToLoad()
     }
 
-    override fun onAddedToFavorites(id: String) {
-        notifyBase(id)
-        adapter!!.addedToFavorites(id)
-    }
-
-    override fun onErrorInAddingToFavorites(id: String) {
-        showErrorToast()
-    }
-
-    override fun onErrorInRemovingFromFavorites(s: String) {
-        showErrorToast()
-    }
-
-    override fun onRemovedFromFavorites(s: String) {
-        adapter!!.onDeletedFromFavorites(s)
-    }
-
     override fun reloadFeedBase() {
         presenter!!.loadBase()
     }
-
-    override fun addToFavorites(id: String) {
-        presenter!!.addToFavorites(id)
-    }
-
-    override fun deleteFromFavorites(id: String) {
-        presenter!!.removeFromFavorites(id)
-    }
-
     override fun showErrorToast() {
         Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
     }

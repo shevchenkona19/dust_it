@@ -8,5 +8,4 @@ package dustit.clientapp.mvp.presenters.interfaces;
 public interface IFeedFragmentPresenter {
     void loadBase();
     void loadWithOffset(int offset);
-    void addToFavorites(String id);
 }

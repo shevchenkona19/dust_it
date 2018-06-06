@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.model.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -126,7 +127,7 @@ public class MemEntity implements Parcelable {
         this.favorite = favorite;
     }
 
-    @Nullable
+    @NonNull
     public IConstants.OPINION getOpinion() {
         if (opinion != null) {
             switch (opinion) {
