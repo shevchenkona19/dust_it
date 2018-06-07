@@ -5,6 +5,8 @@
     <color name="colorAccentDefault">#fff</color>
     <color name="colorEditTextHint">#cea8ef</color>
     <color name="colorMainText">#b375e0</color>
+    <color name="fabMain">#fff</color>
+    <color name="fabSecond">#ffb07e</color>
     <color name="colorMainTextHelloDefault">#f8f2fc</color>
     <color name="colorSecondaryTextHelloDefault">#aaffffff</color>
     <color name="colorMainTextMainAppDefault">#000</color>

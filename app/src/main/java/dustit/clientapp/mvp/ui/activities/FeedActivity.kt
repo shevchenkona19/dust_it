@@ -1,12 +1,11 @@
 package dustit.clientapp.mvp.ui.activities
 
-import android.animation.AnimatorSet
-import android.animation.LayoutTransition
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
+import android.animation.*
 import android.annotation.TargetApi
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -21,6 +20,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -39,6 +39,7 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.L
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
@@ -63,6 +64,11 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     private var isToolbarCollapsed = false
     private var animIsPlaying = false
     private var canToolbarCollapse = false
+
+    private var FAB_HIDDEN_Y = 0
+
+    private var fabX = 0
+    private var fabY = 0
 
     private var fabScrollYNormalPos: Float = 0f
     private val screenBounds = Rect()
@@ -90,9 +96,11 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         presenter.bind(this)
         bindViews()
         sdvUserIcon!!.setLegacyVisibilityHandlingEnabled(true)
+        val point = Point()
+        windowManager.defaultDisplay.getSize(point)
+        FAB_HIDDEN_Y = point.y + fabColapsed.height + 15
         presenter.getMyUsername()
         clLayout.getHitRect(screenBounds)
-        fabScrollYNormalPos = fabColapsed.y + 25
         vpFeed.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tlFeedTabs))
         tlFeedTabs!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -162,7 +170,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             }
         })
         sdvUserIcon.setOnClickListener { this.revealAccount(it) }
-        fabColapsed.setOnClickListener { setToolbarCollapsed(false) }
+        fabColapsed.setOnClickListener {
+            setToolbarCollapsed(!isToolbarCollapsed)
+            isToolbarCollapsed = !isToolbarCollapsed
+        }
         animateFabIcon(0)
         val layoutTransition = LayoutTransition()
         layoutTransition.disableTransitionType(LayoutTransition.DISAPPEARING)
@@ -199,6 +210,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             vpFeed.offscreenPageLimit = 3
             SHOWN_TOOLBAR_Y = 0
             HIDDEN_TOOLBAR_Y = 0 - toolbar.height
+            fabScrollYNormalPos = fabColapsed.y
+            fabX = fabColapsed.x.toInt()
+            fabY = fabColapsed.y.toInt()
         }
     }
 
@@ -266,24 +280,27 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         if (canToolbarCollapse) {
             if (!animIsPlaying) {
                 if (!isToolbarCollapsed) {
-                    if (distance > MIN_DISTANCE_THRESHOLD) {
-                        setCooldown()
-                        setToolbarCollapsed(true)
-                    }
+                    isToolbarCollapsed = true
+                    setToolbarCollapsed(true)
+                    return
                 }
-                if (isToolbarCollapsed) {
-                    val setY = if (distance > 0) fabColapsed.y - FAB_STEP else fabColapsed.y + FAB_STEP
-                    if (setY <= FAB_HIDDEN_Y) {
-                        if (fabColapsed.y == FAB_HIDDEN_Y.toFloat()) return
+                val isGoingUp = distance < 0
+                if (isGoingUp) {
+                    if (fabColapsed.y == fabScrollYNormalPos) return
+                    val moveY = fabColapsed.y - FAB_STEP
+                    if (moveY < fabScrollYNormalPos) {
+                        fabColapsed.y = fabScrollYNormalPos
+                        return
+                    }
+                    fabColapsed.y = moveY
+                } else {
+                    val moveY = fabColapsed.y + FAB_STEP
+                    if (moveY.toInt() == FAB_HIDDEN_Y) return
+                    if (moveY > FAB_HIDDEN_Y) {
                         fabColapsed.y = FAB_HIDDEN_Y.toFloat()
                         return
                     }
-                    if (setY <= fabScrollYNormalPos) {
-                        fabColapsed.y = setY
-                    } else {
-                        if (fabColapsed.y == fabScrollYNormalPos) return
-                        fabColapsed.y = fabScrollYNormalPos
-                    }
+                    fabColapsed.y = moveY
                 }
             }
         } else {
@@ -351,7 +368,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     override fun notifyFeedOnTop() {
         if (canToolbarCollapse) {
             if (isToolbarCollapsed)
-                setToolbarCollapsed(false)
+                isToolbarCollapsed = false
+            setToolbarCollapsed(false)
         } else {
             if (appBar.y != SHOWN_TOOLBAR_Y.toFloat()) {
                 val animator = ValueAnimator.ofFloat(appBar.y, SHOWN_TOOLBAR_Y.toFloat())
@@ -373,34 +391,81 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun revealToolbar() {
-        val fabX = fabColapsed.x + fabColapsed.width / 2
-        val fabY = fabColapsed.y + fabColapsed.height / 2
-        val tabsX = tabs.x + tabs.width / 2
-        val tabsY = tabs.y + tabs.height / 2
-        val toX = tabsX - fabX
-        val toY = tabsY - fabY
-        val animatorSet = AnimatorSet()
-        val xAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationX", toX)
-        val yAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationY", toY)
-        animatorSet.play(xAnim).with(yAnim)
-        animatorSet.duration = 300
-        animatorSet.start()
+        animIsPlaying = true
+        val tabX = tabs.x + tabs.width / 2
+        val tabY = tabs.y + tabs.height / 2
+        val toX = tabX - fabColapsed.width / 2
+        val toY = tabY - fabColapsed.height / 2
+        val translateAnimX = ObjectAnimator.ofFloat(fabColapsed, "x", toX)
+        val translateAnimY = ObjectAnimator.ofFloat(fabColapsed, "y", toY)
+        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), resources.getColor(R.color.fabMain), resources.getColor(R.color.fabSecond))
+        changeColor.addUpdateListener { animation -> fabColapsed.backgroundTintList = ColorStateList.valueOf(animation?.animatedValue as Int) }
+        val translate = AnimatorSet()
+        val fin = AnimatorSet()
+        val endRadius = (Math.hypot(tabs.width / 2.toDouble(), tabs.height / 2.toDouble())).toFloat()
+        val reveal: Animator = ViewAnimationUtils.createCircularReveal(tabs, tabs.width / 2, tabs.height / 2, fabColapsed.width / 2f, endRadius)
+        reveal.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                animIsPlaying = false
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {
+                tabs.visibility = View.VISIBLE
+                fabColapsed.visibility = View.INVISIBLE
+            }
+        })
+        reveal.duration = 150
+        translate.duration = 150
+        translate.playTogether(translateAnimX, translateAnimY, changeColor)
+        fin.play(translate)
+        fin.play(reveal).after(100)
+        fin.duration = 300
+        fin.start()
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun unrevealToolbar() {
-        val fabX = fabColapsed.x + fabColapsed.width / 2
-        val fabY = fabColapsed.y + fabColapsed.height / 2
-        val tabsX = tabs.x + tabs.width / 2
-        val tabsY = tabs.y + tabs.height / 2
-        val toX = tabsX - fabX
-        val toY = tabsY - fabY
-        val animatorSet = AnimatorSet()
-        val xAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationX", toX)
-        val yAnim = ObjectAnimator.ofFloat(fabColapsed as View, "translationY", toY)
-        animatorSet.play(xAnim).with(yAnim)
-        animatorSet.duration = 300
-        animatorSet.start()
+        animIsPlaying = true
+        val translateAnimX = ObjectAnimator.ofFloat(fabColapsed, "x", fabX.toFloat())
+        val translateAnimY = ObjectAnimator.ofFloat(fabColapsed, "y", fabY.toFloat())
+        val translate = AnimatorSet()
+        val fin = AnimatorSet()
+        val endRadius = (Math.hypot(tabs.width / 2.toDouble(), tabs.height / 2.toDouble())).toFloat()
+        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), resources.getColor(R.color.fabSecond), resources.getColor(R.color.fabMain))
+        changeColor.addUpdateListener { animation -> fabColapsed.backgroundTintList = ColorStateList.valueOf(animation?.animatedValue as Int) }
+        val unreveal = ViewAnimationUtils.createCircularReveal(tabs, tabs.width / 2, tabs.height / 2, endRadius, (fabColapsed.width / 2).toFloat())
+        unreveal.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                tabs.visibility = View.INVISIBLE
+                fabColapsed.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+        translate.playTogether(translateAnimX, translateAnimY, changeColor)
+        unreveal.duration = 150
+        translate.duration = 150
+        fin.playSequentially(unreveal, translate)
+        fin.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                animIsPlaying = false
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+        fin.start()
     }
 
     override fun onResume() {
@@ -424,7 +489,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     companion object {
         private const val MIN_DISTANCE_THRESHOLD = 15
         private const val FAB_STEP = 10f
-        private const val FAB_HIDDEN_Y = -200
         private var HIDDEN_TOOLBAR_Y = 0
         private var SHOWN_TOOLBAR_Y = 0
     }
