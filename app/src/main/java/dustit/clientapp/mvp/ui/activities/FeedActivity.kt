@@ -196,7 +196,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onStart() {
-        canToolbarCollapse = userSettingsDataManager.useImmersiveMode()
+        canToolbarCollapse = true
         super.onStart()
     }
 
@@ -303,7 +303,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                     fabColapsed.y = moveY
                 }
             }
-        } else {
             val setY = if (distance > 0) appBar.y - FAB_STEP else appBar.y + FAB_STEP
             if (setY <= HIDDEN_TOOLBAR_Y) {
                 if (appBar.y != HIDDEN_TOOLBAR_Y.toFloat()) {
@@ -318,10 +317,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         }
     }
 
-    override fun launchMemView(holder: View, memEntity: MemEntity) {
+    override fun launchMemView(holder: View, memEntity: MemEntity, startComments: Boolean) {
         val v = holder.findViewById<View>(R.id.sdvItemFeed)
         ViewCompat.setTransitionName(v, getString(R.string.mem_feed_transition_name))
-        val fragment = MemViewFragment.newInstance(memEntity)
+        val fragment = MemViewFragment.newInstance(memEntity, startComments)
         val transition = TransitionInflater
                 .from(this).inflateTransition(R.transition.mem_view_transition)
         fragment.sharedElementEnterTransition = transition
@@ -348,14 +347,20 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         isFeedScrollIdle = b
         if (canToolbarCollapse) {
             if (isFeedScrollIdle) {
-                if (fabColapsed.getLocalVisibleRect(screenBounds) && fabColapsed.y != fabScrollYNormalPos) {
-                    val animator = ValueAnimator.ofFloat(fabColapsed.y, fabScrollYNormalPos)
-                    animator.addUpdateListener { animation -> fabColapsed.y = animation.animatedValue as Float }
-                    animator.start()
+                val dist = FAB_HIDDEN_Y - fabScrollYNormalPos
+                val pos = FAB_HIDDEN_Y - fabColapsed.y
+                L.print("WTF----------- $dist $pos")
+                if (fabColapsed.y != FAB_HIDDEN_Y.toFloat() || fabColapsed.y != fabScrollYNormalPos) {
+                    if (pos < dist / 2) {
+                        val anim = ValueAnimator.ofFloat(fabColapsed.y, FAB_HIDDEN_Y.toFloat())
+                        anim.addUpdateListener { animation -> fabColapsed.y = animation.animatedValue as Float }
+                        anim.start()
+                    } else if (pos > dist / 2) {
+                        val anim = ValueAnimator.ofFloat(fabColapsed.y, fabScrollYNormalPos)
+                        anim.addUpdateListener { animation -> fabColapsed.y = animation.animatedValue as Float }
+                        anim.start()
+                    }
                 }
-            }
-        } else {
-            if (isFeedScrollIdle) {
                 if (appBar.y != SHOWN_TOOLBAR_Y.toFloat() && appBar.y != HIDDEN_TOOLBAR_Y.toFloat()) {
                     val animator = ValueAnimator.ofFloat(appBar.y, SHOWN_TOOLBAR_Y.toFloat())
                     animator.addUpdateListener { animation -> appBar.y = animation.animatedValue as Float }
@@ -370,7 +375,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             if (isToolbarCollapsed)
                 isToolbarCollapsed = false
             setToolbarCollapsed(false)
-        } else {
             if (appBar.y != SHOWN_TOOLBAR_Y.toFloat()) {
                 val animator = ValueAnimator.ofFloat(appBar.y, SHOWN_TOOLBAR_Y.toFloat())
                 animator.addUpdateListener { animation -> appBar.y = animation.animatedValue as Float }
@@ -398,7 +402,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         val toY = tabY - fabColapsed.height / 2
         val translateAnimX = ObjectAnimator.ofFloat(fabColapsed, "x", toX)
         val translateAnimY = ObjectAnimator.ofFloat(fabColapsed, "y", toY)
-        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), resources.getColor(R.color.fabMain), resources.getColor(R.color.fabSecond))
+        val color = ContextCompat.getColor(this, R.color.colorPrimary)
+        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), color, ContextCompat.getColor(this, R.color.fabSecond))
         changeColor.addUpdateListener { animation -> fabColapsed.backgroundTintList = ColorStateList.valueOf(animation?.animatedValue as Int) }
         val translate = AnimatorSet()
         val fin = AnimatorSet()
@@ -435,7 +440,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         val translate = AnimatorSet()
         val fin = AnimatorSet()
         val endRadius = (Math.hypot(tabs.width / 2.toDouble(), tabs.height / 2.toDouble())).toFloat()
-        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), resources.getColor(R.color.fabSecond), resources.getColor(R.color.fabMain))
+        val color = ContextCompat.getColor(this, R.color.colorPrimary)
+        val changeColor = ObjectAnimator.ofObject(ArgbEvaluator(), ContextCompat.getColor(this, R.color.fabSecond), color)
         changeColor.addUpdateListener { animation -> fabColapsed.backgroundTintList = ColorStateList.valueOf(animation?.animatedValue as Int) }
         val unreveal = ViewAnimationUtils.createCircularReveal(tabs, tabs.width / 2, tabs.height / 2, endRadius, (fabColapsed.width / 2).toFloat())
         unreveal.addListener(object : Animator.AnimatorListener {

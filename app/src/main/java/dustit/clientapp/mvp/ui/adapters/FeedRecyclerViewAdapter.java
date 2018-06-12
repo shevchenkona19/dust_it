@@ -52,6 +52,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         void deleteDislike(MemEntity mem);
 
+        void onCommentsSelected(View animStart, MemEntity mem);
+
         void showErrorToast();
 
         void loadMore(int offset);
@@ -140,7 +142,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                         break;
                 }
             });
-            memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
+            memViewHolder.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(memViewHolder.itemView, mem));
+                    memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
         } else if (holder instanceof FailedViewHolder) {
             final FailedViewHolder failedViewHolder = (FailedViewHolder) holder;
             failedViewHolder.btnRetry.setOnClickListener(v -> {
@@ -251,6 +254,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvLikeCount;
         @BindView(R.id.tvItemFeedDislikeCount)
         TextView tvDislikeCount;
+        @BindView(R.id.ivItemFeedComments)
+        View icComments;
 
         MemViewHolder(View itemView) {
             super(itemView);

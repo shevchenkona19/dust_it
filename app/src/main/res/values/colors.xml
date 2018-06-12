@@ -37,4 +37,5 @@
     <color name="colorCardAccentDefault">#000</color>
     <color name="colorCardAccentLight">#000</color>
     <color name="colorCardAccentDark">#fff</color>
+    <color name="background_material_light">#ffffff</color>
 </resources>

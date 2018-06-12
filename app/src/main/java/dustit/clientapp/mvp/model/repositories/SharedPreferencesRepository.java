@@ -106,15 +106,4 @@ public class SharedPreferencesRepository {
                 .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered)
                 .apply();
     }
-
-    public boolean useImmersiveMode() {
-        return preferences.getBoolean(IConstants.IPreferences.IMMERSIVE_KEY, false);
-    }
-
-    public void setUseImmersiveMode(boolean use) {
-        preferences
-                .edit()
-                .putBoolean(IConstants.IPreferences.IMMERSIVE_KEY, use)
-                .apply();
-    }
 }

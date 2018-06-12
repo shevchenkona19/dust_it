@@ -1,10 +1,15 @@
 package dustit.clientapp.mvp.model.entities;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Никита on 15.12.2017.
  */
 
 public class FavoriteEntity {
+    @SerializedName("imageid")
+    @Expose
     private String id;
 
     public FavoriteEntity(String id) {

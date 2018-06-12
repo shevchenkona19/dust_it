@@ -35,7 +35,7 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
     public interface IBaseFragmentInteraction {
         void notifyOnScrollChanged(int distance);
 
-        void launchMemView(View holder, MemEntity memEntity);
+        void launchMemView(View holder, MemEntity memEntity, boolean startComments);
 
         void notifyFeedScrollIdle(boolean b);
 
@@ -61,13 +61,15 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
         feedbackManager.unsubscribe(this);
     }
 
-    public void launchMemView(View view, MemEntity memEntity) {
-        fragmentInteraction.launchMemView(view, memEntity);
+    public void launchMemView(View view, MemEntity memEntity, boolean startComments) {
+        fragmentInteraction.launchMemView(view, memEntity, startComments);
     }
 
     public void notifyFeedScrollChanged(int scrollY) {
         fragmentInteraction.notifyOnScrollChanged(scrollY);
     }
+
+
 
     public void notifyFeedScrollIdle(boolean b) {
         fragmentInteraction.notifyFeedScrollIdle(b);
@@ -89,7 +91,12 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
     @Override
     public void onMemSelected(@NotNull View animStart, @NotNull MemEntity mem) {
-        launchMemView(animStart, mem);
+        launchMemView(animStart, mem, false);
+    }
+
+    @Override
+    public void onCommentsSelected(View animStart, MemEntity mem) {
+        launchMemView(animStart, mem, true);
     }
 
     @Override

@@ -61,12 +61,12 @@ import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.managers.ThemeManager;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
-    private static final String SHARED_TRANSITION_KEY = "sd";
+    private static final String COMMENTS_KEY = "COMMENTS_KEY";
+
     private MemEntity mem;
     private Unbinder unbinder;
     private CommentsRecyclerViewAdapter commentAdapter;
@@ -76,6 +76,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private boolean isMoreLayoutVisible = false;
     private final Handler handler = new Handler();
 
+    private boolean startComments = false;
 
     private int imageWidth = -1;
     private int imageHeight = -1;
@@ -158,10 +159,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Inject
     FeedbackManager feedbackManager;
 
-    public static MemViewFragment newInstance(MemEntity mem) {
+    public static MemViewFragment newInstance(MemEntity mem, boolean startComments) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
-        MemViewFragment fragment = new MemViewFragment();
+        args.putBoolean(COMMENTS_KEY, startComments);
+        final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -171,6 +173,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         super.setArguments(args);
         if (args != null) {
             mem = args.getParcelable(MEM_KEY);
+            startComments = args.getBoolean(COMMENTS_KEY);
         }
     }
 
@@ -185,7 +188,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_mem_view, container, false);
+        final View view = inflater.inflate(R.layout.activity_mem_view, container, false);
         unbinder = ButterKnife.bind(this, view);
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
@@ -200,7 +203,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             presenter.loadCommentsBase(mem.getId());
         });
         clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
+        final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
                 .setTapToRetryEnabled(true)
                 .setOldController(pdvMem.getController())
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -217,7 +220,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                     }
                 })
                 .build();
-        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
@@ -226,6 +229,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         pdvMem.setHierarchy(hierarchy);
         refreshUi();
         initAutoHide();
+        if (startComments) {
+            expandComments();
+        }
         return view;
     }
 
@@ -261,23 +267,21 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             tvLikeCount.setText(mem.getLikes());
             tvDislikeCount.setText(mem.getDislikes());
             final IConstants.OPINION opinion = mem.getOpinion();
-            if (opinion != null) {
-                switch (opinion) {
-                    case LIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like_pressed);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    case DISLIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
-                        break;
-                    case NEUTRAL:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    default:
-                        break;
-                }
+            switch (opinion) {
+                case LIKED:
+                    setImageDrawable(ivLike, R.drawable.ic_like_pressed);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                    break;
+                case DISLIKED:
+                    setImageDrawable(ivLike, R.drawable.ic_like);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
+                    break;
+                case NEUTRAL:
+                    setImageDrawable(ivLike, R.drawable.ic_like);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                    break;
+                default:
+                    break;
             }
         }
     }

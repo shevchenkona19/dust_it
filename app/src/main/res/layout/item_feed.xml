@@ -9,10 +9,8 @@
         android:id="@+id/cvItemFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="4dp"
+        app:cardElevation="9dp"
+        app:cardUseCompatPadding="true"
         app:cardCornerRadius="12dp">
 
         <android.support.constraint.ConstraintLayout
@@ -36,17 +34,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
+                android:paddingBottom="4dp"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/ivItemFeedComments"
                 android:contentDescription="mem"
                 tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/ivItemFeedIsLiked"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -71,12 +71,10 @@
                 app:layout_constraintRight_toRightOf="parent"/>
 
             <ImageView
-                android:id="@+id/ivItemFeedComments"
+                android:id="@id/ivItemFeedComments"
                 android:layout_width="34dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="4dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
                 android:adjustViewBounds="false"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -89,8 +87,8 @@
 
             <ImageView
                 android:id="@+id/ivItemFeedDisliked"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -105,9 +103,9 @@
                 android:id="@+id/tvItemFeedDislikeCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:text="435"
                 android:textColor="#b3b3b3"
                 android:textSize="18sp"

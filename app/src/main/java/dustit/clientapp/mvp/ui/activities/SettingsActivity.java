@@ -1,13 +1,10 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.TaskStackBuilder;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -18,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,10 +48,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     ViewGroup rlLanguagePicker;
     @BindView(R.id.spSettingsThemeChooser)
     AppCompatSpinner spThemeChooser;
-    @BindView(R.id.rlSettingsUseImmersive)
-    ViewGroup vgUseImmersive;
-    @BindView(R.id.cbSettingsUseImmersive)
-    CheckBox cbUseImmersive;
 
     @Inject
     ThemeManager themeManager;
@@ -142,7 +133,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 }
                 final Locale locale = new Locale(langToLoad);
                 Locale.setDefault(locale);
-                Configuration config = new Configuration();
+                final Configuration config = new Configuration();
                 config.locale = locale;
                 getBaseContext().getResources().updateConfiguration(config,
                         getBaseContext().getResources().getDisplayMetrics());
@@ -150,12 +141,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 restartActivity();
             });
             builder.create().show();
-        });
-        cbUseImmersive.setChecked(userSettingsDataManager.useImmersiveMode());
-        cbUseImmersive.setOnCheckedChangeListener((buttonView, isChecked) -> userSettingsDataManager.setUseImmersiveMode(isChecked));
-        vgUseImmersive.setOnClickListener(v -> {
-            cbUseImmersive.setChecked(!cbUseImmersive.isChecked());
-            userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
         });
     }
 
@@ -176,20 +161,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
-    }
-
-    private void animate(int fromColor, int toColor, final View v) {
-        int colorFrom = getColorFromResources(fromColor);
-        int colorTo = getColorFromResources(toColor);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(250);
-        colorAnimation.addUpdateListener(animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
-        colorAnimation.start();
+        return ContextCompat.getColor(this, c);
     }
 
     @Override

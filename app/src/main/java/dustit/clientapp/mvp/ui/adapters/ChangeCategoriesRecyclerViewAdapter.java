@@ -33,9 +33,8 @@ public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<Ch
     }
 
     @Override
-    public void onBindViewHolder(RowViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RowViewHolder holder, int position) {
         final PersonalCategory category = categories.get(position);
-        L.print("name: " + category.getCategoryName());
         holder.cbItem.setText(category.getCategoryName());
         holder.cbItem.setChecked(category.isChecked());
         holder.cbItem.setOnCheckedChangeListener((buttonView, isChecked) -> category.setChecked(isChecked));
