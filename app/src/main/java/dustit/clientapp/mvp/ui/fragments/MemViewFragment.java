@@ -105,10 +105,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     @BindView(R.id.tvCommentEmptySet)
     TextView tvCommentEmpty;
-    @BindView(R.id.ivMemViewMenu)
-    ImageView ivMenu;
-    @BindView(R.id.ivMemViewBack)
-    ImageView ivBack;
     @BindView(R.id.ivMemViewLike)
     ImageView ivLike;
     @BindView(R.id.ivMemViewDisliked)
@@ -151,10 +147,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     TextView tvCommentsLabel;
     @BindView(R.id.ivMemViewAddToPhotos)
     ImageView ivAddToFavourites;
-    @BindView(R.id.clMemViewMoreLayout)
-    ViewGroup vgMoreLayout;
-    @BindView(R.id.tvMemViewSrc)
-    TextView tvSrc;
 
     @Inject
     FeedbackManager feedbackManager;
@@ -224,7 +216,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
-        tvSrc.setText(mem.getSource());
         pdvMem.setController(ctrl);
         pdvMem.setHierarchy(hierarchy);
         refreshUi();
@@ -289,24 +280,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private void initOnClicks() {
         ivExpandComments.setOnClickListener(view -> expandComments());
         ivDisexpand.setOnClickListener(view -> disExpandComments());
-        ivMenu.setOnClickListener(v -> {
-            Drawable drawable = ivMenu.getDrawable();
-            if (drawable instanceof Animatable) {
-                ((Animatable) drawable).start();
-            }
-            vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
-            isMoreLayoutVisible = !isMoreLayoutVisible;
-            handler.postDelayed(() -> {
-                if (getContext() != null) {
-                    if (isMoreLayoutVisible) {
-                        setImageDrawable(ivMenu, R.drawable.anim_from_cross_to_menu);
-                    } else {
-                        setImageDrawable(ivMenu, R.drawable.anim_from_menu_to_cross);
-                    }
-                }
-            }, 300);
-        });
-        ivBack.setOnClickListener(view -> interactionListener.closeMemView());
+        tbUpperToolbar.setNavigationOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
                 feedbackManager.deleteLike(mem);
