@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/clMainLayout"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:visibility="visible">
 
         <android.support.design.widget.AppBarLayout
@@ -29,12 +29,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-
                     <Spinner
                         android:id="@+id/spCategoriesChooser"
                         android:layout_width="200dp"
-                        android:visibility="gone"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tvActivityFeedAppName"
@@ -42,50 +41,25 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/app_name"
+                        android:textColor="?attr/colorAccent"
+                        android:textSize="22sp"
                         android:visibility="visible"
-                        android:textColor="@color/colorMainText"
-                        android:textSize="22sp" />
+                        tools:ignore="RelativeOverlap" />
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/sdvUserIcon"
-                        android:layout_width="70dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp"
-                        android:transitionName="@string/account_photo_transition"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="4dp"
                         app:actualImageScaleType="centerInside"
                         app:roundAsCircle="true"
                         app:roundingBorderColor="#eee" />
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tlFeedTabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:tabMode="fixed">
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_feed" />
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedHot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_hot" />
-
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabFeedCategories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/slc_tab_categories" />
-            </android.support.design.widget.TabLayout>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
@@ -94,18 +68,51 @@
             android:layout_height="match_parent"
             tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
 
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabToolbarCollapsed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:elevation="10dp"
+            android:visibility="visible"
+            app:backgroundTint="#000"
+            app:useCompatPadding="true" />
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tlFeedTabs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/btn_hello_accent"
+            android:clipToPadding="false"
             android:visibility="invisible"
-            tools:ignore="RelativeOverlap" />
+            app:tabIndicatorColor="#00000000"
+            app:tabMode="fixed">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/slc_tab_feed" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedHot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/slc_tab_hot" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabFeedCategories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/slc_tab_categories" />
+        </android.support.design.widget.TabLayout>
 
     </RelativeLayout>
 
@@ -113,4 +120,5 @@
         android:id="@+id/feedContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</merge>
+
+</RelativeLayout>

@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.IConstants;
@@ -19,7 +20,6 @@ import dustit.clientapp.utils.managers.ThemeManager;
  * Let's GO!
  */
 @Module
-@Singleton
 public class AppModule {
 
     private final Application application;
@@ -38,6 +38,12 @@ public class AppModule {
     @Singleton
     public DataManager provideDataManager() {
         return new DataManager();
+    }
+
+    @Provides
+    @Singleton
+    public FeedbackManager provideFeedbackManager() {
+        return new FeedbackManager();
     }
 
     @Provides

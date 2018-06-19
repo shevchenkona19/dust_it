@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -43,30 +45,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        etUsername.setText("koker");
-        etPassword.setText("koker1");
+        etUsername.setText("zaza21");
+        etPassword.setText("zaza12");
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#f98098"), PorterDuff.Mode.MULTIPLY);
         loginActivityPresenter.bind(this);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stringUtil.hideError(tilLoginPassword, tilLoginUsername);
-                if (stringUtil.isCorrectInput(etPassword, etUsername)) {
-                    tilLoginPassword.setVisibility(View.GONE);
-                    tilLoginUsername.setVisibility(View.GONE);
-                    pbLoading.setVisibility(View.VISIBLE);
-                    loginActivityPresenter.loginUser(etUsername.getText().toString(),
-                            etPassword.getText().toString());
-                } else {
-                    stringUtil.showError(etPassword, etUsername, tilLoginPassword, tilLoginUsername);
-                }
+        btnLogin.setOnClickListener(view -> {
+            stringUtil.hideError(tilLoginPassword, tilLoginUsername);
+            if (stringUtil.isCorrectInput(etPassword, etUsername)) {
+                tilLoginPassword.setVisibility(View.GONE);
+                tilLoginUsername.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.VISIBLE);
+                loginActivityPresenter.loginUser(etUsername.getText().toString(),
+                        etPassword.getText().toString());
+            } else {
+                stringUtil.showError(etPassword, etUsername, tilLoginPassword, tilLoginUsername);
             }
         });
-        tvNotRegistered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
+        tvNotRegistered.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     @Override
@@ -77,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
 
     @Override
     public void onLoggedSuccessfully() {
-        Intent intent = new Intent(this, FeedActivity.class);
+        final Intent intent = new Intent(this, FeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

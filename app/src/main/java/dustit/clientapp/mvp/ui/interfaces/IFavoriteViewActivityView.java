@@ -7,4 +7,8 @@ public interface IFavoriteViewActivityView extends IActivityView{
     void onDownloaded(String pathToImage);
 
     void onDownloadFailed();
+
+    void onError();
+
+    void onAddedToFavourites();
 }

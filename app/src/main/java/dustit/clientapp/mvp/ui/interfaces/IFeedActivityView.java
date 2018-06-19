@@ -15,8 +15,6 @@ public interface IFeedActivityView extends IActivityView {
 
     void onUsernameArrived(String s);
 
-    void onFavoritesArrived(List<FavoriteEntity> list);
-
     void onCategoriesArrived(List<Category> categoryList);
 
     void onCategoriesFailedToLoad();

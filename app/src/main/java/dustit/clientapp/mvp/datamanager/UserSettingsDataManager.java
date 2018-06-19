@@ -38,11 +38,4 @@ public class UserSettingsDataManager {
         preferencesRepository.setRegistered(registered);
     }
 
-    public boolean useImmersiveMode() {
-        return preferencesRepository.useImmersiveMode();
-    }
-
-    public void setUseImmersiveMode(boolean use) {
-        preferencesRepository.setUseImmersiveMode(use);
-    }
 }

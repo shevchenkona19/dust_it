@@ -24,35 +24,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/ivFavoriteViewDownload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="16dp"
-                    android:layout_toLeftOf="@+id/ivFavoriteViewShare"
-                    app:srcCompat="@drawable/ic_save" />
-
-                <ImageView
-                    android:id="@+id/ivFavoriteViewShare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="16dp"
-                    android:layout_toLeftOf="@+id/ivFavoriteViewDeleteFromFavorite"
-                    app:srcCompat="@drawable/ic_share" />
 
                 <ImageView
                     android:id="@+id/ivFavoriteViewDeleteFromFavorite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    app:srcCompat="@drawable/ic_delete" />
+                    android:layout_width="30dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="16dp"
+                    app:srcCompat="@drawable/ic_saved" />
 
                 <ImageView
                     android:id="@+id/ivFavoriteBack"
                     android:layout_width="24dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
                     app:srcCompat="@drawable/ic_arrow_left_simple" />
             </RelativeLayout>
 
@@ -63,9 +48,34 @@
         android:id="@+id/tivFavoriteViewImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/colorAccentDefault"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar2" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/ivFavoriteViewDownload"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/ic_save"
+            android:layout_alignParentEnd="true"/>
+
+        <ImageView
+            android:id="@+id/ivFavoriteViewShare"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_toStartOf="@id/ivFavoriteViewDownload"
+            app:srcCompat="@drawable/ic_share" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

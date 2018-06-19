@@ -66,4 +66,5 @@
     <string name="choose_categories">Выбирайте категории</string>
     <string name="accept">Применить</string>
     <string name="share_image">Поделиться мемом:</string>
+    <string name="cancel">Отмена</string>
 </resources>

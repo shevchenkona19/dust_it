@@ -15,30 +15,5 @@ public interface ICategoriesFragmentView extends IFragmentView {
     void onPartialUpdate(List<MemEntity> list);
 
     void onErrorInLoading();
-
-    void onStartLoading();
-
-    void onLikePostError(String id);
-
-    void onLikeDeletingError(String id);
-
-    void onDislikePostError(String id);
-
-    void onDislikeDeletingError(String id);
-
-    void onLikePostedSuccessfully(String id);
-
-    void onLikeDeletedSuccessfully(String id);
-
-    void onDislikePostedSuccessfully(String id);
-
-    void onDislikeDeletedSuccessfully(String id);
-
-    void onAddedToFavorites(String id);
-
-    void onErrorInAddingToFavorites(String id);
-
-    void onErrorInRemovingFromFavorites(String id);
-
-    void onRemovedFromFavorites(String id);
 }
+

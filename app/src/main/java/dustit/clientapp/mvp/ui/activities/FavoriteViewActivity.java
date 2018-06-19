@@ -55,6 +55,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     private String mFavoriteId;
     private String imageUrl;
 
+    private boolean isAdded = true;
 
 
     @Override
@@ -66,7 +67,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         mPresenter.bind(this);
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
         imageUrl = IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId;
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
+        final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
                 .setTapToRetryEnabled(true)
                 .setOldController(tivImage.getController())
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -80,7 +81,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
                     }
                 })
                 .build();
-        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
@@ -91,34 +92,23 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initClicks() {
-        ivDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.removeFromFavorites(mFavoriteId);
-            }
-        });
-        ivDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.downloadImage(mFavoriteId);
-            }
-        });
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        ivShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this);
-            }
-        });
+       // ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
+        ivDelete.setOnClickListener(view -> setIsAdded(mFavoriteId));
+        ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
+        ivBack.setOnClickListener(view -> finish());
+        ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
+    }
+
+    private void setIsAdded(String mFavoriteId){
+        if (isAdded){
+            mPresenter.removeFromFavorites(mFavoriteId);
+        } else {
+            mPresenter.addToFavourites(mFavoriteId);
+        }
     }
 
     private void initSlidr() {
-        SlidrConfig config = new SlidrConfig.Builder()
+        final SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(getResources().getColor(R.color.colorPrimaryDefault))
                 .secondaryColor(getResources().getColor(R.color.colorPrimaryDarkDefault))
                 .position(SlidrPosition.VERTICAL)
@@ -137,7 +127,9 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @Override
     public void onRemovedFromFavorites() {
         Toast.makeText(this, getString(R.string.deleted_from_favorites), Toast.LENGTH_SHORT).show();
-        finish();
+        ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_to_favourites));
+        isAdded = false;
+        //finish();
     }
 
     @Override
@@ -155,6 +147,18 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @Override
     public void onDownloadFailed() {
         Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onAddedToFavourites() {
+        ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_saved));
+        Toast.makeText(this, getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show();
+        isAdded = true;
     }
 
     @Override

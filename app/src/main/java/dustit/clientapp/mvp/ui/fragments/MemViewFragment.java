@@ -51,21 +51,22 @@ import butterknife.Unbinder;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.managers.ThemeManager;
-import me.relex.photodraweeview.OnScaleChangeListener;
-import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView {
+public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
-    private static final String SHARED_TRANSITION_KEY = "sd";
+    private static final String COMMENTS_KEY = "COMMENTS_KEY";
+
     private MemEntity mem;
     private Unbinder unbinder;
     private CommentsRecyclerViewAdapter commentAdapter;
@@ -75,28 +76,28 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private boolean isMoreLayoutVisible = false;
     private final Handler handler = new Handler();
 
+    private boolean startComments = false;
 
     private int imageWidth = -1;
     private int imageHeight = -1;
 
-    private enum Quarry {
-        POST_LIKE,
-        DELETE_LIKE,
-        POST_DISLIKE,
-        DELETE_DISLIKE
+    @Override
+    public void changedFeedback(RefreshedMem refreshedMem) {
+        mem.setLikes(refreshedMem.getLikes());
+        mem.setDislikes(refreshedMem.getDislikes());
+        mem.setOpinion(refreshedMem.getOpinion());
+        refreshUi();
     }
 
-    private MemViewFragment.Quarry currentQuarry;
+    @Override
+    public void onError(RestoreMemEntity restoreMemEntity) {
+        mem.setLikes(restoreMemEntity.getLikes());
+        mem.setDislikes(restoreMemEntity.getDislikes());
+        mem.setOpinion(restoreMemEntity.getOpinion());
+        refreshUi();
+    }
 
     public interface IMemViewRatingInteractionListener {
-        void passPostLike(String id);
-
-        void passDeleteLike(String id);
-
-        void passPostDislike(String id);
-
-        void passDeleteDislike(String id);
-
         void closeMemView();
     }
 
@@ -156,12 +157,13 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     TextView tvSrc;
 
     @Inject
-    ThemeManager themeManager;
+    FeedbackManager feedbackManager;
 
-    public static MemViewFragment newInstance(MemEntity mem) {
+    public static MemViewFragment newInstance(MemEntity mem, boolean startComments) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
-        MemViewFragment fragment = new MemViewFragment();
+        args.putBoolean(COMMENTS_KEY, startComments);
+        final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -171,6 +173,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         super.setArguments(args);
         if (args != null) {
             mem = args.getParcelable(MEM_KEY);
+            startComments = args.getBoolean(COMMENTS_KEY);
         }
     }
 
@@ -185,24 +188,22 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_mem_view, container, false);
+        final View view = inflater.inflate(R.layout.activity_mem_view, container, false);
         unbinder = ButterKnife.bind(this, view);
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
+        feedbackManager.subscribe(this);
         rvComments.setAdapter(commentAdapter);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
-        srlCommentsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlCommentsRefresh.setRefreshing(true);
-                presenter.loadCommentsBase(mem.getId());
-            }
+        srlCommentsRefresh.setOnRefreshListener(() -> {
+            srlCommentsRefresh.setRefreshing(true);
+            presenter.loadCommentsBase(mem.getId());
         });
         clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
+        final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
                 .setTapToRetryEnabled(true)
                 .setOldController(pdvMem.getController())
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -212,12 +213,14 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         if (imageInfo == null || pdvMem == null) {
                             return;
                         }
-                        ActivityCompat.startPostponedEnterTransition(getActivity());
+                        if (getActivity() != null) {
+                            ActivityCompat.startPostponedEnterTransition(getActivity());
+                        }
                         pdvMem.update(imageInfo.getWidth(), imageInfo.getHeight());
                     }
                 })
                 .build();
-        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setProgressBarImage(new ProgressBarDrawable())
                 .build();
@@ -226,36 +229,37 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         pdvMem.setHierarchy(hierarchy);
         refreshUi();
         initAutoHide();
+        if (startComments) {
+            expandComments();
+        }
         return view;
     }
 
     @Override
     public void onDestroyView() {
         unbinder.unbind();
+        feedbackManager.unsubscribe(this);
         super.onDestroyView();
     }
 
     private void initAutoHide() {
-        pdvMem.setOnScaleChangeListener(new OnScaleChangeListener() {
-            @Override
-            public void onScaleChange(float scaleFactor, float focusX, float focusY) {
-                if ((imageHeight == -1 && imageWidth == -1)) {
-                    imageHeight = pdvMem.getHeight() / 2;
-                    imageWidth = pdvMem.getWidth() / 2;
-                }
-                if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
-                    //hide ui
-                    toolbar.setVisibility(View.GONE);
-                    tbLikePanel.setVisibility(View.GONE);
-                    isExpanded = true;
-                }
+        pdvMem.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
+            if ((imageHeight == -1 && imageWidth == -1)) {
+                imageHeight = pdvMem.getHeight() / 2;
+                imageWidth = pdvMem.getWidth() / 2;
+            }
+            if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
+                //hide ui
+                toolbar.setVisibility(View.GONE);
+                tbLikePanel.setVisibility(View.GONE);
+                isExpanded = true;
             }
         });
     }
 
     private void refreshUi() {
         if (mem.isFavorite()) {
-            setImageDrawable(ivAddToFavourites, R.drawable.ic_added_to_favourites);
+            setImageDrawable(ivAddToFavourites, R.drawable.ic_saved);
         } else {
             setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
         }
@@ -263,125 +267,103 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             tvLikeCount.setText(mem.getLikes());
             tvDislikeCount.setText(mem.getDislikes());
             final IConstants.OPINION opinion = mem.getOpinion();
-            if (opinion != null) {
-                switch (opinion) {
-                    case LIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like_pressed);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    case DISLIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
-                        break;
-                    case NEUTRAL:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    default:
-                        break;
-                }
+            switch (opinion) {
+                case LIKED:
+                    setImageDrawable(ivLike, R.drawable.ic_like_pressed);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                    break;
+                case DISLIKED:
+                    setImageDrawable(ivLike, R.drawable.ic_like);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
+                    break;
+                case NEUTRAL:
+                    setImageDrawable(ivLike, R.drawable.ic_like);
+                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                    break;
+                default:
+                    break;
             }
         }
     }
 
     private void initOnClicks() {
-        ivExpandComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expandComments();
+        ivExpandComments.setOnClickListener(view -> expandComments());
+        ivDisexpand.setOnClickListener(view -> disExpandComments());
+        ivMenu.setOnClickListener(v -> {
+            Drawable drawable = ivMenu.getDrawable();
+            if (drawable instanceof Animatable) {
+                ((Animatable) drawable).start();
             }
-        });
-        ivDisexpand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                disExpandComments();
-            }
-        });
-        ivMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Drawable drawable = ivMenu.getDrawable();
-                if (drawable instanceof Animatable) {
-                    ((Animatable) drawable).start();
-                }
-                vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
-                isMoreLayoutVisible = !isMoreLayoutVisible;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (getContext() != null) {
-                            if (isMoreLayoutVisible) {
-                                setImageDrawable(ivMenu, R.drawable.anim_from_cross_to_menu);
-                            } else {
-                                setImageDrawable(ivMenu, R.drawable.anim_from_menu_to_cross);
-                            }
-                        }
+            vgMoreLayout.setVisibility(isMoreLayoutVisible ? View.GONE : View.VISIBLE);
+            isMoreLayoutVisible = !isMoreLayoutVisible;
+            handler.postDelayed(() -> {
+                if (getContext() != null) {
+                    if (isMoreLayoutVisible) {
+                        setImageDrawable(ivMenu, R.drawable.anim_from_cross_to_menu);
+                    } else {
+                        setImageDrawable(ivMenu, R.drawable.anim_from_menu_to_cross);
                     }
-                }, 300);
-            }
-        });
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                interactionListener.closeMemView();
-            }
-        });
-        ivLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mem.getOpinion() == IConstants.OPINION.LIKED) {
-                    presenter.deleteLike(mem.getId());
-                    currentQuarry = Quarry.DELETE_LIKE;
-                } else {
-                    presenter.postLike(mem.getId());
-                    currentQuarry = Quarry.POST_LIKE;
                 }
+            }, 300);
+        });
+        ivBack.setOnClickListener(view -> interactionListener.closeMemView());
+        ivLike.setOnClickListener(view -> {
+            if (mem.getOpinion() == IConstants.OPINION.LIKED) {
+                feedbackManager.deleteLike(mem);
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                mem.setLikes(-1);
+            } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED){
+                feedbackManager.postLike(mem);
+                mem.setLikes(1);
+                mem.setDislikes(-1);
+                mem.setOpinion(IConstants.OPINION.LIKED);
+            } else {
+                feedbackManager.postLike(mem);
+                mem.setLikes(1);
+                mem.setOpinion(IConstants.OPINION.LIKED);
+            }
+            refreshUi();
+        });
+        ivDislike.setOnClickListener(view -> {
+            if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
+                feedbackManager.deleteDislike(mem);
+                mem.setDislikes(-1);
+                mem.setOpinion(IConstants.OPINION.NEUTRAL);
+            } else if (mem.getOpinion() == IConstants.OPINION.LIKED){
+                feedbackManager.postDislike(mem);
+                mem.setDislikes(1);
+                mem.setLikes(-1);
+                mem.setOpinion(IConstants.OPINION.DISLIKED);
+            } else {
+                feedbackManager.postDislike(mem);
+                mem.setDislikes(1);
+                mem.setOpinion(IConstants.OPINION.DISLIKED);
+            }
+            refreshUi();
+        });
+        pdvMem.setOnViewTapListener((view, x, y) -> {
+            if (isExpanded) {
+                toolbar.setVisibility(View.VISIBLE);
+                tbLikePanel.setVisibility(View.VISIBLE);
+                isExpanded = false;
+            } else {
+                toolbar.setVisibility(View.GONE);
+                tbLikePanel.setVisibility(View.GONE);
+                isExpanded = true;
             }
         });
-        ivDislike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
-                    presenter.deleteDislike(mem.getId());
-                    currentQuarry = Quarry.DELETE_DISLIKE;
-                } else {
-                    presenter.postDislike(mem.getId());
-                    currentQuarry = Quarry.POST_DISLIKE;
-                }
+        ivSendComment.setOnClickListener(view -> {
+            if (!etComment.getText().toString().equals("")) {
+                pbCommentSend.setVisibility(View.VISIBLE);
+                ivSendComment.setVisibility(View.INVISIBLE);
+                presenter.postComment(mem.getId(), etComment.getText().toString());
             }
         });
-        pdvMem.setOnViewTapListener(new OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                if (isExpanded) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    tbLikePanel.setVisibility(View.VISIBLE);
-                    isExpanded = false;
-                } else {
-                    toolbar.setVisibility(View.GONE);
-                    tbLikePanel.setVisibility(View.GONE);
-                    isExpanded = true;
-                }
-            }
-        });
-        ivSendComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!etComment.getText().toString().equals("")) {
-                    pbCommentSend.setVisibility(View.VISIBLE);
-                    ivSendComment.setVisibility(View.INVISIBLE);
-                    presenter.postComment(mem.getId(), etComment.getText().toString());
-                }
-            }
-        });
-        ivAddToFavourites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mem.isFavorite()) {
-                    presenter.removeFromFavourites(mem.getId());
-                } else {
-                    presenter.addToFavourites(mem.getId());
-                }
+        ivAddToFavourites.setOnClickListener(v -> {
+            if (mem.isFavorite()) {
+                presenter.removeFromFavourites(mem.getId());
+            } else {
+                presenter.addToFavourites(mem.getId());
             }
         });
     }
@@ -438,45 +420,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onErrorSendingQuarry() {
-        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-        currentQuarry = null;
-    }
-
-    @Override
-    public void onQuarrySendedSuccessfully(String id) {
-        final IConstants.OPINION opinion = mem.getOpinion();
-        switch (currentQuarry) {
-            case POST_LIKE:
-                if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1);
-                mem.setLikes(1);
-                mem.setOpinion(IConstants.OPINION.LIKED);
-                interactionListener.passPostLike(id);
-                break;
-            case DELETE_LIKE:
-                mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                mem.setLikes(-1);
-                interactionListener.passDeleteLike(id);
-                break;
-            case POST_DISLIKE:
-                if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1);
-                mem.setDislikes(1);
-                mem.setOpinion(IConstants.OPINION.DISLIKED);
-                interactionListener.passPostDislike(id);
-                break;
-            case DELETE_DISLIKE:
-                mem.setDislikes(-1);
-                mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                interactionListener.passDeleteDislike(id);
-                break;
-            default:
-                onErrorSendingQuarry();
-                break;
-        }
-        refreshUi();
     }
 
     @Override

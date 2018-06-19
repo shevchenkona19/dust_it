@@ -20,10 +20,7 @@ import rx.schedulers.Schedulers;
  * Let's GO!
  */
 @Module
-@Singleton
 public class ServerModule {
-
-
     @Provides
     @Singleton
     ServerAPI provideServerAPI(Gson gson) {

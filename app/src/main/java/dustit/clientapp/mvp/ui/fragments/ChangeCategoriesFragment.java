@@ -62,18 +62,13 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_change_categories, container, false);
+        final View v = inflater.inflate(R.layout.fragment_change_categories, container, false);
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
         adapter = new ChangeCategoriesRecyclerViewAdapter(getContext());
         rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rvCategories.setAdapter(adapter);
-        btnApply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.sendCategories(adapter.getChecked());
-            }
-        });
+        btnApply.setOnClickListener(view -> presenter.sendCategories(adapter.getChecked()));
         presenter.getCategories();
         return v;
     }

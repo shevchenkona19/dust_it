@@ -8,20 +8,17 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PersonalCategory {
-    @SerializedName("categoryname")
+    @SerializedName("categoryName")
     @Expose
-    private
-    String categoryName;
+    private String categoryName;
     @SerializedName("categoryIsUsed")
     @Expose
-    private
-    String isCategoryUsed;
+    private boolean isCategoryUsed;
     @SerializedName("categoryId")
     @Expose
-    private
-    String categoryId;
+    private String categoryId;
 
-    public PersonalCategory(String categoryName, String isCategoryUsed, String categoryId) {
+    public PersonalCategory(String categoryName, boolean isCategoryUsed, String categoryId) {
         this.categoryName = categoryName;
         this.isCategoryUsed = isCategoryUsed;
         this.categoryId = categoryId;
@@ -35,11 +32,11 @@ public class PersonalCategory {
         this.categoryName = categoryName;
     }
 
-    public String getIsCategoryUsed() {
+    public boolean getIsCategoryUsed() {
         return isCategoryUsed;
     }
 
-    public void setIsCategoryUsed(String isCategoryUsed) {
+    public void setIsCategoryUsed(boolean isCategoryUsed) {
         this.isCategoryUsed = isCategoryUsed;
     }
 
@@ -52,21 +49,10 @@ public class PersonalCategory {
     }
 
     public boolean isChecked() {
-        switch (isCategoryUsed) {
-            case "0":
-                return false;
-            case "1":
-                return true;
-            default:
-                return false;
-        }
+        return isCategoryUsed;
     }
 
     public void setChecked(boolean checked) {
-        if (checked) {
-            isCategoryUsed = "1";
-        } else {
-            isCategoryUsed = "0";
-        }
+        isCategoryUsed = checked;
     }
 }

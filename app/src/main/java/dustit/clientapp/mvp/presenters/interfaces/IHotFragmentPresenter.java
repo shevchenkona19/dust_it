@@ -8,9 +8,4 @@ package dustit.clientapp.mvp.presenters.interfaces;
 public interface IHotFragmentPresenter {
     void loadBase();
     void loadWithOffset(int offset);
-    void postLike(String id);
-    void deleteLike(String id);
-    void postDislike(String id);
-    void deleteDislike(String id);
-    void addToFavorites(String id);
 }

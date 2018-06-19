@@ -42,8 +42,8 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     TextView tvNoRegistration;
     @BindView(R.id.clChooserLayout)
     ConstraintLayout clMainLayout;
-    @BindView(R.id.rlChooserLoadingLayout)
-    RelativeLayout rlLoadingLayout;
+    @BindView(R.id.pbChooserLoading)
+    View rlLoadingLayout;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
@@ -55,9 +55,9 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
         if (!userSettingsDataManager.loadLanguage().equals(getResources().getConfiguration().locale.getLanguage())) {
-            Locale locale = new Locale(userSettingsDataManager.loadLanguage());
+            final Locale locale = new Locale(userSettingsDataManager.loadLanguage());
             Locale.setDefault(locale);
-            Configuration config = new Configuration();
+            final Configuration config = new Configuration();
             config.locale = locale;
             getBaseContext().getResources().updateConfiguration(config,
                     getBaseContext().getResources().getDisplayMetrics());
@@ -67,83 +67,63 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
         ButterKnife.bind(this);
         mPresenter.bind(this);
         mPresenter.checkIfRegistered();
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChooserActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        btnLogin.setOnClickListener(view -> {
+            final Intent intent = new Intent(ChooserActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChooserActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        btnRegister.setOnClickListener(view -> {
+            final Intent intent = new Intent(ChooserActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
-        ibChangeLanguage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
-                builder.setTitle(getString(R.string.pick_language));
-                builder.setItems(new String[]{"English", "Українська", "Русский"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String langToLoad = "";
-                        switch (which) {
-                            case 0:
-                                langToLoad = "en";
-                                break;
-                            case 1:
-                                langToLoad = "uk";
-                                break;
-                            case 2:
-                                langToLoad = "ru";
-                                break;
-                        }
-                        Locale locale = new Locale(langToLoad);
-                        Locale.setDefault(locale);
-                        Configuration config = new Configuration();
-                        config.locale = locale;
-                        getBaseContext().getResources().updateConfiguration(config,
-                                getBaseContext().getResources().getDisplayMetrics());
-                        userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                        restartActivity();
-                    }
-                });
-                builder.create().show();
-            }
+        ibChangeLanguage.setOnClickListener(v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
+            builder.setTitle(getString(R.string.pick_language));
+            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
+                String langToLoad = "";
+                switch (which) {
+                    case 0:
+                        langToLoad = "en";
+                        break;
+                    case 1:
+                        langToLoad = "uk";
+                        break;
+                    case 2:
+                        langToLoad = "ru";
+                        break;
+                }
+                Locale locale = new Locale(langToLoad);
+                Locale.setDefault(locale);
+                Configuration config = new Configuration();
+                config.locale = locale;
+                getBaseContext().getResources().updateConfiguration(config,
+                        getBaseContext().getResources().getDisplayMetrics());
+                userSettingsDataManager.saveNewLanguagePref(langToLoad);
+                restartActivity();
+            });
+            builder.setNegativeButton(getString(R.string.cancel), null);
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialog0 -> dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000")));
+            dialog.show();
         });
-        tvNoRegistration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
-                        .setTitle(getString(R.string.continue_without_registration))
-                        .setMessage(getString(R.string.continue_without_registration_message))
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mPresenter.continueNoRegistration();
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), null)
-                        .create();
-               alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                   @Override
-                   public void onShow(DialogInterface dialog) {
-                       alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-                       alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                   }
-               });
-               alertDialog.show();
-            }
+        tvNoRegistration.setOnClickListener(v -> {
+           final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
+                    .setTitle(getString(R.string.continue_without_registration))
+                    .setMessage(getString(R.string.continue_without_registration_message))
+                    .setPositiveButton(getString(R.string.yes), (dialog, which) -> mPresenter.continueNoRegistration())
+                    .setNegativeButton(getString(R.string.no), null)
+                    .create();
+           alertDialog.setOnShowListener(dialog -> {
+               alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+               alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+           });
+           alertDialog.show();
         });
     }
 
     public void restartActivity() {
-        Intent intent = new Intent(ChooserActivity.this, ChooserActivity.class);
+        final Intent intent = new Intent(ChooserActivity.this, ChooserActivity.class);
         startActivity(intent);
         finish();
     }

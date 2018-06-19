@@ -45,8 +45,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     TextView tvError;
     @BindView(R.id.tvFavoritesEmpty)
     TextView tvEmptyText;
-    @BindView(R.id.ivFavoritesEmpty)
-    ImageView ivEmptyPic;
     @BindView(R.id.clFavoritesParent)
     ConstraintLayout clParent;
 
@@ -69,19 +67,11 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
         mPresenter.loadFavorites();
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-        btnReload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.loadFavorites();
-                hideError();
-            }
+        btnReload.setOnClickListener(view -> {
+            mPresenter.loadFavorites();
+            hideError();
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override
@@ -110,7 +100,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     public void showEmpty() {
         pbLoading.setVisibility(View.GONE);
         tvEmptyText.setVisibility(View.VISIBLE);
-        ivEmptyPic.setVisibility(View.VISIBLE);
     }
 
     private void showError() {
@@ -136,12 +125,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     @Override
     public void onFavoriteChosen(String id) {
         startActivity(new Intent(this, FavoriteViewActivity.class).putExtra(FavoriteViewActivity.ID_KEY, id));
-    }
-
-    @Override
-    public void onFavoriteSelected(String id) {
-        //TODO: implement this
-        Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -9,17 +9,17 @@ import java.util.List;
 public class FavoritesUpperEntity {
     @SerializedName("favorites")
     @Expose
-    private String[] ids;
+    private FavoriteEntity[] ids;
 
-    public FavoritesUpperEntity(String[] ids) {
+    public FavoritesUpperEntity(FavoriteEntity[] ids) {
         this.ids = ids;
     }
 
     public String[] getIds() {
-        return ids;
-    }
-
-    public void setIds(String[] ids) {
-        this.ids = ids;
+        String[] strings = new String[ids.length];
+        for(int i = 0; i< strings.length; i++) {
+            strings[i] = ids[i].getId();
+        }
+        return strings;
     }
 }

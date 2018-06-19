@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clMemViewUpperLayout"
     android:layout_width="match_parent"
+    android:background="?attr/colorPrimary"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
@@ -26,7 +29,7 @@
 
                 <ImageView
                     android:id="@+id/ivMemViewBack"
-                    android:layout_width="24dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
@@ -37,8 +40,8 @@
                     android:id="@+id/ivMemViewMenu"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
@@ -135,9 +138,7 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/clMemViewNotExpandedBottomLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="0dp"
-                android:layout_marginStart="0dp"
+                android:layout_height="35dp"
                 android:animateLayoutChanges="true"
                 android:visibility="visible">
 
@@ -156,18 +157,18 @@
 
                 <ImageView
                     android:id="@+id/ivMemViewExpandComments"
-                    android:layout_width="23dp"
+                    android:layout_width="44dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:paddingTop="5dp"
+                    android:padding="5dp"
+                    android:layout_marginStart="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_comment" />
+                    app:srcCompat="@drawable/ic_comment"
+                    tools:ignore="RtlHardcoded" />
 
                 <ImageView
                     android:id="@+id/ivMemViewLike"
@@ -179,10 +180,12 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:visibility="visible"
+                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_like" />
+                    app:srcCompat="@drawable/ic_like"
+                    tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/tvMemViewLikeCount"
@@ -190,7 +193,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
                     android:layout_marginTop="8dp"
                     android:textSize="18sp"
                     android:visibility="visible"
@@ -204,6 +206,7 @@
                     android:layout_height="0dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
@@ -211,7 +214,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/ivMemViewLike"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_dislike" />
+                    app:srcCompat="@drawable/ic_dislike"
+                    tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/tvMemViewDislikeCount"
@@ -225,7 +229,8 @@
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.Toolbar>

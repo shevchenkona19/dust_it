@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,9 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
         inflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public ResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.item_result, parent, false);
         return new ResultViewHolder(v);
     }
@@ -43,12 +45,7 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
     public void onBindViewHolder(final ResultViewHolder holder, int position) {
         holder.cbTheme.setText(categoryList.get(position).getName());
         holder.cbTheme.setChecked(categoryList.get(position).isChecked());
-        holder.cbTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                categoryList.get(holder.getAdapterPosition()).setChecked(isChecked);
-            }
-        });
+        holder.cbTheme.setOnCheckedChangeListener((buttonView, isChecked) -> categoryList.get(holder.getAdapterPosition()).setChecked(isChecked));
     }
 
     @Override
@@ -63,10 +60,10 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
     }
 
     public void setChecks(String[] ids) {
-        for (String id :
+        for (String name :
                 ids) {
             for (int i = 0; i < categoryList.size(); i++) {
-                if (categoryList.get(i).getId().equals(id)) {
+                if (categoryList.get(i).getName().equals(name)) {
                     categoryList.get(i).setChecked(true);
                     break;
                 }
@@ -78,13 +75,10 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
         StringBuilder builder = new StringBuilder();
         for (Category cat : categoryList) {
             if (cat.isChecked()) {
-                L.print("We get checked!: " + cat.getId());
                 builder.append(cat.getId());
                 builder.append(" ");
             }
         }
-        String s = builder.toString();
-        L.print("HET: " + s);
         return builder.toString();
     }
 

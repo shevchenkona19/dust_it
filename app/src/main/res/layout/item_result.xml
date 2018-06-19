@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="150dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
     android:layout_height="wrap_content"
-    android:layout_marginRight="20dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginEnd="20dp">
 
-    <CheckBox
+    <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/cbItemResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorMainText" />
+        app:buttonTint="#E39682"
+        android:textColor="#fff" />
 
 </RelativeLayout>

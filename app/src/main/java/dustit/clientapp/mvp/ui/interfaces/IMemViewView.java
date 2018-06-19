@@ -21,10 +21,6 @@ public interface IMemViewView extends IActivityView {
 
     void onCommentSendFail();
 
-    void onErrorSendingQuarry();
-
-    void onQuarrySendedSuccessfully(String id);
-
     void onAddedToFavourites();
 
     void onRemovedFromFavourites();

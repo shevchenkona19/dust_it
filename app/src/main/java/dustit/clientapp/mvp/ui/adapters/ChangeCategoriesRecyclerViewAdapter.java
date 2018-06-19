@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
+import dustit.clientapp.utils.L;
 
 public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<ChangeCategoriesRecyclerViewAdapter.RowViewHolder> {
     private final List<PersonalCategory> categories = new ArrayList<>();
@@ -24,22 +26,18 @@ public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<Ch
         layoutInflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public RowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new RowViewHolder(layoutInflater.inflate(R.layout.item_change_category_each, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RowViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RowViewHolder holder, int position) {
         final PersonalCategory category = categories.get(position);
         holder.cbItem.setText(category.getCategoryName());
         holder.cbItem.setChecked(category.isChecked());
-        holder.cbItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                category.setChecked(isChecked);
-            }
-        });
+        holder.cbItem.setOnCheckedChangeListener((buttonView, isChecked) -> category.setChecked(isChecked));
     }
 
     public void updateList(List<PersonalCategory> list) {
@@ -69,7 +67,7 @@ public class ChangeCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<Ch
         @BindView(R.id.cbChangeCategoryItem)
         CheckBox cbItem;
 
-        public RowViewHolder(View itemView) {
+        RowViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

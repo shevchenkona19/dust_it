@@ -1,13 +1,10 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.TaskStackBuilder;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -18,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,10 +48,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     ViewGroup rlLanguagePicker;
     @BindView(R.id.spSettingsThemeChooser)
     AppCompatSpinner spThemeChooser;
-    @BindView(R.id.rlSettingsUseImmersive)
-    ViewGroup vgUseImmersive;
-    @BindView(R.id.cbSettingsUseImmersive)
-    CheckBox cbUseImmersive;
 
     @Inject
     ThemeManager themeManager;
@@ -76,13 +67,8 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         presenter.bind(this);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.logout();
-            }
-        });
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
+        btnLogout.setOnClickListener(view -> presenter.logout());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spThemeChooser.setAdapter(adapter);
         spThemeChooser.setSelection(presenter.loadTheme());
@@ -115,12 +101,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
         String langToSet = "";
         switch (userSettingsDataManager.loadLanguage()) {
             case "ru":
@@ -134,57 +115,37 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 break;
         }
         tvCurrentLanguage.setText(langToSet);
-        rlLanguagePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                builder.setTitle(getString(R.string.pick_language));
-                builder.setItems(new String[]{"English", "Українська", "Русский"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String langToLoad = "";
-                        switch (which) {
-                            case 0:
-                                langToLoad = "en";
-                                break;
-                            case 1:
-                                langToLoad = "uk";
-                                break;
-                            case 2:
-                                langToLoad = "ru";
-                                break;
-                        }
-                        Locale locale = new Locale(langToLoad);
-                        Locale.setDefault(locale);
-                        Configuration config = new Configuration();
-                        config.locale = locale;
-                        getBaseContext().getResources().updateConfiguration(config,
-                                getBaseContext().getResources().getDisplayMetrics());
-                        userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                        restartActivity();
-                    }
-                });
-                builder.create().show();
-            }
-        });
-        cbUseImmersive.setChecked(userSettingsDataManager.useImmersiveMode());
-        cbUseImmersive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                userSettingsDataManager.setUseImmersiveMode(isChecked);
-            }
-        });
-        vgUseImmersive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cbUseImmersive.setChecked(!cbUseImmersive.isChecked());
-                userSettingsDataManager.setUseImmersiveMode(cbUseImmersive.isChecked());
-            }
+        rlLanguagePicker.setOnClickListener(v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle(getString(R.string.pick_language));
+            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
+                String langToLoad = "";
+                switch (which) {
+                    case 0:
+                        langToLoad = "en";
+                        break;
+                    case 1:
+                        langToLoad = "uk";
+                        break;
+                    case 2:
+                        langToLoad = "ru";
+                        break;
+                }
+                final Locale locale = new Locale(langToLoad);
+                Locale.setDefault(locale);
+                final Configuration config = new Configuration();
+                config.locale = locale;
+                getBaseContext().getResources().updateConfiguration(config,
+                        getBaseContext().getResources().getDisplayMetrics());
+                userSettingsDataManager.saveNewLanguagePref(langToLoad);
+                restartActivity();
+            });
+            builder.create().show();
         });
     }
 
     private void restartCurrentAndBackstack() {
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
+        final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, FeedActivity.class))
                 .addNextIntent(new Intent(this, AccountActivity.class))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
@@ -193,32 +154,14 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     public void restartActivity() {
-        Intent intent = new Intent(this, FeedActivity.class);
+        final Intent intent = new Intent(this, FeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
 
     private int getColorFromResources(int c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getColor(c);
-        } else {
-            return getResources().getColor(c);
-        }
-    }
-
-    private void animate(int fromColor, int toColor, final View v) {
-        int colorFrom = getColorFromResources(fromColor);
-        int colorTo = getColorFromResources(toColor);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(250);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                v.setBackgroundColor((int) animator.getAnimatedValue());
-            }
-        });
-        colorAnimation.start();
+        return ContextCompat.getColor(this, c);
     }
 
     @Override

@@ -36,7 +36,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
     @Override
     public void loadBase() {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getHot(6, 0)
                 .subscribe(new Subscriber<MemEntity>() {
@@ -60,7 +59,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
     @Override
     public void loadWithOffset(int offset) {
-        getView().onStartLoading();
         final List<MemEntity> list = new ArrayList<>();
         addSubscription(dataManager.getHot(5, offset)
                 .subscribe(new Subscriber<MemEntity>() {
@@ -78,171 +76,6 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
                     @Override
                     public void onNext(MemEntity memEntity) {
                         list.add(memEntity);
-                    }
-                }));
-    }
-
-    @Override
-    public void postLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.postLike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] != 200) {
-                    getView().onLikeDeletingError(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-                getView().onLikePostError(id);
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void deleteLike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.deleteLike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] != 200) {
-                    getView().onLikeDeletingError(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-                getView().onLikeDeletingError(id);
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void postDislike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.postDislike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] != 200) {
-                    getView().onDislikePostError(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-                getView().onLikeDeletingError(id);
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void deleteDislike(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final int[] code = {0};
-        addSubscription(dataManager.deleteDislike(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                if (code[0] != 200) {
-                    getView().onDislikePostError(id);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("deleteLike: " + e.getMessage());
-                getView().onDislikeDeletingError(id);
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                code[0] = responseEntity.getResponse();
-            }
-        }));
-    }
-
-    @Override
-    public void addToFavorites(String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        FavoritesUtils favoritesUtils = new FavoritesUtils(dataManager);
-        favoritesUtils.addCallback(new FavoritesUtils.IFavoriteCallback() {
-            @Override
-            public void onAddedToFavorites(String id) {
-                getView().onAddedToFavorites(id);
-            }
-
-            @Override
-            public void onError(String id) {
-                getView().onErrorInAddingToFavorites(id);
-            }
-        });
-        favoritesUtils.addToFavorites(id);
-    }
-
-    public void deleteFromFavorites(String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final Container<String> containerId = new Container<>();
-        final Container<Integer> containerMessage = new Container<>();
-        containerId.put(id);
-        addSubscription(dataManager.removeFromFavorites(id)
-                .subscribe(new Subscriber<ResponseEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        if (containerMessage.get() != 200) {
-                            getView().onErrorInRemovingFromFavorites(containerId.get());
-                        } else {
-                            getView().onRemovedFromFavorites(containerId.get());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        L.print(e.getMessage());
-                        getView().onErrorInRemovingFromFavorites(containerId.get());
-                    }
-
-                    @Override
-                    public void onNext(ResponseEntity responseEntity) {
-                        containerMessage.put(responseEntity.getResponse());
                     }
                 }));
     }

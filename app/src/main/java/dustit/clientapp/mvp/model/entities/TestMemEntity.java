@@ -7,22 +7,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TestMemEntity implements Parcelable {
-    @SerializedName("imageid")
+    @SerializedName("imageId")
     @Expose
     private String memId;
 
-    @SerializedName("categoryid")
+    @SerializedName("categoryName")
     @Expose
-    private String categoryId;
+    private String categoryName;
 
-    public TestMemEntity(String memId, String categoryId) {
+    public TestMemEntity(String memId, String categoryName) {
         this.memId = memId;
-        this.categoryId = categoryId;
+        this.categoryName = categoryName;
     }
 
     protected TestMemEntity(Parcel in) {
         memId = in.readString();
-        categoryId = in.readString();
+        categoryName = in.readString();
     }
 
     public static final Creator<TestMemEntity> CREATOR = new Creator<TestMemEntity>() {
@@ -45,12 +45,12 @@ public class TestMemEntity implements Parcelable {
         this.memId = memId;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     @Override
@@ -61,6 +61,6 @@ public class TestMemEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(memId);
-        parcel.writeString(categoryId);
+        parcel.writeString(categoryName);
     }
 }

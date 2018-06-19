@@ -1,532 +1,305 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dustit.clientapp.App;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
-import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.DoubleClickListener;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
-import dustit.clientapp.utils.managers.ThemeManager;
 
-/**
- * Created by shevc on 05.10.2017.
- * Let's GO!
- */
+import static dustit.clientapp.utils.IConstants.BASE_URL;
 
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final List<MemEntity> memEntityList = new ArrayList<>();
-    private final List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
-    private LayoutInflater inflater;
-    private Context context;
-    private boolean isLoading = false;
-
-    private boolean sent = false;
-    private int offset = 6;
-    private int lastPos;
+    private List<MemEntity> mems;
+    private LayoutInflater layoutInflater;
+    private IFeedInteractionListener interactionListener;
+    private boolean isLoading = true;
+    private boolean isError = false;
+    private boolean isMemesEnded = false;
     private int appBarHeight;
 
-
-    public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener listener, int appBarHeight) {
-        inflater = LayoutInflater.from(context);
-        this.context = context;
-        interactionListener = listener;
-        this.appBarHeight = appBarHeight;
-        App.get().getAppComponent().inject(this);
-    }
-
-    public void onLikePostedSuccesfully(String id) {
-        final Pair<Integer, MemEntity> p = findMemAndPositionById(id);
-        final MemEntity mem = p.getMem();
-        final int pos = p.getPosition();
-        final IConstants.OPINION opinion = mem.getOpinion();
-        if (opinion != null) {
-            if (opinion == IConstants.OPINION.DISLIKED) mem.setDislikes(-1);
-            mem.setLikes(1);
-            mem.setOpinion(IConstants.OPINION.LIKED);
-            notifyItemChanged(pos);
-        } else {
-            showErrorToast();
-        }
-    }
-
-    public void onLikeDeletedSuccesfully(String id) {
-        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
-        final MemEntity mem = pair.getMem();
-        final int pos = pair.getPosition();
-        mem.setLikes(-1);
-        mem.setOpinion(IConstants.OPINION.NEUTRAL);
-        notifyItemChanged(pos);
-    }
-
-    public void onDislikePostedSuccesfully(String id) {
-        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
-        final MemEntity mem = pair.getMem();
-        final int pos = pair.getPosition();
-        final IConstants.OPINION opinion = mem.getOpinion();
-        if (opinion != null) {
-            if (opinion == IConstants.OPINION.LIKED) mem.setLikes(-1);
-            mem.setDislikes(1);
-            mem.setOpinion(IConstants.OPINION.DISLIKED);
-            notifyItemChanged(pos);
-        } else {
-            showErrorToast();
-        }
-    }
-
-    public void onDislikeDeletedSuccesfully(String id) {
-        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
-        final MemEntity mem = pair.getMem();
-        final int pos = pair.getPosition();
-        mem.setDislikes(-1);
-        mem.setOpinion(IConstants.OPINION.NEUTRAL);
-        notifyItemChanged(pos);
-    }
-
-    public void addedToFavorites(String id) {
-        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
-        final MemEntity mem = pair.getMem();
-        final int pos = pair.getPosition();
-        mem.setFavorite(true);
-        notifyItemChanged(pos);
-    }
-
-    public void onDeletedFromFavorites(String id) {
-        final Pair<Integer, MemEntity> pair = findMemAndPositionById(id);
-        final MemEntity mem = pair.getMem();
-        final int pos = pair.getPosition();
-        mem.setFavorite(false);
-        notifyItemChanged(pos);
-    }
-
-    public void setFavoritesList(List<FavoriteEntity> list) {
-        favoriteEntityList.clear();
-        favoriteEntityList.addAll(list);
-    }
-
-    private void findAndReload() {
-        if (memEntityList.size() == 0) return;
-        for (int i = 0; i < favoriteEntityList.size(); i++) {
-            final Pair<Integer, MemEntity> pair =
-                    findMemAndPositionById(favoriteEntityList.get(i).getId());
-            if (pair != null) {
-                pair.getMem().setFavorite(true);
-                notifyItemChanged(pair.getPosition());
-            }
-        }
-    }
-
     public interface IFeedInteractionListener {
-        void reloadFeedPartial(int offset);
-
         void reloadFeedBase();
 
         void onMemSelected(View animStart, MemEntity mem);
 
-        void postLike(String id);
+        void postLike(MemEntity mem);
 
-        void deleteLike(String id);
+        void deleteLike(MemEntity mem);
 
-        void postDislike(String id);
+        void postDislike(MemEntity mem);
 
-        void deleteDislike(String id);
+        void deleteDislike(MemEntity mem);
 
-        void addToFavorites(String id);
-
-        void deleteFromFavorites(String id);
+        void onCommentsSelected(View animStart, MemEntity mem);
 
         void showErrorToast();
+
+        void loadMore(int offset);
     }
 
-    private IFeedInteractionListener interactionListener;
+    public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener feedInteractionListener, int appBarHeight) {
+        layoutInflater = LayoutInflater.from(context);
+        mems = new ArrayList<>();
+        mems.add(null);
+        interactionListener = feedInteractionListener;
+        this.appBarHeight = appBarHeight;
+    }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case 0:
-                View v = inflater.inflate(R.layout.item_feed, parent, false);
-                final FeedMemViewHolder holder = new FeedMemViewHolder(v);
-                return holder;
             case 1:
-                if (isLoading) {
-                    View v1 = inflater.inflate(R.layout.item_feed_loading, parent, false);
-                    return new FeedLoadingViewHolder(v1);
-                } else {
-                    View v2 = inflater.inflate(R.layout.item_feed_failed_to_load, parent, false);
-                    return new FeedFailedToLoadViewHolder(v2);
-                }
+                return new LoadingViewHolder(layoutInflater.inflate(R.layout.item_feed_loading, parent, false));
+            case 2:
+                return new FailedViewHolder(layoutInflater.inflate(R.layout.item_feed_failed_to_load, parent, false));
+            case 0:
             default:
-                return null;
+                return new MemViewHolder(layoutInflater.inflate(R.layout.item_feed, parent, false));
+
         }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-        if (pos % 5 == 0 && pos != 0) {
-            if (pos > lastPos) {
-                if (sent && pos == 5) {
-                    sent = false;
-                } else {
-                    sent = true;
-                    interactionListener.reloadFeedPartial(offset);
-                    offset += 5;
-                    lastPos = pos;
-                }
-            }
-        }
-        if (position == 0) {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (pos == 0) {
             params.setMargins(0, appBarHeight, 0, 0);
-            holder.itemView.setLayoutParams(params);
         } else {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 0);
-            holder.itemView.setLayoutParams(params);
         }
-        if (holder instanceof FeedMemViewHolder) {
-            final FeedMemViewHolder memViewHolder = (FeedMemViewHolder) holder;
-            if (position == 0) {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, appBarHeight, 0, 0);
-                memViewHolder.itemView.setLayoutParams(params);
-            } else {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 0, 0, 0);
-                memViewHolder.itemView.setLayoutParams(params);
-            }
-            memViewHolder.isMoreLayoutVisible = false;
-            memViewHolder.vgMoreLayout.setVisibility(View.GONE);
-            final MemEntity mem = memEntityList.get(position);
-            memViewHolder.sdvMemImage.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
-            memViewHolder.sdvMemImage.getHierarchy().setRetryImage(context.getResources().getDrawable(R.drawable.ic_reload));
-            memViewHolder.sdvMemImage.setController(
-                    Fresco.newDraweeControllerBuilder()
-                            .setTapToRetryEnabled(true)
-                            .setUri(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId()))
-                            .build());
-            memViewHolder.tvItemSrc.setText(mem.getSource());
-            memViewHolder.sdvMemImage.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId()));
-            memViewHolder.tvLikeCount.setText(mem.getLikes());
-            memViewHolder.tvDislikeCount.setText(mem.getDislikes());
-            if (mem.isFavorite()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.addToFavorites.setImageDrawable(context.getDrawable(R.drawable.ic_added_to_favourites));
-                } else {
-                    memViewHolder.addToFavorites.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_added_to_favourites));
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    memViewHolder.addToFavorites.setImageDrawable(context.getDrawable(R.drawable.ic_add_to_favourites));
-                } else {
-                    memViewHolder.addToFavorites.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_add_to_favourites));
-                }
-            }
-            memViewHolder.ivMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TransitionManager.beginDelayedTransition((ViewGroup) memViewHolder.itemView);
-                    memViewHolder.vgMoreLayout.setVisibility(memViewHolder.isMoreLayoutVisible ? View.GONE : View.VISIBLE);
-                    memViewHolder.isMoreLayoutVisible = !memViewHolder.isMoreLayoutVisible;
-                }
-            });
-            final IConstants.OPINION opinion = mem.getOpinion();
-            if (opinion != null) {
-                switch (opinion) {
-                    case LIKED:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like_pressed));
-                        } else {
-                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_pressed));
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
-                        } else {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
-                        }
-                        break;
+        holder.itemView.setLayoutParams(params);
+        if (holder instanceof MemViewHolder) {
+            final MemViewHolder memViewHolder = (MemViewHolder) holder;
+            final MemEntity mem = mems.get(pos);
+            memViewHolder.bind(mem);
+            memViewHolder.itemFeedLike.setOnClickListener(v -> {
+                switch (mem.getOpinion()) {
                     case DISLIKED:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
-                        } else {
-                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike_pressed));
-                        } else {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike_pressed));
-                        }
+                        mem.setDislikes(-1);
+                        mem.setLikes(1);
+                        mem.setOpinion(IConstants.OPINION.LIKED);
+                        notifyItemChanged(pos);
+                        interactionListener.postLike(mem);
                         break;
                     case NEUTRAL:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivLike.setImageDrawable(context.getDrawable(R.drawable.ic_like));
-                        } else {
-                            memViewHolder.ivLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getDrawable(R.drawable.ic_dislike));
-                        } else {
-                            memViewHolder.ivDisliked.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_dislike));
-                        }
+                        mem.setLikes(1);
+                        mem.setOpinion(IConstants.OPINION.LIKED);
+                        notifyItemChanged(pos);
+                        interactionListener.postLike(mem);
                         break;
-                    default:
+                    case LIKED:
+                        mem.setLikes(-1);
+                        mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                        notifyItemChanged(pos);
+                        interactionListener.deleteLike(mem);
                         break;
                 }
+            });
+            memViewHolder.itemFeedDislike.setOnClickListener(v -> {
+                switch (mem.getOpinion()) {
+                    case LIKED:
+                        mem.setLikes(-1);
+                        mem.setDislikes(1);
+                        mem.setOpinion(IConstants.OPINION.DISLIKED);
+                        notifyItemChanged(pos);
+                        interactionListener.postDislike(mem);
+                        break;
+                    case NEUTRAL:
+                        mem.setDislikes(1);
+                        mem.setOpinion(IConstants.OPINION.DISLIKED);
+                        notifyItemChanged(pos);
+                        interactionListener.postDislike(mem);
+                        break;
+                    case DISLIKED:
+                        mem.setDislikes(-1);
+                        mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                        notifyItemChanged(pos);
+                        interactionListener.deleteDislike(mem);
+                        break;
+                }
+            });
+            memViewHolder.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(memViewHolder.itemView, mem));
+                    memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
+        } else if (holder instanceof FailedViewHolder) {
+            final FailedViewHolder failedViewHolder = (FailedViewHolder) holder;
+            failedViewHolder.btnRetry.setOnClickListener(v -> {
+                if (mems.size() > 1) {
+                    interactionListener.loadMore(mems.size() - 1);
+                    isLoading = true;
+                } else {
+                    interactionListener.reloadFeedBase();
+                    isLoading = true;
+                }
+            });
+        } else if (holder instanceof LoadingViewHolder) {
+            if (!isLoading && !isMemesEnded) {
+                interactionListener.loadMore(mems.size() - 1);
+                isLoading = true;
             }
-            memViewHolder.ivLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (opinion != null) {
-                        switch (opinion) {
-                            case LIKED:
-                                interactionListener.deleteLike(mem.getId());
-                                break;
-                            case DISLIKED:
-                            case NEUTRAL:
-                                interactionListener.postLike(mem.getId());
-                                break;
-                        }
-                    }
-                }
-            });
-            memViewHolder.ivDisliked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (opinion != null) {
-                        switch (opinion) {
-                            case DISLIKED:
-                                interactionListener.deleteDislike(mem.getId());
-                                break;
-                            case LIKED:
-                            case NEUTRAL:
-                                interactionListener.postDislike(mem.getId());
-                                break;
-                        }
-                    }
-                }
-            });
-            memViewHolder.sdvMemImage.setOnClickListener(new DoubleClickListener() {
-                @Override
-                public void onSingleClick(View view) {
-                    interactionListener.onMemSelected(memViewHolder.itemView, mem);
-                }
-
-                @Override
-                public void onDoubleClick(View v) {
-                    if (opinion != null) {
-                        switch (opinion) {
-                            case DISLIKED:
-                            case NEUTRAL:
-                                interactionListener.postLike(mem.getId());
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            });
-            memViewHolder.addToFavorites.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mem.isFavorite()) {
-                        interactionListener.deleteFromFavorites(mem.getId());
-                    } else {
-                        interactionListener.addToFavorites(mem.getId());
-                    }
-                }
-            });
-        } else if (holder instanceof FeedFailedToLoadViewHolder) {
-            final FeedFailedToLoadViewHolder failedToLoadViewHolder = (FeedFailedToLoadViewHolder) holder;
-            failedToLoadViewHolder.btnRetry.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (memEntityList.size() > 1) {
-                        interactionListener.reloadFeedPartial(memEntityList.size());
-                    } else {
-                        interactionListener.reloadFeedBase();
-                    }
-                }
-            });
         }
+    }
+
+    public void updateWhole(List<MemEntity> list) {
+        isLoading = false;
+        isError = false;
+        mems.clear();
+        mems.addAll(list);
+        mems.add(null);
+        notifyDataSetChanged();
+    }
+
+    public void updateAtEnding(List<MemEntity> list) {
+        isLoading = false;
+        isError = false;
+        final int lastPos = mems.size() - 2;
+        mems.remove(mems.size() - 1);
+        mems.addAll(list);
+        mems.add(null);
+        notifyItemRangeInserted(lastPos, list.size());
+    }
+
+    public void onFailedToLoad() {
+        isLoading = false;
+        isError = true;
+    }
+
+    public void onMemesEnded() {
+        isMemesEnded = true;
     }
 
     @Override
     public int getItemCount() {
-        return memEntityList.size();
+        return mems.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (memEntityList.get(position) == null) {
+        final MemEntity mem = mems.get(position);
+        if (mem == null && isError) {
+            return 2;
+        } else if (mem == null) {
             return 1;
         } else {
             return 0;
         }
     }
 
-    public void onStartLoading() {
-        Handler handler = new Handler();
-        isLoading = true;
-        if (!memEntityList.contains(null)) {
-            memEntityList.add(null);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(memEntityList.size() - 1);
-                }
-            }, 100);
-        } else {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemChanged(memEntityList.size() - 1);
-                }
-            }, 100);
+    public void refreshMem(RefreshedMem refreshedMem) {
+        final Pair<Integer, MemEntity> pair = findMemAndPositionById(refreshedMem.getId());
+        if (pair != null) {
+            if (pair.getMem() == null) return;
+            pair.getMem().setLikes(refreshedMem.getLikes());
+            pair.getMem().setDislikes(refreshedMem.getDislikes());
+            pair.getMem().setOpinion(refreshedMem.getOpinion());
+            notifyItemChanged(pair.getPosition());
         }
     }
 
-    public void onFailedToLoad() {
-        isLoading = false;
-        notifyItemChanged(memEntityList.size() - 1);
-    }
-
-    public void updateListWhole(List<MemEntity> list) {
-        if (isLoading) {
-            isLoading = false;
-        }
-        memEntityList.clear();
-        memEntityList.addAll(list);
-        lastPos = 0;
-        offset = 6;
-        notifyDataSetChanged();
-        findAndReload();
-    }
-
-    public void updateListAtEnding(List<MemEntity> list) {
-        if (isLoading) {
-            isLoading = false;
-            int lastPos = memEntityList.size() - 1;
-            memEntityList.remove(null);
-            notifyItemChanged(lastPos);
-        }
-        int currPos = memEntityList.size() - 1;
-        memEntityList.addAll(list);
-        notifyItemRangeInserted(currPos, list.size());
-        findAndReload();
-    }
-
-    public List<MemEntity> getList() {
-        return memEntityList;
-    }
-
-    public MemEntity getItem(int position) {
-        return memEntityList.get(position);
-    }
-
-    static class FeedMemViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.sdvItemFeed)
-        SimpleDraweeView sdvMemImage;
-        @BindView(R.id.ivItemFeedIsLiked)
-        ImageView ivLike;
-        @BindView(R.id.tvItemFeedLikeCount)
-        TextView tvLikeCount;
-        @BindView(R.id.ivItemFeedMore)
-        ImageView ivMore;
-        @BindView(R.id.ivItemFeedAddToFavorites)
-        ImageView addToFavorites;
-        @BindView(R.id.ivItemFeedDisliked)
-        ImageView ivDisliked;
-        @BindView(R.id.tvItemFeedDislikeCount)
-        TextView tvDislikeCount;
-        @BindView(R.id.cvItemFeed)
-        CardView cvCard;
-        @BindView(R.id.clItemFeedMoreLayout)
-        ViewGroup vgMoreLayout;
-        @BindView(R.id.tvItemFeedSrc)
-        TextView tvItemSrc;
-
-        public boolean isMoreLayoutVisible = false;
-
-        public String id;
-
-        FeedMemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public String getId() {
-            return id;
-        }
-    }
-
-    static class FeedLoadingViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.pbItemFeedLoading)
-        ProgressBar pbLoading;
-
-        FeedLoadingViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            pbLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-        }
-    }
-
-    static class FeedFailedToLoadViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.btnItemFeedRetry)
-        Button btnRetry;
-
-        FeedFailedToLoadViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+    public void restoreMem(RestoreMemEntity restoreMemEntity) {
+        final Pair<Integer, MemEntity> memAndPos = findMemAndPositionById(restoreMemEntity.getId());
+        if (memAndPos != null) {
+            final MemEntity mem = memAndPos.getMem();
+            if (mem == null) return;
+            final int pos = memAndPos.getPosition();
+            mem.setLikes(restoreMemEntity.getLikes());
+            mem.setDislikes(restoreMemEntity.getDislikes());
+            mem.setOpinion(restoreMemEntity.getOpinion());
+            notifyItemChanged(pos);
         }
     }
 
     private Pair<Integer, MemEntity> findMemAndPositionById(String id) {
         Pair<Integer, MemEntity> pair = null;
-        for (int i = 0; i < memEntityList.size(); i++) {
-            if (memEntityList.get(i).getId().equals(id)) {
-                final MemEntity mem = memEntityList.get(i);
-                pair = new Pair<>(i, mem);
+        for (int i = 0; i < mems.size() - 1; i++) {
+            if (mems.get(i).getId().equals(id)) {
+                pair = new Pair<>(i, mems.get(i));
                 break;
             }
         }
         return pair;
     }
 
-    private void showErrorToast() {
-        interactionListener.showErrorToast();
+    static class MemViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.sdvItemFeed)
+        ImageView itemFeed;
+        @BindView(R.id.ivItemFeedIsLiked)
+        ImageView itemFeedLike;
+        @BindView(R.id.ivItemFeedDisliked)
+        ImageView itemFeedDislike;
+        @BindView(R.id.tvItemFeedLikeCount)
+        TextView tvLikeCount;
+        @BindView(R.id.tvItemFeedDislikeCount)
+        TextView tvDislikeCount;
+        @BindView(R.id.ivItemFeedComments)
+        View icComments;
+
+        MemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(MemEntity mem) {
+            Glide.with(itemView)
+                    .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
+                    .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder)
+                            .override(mem.getWidth(), mem.getHeight()))
+                    .into(itemFeed);
+            switch (mem.getOpinion()) {
+                case LIKED:
+                    itemFeedLike.setImageResource(R.drawable.ic_like_pressed);
+                    itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                    break;
+                case NEUTRAL:
+                    itemFeedLike.setImageResource(R.drawable.ic_like);
+                    itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                    break;
+                case DISLIKED:
+                    itemFeedLike.setImageResource(R.drawable.ic_like);
+                    itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
+                    break;
+            }
+            tvDislikeCount.setText(mem.getDislikes());
+            tvLikeCount.setText(mem.getLikes());
+        }
+    }
+
+    static class LoadingViewHolder extends RecyclerView.ViewHolder {
+        LoadingViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class FailedViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.btnItemFeedRetry)
+        Button btnRetry;
+
+        FailedViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }
