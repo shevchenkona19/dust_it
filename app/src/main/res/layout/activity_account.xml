@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         app:expanded="false"
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="?attr/actionBarSize">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:fitsSystemWindows="true"
-            app:toolbarId="@+id/toolbar">
+
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/tbAccountSettingsToolbar"
@@ -28,7 +24,6 @@
                 app:navigationIcon="@drawable/ic_arrow_left_simple"
                 app:title="@string/account_settings" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -42,18 +37,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
+            <RelativeLayout
                 android:id="@+id/cvAccountSettingsCard"
                 android:layout_width="400dp"
                 android:layout_centerHorizontal="true"
                 android:layout_height="400dp"
                 android:layout_margin="8dp"
-                android:transitionName="trans1"
-                app:cardCornerRadius="12dp">
+                android:transitionName="trans1">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
                     <android.support.constraint.ConstraintLayout
                         android:id="@+id/clAccountLoadingLayout"
@@ -163,7 +154,7 @@
                             app:layout_constraintLeft_toRightOf="@+id/sdvAccountUserIcon"
                             app:layout_constraintStart_toStartOf="@+id/tvAccountUsername"
                             app:layout_constraintTop_toBottomOf="@+id/tvAccountUsername"
-                            app:srcCompat="@drawable/ic_add_to_favourites" />
+                            app:srcCompat="@drawable/ic_saved" />
 
                         <com.github.rahatarmanahmed.cpv.CircularProgressView
                             android:id="@+id/cpbAccountLoadingPhoto"
@@ -191,47 +182,54 @@
                             app:layout_constraintStart_toStartOf="@+id/ivAccountToFavorites"
                             app:layout_constraintTop_toBottomOf="@+id/ivAccountToFavorites" />
                     </android.support.constraint.ConstraintLayout>
-                </RelativeLayout>
+            </RelativeLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cvAccountSettingsCard"
+                android:layout_centerHorizontal="true"
+                app:cardCornerRadius="15dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="12dp">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/clAccountSettingsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/cvAccountSettingsCard"
+                    android:layout_height="match_parent"
+                    tools:context="dustit.clientapp.mvp.ui.activities.AccountActivity">
+
+                    <Button
+                        android:id="@+id/btnAccountEdit"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:drawableEnd="@drawable/ic_arrow_right_simple"
+                        android:text="@string/edit_account"
+                        android:textSize="16sp"
+                        android:drawablePadding="8dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/btnAccountSettings"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:drawableRight="@drawable/ic_arrow_right_simple"
+                        android:text="@string/settings"
+                        android:textSize="16sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit" />
+
+                </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
 
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/clAccountSettingsContainer"
-                android:layout_width="match_parent"
-                android:layout_below="@id/cvAccountSettingsCard"
-                android:layout_height="match_parent"
-                tools:context="dustit.clientapp.mvp.ui.activities.AccountActivity">
-
-                <Button
-                    android:id="@+id/btnAccountEdit"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:drawableEnd="@drawable/ic_arrow_right_simple"
-                    android:text="@string/edit_account"
-                    android:textSize="16sp"
-                    android:drawablePadding="8dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnAccountSettings"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="16dp"
-                    android:drawableRight="@drawable/ic_arrow_right_simple"
-                    android:text="@string/settings"
-                    android:textSize="16sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit" />
-
-            </android.support.constraint.ConstraintLayout>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

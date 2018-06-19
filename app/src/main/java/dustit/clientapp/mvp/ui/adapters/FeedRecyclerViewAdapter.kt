@@ -317,11 +317,7 @@ class FeedRecyclerViewAdapter(rv: RecyclerView,
             itemView.sdvItemFeed.setImageURI(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.id))
             itemView.tvItemFeedLikeCount.text = mem.likes
             itemView.tvItemFeedDislikeCount.text = mem.dislikes
-            itemView.ivItemFeedMore.setOnClickListener({
-                TransitionManager.beginDelayedTransition(itemView as ViewGroup)
-                itemView.clItemFeedMoreLayout.visibility = if (isMoreLayoutVisible) View.GONE else View.VISIBLE
-                isMoreLayoutVisible = !isMoreLayoutVisible
-            })
+
         }
     }
 
