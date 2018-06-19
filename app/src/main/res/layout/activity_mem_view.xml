@@ -138,9 +138,7 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/clMemViewNotExpandedBottomLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="0dp"
-                android:layout_marginStart="0dp"
+                android:layout_height="35dp"
                 android:animateLayoutChanges="true"
                 android:visibility="visible">
 
@@ -165,8 +163,8 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="5dp"
+                    android:layout_marginStart="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tvMemViewDislikeCount"
                     app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_comment"

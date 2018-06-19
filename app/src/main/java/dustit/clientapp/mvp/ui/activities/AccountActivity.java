@@ -28,6 +28,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,7 +90,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     @BindView(R.id.clAccountSettingsContainer)
     ConstraintLayout clContainer;
     @BindView(R.id.cvAccountSettingsCard)
-    CardView cvAccountCard;
+    RelativeLayout cvAccountCard;
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
 
     private String myUsername = "";
