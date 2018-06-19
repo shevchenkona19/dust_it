@@ -5,14 +5,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -24,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -40,6 +37,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.List;
 
@@ -61,6 +59,7 @@ import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
@@ -72,11 +71,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
     private boolean isExpanded = false;
-    private boolean isCommentsExpanded = false;
-    private boolean isMoreLayoutVisible = false;
-    private final Handler handler = new Handler();
 
     private boolean startComments = false;
+
+    private boolean canPerformTap = true;
 
     private int imageWidth = -1;
     private int imageHeight = -1;
@@ -147,6 +145,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     TextView tvCommentsLabel;
     @BindView(R.id.ivMemViewAddToPhotos)
     ImageView ivAddToFavourites;
+    @BindView(R.id.supPanel)
+    SlidingUpPanelLayout supPanel;
 
     @Inject
     FeedbackManager feedbackManager;
@@ -218,10 +218,40 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 .build();
         pdvMem.setController(ctrl);
         pdvMem.setHierarchy(hierarchy);
+        supPanel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                clExpandedUpperLayout.setAlpha(slideOffset);
+                clNotExpandedBottomLayout.setAlpha(1 - slideOffset);
+                if (canPerformTap) canPerformTap = false;
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                switch (newState) {
+                    case DRAGGING:
+                        if (srlCommentsRefresh.getVisibility() == View.INVISIBLE)
+                            srlCommentsRefresh.setVisibility(View.VISIBLE);
+                        canPerformTap = false;
+                    case EXPANDED:
+                        canPerformTap = true;
+                        presenter.loadCommentsBase(mem.getId());
+                        supPanel.setDragView(clExpandedUpperLayout);
+                        break;
+                    case COLLAPSED:
+                        canPerformTap = true;
+                        srlCommentsRefresh.setVisibility(View.INVISIBLE);
+                        supPanel.setDragView(ivExpandComments);
+                        break;
+                    case ANCHORED:
+                        supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+            }
+        });
         refreshUi();
         initAutoHide();
         if (startComments) {
-            expandComments();
+            expandComments(true);
         }
         return view;
     }
@@ -278,7 +308,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void initOnClicks() {
-        ivExpandComments.setOnClickListener(view -> expandComments());
+        ivExpandComments.setOnClickListener(view -> expandComments(false));
         ivDisexpand.setOnClickListener(view -> disExpandComments());
         tbUpperToolbar.setNavigationOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
@@ -286,7 +316,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 feedbackManager.deleteLike(mem);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
                 mem.setLikes(-1);
-            } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED){
+            } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
                 feedbackManager.postLike(mem);
                 mem.setLikes(1);
                 mem.setDislikes(-1);
@@ -303,7 +333,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 feedbackManager.deleteDislike(mem);
                 mem.setDislikes(-1);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
-            } else if (mem.getOpinion() == IConstants.OPINION.LIKED){
+            } else if (mem.getOpinion() == IConstants.OPINION.LIKED) {
                 feedbackManager.postDislike(mem);
                 mem.setDislikes(1);
                 mem.setLikes(-1);
@@ -316,14 +346,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             refreshUi();
         });
         pdvMem.setOnViewTapListener((view, x, y) -> {
-            if (isExpanded) {
-                toolbar.setVisibility(View.VISIBLE);
-                tbLikePanel.setVisibility(View.VISIBLE);
-                isExpanded = false;
-            } else {
-                toolbar.setVisibility(View.GONE);
-                tbLikePanel.setVisibility(View.GONE);
-                isExpanded = true;
+            if (canPerformTap) {
+                if (isExpanded) {
+                    toolbar.setVisibility(View.VISIBLE);
+                    tbLikePanel.setVisibility(View.VISIBLE);
+                    isExpanded = false;
+                } else {
+                    toolbar.setVisibility(View.GONE);
+                    tbLikePanel.setVisibility(View.GONE);
+                    isExpanded = true;
+                }
             }
         });
         ivSendComment.setOnClickListener(view -> {
@@ -414,51 +446,15 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void disExpandComments() {
-        final View view = clUpperLayout;
-        if (getContext() != null) {
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null)
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            srlCommentsRefresh.setVisibility(View.GONE);
-            srlCommentsRefresh.setEnabled(false);
-            ConstraintSet set = new ConstraintSet();
-            set.clone(clUpperLayout);
-            set.clear(R.id.ablExpandablePanel, ConstraintSet.TOP);
-            set.connect(R.id.ablExpandablePanel, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
-            set.applyTo(clUpperLayout);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                toolbar.setElevation(9);
-                tbLikePanel.setElevation(9);
-            }
-            tvCommentEmpty.setVisibility(View.GONE);
-            clNotExpandedBottomLayout.setVisibility(View.VISIBLE);
-            clExpandedUpperLayout.setVisibility(View.GONE);
-            rvComments.setVisibility(View.GONE);
-            cvCommentSendPanel.setVisibility(View.GONE);
-            pdvMem.setVisibility(View.VISIBLE);
-            isCommentsExpanded = false;
-        }
+        supPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
-    private void expandComments() {
-        final ConstraintSet set = new ConstraintSet();
-        set.clone(clUpperLayout);
-        set.connect(R.id.ablExpandablePanel, ConstraintSet.TOP, R.id.abMemViewUpperBarLayout, ConstraintSet.BOTTOM, 0);
-        set.clear(R.id.ablExpandablePanel, ConstraintSet.BOTTOM);
-        set.applyTo(clUpperLayout);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(0);
-            tbLikePanel.setElevation(0);
+    private void expandComments(boolean startWithComments) {
+        supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        if (startWithComments) {
+            clExpandedUpperLayout.setAlpha(1);
+            clNotExpandedBottomLayout.setAlpha(0);
         }
-        clNotExpandedBottomLayout.setVisibility(View.GONE);
-        clExpandedUpperLayout.setVisibility(View.VISIBLE);
-        cvCommentSendPanel.setVisibility(View.VISIBLE);
-        presenter.loadCommentsBase(mem.getId());
-        pdvMem.setVisibility(View.GONE);
-        srlCommentsRefresh.setVisibility(View.VISIBLE);
-        srlCommentsRefresh.setEnabled(true);
-        rvComments.setVisibility(View.VISIBLE);
-        isCommentsExpanded = true;
     }
 
     @Override
