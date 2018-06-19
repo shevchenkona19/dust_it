@@ -259,7 +259,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private void refreshUi() {
         if (mem.isFavorite()) {
-            setImageDrawable(ivAddToFavourites, R.drawable.ic_added_to_favourites);
+            setImageDrawable(ivAddToFavourites, R.drawable.ic_saved);
         } else {
             setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
         }

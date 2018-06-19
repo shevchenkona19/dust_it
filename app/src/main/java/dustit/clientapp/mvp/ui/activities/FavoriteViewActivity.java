@@ -55,6 +55,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     private String mFavoriteId;
     private String imageUrl;
 
+    private boolean isAdded = true;
 
 
     @Override
@@ -91,10 +92,19 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initClicks() {
-        ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
+       // ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
+        ivDelete.setOnClickListener(view -> setIsAdded(mFavoriteId));
         ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
         ivBack.setOnClickListener(view -> finish());
         ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
+    }
+
+    private void setIsAdded(String mFavoriteId){
+        if (isAdded){
+            mPresenter.removeFromFavorites(mFavoriteId);
+        } else {
+            mPresenter.addToFavourites(mFavoriteId);
+        }
     }
 
     private void initSlidr() {
@@ -117,7 +127,9 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @Override
     public void onRemovedFromFavorites() {
         Toast.makeText(this, getString(R.string.deleted_from_favorites), Toast.LENGTH_SHORT).show();
-        finish();
+        ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_to_favourites));
+        isAdded = false;
+        //finish();
     }
 
     @Override
@@ -135,6 +147,18 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @Override
     public void onDownloadFailed() {
         Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onAddedToFavourites() {
+        ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_saved));
+        Toast.makeText(this, getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show();
+        isAdded = true;
     }
 
     @Override

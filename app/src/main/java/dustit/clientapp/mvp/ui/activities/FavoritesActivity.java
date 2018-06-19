@@ -45,8 +45,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     TextView tvError;
     @BindView(R.id.tvFavoritesEmpty)
     TextView tvEmptyText;
-    @BindView(R.id.ivFavoritesEmpty)
-    ImageView ivEmptyPic;
     @BindView(R.id.clFavoritesParent)
     ConstraintLayout clParent;
 
@@ -102,7 +100,6 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     public void showEmpty() {
         pbLoading.setVisibility(View.GONE);
         tvEmptyText.setVisibility(View.VISIBLE);
-        ivEmptyPic.setVisibility(View.VISIBLE);
     }
 
     private void showError() {
