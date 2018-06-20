@@ -9,28 +9,15 @@
         android:id="@+id/cvItemFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="9dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="4dp"
         app:cardCornerRadius="12dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <!--<dustit.clientapp.customviews.WrapContentDraweeView
-                android:id="@+id/sdvItemFeed"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:actualImageScaleType="fitXY"
-                app:failureImage="@drawable/ic_reload"
-                app:placeholderImage="@drawable/mem_placeholder"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />-->
 
             <ImageView
                 android:id="@+id/sdvItemFeed"

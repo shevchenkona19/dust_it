@@ -6,4 +6,5 @@ public interface IMemViewPresenter {
     void postComment(String id, String text);
     void addToFavourites(String id);
     void removeFromFavourites(String id);
+    void isFavourite(String id);
 }

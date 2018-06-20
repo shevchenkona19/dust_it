@@ -26,4 +26,6 @@ public interface IMemViewView extends IActivityView {
     void onRemovedFromFavourites();
 
     void onError();
+
+    void onIsFavourite(boolean isFavourite);
 }

@@ -1,6 +1,7 @@
 package dustit.clientapp.mvp.model.apis;
 
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
@@ -73,19 +74,19 @@ public interface ServerAPI {
 
     @POST("/feedback/like")
     Observable<RefreshedMem> postLike(@Header("Authorization") String token,
-                                        @Query("id") String id);
+                                      @Query("id") String id);
 
     @DELETE("/feedback/like")
     Observable<RefreshedMem> deleteLike(@Header("Authorization") String token,
-                                          @Query("id") String id);
+                                        @Query("id") String id);
 
     @POST("/feedback/dislike")
     Observable<RefreshedMem> postDislike(@Header("Authorization") String token,
-                                           @Query("id") String id);
+                                         @Query("id") String id);
 
     @DELETE("/feedback/dislike")
     Observable<RefreshedMem> deleteDislike(@Header("Authorization") String token,
-                                             @Query("id") String id);
+                                           @Query("id") String id);
 
     @POST("/account/logout")
     Observable<ResponseEntity> logout(@Header("Authorization") String token);
@@ -125,5 +126,9 @@ public interface ServerAPI {
     @GET("/feed/refreshMem")
     Observable<RefreshedMem> refreshMem(@Header("Authorization") String token,
                                         @Query("memId") String memId);
+
+    @GET("/favorites/isFavourite")
+    Observable<IsFavourite> isFavourite(@Header("Authorization") String token,
+                                        @Query("id") String id);
 
 }

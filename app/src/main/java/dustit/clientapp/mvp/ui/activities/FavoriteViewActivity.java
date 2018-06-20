@@ -31,6 +31,7 @@ import dustit.clientapp.mvp.ui.interfaces.IFavoriteViewActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.ImageShareUtils;
+import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.ThemeManager;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -129,7 +130,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         Toast.makeText(this, getString(R.string.deleted_from_favorites), Toast.LENGTH_SHORT).show();
         ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_to_favourites));
         isAdded = false;
-        //finish();
+        FavouritesBus.getInstance().removed(mFavoriteId);
     }
 
     @Override
@@ -159,6 +160,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         ivDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_saved));
         Toast.makeText(this, getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show();
         isAdded = true;
+        FavouritesBus.getInstance().added(mFavoriteId);
     }
 
     @Override

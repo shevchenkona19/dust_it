@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
@@ -98,22 +99,6 @@ public class DataManager {
                 .flatMap((Func1<PersonalCategoryUpperEntity, Observable<PersonalCategory>>) personalCategoryUpperEntity -> Observable.from(personalCategoryUpperEntity.getCategories()));
     }
 
-    public Observable<RefreshedMem> postLike(String id) {
-        return serverRepository.postLike(preferencesRepository.getSavedToken(), id);
-    }
-
-    public Observable<RefreshedMem> deleteLike(String id) {
-        return serverRepository.deleteLike(preferencesRepository.getSavedToken(), id);
-    }
-
-    public Observable<RefreshedMem> postDislike(String id) {
-        return serverRepository.postDislike(preferencesRepository.getSavedToken(), id);
-    }
-
-    public Observable<RefreshedMem> deleteDislike(String id) {
-        return serverRepository.deleteDislike(preferencesRepository.getSavedToken(), id);
-    }
-
     public Observable<TestMemEntity> getTest() {
         return serverRepository.getTest(getToken())
                 .flatMap((Func1<TestUpperEntity, Observable<TestMemEntity>>) testUpperEntity -> Observable.from(testUpperEntity.getList()));
@@ -179,7 +164,7 @@ public class DataManager {
         return context;
     }
 
-    public Observable<RefreshedMem> refreshMem(String id) {
-        return serverRepository.refreshMem(getToken(), id);
+    public Observable<IsFavourite> isFavourite(String id) {
+        return serverRepository.isFavourite(getToken(), id);
     }
 }

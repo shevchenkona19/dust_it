@@ -30,6 +30,7 @@ import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFavoriteActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class FavoritesActivity extends AppCompatActivity implements IFavoriteActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback {
@@ -62,7 +63,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
         ButterKnife.bind(this);
         mPresenter.bind(this);
         setSupportActionBar(toolbar);
-        mAdapter = new FavoritesRecyclerViewAdapter(this,this, mPresenter.getToken());
+        mAdapter = new FavoritesRecyclerViewAdapter(this,this);
         rvFavorites.setAdapter(mAdapter);
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
         mPresenter.loadFavorites();
@@ -71,6 +72,17 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
             mPresenter.loadFavorites();
             hideError();
         });
+        FavouritesBus.getInstance().setMainConsumer(new FavouritesBus.IConsumer() {
+            @Override
+            public void consumeRemoved(String id) {
+                mPresenter.loadFavorites();
+            }
+
+            @Override
+            public void consumeAdded(String id) {
+                mPresenter.loadFavorites();
+            }
+        });
         toolbar.setNavigationOnClickListener(v -> finish());
     }
 
@@ -78,6 +90,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
     public void onFavoritesArrived(List<FavoriteEntity> list) {
         pbLoading.setVisibility(View.GONE);
         rvFavorites.setVisibility(View.VISIBLE);
+        tvEmptyText.setVisibility(View.GONE);
         mAdapter.updateAll(list);
     }
 

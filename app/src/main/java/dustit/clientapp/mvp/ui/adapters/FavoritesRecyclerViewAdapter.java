@@ -25,18 +25,17 @@ import dustit.clientapp.utils.IConstants;
 public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<FavoritesRecyclerViewAdapter.FavoriteViewHolder> {
     private final List<FavoriteEntity> list = new ArrayList<>();
     private LayoutInflater inflater;
-    private String token;
 
 
     public interface IFavoritesCallback {
         void onFavoriteChosen(String id);
+
     }
 
     private IFavoritesCallback callback;
 
-    public FavoritesRecyclerViewAdapter(Context context, IFavoritesCallback iFavoriteCallback, String token) {
+    public FavoritesRecyclerViewAdapter(Context context, IFavoritesCallback iFavoriteCallback) {
         inflater = LayoutInflater.from(context);
-        this.token = token;
         callback = iFavoriteCallback;
     }
 

@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
@@ -161,6 +162,10 @@ public class ServerRepository {
 
     public Observable<RefreshedMem> refreshMem(String token, String id) {
         return serverAPI.refreshMem(token, id).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<IsFavourite> isFavourite(String token, String id) {
+        return serverAPI.isFavourite(token, id).observeOn(AndroidSchedulers.mainThread());
     }
 
 }

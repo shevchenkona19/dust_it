@@ -172,7 +172,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         sdvUserIcon.setOnClickListener { this.revealAccount(it) }
         fabColapsed.setOnClickListener {
             setToolbarCollapsed(!isToolbarCollapsed)
-            isToolbarCollapsed = !isToolbarCollapsed
         }
         animateFabIcon(0)
         val layoutTransition = LayoutTransition()
@@ -372,8 +371,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     override fun notifyFeedOnTop() {
         if (canToolbarCollapse) {
-            if (isToolbarCollapsed)
-                isToolbarCollapsed = false
             setToolbarCollapsed(false)
             if (appBar.y != SHOWN_TOOLBAR_Y.toFloat()) {
                 val animator = ValueAnimator.ofFloat(appBar.y, SHOWN_TOOLBAR_Y.toFloat())
@@ -384,6 +381,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     private fun setToolbarCollapsed(collapseToolbar: Boolean) {
+        isToolbarCollapsed = collapseToolbar
         if (canToolbarCollapse) {
             if (collapseToolbar) {
                 unrevealToolbar()

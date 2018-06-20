@@ -15,6 +15,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +76,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private boolean startComments = false;
 
     private boolean canPerformTap = true;
+    private boolean navVisible = true;
 
     private int imageWidth = -1;
     private int imageHeight = -1;
@@ -184,6 +186,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         unbinder = ButterKnife.bind(this, view);
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
+        presenter.isFavourite(mem.getId());
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
@@ -271,8 +274,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             }
             if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
                 //hide ui
-                toolbar.setVisibility(View.GONE);
-                tbLikePanel.setVisibility(View.GONE);
+                setNavVisible(false);
                 isExpanded = true;
             }
         });
@@ -304,6 +306,19 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 default:
                     break;
             }
+        }
+    }
+
+    private void setNavVisible(boolean visible) {
+        navVisible = visible;
+        if (visible) {
+            toolbar.setVisibility(View.VISIBLE);
+            tbLikePanel.setVisibility(View.VISIBLE);
+            supPanel.setTouchEnabled(true);
+        } else {
+            supPanel.setTouchEnabled(false);
+            toolbar.setVisibility(View.GONE);
+            tbLikePanel.setVisibility(View.GONE);
         }
     }
 
@@ -347,14 +362,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         });
         pdvMem.setOnViewTapListener((view, x, y) -> {
             if (canPerformTap) {
-                if (isExpanded) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    tbLikePanel.setVisibility(View.VISIBLE);
-                    isExpanded = false;
+                if (navVisible) {
+                    setNavVisible(false);
                 } else {
-                    toolbar.setVisibility(View.GONE);
-                    tbLikePanel.setVisibility(View.GONE);
-                    isExpanded = true;
+                    setNavVisible(true);
                 }
             }
         });
@@ -443,6 +454,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Override
     public void onError() {
         Toast.makeText(getContext(), getText(R.string.error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onIsFavourite(boolean isFavourite) {
+        mem.setFavorite(isFavourite);
+        refreshUi();
     }
 
     private void disExpandComments() {

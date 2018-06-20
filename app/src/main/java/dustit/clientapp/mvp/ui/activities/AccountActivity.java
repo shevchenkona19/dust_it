@@ -87,8 +87,6 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     TextView tvFavoritesCounter;
     @BindView(R.id.ivAccountToFavorites)
     ImageView ivToFavorites;
-    @BindView(R.id.clAccountSettingsContainer)
-    ConstraintLayout clContainer;
     @BindView(R.id.cvAccountSettingsCard)
     RelativeLayout cvAccountCard;
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();

@@ -9,12 +9,14 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IMemViewPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.containers.Container;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -156,6 +158,29 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             }
         }));
     }
+
+    @Override
+    public void isFavourite(String id) {
+        final Container<IsFavourite> favouriteContainer = new Container<>();
+        addSubscription(dataManager.isFavourite(id).subscribe(new Subscriber<IsFavourite>() {
+            @Override
+            public void onCompleted() {
+                getView().onIsFavourite(favouriteContainer.get().isFavourite());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print("Error in isFavourite: " + e.getMessage());
+                getView().onError();
+            }
+
+            @Override
+            public void onNext(IsFavourite isFavourite) {
+                favouriteContainer.put(isFavourite);
+            }
+        }));
+    }
+
 
     private boolean isNotSuccess(int code) {
         return code != 200;
