@@ -147,7 +147,7 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
         hideCorrectButton();
         canShowCorrectButton = true;
         if (isLastMemLiked) {
-            interestedCategories.remove(currentIndex);
+            interestedCategories.remove(interestedCategories.size()-1);
         }
         updateProgress(currentIndex);
     }

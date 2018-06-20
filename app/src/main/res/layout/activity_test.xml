@@ -86,7 +86,6 @@
         android:visibility="gone"
         android:layout_height="0dp"
         app:elevationEnabled="true"
-        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

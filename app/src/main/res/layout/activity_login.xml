@@ -16,7 +16,6 @@
         android:text="@string/login"
         android:textColor="#fff"
         android:textSize="18sp"
-        android:translationZ="15dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout" />

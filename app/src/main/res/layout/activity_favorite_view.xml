@@ -18,6 +18,7 @@
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_left_simple"
             app:layout_constraintTop_toTopOf="parent">
 
             <RelativeLayout
@@ -33,12 +34,6 @@
                     android:layout_centerInParent="true"
                     android:layout_marginEnd="16dp"
                     app:srcCompat="@drawable/ic_saved" />
-
-                <ImageView
-                    android:id="@+id/ivFavoriteBack"
-                    android:layout_width="24dp"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_arrow_left_simple" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>

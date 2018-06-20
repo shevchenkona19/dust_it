@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -40,14 +41,14 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
 
     @BindView(R.id.tivFavoriteViewImage)
     PhotoDraweeView tivImage;
-    @BindView(R.id.ivFavoriteBack)
-    ImageView ivBack;
     @BindView(R.id.ivFavoriteViewDeleteFromFavorite)
     ImageView ivDelete;
     @BindView(R.id.ivFavoriteViewShare)
     ImageView ivShare;
     @BindView(R.id.ivFavoriteViewDownload)
     ImageView ivDownload;
+    @BindView(R.id.toolbar2)
+    Toolbar toolbar;
 
     @Inject
     ThemeManager themeManager;
@@ -96,7 +97,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
        // ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
         ivDelete.setOnClickListener(view -> setIsAdded(mFavoriteId));
         ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
-        ivBack.setOnClickListener(view -> finish());
+        toolbar.setNavigationOnClickListener(view -> finish());
         ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
     }
 
