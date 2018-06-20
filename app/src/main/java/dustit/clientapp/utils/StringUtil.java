@@ -71,7 +71,7 @@ public class StringUtil {
 
     //Password check
     private boolean isPasswordNormLength(EditText editText) {
-        return editText.getText().length() > 0 && editText.getText().length() < 23;
+        return editText.getText().length() > 5 && editText.getText().length() < 23;
     }
 
     private void setPasswordIncorrectLengthError(TextInputLayout textInputLayout) {
@@ -79,7 +79,6 @@ public class StringUtil {
     }
 
     private boolean isPasswordContainLetterNumber(EditText editText) {
-        boolean isNumb = false;
         boolean isLetter = false;
         char[] c = editText.getText().toString().toCharArray();
         for (char ch : c
@@ -87,11 +86,8 @@ public class StringUtil {
             if (Pattern.matches("[a-zA-Z]+", String.valueOf(ch))) {
                 isLetter = true;
             }
-            if (Pattern.matches("[0-9]+", String.valueOf(ch))) {
-                isNumb = true;
-            }
         }
-        return (isLetter && isNumb);
+        return (isLetter);
     }
 
     private void setPasswordNoLetterNumberError(TextInputLayout textInputLayout) {
