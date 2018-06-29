@@ -40,6 +40,7 @@ import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
 import dustit.clientapp.utils.L
+import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
@@ -235,6 +236,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         feedbackManager.destroy()
         presenter.unbind()
         adapter!!.destroy()
+        FavouritesBus.destroy()
         super.onDestroy()
     }
 

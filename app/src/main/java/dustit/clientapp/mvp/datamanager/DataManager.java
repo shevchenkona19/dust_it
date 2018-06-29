@@ -1,8 +1,10 @@
 package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
+import android.content.Intent;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,9 +33,11 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.ProgressRequestBody;
 import okhttp3.MultipartBody;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -65,13 +69,11 @@ public class DataManager {
         return serverRepository.registerUser(registerUserEntity);
     }
 
-    public Observable<MemEntity> getFeed(int count, int offset) {
+    public Observable<MemUpperEntity> getFeed(int count, int offset) {
         if (userSettingsDataManager.isRegistered()) {
-            return serverRepository.getPersonalisedFeed(getToken(), count, offset)
-                    .flatMap((Func1<MemUpperEntity, Observable<MemEntity>>) memUpperEntity -> Observable.from(memUpperEntity.getMemEntities()));
+            return serverRepository.getPersonalisedFeed(getToken(), count, offset);
         } else {
-            return serverRepository.getFeed(getToken(), count, offset)
-                    .flatMap((Func1<MemUpperEntity, Observable<MemEntity>>) memUpperEntity -> Observable.from(memUpperEntity.getMemEntities()));
+            return serverRepository.getFeed(getToken(), count, offset);
         }
     }
 

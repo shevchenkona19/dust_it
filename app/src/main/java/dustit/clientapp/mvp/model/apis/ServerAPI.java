@@ -18,6 +18,7 @@ import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import okhttp3.MultipartBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -58,7 +59,7 @@ public interface ServerAPI {
 
     @GET("/feed/categoryFeed")
     Observable<MemUpperEntity> getCategoriesFeed(@Header("Authorization") String token,
-                                                 @Query("categoryname") String categoryId,
+                                                 @Query("categoryId") String categoryId,
                                                  @Query("count") int count,
                                                  @Query("offset") int offset);
 

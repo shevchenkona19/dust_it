@@ -1,9 +1,11 @@
 package dustit.clientapp.mvp.ui.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.INVISIBLE
 import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,9 @@ import dustit.clientapp.R
 import dustit.clientapp.customviews.WrapperLinearLayoutManager
 import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
+import dustit.clientapp.mvp.ui.activities.AccountActivity
+import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity
+import dustit.clientapp.mvp.ui.activities.SettingsActivity
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
@@ -30,6 +35,8 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     private var presenter: FeedFragmentPresenter? = null
     private var scrollListener: RecyclerView.OnScrollListener? = null
     private var linearLayoutManager: WrapperLinearLayoutManager? = null
+    private var rlEmptyCategories: ViewGroup? = null
+    private var changingCategories = false
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
@@ -53,10 +60,15 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         rvFeed!!.layoutManager = linearLayoutManager
         adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
         rvFeed!!.adapter = adapter
+        rlEmptyCategories = v.feedEmptyCategories
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
+        v.btnFeedEmptyCategories.setOnClickListener({
+            changingCategories = true
+            val intent = Intent(context, PersonalSettingsActivity::class.java)
+            startActivity(intent)
+        })
         srlRefresh!!.setProgressViewOffset(false, appBarHeight, appBarHeight + 100)
-        presenter!!.loadBase()
         srlRefresh!!.setOnRefreshListener {
             srlRefresh!!.isRefreshing = true
             presenter!!.loadBase()
@@ -83,6 +95,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         }
         rvFeed!!.addOnScrollListener(scrollListener)
         subscribeToFeedbackChanges()
+        presenter!!.loadBase()
         return v
     }
 
@@ -92,6 +105,16 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         unbinder!!.unbind()
         presenter!!.unbind()
         super.onDestroyView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (changingCategories) {
+            changingCategories = false
+            presenter!!.loadBase()
+            srlRefresh!!.visibility = View.VISIBLE
+            rlEmptyCategories!!.visibility = View.INVISIBLE
+        }
     }
 
     override fun onBaseUpdated(list: List<MemEntity>) {
@@ -115,8 +138,14 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     override fun reloadFeedBase() {
         presenter!!.loadBase()
     }
+
     override fun showErrorToast() {
         Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onNoCategories() {
+        srlRefresh!!.visibility = View.INVISIBLE
+        rlEmptyCategories!!.visibility = View.VISIBLE
     }
 
     override fun onNotRegistered() {

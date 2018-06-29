@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dust_it.iml" filepath="$PROJECT_DIR$/dust_it.iml" />
       <module fileurl="file://$PROJECT_DIR$/library-release/library-release.iml" filepath="$PROJECT_DIR$/library-release/library-release.iml" />
-      <module fileurl="file://D:/DUST IT/MemSpace/MemSpaceClient/dust_it/library-release/library-release.iml" filepath="D:/DUST IT/MemSpace/MemSpaceClient/dust_it/library-release/library-release.iml" />
-      <module fileurl="file://D:/DUST IT/MemSpace/MemSpaceClient/dust_it/memspace_client_app.iml" filepath="D:/DUST IT/MemSpace/MemSpaceClient/dust_it/memspace_client_app.iml" />
     </modules>
   </component>
 </project>

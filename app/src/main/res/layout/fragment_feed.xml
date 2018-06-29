@@ -4,13 +4,39 @@
     android:layout_height="match_parent"
     tools:context="dustit.clientapp.mvp.ui.fragments.FeedFragment">
 
+    <RelativeLayout
+        android:id="@+id/feedEmptyCategories"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvEmptyCategoriesFeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/empty_categories_feed" />
+
+        <Button
+            android:id="@+id/btnFeedEmptyCategories"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvEmptyCategoriesFeed"
+            android:layout_centerHorizontal="true"
+            android:text="@string/correct_this"
+            android:textColor="?attr/colorAccent" />
+    </RelativeLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srlFeedRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvFeed"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvFeed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

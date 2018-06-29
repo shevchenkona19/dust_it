@@ -113,7 +113,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         srlRefresh.setEnabled(false);
         srlRefresh.setOnRefreshListener(() -> {
             srlRefresh.setRefreshing(true);
-            presenter.loadBase(currentCategory.getName());
+            presenter.loadBase(currentCategory.getId());
         });
         scrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -146,7 +146,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
             public void onCategorySelected(@NonNull Category category) {
                 currentCategory = category;
                 srlRefresh.setEnabled(true);
-                presenter.loadBase(category.getName());
+                presenter.loadBase(category.getId());
             }
         });
         rvFeed.addOnScrollListener(scrollListener);

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class FavoriteEntity {
-    @SerializedName("imageid")
+    @SerializedName("imageId")
     @Expose
     private String id;
 

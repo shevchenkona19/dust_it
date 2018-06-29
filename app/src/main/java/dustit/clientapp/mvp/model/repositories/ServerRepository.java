@@ -22,6 +22,7 @@ import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import okhttp3.MultipartBody;
+import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 

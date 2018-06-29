@@ -14,7 +14,7 @@ import dustit.clientapp.utils.IConstants;
 
 public class MemEntity implements Parcelable {
 
-    @SerializedName("imageid")
+    @SerializedName("imageId")
     @Expose
     private String id;
     @SerializedName("likes")
@@ -26,7 +26,7 @@ public class MemEntity implements Parcelable {
     @SerializedName("opinion")
     @Expose
     private String opinion;
-    @SerializedName("IsFavorite")
+    @SerializedName("isFavorite")
     @Expose
     private boolean favorite;
     @SerializedName("source")

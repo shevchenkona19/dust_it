@@ -6,11 +6,16 @@ package dustit.clientapp.utils;
  */
 
 public interface IConstants {
-    String BASE_URL = "http://testmemspace.herokuapp.com";
+    String BASE_URL = "http://hqnl0060547.online-vm.com";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "test";
-    String NO_REGISTRATION_PASSWORD = "test";
+    String NO_REGISTRATION_PASSWORD = "test1";
     String SHARED_TRANSITION_NAME_KEY = "sh";
+
+    interface ErrorCodes {
+        String INTERNAL_ERROR = "INTERNAL_ERROR";
+        String NO_CATEGORIES = "NO_CATEGORIES";
+    }
 
     interface IPreferences {
         String TOKEN_KEY = "token";

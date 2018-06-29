@@ -17,4 +17,6 @@ public interface IFeedFragmentView extends IFragmentView {
     void onPartialUpdate(List<MemEntity> list);
 
     void onErrorInLoading();
+
+    void onNoCategories();
 }

@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         app:cardCornerRadius="12dp">
 
         <android.support.constraint.ConstraintLayout
