@@ -123,7 +123,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     }
 
     override fun onPartialUpdate(list: List<MemEntity>) {
-        if (list.isEmpty()) {
+        if (list.size < 1) {
             adapter!!.onMemesEnded()
             return
         }
@@ -154,6 +154,10 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun loadMore(offset: Int) {
         presenter!!.loadWithOffset(offset)
+    }
+
+    override fun gotoHot() {
+        gotoFragment(1)
     }
 
     companion object {

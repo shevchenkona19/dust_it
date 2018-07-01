@@ -41,6 +41,8 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
         void notifyFeedOnTop();
 
+        void gotoFragment(byte id);
+
     }
     private IBaseFragmentInteraction fragmentInteraction;
 
@@ -69,6 +71,9 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
         fragmentInteraction.notifyOnScrollChanged(scrollY);
     }
 
+    public void gotoFragment(byte id) {
+        fragmentInteraction.gotoFragment(id);
+    }
 
 
     public void notifyFeedScrollIdle(boolean b) {

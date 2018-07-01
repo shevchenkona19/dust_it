@@ -60,6 +60,7 @@ import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.KeyboardHandler;
 import dustit.clientapp.utils.L;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -149,6 +150,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     ImageView ivAddToFavourites;
     @BindView(R.id.supPanel)
     SlidingUpPanelLayout supPanel;
+    @BindView(R.id.rlExpandablePanelWrapper)
+    View rlExpandablePanelWrapper;
 
     @Inject
     FeedbackManager feedbackManager;
@@ -196,6 +199,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         srlCommentsRefresh.setOnRefreshListener(() -> {
             srlCommentsRefresh.setRefreshing(true);
             presenter.loadCommentsBase(mem.getId());
+            tvCommentEmpty.setVisibility(View.INVISIBLE);
         });
         clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
@@ -233,7 +237,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 switch (newState) {
                     case DRAGGING:
+
                         if (srlCommentsRefresh.getVisibility() == View.INVISIBLE)
+                            KeyboardHandler.hideKeyboardFrom(getContext(), getView().getRootView());
                             srlCommentsRefresh.setVisibility(View.VISIBLE);
                         canPerformTap = false;
                     case EXPANDED:
@@ -274,8 +280,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             }
             if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
                 //hide ui
-                setNavVisible(false);
-                isExpanded = true;
+                if (navVisible) {
+                    setNavVisible(false);
+                    isExpanded = true;
+                }
             }
         });
     }
@@ -312,19 +320,25 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private void setNavVisible(boolean visible) {
         navVisible = visible;
         if (visible) {
+            supPanel.setEnabled(true);
             toolbar.setVisibility(View.VISIBLE);
             tbLikePanel.setVisibility(View.VISIBLE);
-            supPanel.setTouchEnabled(true);
+            rlExpandablePanelWrapper.setVisibility(View.VISIBLE);
         } else {
-            supPanel.setTouchEnabled(false);
-            toolbar.setVisibility(View.GONE);
-            tbLikePanel.setVisibility(View.GONE);
+            supPanel.setEnabled(false);
+            rlExpandablePanelWrapper.setVisibility(View.INVISIBLE);
+            toolbar.setVisibility(View.INVISIBLE);
+            tbLikePanel.setVisibility(View.INVISIBLE);
         }
     }
 
     private void initOnClicks() {
-        ivExpandComments.setOnClickListener(view -> expandComments(false));
-        ivDisexpand.setOnClickListener(view -> disExpandComments());
+        ivExpandComments.setOnClickListener(view -> {
+            expandComments(false);
+        });
+        ivDisexpand.setOnClickListener(view -> {
+            disExpandComments();
+        });
         tbUpperToolbar.setNavigationOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
@@ -362,11 +376,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         });
         pdvMem.setOnViewTapListener((view, x, y) -> {
             if (canPerformTap) {
-                if (navVisible) {
-                    setNavVisible(false);
-                } else {
-                    setNavVisible(true);
-                }
+                setNavVisible(!navVisible);
             }
         });
         ivSendComment.setOnClickListener(view -> {
@@ -463,6 +473,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void disExpandComments() {
+        if (getContext() != null)
+            KeyboardHandler.hideKeyboardFrom(getContext(), etComment);
         supPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 

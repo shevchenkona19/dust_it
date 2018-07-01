@@ -18,8 +18,7 @@
     <string name="login_length">Довжина логіна від 4 до 16 символів</string>
     <string name="must_containt_at_least_one_latin">Хоча б одна латинська літера</string>
     <string name="only_numbers_and_latin">Тільки цифри і латинські літери</string>
-    <string name="password_length_error">Від 9 до 22 символів</string>
-    <string name="at_least_one_latin_and_number">Хоча б одна літера і цифра</string>
+    <string name="password_length_error">Від 6 до 22 символів</string>
     <string name="try_to_load_one_more_time">Спробувати завантажити ще раз</string>
     <string name="sry_cant_load_account">Упс… не вдається завантажити ваш акаунт</string>
     <string name="edit_account">Редагувати акаунт</string>
@@ -81,4 +80,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="correct_this">Исправить это</string>
     <string name="empty_categories_feed">У вас не отмечено ни одной ктегории. Мы не можем ничего показать. лол</string>
+    <string name="email_not_unique">Ваш email уже зарегестрирован</string>
+    <string name="INTERNAL_ERROR">Упс! Ошибка. Попробуйте ещё раз</string>
+    <string name="no_categories">Вы не добавили ещё ни одной категории</string>
+    <string name="password_not_valid">Пароль введен не правильно</string>
+    <string name="username_not_valid">Такой username уже используется</string>
+    <string name="internal_error">Ошибка</string>
+    <string name="memes_ended">Пока что это все мемы :(</string>
+    <string name="not_registred_error">Такого пользователя нет</string>
+    <string name="goto_hot">Перейти к горячему</string>
+    <string name="feed_memes_ended">Пока что, мемы для тебя закончились :(   Можешь пока посмотреть самый лайкаемые мемы :)</string>
 </resources>

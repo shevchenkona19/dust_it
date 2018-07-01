@@ -166,6 +166,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     }
 
     @Override
+    public void gotoHot() {
+        gotoFragment((byte)1);
+    }
+
+    @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(getContext());
     }

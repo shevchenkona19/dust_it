@@ -41,11 +41,14 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
             return;
         }
         final PhotoBody photoBody = new PhotoBody();
+        String extension = path.substring(path.lastIndexOf("."));
         final Bitmap bm = BitmapFactory.decodeFile(path);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, baos); //bm is the bitmap object
-        final byte[] b = baos.toByteArray();
-        photoBody.setPhoto(Base64.encodeToString(b, Base64.DEFAULT));
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] byteArrayImage = byteArrayOutputStream.toByteArray();
+        String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+        photoBody.setPhoto(encodedImage);
+        photoBody.setExt(extension);
         addSubscription(dataManager.postPhoto(photoBody)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override

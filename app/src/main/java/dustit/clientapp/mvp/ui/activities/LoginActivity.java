@@ -13,12 +13,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ILoginActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.ErrorCodeResolver;
 import dustit.clientapp.utils.StringUtil;
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivityView {
@@ -28,6 +31,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     EditText etUsername;
     @BindView(R.id.btnLogin)
     Button btnLogin;
+    @BindView(R.id.cvBtnLoginWrapper)
+    View btnLoginWrapper;
     @BindView(R.id.tilLoginPassword)
     TextInputLayout tilLoginPassword;
     @BindView(R.id.tilLoginUsername)
@@ -52,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         btnLogin.setOnClickListener(view -> {
             stringUtil.hideError(tilLoginPassword, tilLoginUsername);
             if (stringUtil.isCorrectInput(etPassword, etUsername)) {
+                btnLoginWrapper.setVisibility(View.INVISIBLE);
                 tilLoginPassword.setVisibility(View.GONE);
                 tilLoginUsername.setVisibility(View.GONE);
                 pbLoading.setVisibility(View.VISIBLE);
@@ -83,7 +89,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         pbLoading.setVisibility(View.GONE);
         tilLoginUsername.setVisibility(View.VISIBLE);
         tilLoginPassword.setVisibility(View.VISIBLE);
-        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+        btnLoginWrapper.setVisibility(View.VISIBLE);
+        Toast.makeText(this,
+                ErrorCodeResolver.resolveError(message, new WeakReference<>(this)),
+                Toast.LENGTH_SHORT)
+                .show();
     }
 
     @Override

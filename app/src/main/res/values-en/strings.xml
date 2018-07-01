@@ -18,8 +18,7 @@
     <string name="login_length">Login length must be between 4 and 16 symbols</string>
     <string name="must_containt_at_least_one_latin">Must contain at least one latin letter</string>
     <string name="only_numbers_and_latin">Only numbers and latin letters</string>
-    <string name="password_length_error">Password length must be between 9 and 22 symbols</string>
-    <string name="at_least_one_latin_and_number">At least one letter and number</string>
+    <string name="password_length_error">Password length must be between 6 and 22 symbols</string>
     <string name="try_to_load_one_more_time">Try to load once more</string>
     <string name="sry_cant_load_account">Oops… failed to load your account</string>
     <string name="edit_account">Edit your account</string>
@@ -67,4 +66,14 @@
     <string name="accept">Применить</string>
     <string name="share_image">Поделиться мемом:</string>
     <string name="cancel">Отмена</string>
+    <string name="email_not_unique">Ваш email уже зарегестрирован</string>
+    <string name="INTERNAL_ERROR">Упс! Ошибка. Попробуйте ещё раз</string>
+    <string name="no_categories">Вы не добавили ещё ни одной категории</string>
+    <string name="username_not_valid">Такой username уже используется</string>
+    <string name="password_not_valid">Пароль введен не правильно</string>
+    <string name="internal_error">Ошибка</string>
+    <string name="memes_ended">Пока что это все мемы :(</string>
+    <string name="not_registred_error">Такого пользователя нет</string>
+    <string name="goto_hot">Перейти к горячему</string>
+    <string name="feed_memes_ended">Пока что, мемы для тебя закончились :(   Можешь пока посмотреть самый лайкаемые мемы :)</string>
 </resources>

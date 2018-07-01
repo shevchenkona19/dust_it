@@ -172,6 +172,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
 
     @Override
     public void onPartialUpdate(List<MemEntity> list) {
+        if (list.isEmpty()) {
+            adapter.onMemesEnded();
+            return;
+        }
         adapter.updateAtEnding(list);
     }
 
@@ -199,6 +203,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void loadMore(int offset) {
         presenter.loadWithOffset(currentCategory.getId(), offset);
+    }
 
+    @Override
+    public void gotoHot() {
+        gotoFragment((byte)1);
     }
 }

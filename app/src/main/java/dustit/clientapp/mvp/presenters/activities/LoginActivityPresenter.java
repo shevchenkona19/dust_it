@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -28,12 +30,19 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
     }
     @Override
     public void loginUser(String username, String password) {
+        AtomicReference<TokenEntity> token = new AtomicReference<>();
         addSubscription(dataManager.loginUser(new LoginUserEntity(username, password))
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
-                        userSettingsDataManager.setRegistered(true);
-                        getView().onLoggedSuccessfully();
+                        TokenEntity tokenEntity = token.get();
+                        if (tokenEntity.getMessage().equals("")) {
+                            dataManager.saveToken(tokenEntity.getToken());
+                            userSettingsDataManager.setRegistered(true);
+                            getView().onLoggedSuccessfully();
+                        } else {
+                            getView().onError(tokenEntity.getMessage());
+                        }
                     }
 
                     @Override
@@ -43,7 +52,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
-                        dataManager.saveToken(tokenEntity.getToken());
+                        token.set(tokenEntity);
                     }
                 }));
     }

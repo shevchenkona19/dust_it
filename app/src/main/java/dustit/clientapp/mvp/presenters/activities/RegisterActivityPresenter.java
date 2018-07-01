@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -10,6 +12,7 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IRegisterActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
+import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
@@ -26,12 +29,19 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
     @Override
     public void registerUser(String username, String password, String email) {
+        AtomicReference<TokenEntity> token = new AtomicReference<>();
         addSubscription(dataManager.registerUser(new RegisterUserEntity(username, password, email))
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
-                        userSettingsDataManager.setRegistered(true);
-                        getView().onRegisteredSuccessfully();
+                        TokenEntity tokenEntity = token.get();
+                        if (tokenEntity.getMessage().equals("")) {
+                            dataManager.saveToken(tokenEntity.getToken());
+                            userSettingsDataManager.setRegistered(true);
+                            getView().onRegisteredSuccessfully();
+                        } else {
+                            getView().onError(tokenEntity.getMessage());
+                        }
                     }
 
                     @Override
@@ -41,7 +51,7 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
                     @Override
                     public void onNext(TokenEntity tokenEntity) {
-                        dataManager.saveToken(tokenEntity.getToken());
+                        token.set(tokenEntity);
                     }
                 }));
     }

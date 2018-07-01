@@ -9,11 +9,16 @@ public class PhotoBody {
     @Expose
     private String photo;
 
+    @SerializedName("mime")
+    @Expose
+    private String ext;
+
     public PhotoBody() {
     }
 
-    public PhotoBody(String photo) {
+    public PhotoBody(String photo, String ext) {
         this.photo = photo;
+        this.ext = ext;
     }
 
     public String getPhoto() {
@@ -22,5 +27,13 @@ public class PhotoBody {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
     }
 }

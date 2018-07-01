@@ -1,5 +1,6 @@
 package dustit.clientapp.mvp.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +12,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.presenters.activities.RegisterActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.ErrorCodeResolver;
 import dustit.clientapp.utils.StringUtil;
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView {
@@ -38,6 +42,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     ProgressBar pbLoading;
     @BindView(R.id.tvAlreadyRegistered)
     TextView tvRegistered;
+    @BindView(R.id.btnRegisterWrapper)
+    View btnRegisterWrapper;
 
     private final RegisterActivityPresenter presenter = new RegisterActivityPresenter();
     private final StringUtil stringUtil = new StringUtil(this);
@@ -54,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                 tilRegisterEmail.setVisibility(View.GONE);
                 tilRegisterPassword.setVisibility(View.GONE);
                 tilRegisterUsername.setVisibility(View.GONE);
-                btnRegister.setVisibility(View.GONE);
+                btnRegisterWrapper.setVisibility(View.GONE);
                 pbLoading.setVisibility(View.VISIBLE);
                 presenter.registerUser(etUsername.getText().toString(),
                         etPassword.getText().toString(), etEmail.getText().toString());
@@ -83,13 +89,17 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
     }
+
     @Override
     public void onError(String message) {
         tilRegisterEmail.setVisibility(View.VISIBLE);
         tilRegisterPassword.setVisibility(View.VISIBLE);
         tilRegisterUsername.setVisibility(View.VISIBLE);
-        btnRegister.setVisibility(View.VISIBLE);
+        btnRegisterWrapper.setVisibility(View.VISIBLE);
         pbLoading.setVisibility(View.GONE);
-        Toast.makeText(this, getText(R.string.error), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                ErrorCodeResolver.resolveError(message, new WeakReference<>(this)),
+                Toast.LENGTH_SHORT)
+                .show();
     }
 }

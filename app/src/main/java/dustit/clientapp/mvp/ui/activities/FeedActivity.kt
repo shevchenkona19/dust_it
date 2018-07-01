@@ -47,7 +47,6 @@ import java.util.*
 import javax.inject.Inject
 
 class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
-
     private var isFeedScrollIdle = true
     internal lateinit var vpFeed: ViewPager
     private lateinit var clLayout: RelativeLayout
@@ -337,6 +336,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             if (supportFragmentManager.backStackEntryCount == 0)
                 clLayout.visibility = View.VISIBLE
         }
+    }
+
+    override fun gotoFragment(id: Byte) {
+        vpFeed.setCurrentItem(id.toInt(), true)
     }
 
     override fun closeMemView() {

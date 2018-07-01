@@ -57,6 +57,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         void showErrorToast();
 
         void loadMore(int offset);
+
+        void gotoHot();
     }
 
     public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener feedInteractionListener, int appBarHeight) {
@@ -75,6 +77,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 return new LoadingViewHolder(layoutInflater.inflate(R.layout.item_feed_loading, parent, false));
             case 2:
                 return new FailedViewHolder(layoutInflater.inflate(R.layout.item_feed_failed_to_load, parent, false));
+            case 3:
+                return new MemesEndedViewHolder(layoutInflater.inflate(R.layout.item_feed_memes_ended, parent, false));
             case 0:
             default:
                 return new MemViewHolder(layoutInflater.inflate(R.layout.item_feed, parent, false));
@@ -143,7 +147,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
             memViewHolder.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(memViewHolder.itemView, mem));
-                    memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
+            memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
         } else if (holder instanceof FailedViewHolder) {
             final FailedViewHolder failedViewHolder = (FailedViewHolder) holder;
             failedViewHolder.btnRetry.setOnClickListener(v -> {
@@ -160,6 +164,9 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 interactionListener.loadMore(mems.size() - 1);
                 isLoading = true;
             }
+        } else if (holder instanceof MemesEndedViewHolder) {
+            MemesEndedViewHolder memesEndedViewHolder = (MemesEndedViewHolder) holder;
+            memesEndedViewHolder.btnToHot.setOnClickListener(v -> interactionListener.gotoHot());
         }
     }
 
@@ -185,10 +192,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onFailedToLoad() {
         isLoading = false;
         isError = true;
+        notifyItemChanged(mems.size() - 1);
     }
 
     public void onMemesEnded() {
         isMemesEnded = true;
+        notifyItemChanged(mems.size() - 1);
     }
 
     @Override
@@ -201,6 +210,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         final MemEntity mem = mems.get(position);
         if (mem == null && isError) {
             return 2;
+        } else if (isMemesEnded && mem == null) {
+            return 3;
         } else if (mem == null) {
             return 1;
         } else {
@@ -298,6 +309,17 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         Button btnRetry;
 
         FailedViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    static class MemesEndedViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.btnFeedToHot)
+        Button btnToHot;
+
+        MemesEndedViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

@@ -91,7 +91,7 @@ public class StringUtil {
     }
 
     private void setPasswordNoLetterNumberError(TextInputLayout textInputLayout) {
-        textInputLayout.setError(context.getString(R.string.at_least_one_latin_and_number));
+        textInputLayout.setError(context.getString(R.string.password_not_valid));
     }
 
     private boolean isPasswordValid(EditText editText) {
