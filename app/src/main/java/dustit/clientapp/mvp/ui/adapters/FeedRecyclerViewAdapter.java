@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
+import dustit.clientapp.utils.Converter;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
@@ -38,6 +40,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean isError = false;
     private boolean isMemesEnded = false;
     private int appBarHeight;
+    private Context context;
 
     public interface IFeedInteractionListener {
         void reloadFeedBase();
@@ -65,6 +68,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         layoutInflater = LayoutInflater.from(context);
         mems = new ArrayList<>();
         mems.add(null);
+        this.context = context;
         interactionListener = feedInteractionListener;
         this.appBarHeight = appBarHeight;
     }
@@ -99,6 +103,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (holder instanceof MemViewHolder) {
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
+            /*float aspectRatio = mem.getWidth() / mem.getHeight();
+            memViewHolder.itemFeed.getLayoutParams().height = (int) (mem.getHeight() / aspectRatio);*/
             memViewHolder.bind(mem);
             memViewHolder.itemFeedLike.setOnClickListener(v -> {
                 switch (mem.getOpinion()) {
@@ -265,8 +271,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvLikeCount;
         @BindView(R.id.tvItemFeedDislikeCount)
         TextView tvDislikeCount;
+        @BindView(R.id.tvCommentsCount)
+        TextView tvCommentsCount;
         @BindView(R.id.ivItemFeedComments)
         View icComments;
+        @BindView(R.id.clItemFeedLayout)
+        ConstraintLayout clLayout;
 
         MemViewHolder(View itemView) {
             super(itemView);
@@ -274,11 +284,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         public void bind(MemEntity mem) {
+
             Glide.with(itemView)
                     .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
-                    .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder)
-                            .override(mem.getWidth(), mem.getHeight()))
+                    .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
                     .into(itemFeed);
+
             switch (mem.getOpinion()) {
                 case LIKED:
                     itemFeedLike.setImageResource(R.drawable.ic_like_pressed);
@@ -293,6 +304,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
                     break;
             }
+            tvCommentsCount.setText(mem.getCommentsCount() + "");
             tvDislikeCount.setText(mem.getDislikes());
             tvLikeCount.setText(mem.getLikes());
         }

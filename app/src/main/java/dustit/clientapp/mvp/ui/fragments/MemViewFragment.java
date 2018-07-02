@@ -156,6 +156,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Inject
     FeedbackManager feedbackManager;
 
+    private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+
     public static MemViewFragment newInstance(MemEntity mem, boolean startComments) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
@@ -237,23 +239,35 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 switch (newState) {
                     case DRAGGING:
-
                         if (srlCommentsRefresh.getVisibility() == View.INVISIBLE)
-                            KeyboardHandler.hideKeyboardFrom(getContext(), getView().getRootView());
                             srlCommentsRefresh.setVisibility(View.VISIBLE);
-                        canPerformTap = false;
+                        if (canPerformTap)
+                            canPerformTap = false;
+                        break;
                     case EXPANDED:
+                        prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         canPerformTap = true;
                         presenter.loadCommentsBase(mem.getId());
                         supPanel.setDragView(clExpandedUpperLayout);
                         break;
                     case COLLAPSED:
+                        prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                        KeyboardHandler.hideKeyboard(getActivity());
                         canPerformTap = true;
                         srlCommentsRefresh.setVisibility(View.INVISIBLE);
                         supPanel.setDragView(ivExpandComments);
                         break;
                     case ANCHORED:
-                        supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                        switch (prevPanelState) {
+                            case EXPANDED:
+                                supPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                                break;
+                            case COLLAPSED:
+                                supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                                break;
+                            case DRAGGING:
+                                supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                        }
                 }
             }
         });
@@ -318,27 +332,25 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void setNavVisible(boolean visible) {
-        navVisible = visible;
-        if (visible) {
-            supPanel.setEnabled(true);
-            toolbar.setVisibility(View.VISIBLE);
-            tbLikePanel.setVisibility(View.VISIBLE);
-            rlExpandablePanelWrapper.setVisibility(View.VISIBLE);
-        } else {
-            supPanel.setEnabled(false);
-            rlExpandablePanelWrapper.setVisibility(View.INVISIBLE);
-            toolbar.setVisibility(View.INVISIBLE);
-            tbLikePanel.setVisibility(View.INVISIBLE);
+        if (supPanel != null) {
+            navVisible = visible;
+            if (visible) {
+                supPanel.setEnabled(true);
+                toolbar.setVisibility(View.VISIBLE);
+                tbLikePanel.setVisibility(View.VISIBLE);
+                rlExpandablePanelWrapper.setVisibility(View.VISIBLE);
+            } else {
+                supPanel.setEnabled(false);
+                rlExpandablePanelWrapper.setVisibility(View.INVISIBLE);
+                toolbar.setVisibility(View.INVISIBLE);
+                tbLikePanel.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     private void initOnClicks() {
-        ivExpandComments.setOnClickListener(view -> {
-            expandComments(false);
-        });
-        ivDisexpand.setOnClickListener(view -> {
-            disExpandComments();
-        });
+        ivExpandComments.setOnClickListener(view -> expandComments(false));
+        ivDisexpand.setOnClickListener(view -> disExpandComments());
         tbUpperToolbar.setNavigationOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
@@ -410,6 +422,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         if (list.size() > 0) {
             srlCommentsRefresh.setRefreshing(false);
             commentAdapter.updateListWhole(list);
+            rvComments.scheduleLayoutAnimation();
             tvCommentEmpty.setVisibility(View.GONE);
         } else {
             rvComments.setVisibility(View.GONE);
@@ -474,7 +487,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private void disExpandComments() {
         if (getContext() != null)
-            KeyboardHandler.hideKeyboardFrom(getContext(), etComment);
+            KeyboardHandler.hideKeyboard(getActivity());
         supPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 

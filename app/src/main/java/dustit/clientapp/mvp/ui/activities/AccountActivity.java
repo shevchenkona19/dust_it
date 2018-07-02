@@ -293,7 +293,7 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         cpbPhotoLoading.setProgress(100);
         cpbPhotoLoading.setVisibility(View.GONE);
         sdvIcon.setVisibility(View.VISIBLE);
-        Fresco.getImagePipeline().evictFromCache(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername));
+        Fresco.getImagePipeline().clearCaches();
         sdvIcon.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername);
     }
 

@@ -99,5 +99,6 @@ public class ChangeCategoriesFragment extends Fragment implements IChangeCategor
     @Override
     public void updateCategories(List<PersonalCategory> categories) {
         adapter.updateList(categories);
+        rvCategories.scheduleLayoutAnimation();
     }
 }

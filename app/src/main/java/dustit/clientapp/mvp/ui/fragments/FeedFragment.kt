@@ -120,10 +120,11 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     override fun onBaseUpdated(list: List<MemEntity>) {
         srlRefresh!!.isRefreshing = false
         adapter!!.updateWhole(list)
+        rvFeed!!.scheduleLayoutAnimation()
     }
 
     override fun onPartialUpdate(list: List<MemEntity>) {
-        if (list.size < 1) {
+        if (list.isEmpty()) {
             adapter!!.onMemesEnded()
             return
         }

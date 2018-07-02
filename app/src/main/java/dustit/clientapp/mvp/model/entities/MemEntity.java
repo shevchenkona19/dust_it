@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.jetbrains.annotations.Nullable;
-
 import dustit.clientapp.utils.IConstants;
 
 public class MemEntity implements Parcelable {
@@ -38,6 +36,9 @@ public class MemEntity implements Parcelable {
     @SerializedName("height")
     @Expose
     private int height;
+    @SerializedName("comments_count")
+    @Expose
+    private int commentsCount;
 
     /**
      * No args constructor for use in serialization
@@ -45,7 +46,7 @@ public class MemEntity implements Parcelable {
     public MemEntity() {
     }
 
-    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite, String source, int width, int height) {
+    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite, String source, int width, int height, int commentsCount) {
         this.id = id;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -54,6 +55,7 @@ public class MemEntity implements Parcelable {
         this.source = source;
         this.width = width;
         this.height = height;
+        this.commentsCount = commentsCount;
     }
 
     protected MemEntity(Parcel in) {
@@ -65,6 +67,7 @@ public class MemEntity implements Parcelable {
         source = in.readString();
         width = in.readInt();
         height = in.readInt();
+        commentsCount = in.readInt();
     }
 
     public static final Creator<MemEntity> CREATOR = new Creator<MemEntity>() {
@@ -78,6 +81,14 @@ public class MemEntity implements Parcelable {
             return new MemEntity[size];
         }
     };
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
+    }
 
     public int getWidth() {
         return width;
@@ -192,5 +203,6 @@ public class MemEntity implements Parcelable {
         dest.writeString(source);
         dest.writeInt(width);
         dest.writeInt(height);
+        dest.writeInt(commentsCount);
     }
 }

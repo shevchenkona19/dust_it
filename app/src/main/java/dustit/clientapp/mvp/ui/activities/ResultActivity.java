@@ -87,6 +87,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
     @Override
     public void onCategoriesLoaded(List<Category> list) {
         adapter.updateItems(list);
+        rvThemes.scheduleLayoutAnimation();
         adapter.setChecks(interestedCategoriesIds);
         pbLoading.setVisibility(View.GONE);
         tvLoading.setVisibility(View.GONE);

@@ -136,6 +136,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void onBaseUpdated(List<MemEntity> list) {
         adapter.updateWhole(list);
+        rvHot.scheduleLayoutAnimation();
         srlRefresh.setRefreshing(false);
     }
 

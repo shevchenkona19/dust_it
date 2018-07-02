@@ -168,6 +168,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     public void onBaseUpdated(List<MemEntity> list) {
         srlRefresh.setRefreshing(false);
         adapter.updateWhole(list);
+        rvFeed.scheduleLayoutAnimation();
     }
 
     @Override

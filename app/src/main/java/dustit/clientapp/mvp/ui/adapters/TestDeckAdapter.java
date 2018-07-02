@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class TestDeckAdapter extends ArrayAdapter<TestMemEntity> {
         final TestMemEntity memEntity = getItem(position);
         if (memEntity != null) {
             L.print("started loading");
-            Picasso.get().load(IConstants.BASE_URL + "/feed/imgs?id=" + memEntity.getMemId())
+            Glide.with(getContext()).load(IConstants.BASE_URL + "/feed/imgs?id=" + memEntity.getMemId())
                     .into(holder.ivMem);
         }
         return convertView;
