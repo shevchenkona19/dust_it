@@ -30,6 +30,7 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ISettingsActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivityView {
@@ -53,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     ThemeManager themeManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
+
 
     private final int LIGHT = 0;
     private final int NIGHT = 1;
@@ -182,7 +184,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
     @Override
     public void onSuccessfullyLogout() {
-        startActivity(new Intent(this, ChooserActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        startActivity(new Intent(this, ChooserActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         finish();
     }
 }

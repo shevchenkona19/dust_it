@@ -111,6 +111,7 @@ public class FavoritesActivity extends AppCompatActivity implements IFavoriteAct
 
     @Override
     public void showEmpty() {
+        rvFavorites.setVisibility(View.GONE);
         pbLoading.setVisibility(View.GONE);
         tvEmptyText.setVisibility(View.VISIBLE);
     }

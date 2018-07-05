@@ -35,12 +35,13 @@ import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView,
-        FeedRecyclerViewAdapter.IFeedInteractionListener{
+        FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
     private static final String IS_CATEGORIES_LOADED = "ISCATLOAD";
@@ -57,10 +58,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private WrapperLinearLayoutManager linearLayoutManager;
     private int appBarHeight;
     private Category currentCategory;
+    private boolean isCategoriesLoaded = false;
 
     public interface ICategoriesFragmentInteractionListener {
         void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
-
+        void reloadCategories();
         void onDetachFromActivity();
     }
 
@@ -82,6 +84,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.setArguments(args);
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
+            isCategoriesLoaded = args.getBoolean(IS_CATEGORIES_LOADED);
         }
     }
 
@@ -107,13 +110,17 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         presenter.bind(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this,appBarHeight);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         rvFeed.setAdapter(adapter);
-        srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
-        srlRefresh.setEnabled(false);
+        srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
-            srlRefresh.setRefreshing(true);
-            presenter.loadBase(currentCategory.getId());
+            if (isCategoriesLoaded) {
+                srlRefresh.setRefreshing(true);
+                presenter.loadBase(currentCategory.getId());
+            } else {
+                srlRefresh.setRefreshing(true);
+                listener.reloadCategories();
+            }
         });
         scrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -139,6 +146,12 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         };
         listener.onAttachToActivity(new FeedActivity.ICategoriesSpinnerInteractionListener() {
             @Override
+            public void onCategoriesFailed() {
+                srlRefresh.setRefreshing(false);
+                adapter.onFailedToLoad();
+            }
+
+            @Override
             public void onCategoriesArrived() {
             }
 
@@ -151,6 +164,9 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         });
         rvFeed.addOnScrollListener(scrollListener);
         subscribeToFeedbackChanges();
+        if (!isCategoriesLoaded) {
+            adapter.onFailedToLoad();
+        }
         return v;
     }
 
@@ -162,6 +178,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         presenter.unbind();
         listener.onDetachFromActivity();
         super.onDestroyView();
+    }
+
+    public void onCategoriesLoaded() {
+
     }
 
     @Override
@@ -188,6 +208,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
 
     @Override
     public void reloadFeedBase() {
+        if (currentCategory == null) {
+            listener.reloadCategories();
+            return;
+        }
         presenter.loadBase(currentCategory.getId());
     }
 
@@ -203,11 +227,15 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
 
     @Override
     public void loadMore(int offset) {
+        if (currentCategory == null) {
+            listener.reloadCategories();
+            return;
+        }
         presenter.loadWithOffset(currentCategory.getId(), offset);
     }
 
     @Override
     public void gotoHot() {
-        gotoFragment((byte)1);
+        gotoFragment((byte) 1);
     }
 }

@@ -72,8 +72,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private var fabScrollYNormalPos: Float = 0f
     private val screenBounds = Rect()
-    private var cooldownPassed = true
-    private val handler = Handler()
     private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_categories_pressed)
     private var spinnerInteractionListener: ICategoriesSpinnerInteractionListener? = null
 
@@ -86,6 +84,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     interface ICategoriesSpinnerInteractionListener {
         fun onCategoriesArrived()
+        fun onCategoriesFailed()
         fun onCategorySelected(category: Category)
     }
 
@@ -252,28 +251,37 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onCategoriesArrived(categoryList: List<Category>) {
-        val categoryNames = ArrayList<String>()
-        for (category in categoryList) categoryNames.add(category.name)
-        val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_item, categoryNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spCategoriesChooser!!.adapter = adapter
-        spCategoriesChooser!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (spinnerInteractionListener != null) {
-                    spinnerInteractionListener!!.onCategorySelected(categoryList[position])
+        if (!categoryList.isEmpty()) {
+            val categoryNames = ArrayList<String>()
+            for (category in categoryList) categoryNames.add(category.name)
+            val adapter = ArrayAdapter(this,
+                    android.R.layout.simple_spinner_item, categoryNames)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spCategoriesChooser!!.adapter = adapter
+            spCategoriesChooser!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    if (spinnerInteractionListener != null) {
+                        spinnerInteractionListener!!.onCategorySelected(categoryList[position])
+                    }
                 }
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+            if (spinnerInteractionListener != null)
+                spinnerInteractionListener!!.onCategoriesArrived()
         }
-        if (spinnerInteractionListener != null)
-            spinnerInteractionListener!!.onCategoriesArrived()
     }
 
     override fun onCategoriesFailedToLoad() {
-        adapter!!.setCategoriesLoaded(false)
+        adapter?.setCategoriesLoaded(false)
+        if (spinnerInteractionListener != null) {
+            spinnerInteractionListener!!.onCategoriesFailed()
+        }
         onError()
+    }
+
+    override fun reloadCategories() {
+        presenter.getCategories()
     }
 
     override fun notifyOnScrollChanged(distance: Int) {
@@ -353,7 +361,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             if (isFeedScrollIdle) {
                 val dist = FAB_HIDDEN_Y - fabScrollYNormalPos
                 val pos = FAB_HIDDEN_Y - fabColapsed.y
-                L.print("WTF----------- $dist $pos")
                 if (fabColapsed.y != FAB_HIDDEN_Y.toFloat() || fabColapsed.y != fabScrollYNormalPos) {
                     if (pos < dist / 2) {
                         val anim = ValueAnimator.ofFloat(fabColapsed.y, FAB_HIDDEN_Y.toFloat())
@@ -490,13 +497,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         spinnerInteractionListener = null
     }
 
-    private fun setCooldown() {
-        cooldownPassed = false
-        handler.postDelayed({ cooldownPassed = true }, 300)
-    }
-
     companion object {
-        private const val MIN_DISTANCE_THRESHOLD = 15
         private const val FAB_STEP = 10f
         private var HIDDEN_TOOLBAR_Y = 0
         private var SHOWN_TOOLBAR_Y = 0

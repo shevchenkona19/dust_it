@@ -68,7 +68,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             val intent = Intent(context, PersonalSettingsActivity::class.java)
             startActivity(intent)
         })
-        srlRefresh!!.setProgressViewOffset(false, appBarHeight, appBarHeight + 100)
+        srlRefresh!!.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100)
         srlRefresh!!.setOnRefreshListener {
             srlRefresh!!.isRefreshing = true
             presenter!!.loadBase()

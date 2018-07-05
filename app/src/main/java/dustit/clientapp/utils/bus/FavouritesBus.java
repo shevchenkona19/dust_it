@@ -19,19 +19,28 @@ public class FavouritesBus {
     }
 
     private IConsumer mainConsumer;
+    private IConsumer additionalConsumer;
 
     public void removed(String id) {
         if (mainConsumer != null)
             mainConsumer.consumeRemoved(id);
+        if (additionalConsumer != null)
+            additionalConsumer.consumeRemoved(id);
     }
 
     public void added(String id) {
         if (mainConsumer != null)
             mainConsumer.consumeAdded(id);
+        if (additionalConsumer != null)
+            additionalConsumer.consumeAdded(id);
     }
 
     public void setMainConsumer(IConsumer mainConsumer) {
         this.mainConsumer = mainConsumer;
+    }
+
+    public void setAdditionalConsumer(IConsumer additionalConsumer) {
+        this.additionalConsumer = additionalConsumer;
     }
 
     public static void destroy() {

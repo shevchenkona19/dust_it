@@ -54,6 +54,7 @@ import dustit.clientapp.mvp.presenters.activities.AccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 
@@ -177,6 +178,27 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
         });
         tvFavoritesCounter.setOnClickListener(view -> startActivity(new Intent(AccountActivity.this, FavoritesActivity.class)));
         tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
+        FavouritesBus.getInstance().setAdditionalConsumer(new FavouritesBus.IConsumer() {
+            @Override
+            public void consumeRemoved(String id) {
+                try {
+                    int current = Integer.parseInt(tvFavoritesCounter.getText().toString()) - 1;
+                    tvFavoritesCounter.setText(current + "");
+                } catch (Exception e) {
+                    //shit happens...
+                }
+            }
+
+            @Override
+            public void consumeAdded(String id) {
+                try {
+                    int current = Integer.parseInt(tvFavoritesCounter.getText().toString()) + 1;
+                    tvFavoritesCounter.setText(current + "");
+                } catch (Exception e) {
+                    //shit
+                }
+            }
+        });
     }
 
     @Override
@@ -197,11 +219,13 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     protected void onDestroy() {
         sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
         mPresenter.unbind();
+        FavouritesBus.destroy();
         super.onDestroy();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_DIALOG: {
                 // If request is cancelled, the result arrays are empty.

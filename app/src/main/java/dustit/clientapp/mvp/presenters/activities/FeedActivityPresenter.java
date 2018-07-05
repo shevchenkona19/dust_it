@@ -70,6 +70,7 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             @Override
             public void onError(Throwable e) {
                 L.print(e.getMessage());
+                getView().onCategoriesFailedToLoad();
             }
 
             @Override

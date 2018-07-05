@@ -64,7 +64,8 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
-        appBarHeight = args.getInt(HEIGHT_APPBAR);
+        if (args != null)
+            appBarHeight = args.getInt(HEIGHT_APPBAR);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
-        srlRefresh.setProgressViewOffset(false, appBarHeight, appBarHeight + 100);
+        srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
             srlRefresh.setRefreshing(true);
             presenter.loadBase();
@@ -168,7 +169,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
     @Override
     public void gotoHot() {
-        gotoFragment((byte)1);
+        gotoFragment((byte) 1);
     }
 
     @Override

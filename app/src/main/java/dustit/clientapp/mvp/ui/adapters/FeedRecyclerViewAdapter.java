@@ -103,8 +103,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (holder instanceof MemViewHolder) {
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
-            /*float aspectRatio = mem.getWidth() / mem.getHeight();
-            memViewHolder.itemFeed.getLayoutParams().height = (int) (mem.getHeight() / aspectRatio);*/
             memViewHolder.bind(mem);
             memViewHolder.itemFeedLike.setOnClickListener(v -> {
                 switch (mem.getOpinion()) {
