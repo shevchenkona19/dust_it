@@ -72,7 +72,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private var fabScrollYNormalPos: Float = 0f
     private val screenBounds = Rect()
-    private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_categories_pressed)
+    private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_explore_white_pressed)
     private var spinnerInteractionListener: ICategoriesSpinnerInteractionListener? = null
 
     @Inject
