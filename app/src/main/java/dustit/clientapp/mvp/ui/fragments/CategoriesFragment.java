@@ -62,7 +62,9 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
 
     public interface ICategoriesFragmentInteractionListener {
         void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
+
         void reloadCategories();
+
         void onDetachFromActivity();
     }
 

@@ -32,6 +32,9 @@ public class TestDeckAdapter extends ArrayAdapter<TestMemEntity> {
 
     public TestDeckAdapter(Context context) {
         super(context, 0);
+        if (context instanceof ITestDeckListener) {
+            deckListener = (ITestDeckListener) context;
+        }
     }
 
     /*public void updateList(List<TestMemEntity> list) {
@@ -39,6 +42,14 @@ public class TestDeckAdapter extends ArrayAdapter<TestMemEntity> {
         this.list.addAll(list);
         notifyDataSetChanged();
     }*/
+
+    public interface ITestDeckListener {
+        public void onLike();
+
+        public void onDislike();
+    }
+
+    private ITestDeckListener deckListener;
 
     @NonNull
     @Override
@@ -56,7 +67,8 @@ public class TestDeckAdapter extends ArrayAdapter<TestMemEntity> {
 
         final TestMemEntity memEntity = getItem(position);
         if (memEntity != null) {
-            L.print("started loading");
+            holder.ivLike.setOnClickListener((v -> deckListener.onLike()));
+            holder.ivDislike.setOnClickListener((v -> deckListener.onDislike()));
             Glide.with(getContext()).load(IConstants.BASE_URL + "/feed/imgs?id=" + memEntity.getMemId())
                     .into(holder.ivMem);
         }
@@ -66,6 +78,10 @@ public class TestDeckAdapter extends ArrayAdapter<TestMemEntity> {
     static class CardViewHolder {
         @BindView(R.id.ivTestCardMem)
         ImageView ivMem;
+        @BindView(R.id.btnLikeTest)
+        ImageView ivLike;
+        @BindView(R.id.btnDislikeTest)
+        ImageView ivDislike;
 
         private CardViewHolder(View view) {
             ButterKnife.bind(this, view);
