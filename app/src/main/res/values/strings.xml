@@ -24,7 +24,7 @@
     <string name="edit_account">Редагувати акаунт</string>
     <string name="settings">Налаштування</string>
     <string name="sry_something_is_wrong">Упс… Здається, щось пішло не так</string>
-    <string name="empty_set_favorites">Покищо тут пусто… \n Не засмучуйтесь, просто натисніть на іконку \'зберегти'\ на будь-якому мемі, який вам сподобається :)</string>
+    <string name="empty_set_favorites">Покищо тут пусто… \n Не засмучуйтесь, просто натисніть на іконку \'зберегти\' на будь-якому мемі, який вам сподобається :)</string>
     <string name="not_registred_question">Не зареєстровані?</string>
     <string name="login_edit_text_hint">Логін</string>
     <string name="password_edit_text_hint">Пароль</string>
