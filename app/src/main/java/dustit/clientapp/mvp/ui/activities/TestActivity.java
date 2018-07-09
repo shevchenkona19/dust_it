@@ -1,5 +1,9 @@
 package dustit.clientapp.mvp.ui.activities;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -26,12 +30,10 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.TestDeckAdapter;
-import dustit.clientapp.mvp.ui.fragments.MemTestFragment;
 import dustit.clientapp.mvp.ui.interfaces.ITestActivityView;
 import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.L;
 
-public class TestActivity extends AppCompatActivity implements ITestActivityView {
+public class TestActivity extends AppCompatActivity implements ITestActivityView, TestDeckAdapter.ITestDeckListener {
 
     public static final String CATEGORY_LIST_KEY = "parametr";
     @BindView(R.id.ivTestIcon)
@@ -220,5 +222,57 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
         pbLoading.setVisibility(View.GONE);
         tvFailedToLoad.setVisibility(View.VISIBLE);
         btnRetry.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLike() {
+        View target = csvTestDeck.getTopView();
+        View targetOverlay = csvTestDeck.getTopView().getOverlayContainer();
+
+        ValueAnimator rotation = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("rotation", 10f));
+        rotation.setDuration(200);
+        ValueAnimator translateX = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationX", 0f, 2000f));
+        ValueAnimator translateY = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationY", 0f, 500f));
+        translateX.setStartDelay(100);
+        translateY.setStartDelay(100);
+        translateX.setDuration(500);
+        translateY.setDuration(500);
+        AnimatorSet cardAnimationSet = new AnimatorSet();
+        cardAnimationSet.playTogether(rotation, translateX, translateY);
+
+        ObjectAnimator overlayAnimator = ObjectAnimator.ofFloat(targetOverlay, "alpha", 0f, 1f);
+        overlayAnimator.setDuration(200);
+        AnimatorSet overlayAnimationSet = new AnimatorSet();
+        overlayAnimationSet.playTogether(overlayAnimator);
+        csvTestDeck.swipe(SwipeDirection.Right, cardAnimationSet, overlayAnimationSet);
+    }
+
+    @Override
+    public void onDislike() {
+        View target = csvTestDeck.getTopView();
+        View targetOverlay = csvTestDeck.getTopView().getOverlayContainer();
+
+        ValueAnimator rotation = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("rotation", -10f));
+        rotation.setDuration(200);
+        ValueAnimator translateX = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationX", 0f, -2000f));
+        ValueAnimator translateY = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationY", 0f, 500f));
+        translateX.setStartDelay(100);
+        translateY.setStartDelay(100);
+        translateX.setDuration(500);
+        translateY.setDuration(500);
+        AnimatorSet cardAnimationSet = new AnimatorSet();
+        cardAnimationSet.playTogether(rotation, translateX, translateY);
+
+        ObjectAnimator overlayAnimator = ObjectAnimator.ofFloat(targetOverlay, "alpha", 0f, 1f);
+        overlayAnimator.setDuration(200);
+        AnimatorSet overlayAnimationSet = new AnimatorSet();
+        overlayAnimationSet.playTogether(overlayAnimator);
+        csvTestDeck.swipe(SwipeDirection.Left, cardAnimationSet, overlayAnimationSet);
     }
 }
