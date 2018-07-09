@@ -92,7 +92,7 @@
             android:clipToPadding="false"
             android:visibility="invisible"
             app:elevation="4dp"
-            app:tabIndicatorColor="#ffffff"
+            app:tabIndicatorColor="#00ffffff"
             app:tabMode="fixed">
 
             <android.support.design.widget.TabItem
@@ -111,8 +111,7 @@
                 android:id="@+id/tabFeedCategories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:icon="@drawable/ic_explore_white" />
+                android:icon="@drawable/slc_tab_categories" />
         </android.support.design.widget.TabLayout>
 
     </RelativeLayout>

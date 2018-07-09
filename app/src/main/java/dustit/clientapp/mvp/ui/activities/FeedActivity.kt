@@ -216,9 +216,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private fun animateFabIcon(tabPos: Int) {
         when (tabPos) {
-            0 -> fabColapsed.setImageResource(ids[0])
-            1 -> fabColapsed.setImageResource(ids[1])
-            2 -> fabColapsed.setImageResource(ids[2])
+            0 -> fabColapsed.setImageResource(R.drawable.ic_feed)
+            1 -> fabColapsed.setImageResource(R.drawable.ic_hot)
+            2 -> fabColapsed.setImageResource(R.drawable.ic_categories)
         }
     }
 
