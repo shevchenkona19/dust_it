@@ -12,6 +12,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
@@ -30,6 +31,7 @@ import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
@@ -168,5 +170,9 @@ public class DataManager {
 
     public Observable<IsFavourite> isFavourite(String id) {
         return serverRepository.isFavourite(getToken(), id);
+    }
+
+    public Observable<NewResponseEntity> postUserFeedback(UserFeedbackEntity userFeedbackEntity) {
+        return serverRepository.postUserFeedback(getToken(), userFeedbackEntity);
     }
 }

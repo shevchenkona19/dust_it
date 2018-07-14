@@ -9,7 +9,6 @@
     android:orientation="vertical"
     tools:context="dustit.clientapp.mvp.ui.activities.SettingsActivity">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/tbSettingsToolbar"
         android:layout_width="match_parent"
@@ -109,8 +108,23 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp" />
+                    </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/rlSettingsWriteUs"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
+                        <TextView
+                            android:id="@+id/tvsome1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/write_us"
+                            tools:ignore="RelativeOverlap" />
                     </RelativeLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>

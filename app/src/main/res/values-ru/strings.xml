@@ -78,5 +78,11 @@
     <string name="theme_dark">Тёмная</string>
     <string name="continue_without_registration_message">Если вы не зарегистрируетесь, то не сможете использовать персонализированную ленту мемов, а также оставлять комментарии. Всё остальное будет работать. Вас это устраивает?</string>
     <string name="empty_categories_feed">У вас не выбрано ни одной категории. Мы не можем ничего показать.</string>
+    <string name="send">Отправить</string>
+    <string name="title">Заголовок</string>
+    <string name="message">Сообщение...</string>
+    <string name="empty_title">Заголовок должен быть заполнен</string>
+    <string name="empty_message">Сообщение должно быть заполнено</string>
+    <string name="write_us">Напишите нам!</string>
 
 </resources>

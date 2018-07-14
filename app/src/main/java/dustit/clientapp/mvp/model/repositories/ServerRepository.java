@@ -6,6 +6,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
@@ -20,6 +21,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import okhttp3.MultipartBody;
 import retrofit2.Response;
@@ -169,4 +171,7 @@ public class ServerRepository {
         return serverAPI.isFavourite(token, id).observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<NewResponseEntity> postUserFeedback(String token, UserFeedbackEntity userFeedbackEntity) {
+        return serverAPI.postUserFeedback(token, userFeedbackEntity).observeOn(AndroidSchedulers.mainThread());
+    }
 }

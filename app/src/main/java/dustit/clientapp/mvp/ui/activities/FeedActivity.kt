@@ -327,7 +327,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     override fun launchMemView(holder: View, memEntity: MemEntity, startComments: Boolean) {
         val v = holder.findViewById<View>(R.id.sdvItemFeed)
-        ViewCompat.setTransitionName(v, getString(R.string.mem_feed_transition_name))
         val fragment = MemViewFragment.newInstance(memEntity, startComments)
         val transition = TransitionInflater
                 .from(this).inflateTransition(R.transition.mem_view_transition)
@@ -336,7 +335,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         supportFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
-                .addSharedElement(v, getString(R.string.mem_feed_transition_name))
                 .replace(R.id.feedContainer, fragment)
                 .addToBackStack(null)
                 .commit()

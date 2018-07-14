@@ -78,5 +78,11 @@
     <string name="feed_memes_ended">That were all memes for you for now :(   Meanwhile you can explore top memes.</string>
     <string name="continue_without_registration_message">You won\'t be able to use personalised meme feed and leave comments unless you are registered. Everything else will be available. Does it suit you?</string>
     <string name="empty_categories_feed">You have no categories selected. We can\'t show you anything.</string>
+    <string name="send">Отправить</string>
+    <string name="title">Заголовок</string>
+    <string name="message">Сообщение...</string>
+    <string name="empty_title">Заголовок должен быть заполнен</string>
+    <string name="empty_message">Сообщение должно быть заполнено</string>
+    <string name="write_us">Напишите нам!</string>
 
 </resources>

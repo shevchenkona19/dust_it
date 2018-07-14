@@ -88,4 +88,10 @@
     <string name="not_registred_error">Такого користувача не існує</string>
     <string name="goto_hot">Перейти до топу</string>
     <string name="feed_memes_ended">Поки що меми для тебе закінчились :(   Саме час переглянути найпопулярніші меми у вкладці \'топ\'.</string>
+    <string name="send">Отправить</string>
+    <string name="title">Заголовок</string>
+    <string name="message">Сообщение...</string>
+    <string name="empty_title">Заголовок должен быть заполнен</string>
+    <string name="empty_message">Сообщение должно быть заполнено</string>
+    <string name="write_us">Напишите нам!</string>
 </resources>
