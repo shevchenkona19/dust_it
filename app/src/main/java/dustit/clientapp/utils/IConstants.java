@@ -1,5 +1,7 @@
 package dustit.clientapp.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface IConstants {
     String BASE_URL = "http://hqnl0060547.online-vm.com";
 //    String BASE_URL = "http://192.168.0.102                                                                                         ";
@@ -29,7 +31,19 @@ public interface IConstants {
         String LANGUAGE_KEY = "lang ";
         String THEME_KEY = "Theme";
         String REGISTRATION_KEY = "REGISTRATION";
-        String IMMERSIVE_KEY = "immersive";
+        String FIRST_TIME_FEED = "FIRST_TIME_FEED";
+        String FIRST_TIME_ACCOUNT = "FIRST_TIME_ACCOUNT";
+    }
+
+    interface ISpotlight {
+        String FEED_ICON = "FEED_ICON";
+        String HOT_ICON = "HOT_ICON";
+        String CATEGORIES_ICON = "CATEGORIES_ICON";
+        String MEMBAR = "MEMBAR";
+        String ACCOUNT_ICON = "ACCOUNT_ICON";
+        String FAB_FEED = "FAB_FEED";
+        String ADD_MEM_FAVS = "ADD_MEM_FAVS";
+        String ACCOUNT_ALL_FAVS = "ACCOUNT_ALL_FAVS";
     }
 
     enum OPINION {

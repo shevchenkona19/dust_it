@@ -53,6 +53,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'com.github.wooplr:Spotlight:1.2.3'
     implementation 'com.github.yalantis:ucrop:2.2.1'
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'com.r0adkll:slidableactivity:2.0.5'

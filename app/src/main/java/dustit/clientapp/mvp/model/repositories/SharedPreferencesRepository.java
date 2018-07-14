@@ -106,4 +106,20 @@ public class SharedPreferencesRepository {
                 .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered)
                 .apply();
     }
+
+    public void setFeedVisited() {
+        preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_FEED, false).apply();
+    }
+
+    public boolean isFeedFirstTime() {
+        return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_FEED, true);
+    }
+
+    public void setAccountVisited() {
+        preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, false).apply();
+    }
+
+    public boolean isAccountFirstTime() {
+        return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, true);
+    }
 }

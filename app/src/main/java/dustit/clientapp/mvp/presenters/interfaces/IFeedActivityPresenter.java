@@ -8,4 +8,6 @@ package dustit.clientapp.mvp.presenters.interfaces;
 public interface IFeedActivityPresenter {
     void getMyUsername();
     void getCategories();
+    void setFeedVisited();
+    boolean isFeedFirstTime();
 }

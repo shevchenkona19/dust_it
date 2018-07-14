@@ -37,12 +37,14 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wooplr.spotlight.SpotlightView;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -206,6 +208,27 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             Intent intent = new Intent(this, UserFeedbackActivity.class);
             startActivity(intent);
         }));
+        new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#f98098"))
+                .headingTvSize(32)
+                .headingTvText(getString(R.string.all_favs_title))
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText(getString(R.string.all_favs_description))
+                .maskColor(Color.parseColor("#dc000000"))
+//                .target((tabs.getChildAt(0) as ViewGroup).getChildAt(0))
+                .target(ivToFavorites)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#ffb06a"))
+                .dismissOnTouch(false)
+                .dismissOnBackPress(false)
+                .enableDismissAfterShown(false)
+                .usageId(IConstants.ISpotlight.ACCOUNT_ALL_FAVS)
+                .show();
     }
 
     @Override

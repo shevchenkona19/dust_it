@@ -39,8 +39,10 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.wooplr.spotlight.SpotlightView;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -276,6 +278,27 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         if (startComments) {
             expandComments(true);
         }
+        new SpotlightView.Builder(Objects.requireNonNull(getActivity()))
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#f98098"))
+                .headingTvSize(32)
+                .headingTvText(getString(R.string.add_to_favourites_title))
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText(getString(R.string.add_to_favourites_description))
+                .maskColor(Color.parseColor("#dc000000"))
+//                .target((tabs.getChildAt(0) as ViewGroup).getChildAt(0))
+                .target(ivAddToFavourites)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#ffb06a"))
+                .dismissOnTouch(false)
+                .dismissOnBackPress(false)
+                .enableDismissAfterShown(false)
+                .usageId(IConstants.ISpotlight.ADD_MEM_FAVS)
+                .show();
         return view;
     }
 

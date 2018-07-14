@@ -94,4 +94,21 @@
     <string name="empty_title">Заголовок должен быть заполнен</string>
     <string name="empty_message">Сообщение должно быть заполнено</string>
     <string name="write_us">Напишите нам!</string>
+    <string name="password_dont_match">Пароль не правильный</string>
+    <string name="feed_title">Фид</string>
+    <string name="description_feed_icon">Это ваш главный фид, тут будет собрана подборка мемов для вас</string>
+    <string name="mem_bar_title">Mem bar</string>
+    <string name="mem_bar_description">Это мем бар - он дает вам управлять мемами</string>
+    <string name="hello_fab">Привет!</string>
+    <string name="hello_fab_description">С этой кнопки все начинается. Нажми на неё, чтобы мы тебе тут всё показали</string>
+    <string name="hot_title">Горячее</string>
+    <string name="hot_description">Здесь будут мемы, которые соберут больше всего лайков</string>
+    <string name="categories_title">Категории</string>
+    <string name="categories_description">Здесь можно посмотреть мемы, которые относятся только к одной категории</string>
+    <string name="user_icon_title">Ваш аккаунт</string>
+    <string name="user_icon_description">Перейдя сюда, вы сможете настроить приложение под себя: выбрать тему, поменять язык или ваше фото</string>
+    <string name="add_to_favourites_title">Добавить в избранное</string>
+    <string name="add_to_favourites_description">Когда вы нажимаете на эту кнопку, мы сохраняем этот мем для вас в списке избранное. Оттуда мем можно скачать или отправить друзьям</string>
+    <string name="all_favs_title">Список избранного</string>
+    <string name="all_favs_description">Перейдя в этот раздел вы можете посмотреть свои избранные мемы, скачать их или отправить другу</string>
 </resources>

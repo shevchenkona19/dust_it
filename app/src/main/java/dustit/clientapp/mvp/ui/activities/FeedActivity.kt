@@ -10,12 +10,10 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
@@ -25,6 +23,9 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import com.wooplr.spotlight.SpotlightConfig
+import com.wooplr.spotlight.SpotlightView
+import com.wooplr.spotlight.utils.SpotlightSequence
 import dustit.clientapp.App
 import dustit.clientapp.R
 import dustit.clientapp.mvp.datamanager.FeedbackManager
@@ -39,7 +40,6 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
-import dustit.clientapp.utils.L
 import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
@@ -69,6 +69,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private var fabX = 0
     private var fabY = 0
+
+    private var wasToolbarRevealed = false
 
     private var fabScrollYNormalPos: Float = 0f
     private val screenBounds = Rect()
@@ -173,6 +175,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             setToolbarCollapsed(!isToolbarCollapsed)
         }
         animateFabIcon(0)
+        if (!presenter.isFeedFirstTime) {
+            wasToolbarRevealed = true
+        }
         val layoutTransition = LayoutTransition()
         layoutTransition.disableTransitionType(LayoutTransition.DISAPPEARING)
         layoutTransition.disableTransitionType(LayoutTransition.APPEARING)
@@ -180,6 +185,49 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         layoutTransition.setDuration(LayoutTransition.CHANGING, 100)
         clLayout.layoutTransition = layoutTransition
         presenter.getCategories()
+        SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#f98098"))
+                .headingTvSize(32)
+                .headingTvText(getString(R.string.hello_fab))
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText(getString(R.string.hello_fab_description))
+                .maskColor(Color.parseColor("#dc000000"))
+//                .target((tabs.getChildAt(0) as ViewGroup).getChildAt(0))
+                .target(fabColapsed)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#ffb06a"))
+                .dismissOnTouch(false)
+                .dismissOnBackPress(false)
+                .enableDismissAfterShown(false)
+                .usageId(IConstants.ISpotlight.FAB_FEED)
+                .show()
+    }
+
+    private fun showIntro() {
+        val config = SpotlightConfig()
+        config.introAnimationDuration = 400
+        config.isRevealAnimationEnabled = true
+        config.isPerformClick = false
+        config.fadingTextDuration = 400
+        config.headingTvColor = Color.parseColor("#f98098")
+        config.headingTvSize = 32
+        config.subHeadingTvColor = Color.parseColor("#ffffff");
+        config.subHeadingTvSize = 16
+        config.maskColor = Color.parseColor("#dc000000")
+        config.lineAnimationDuration = 400
+        config.lineAndArcColor = Color.parseColor("#ffb06a")
+        SpotlightSequence.getInstance(this, config)
+                .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(0), R.string.feed_title, R.string.description_feed_icon, IConstants.ISpotlight.FEED_ICON)
+                .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(1), R.string.hot_title, R.string.hot_description, IConstants.ISpotlight.HOT_ICON)
+                .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(2), R.string.categories_title, R.string.categories_description, IConstants.ISpotlight.CATEGORIES_ICON)
+                .addSpotlight(sdvUserIcon, R.string.user_icon_title, R.string.user_icon_description, IConstants.ISpotlight.ACCOUNT_ICON)
+                .startSequence()
+        wasToolbarRevealed = true
     }
 
     private fun bindViews() {
@@ -212,6 +260,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             fabX = fabColapsed.x.toInt()
             fabY = fabColapsed.y.toInt()
         }
+//        if (presenter.isFeedFirstTime) {
     }
 
     private fun animateFabIcon(tabPos: Int) {
@@ -326,7 +375,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun launchMemView(holder: View, memEntity: MemEntity, startComments: Boolean) {
-        val v = holder.findViewById<View>(R.id.sdvItemFeed)
         val fragment = MemViewFragment.newInstance(memEntity, startComments)
         val transition = TransitionInflater
                 .from(this).inflateTransition(R.transition.mem_view_transition)
@@ -421,6 +469,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                if (!wasToolbarRevealed) showIntro()
                 animIsPlaying = false
             }
 
