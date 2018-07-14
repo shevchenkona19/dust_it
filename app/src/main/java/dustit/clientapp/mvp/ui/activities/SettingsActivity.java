@@ -47,8 +47,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     TextView tvCurrentLanguage;
     @BindView(R.id.rlSettingsLanguagePicker)
     ViewGroup rlLanguagePicker;
-    @BindView(R.id.rlSettingsWriteUs)
-    ViewGroup rlWriteUs;
     @BindView(R.id.spSettingsThemeChooser)
     AppCompatSpinner spThemeChooser;
 
@@ -146,10 +144,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             });
             builder.create().show();
         });
-        rlWriteUs.setOnClickListener((view -> {
-            Intent intent = new Intent(this, UserFeedbackActivity.class);
-            startActivity(intent);
-        }));
     }
 
     private void restartCurrentAndBackstack() {

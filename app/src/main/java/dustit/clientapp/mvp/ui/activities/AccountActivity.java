@@ -90,6 +90,9 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     ImageView ivToFavorites;
     @BindView(R.id.cvAccountSettingsCard)
     RelativeLayout cvAccountCard;
+    @BindView(R.id.btnAccountWriteUs)
+    Button btnWriteUs;
+
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
 
     private String myUsername = "";
@@ -199,6 +202,10 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                 }
             }
         });
+        btnWriteUs.setOnClickListener((view -> {
+            Intent intent = new Intent(this, UserFeedbackActivity.class);
+            startActivity(intent);
+        }));
     }
 
     @Override
