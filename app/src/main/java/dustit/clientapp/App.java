@@ -2,13 +2,10 @@ package dustit.clientapp;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
