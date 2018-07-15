@@ -11,7 +11,6 @@
     <string name="crop_photo">Обріжте фото</string>
     <string name="login">Увійти</string>
     <string name="register">Зареєструватися</string>
-    <string name="edit_profile">Редагувати акаунт</string>
     <string name="deleted_from_favorites">Видалено з обраних</string>
     <string name="downloaded_to">Збережено у:</string>
     <string name="email_not_valid">Недійсна адреса</string>
@@ -52,7 +51,6 @@
     <string name="applied">Застосовано</string>
     <string name="empty_set_comments">Тут поки що немає жодного коментаря, а отже ти можеш стати першонахом!</string>
     <string name="theme_light">Світла</string>
-    <string name="theme_default">Стандартна</string>
     <string name="theme_dark">Темна</string>
     <string name="account_settings">Налаштування акаунта</string>
     <string name="choose_theme">Оберіть тему:</string>
@@ -75,7 +73,6 @@
     <string name="added_to_favourites">Мем додано в обране</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="correct_this">Виправити це</string>
     <string name="empty_categories_feed">У вас не обрано жодної категорії. Ми не можемо нічого показати.</string>
     <string name="email_not_unique">Цей email вже зареєстровано</string>
@@ -97,8 +94,6 @@
     <string name="password_dont_match">Пароль не правильный</string>
     <string name="feed_title">Фид</string>
     <string name="description_feed_icon">Это ваш главный фид, тут будет собрана подборка мемов для вас</string>
-    <string name="mem_bar_title">Mem bar</string>
-    <string name="mem_bar_description">Это мем бар - он дает вам управлять мемами</string>
     <string name="hello_fab">Привет!</string>
     <string name="hello_fab_description">С этой кнопки все начинается. Нажми на неё, чтобы мы тебе тут всё показали</string>
     <string name="hot_title">Горячее</string>

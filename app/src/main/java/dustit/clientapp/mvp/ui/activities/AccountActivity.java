@@ -12,14 +12,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionSet;
@@ -44,9 +42,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +52,6 @@ import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.bus.FavouritesBus;
-import dustit.clientapp.utils.managers.ThemeManager;
 
 
 public class AccountActivity extends AppCompatActivity implements IAccountActivityView {
@@ -208,27 +202,28 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             Intent intent = new Intent(this, UserFeedbackActivity.class);
             startActivity(intent);
         }));
-        new SpotlightView.Builder(this)
-                .introAnimationDuration(400)
-                .enableRevealAnimation(true)
-                .performClick(true)
-                .fadeinTextDuration(400)
-                .headingTvColor(Color.parseColor("#f98098"))
-                .headingTvSize(32)
-                .headingTvText(getString(R.string.all_favs_title))
-                .subHeadingTvColor(Color.parseColor("#ffffff"))
-                .subHeadingTvSize(16)
-                .subHeadingTvText(getString(R.string.all_favs_description))
-                .maskColor(Color.parseColor("#dc000000"))
-//                .target((tabs.getChildAt(0) as ViewGroup).getChildAt(0))
-                .target(ivToFavorites)
-                .lineAnimDuration(400)
-                .lineAndArcColor(Color.parseColor("#ffb06a"))
-                .dismissOnTouch(false)
-                .dismissOnBackPress(false)
-                .enableDismissAfterShown(false)
-                .usageId(IConstants.ISpotlight.ACCOUNT_ALL_FAVS)
-                .show();
+        if (mPresenter.isRegistered()) {
+            new SpotlightView.Builder(this)
+                    .introAnimationDuration(400)
+                    .enableRevealAnimation(true)
+                    .performClick(true)
+                    .fadeinTextDuration(400)
+                    .headingTvColor(Color.parseColor("#f98098"))
+                    .headingTvSize(32)
+                    .headingTvText(getString(R.string.all_favs_title))
+                    .subHeadingTvColor(Color.parseColor("#ffffff"))
+                    .subHeadingTvSize(16)
+                    .subHeadingTvText(getString(R.string.all_favs_description))
+                    .maskColor(Color.parseColor("#dc000000"))
+                    .target(ivToFavorites)
+                    .lineAnimDuration(400)
+                    .lineAndArcColor(Color.parseColor("#ffb06a"))
+                    .dismissOnTouch(false)
+                    .dismissOnBackPress(false)
+                    .enableDismissAfterShown(false)
+                    .usageId(IConstants.ISpotlight.ACCOUNT_ALL_FAVS)
+                    .show();
+        }
     }
 
     @Override

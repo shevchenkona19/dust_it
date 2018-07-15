@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.wooplr.spotlight.SpotlightConfig
 import com.wooplr.spotlight.SpotlightView
 import com.wooplr.spotlight.utils.SpotlightSequence
@@ -40,6 +41,7 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.TimeTracking
 import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
@@ -197,7 +199,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                 .subHeadingTvSize(16)
                 .subHeadingTvText(getString(R.string.hello_fab_description))
                 .maskColor(Color.parseColor("#dc000000"))
-//                .target((tabs.getChildAt(0) as ViewGroup).getChildAt(0))
                 .target(fabColapsed)
                 .lineAnimDuration(400)
                 .lineAndArcColor(Color.parseColor("#ffb06a"))
@@ -221,12 +222,14 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         config.maskColor = Color.parseColor("#dc000000")
         config.lineAnimationDuration = 400
         config.lineAndArcColor = Color.parseColor("#ffb06a")
-        SpotlightSequence.getInstance(this, config)
+        val sequence = SpotlightSequence.getInstance(this, config)
                 .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(0), R.string.feed_title, R.string.description_feed_icon, IConstants.ISpotlight.FEED_ICON)
                 .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(1), R.string.hot_title, R.string.hot_description, IConstants.ISpotlight.HOT_ICON)
                 .addSpotlight((tabs.getChildAt(0) as ViewGroup).getChildAt(2), R.string.categories_title, R.string.categories_description, IConstants.ISpotlight.CATEGORIES_ICON)
-                .addSpotlight(sdvUserIcon, R.string.user_icon_title, R.string.user_icon_description, IConstants.ISpotlight.ACCOUNT_ICON)
-                .startSequence()
+        if (presenter.isRegistered) {
+            sequence.addSpotlight(sdvUserIcon, R.string.user_icon_title, R.string.user_icon_description, IConstants.ISpotlight.ACCOUNT_ICON)
+        }
+        sequence.startSequence()
         wasToolbarRevealed = true
     }
 
@@ -280,6 +283,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onDestroy() {
+        val b = Bundle()
+        b.putLong("TIME_TRACK", System.currentTimeMillis() - TimeTracking.getInstance().startDate)
+        FirebaseAnalytics.getInstance(this).logEvent("TIME_TRACK", b)
         feedbackManager.destroy()
         presenter.unbind()
         adapter!!.destroy()
