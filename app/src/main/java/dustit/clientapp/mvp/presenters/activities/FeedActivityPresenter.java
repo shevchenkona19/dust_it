@@ -83,6 +83,10 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
         }));
     }
 
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
+    }
+
     @Override
     public void setFeedVisited() {
         userSettingsDataManager.setFeedVisited();

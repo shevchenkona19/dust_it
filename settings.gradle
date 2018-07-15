@@ -1,1 +1,2 @@
-include ':app', ':library-release'
+include ':app', ':library-release', ':spotlight', ':Spotlight-lib'
+project(':Spotlight-lib').projectDir = new File('Spotlight-library')

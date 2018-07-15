@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "498246340684",
+    "firebase_url": "https://memspace-809c5.firebaseio.com",
+    "project_id": "memspace-809c5",
+    "storage_bucket": "memspace-809c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498246340684:android:5d2e09d2a68bf667",
+        "android_client_info": {
+          "package_name": "dustit.clientapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498246340684-pgt8s0d7u37cqp0g6ir3pj3v4bddvvq9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCayU5WYsveSPYrFWXtLd5w0TQQUxoA4kY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

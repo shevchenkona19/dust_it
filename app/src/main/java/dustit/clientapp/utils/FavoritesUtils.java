@@ -2,6 +2,8 @@ package dustit.clientapp.utils;
 
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
+
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import rx.Subscriber;
@@ -14,7 +16,7 @@ public class FavoritesUtils {
         void onError(String id);
     }
 
-    private IFavoriteCallback callback;
+    private WeakReference<IFavoriteCallback> callback;
     private DataManager dataManager;
     private Subscription subscription;
 
@@ -23,7 +25,7 @@ public class FavoritesUtils {
     }
 
     public void addCallback(IFavoriteCallback callback) {
-        this.callback = callback;
+        this.callback = new WeakReference<>(callback);
     }
 
     public void addToFavorites(final String id) {
@@ -32,20 +34,20 @@ public class FavoritesUtils {
                     .subscribe(new Subscriber<ResponseEntity>() {
                         @Override
                         public void onCompleted() {
-                            callback.onAddedToFavorites(id);
+                            callback.get().onAddedToFavorites(id);
                             destroy();
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             Log.d("MY", e.getMessage());
-                            callback.onError(id);
+                            callback.get().onError(id);
                         }
 
                         @Override
                         public void onNext(ResponseEntity responseEntity) {
                             if (responseEntity.getResponse() != 200) {
-                                callback.onError(id);
+                                callback.get().onError(id);
                             }
                         }
                     });

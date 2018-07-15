@@ -181,6 +181,10 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
         }));
     }
 
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
+    }
+
 
     private boolean isNotSuccess(int code) {
         return code != 200;

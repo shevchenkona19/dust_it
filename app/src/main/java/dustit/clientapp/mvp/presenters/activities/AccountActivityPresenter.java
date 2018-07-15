@@ -106,7 +106,6 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
     @Override
     public void getFavorites() {
-        L.print("GET FAVORITES!");
         if (!userSettingsDataManager.isRegistered()) {
             getView().updateFavorites(0);
             return;
@@ -127,11 +126,13 @@ public class AccountActivityPresenter extends BasePresenter<IAccountActivityView
 
                     @Override
                     public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
-                        L.print("Received!");
                         container.put(favoritesUpperEntity.getIds().length);
-                        L.print("Size: " + container.get());
                     }
                 }));
+    }
+
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
     }
 
     @Override

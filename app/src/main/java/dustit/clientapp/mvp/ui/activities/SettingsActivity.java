@@ -162,10 +162,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         finish();
     }
 
-    private int getColorFromResources(int c) {
-        return ContextCompat.getColor(this, c);
-    }
-
     @Override
     protected void onDestroy() {
         presenter.unbind();
