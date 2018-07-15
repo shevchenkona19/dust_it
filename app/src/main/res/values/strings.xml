@@ -94,8 +94,6 @@
     <string name="password_dont_match">Невірний пароль</string>
     <string name="feed_title">Фід</string>
     <string name="description_feed_icon">Це - головний фід, у якому знаходяться меми, відібрані спеціально для вас</string>
-    <string name="mem_bar_title">Мем бар</string>
-    <string name="mem_bar_description">Це - мем бар, він дозволяє вам керувати розділами мемів одним дотиком</string>
     <string name="hello_fab">Привіт!</string>
     <string name="hello_fab_description">У MemSpace все починається із цієї кнопки. Спробуйте натиснути на неї</string>
     <string name="hot_title">Топ</string>

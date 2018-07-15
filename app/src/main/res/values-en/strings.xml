@@ -11,7 +11,6 @@
     <string name="crop_photo">Crop the photo</string>
     <string name="login">Log in</string>
     <string name="register">Sign up</string>
-    <string name="edit_profile">Edit profile</string>
     <string name="deleted_from_favorites">Deleted from favourites</string>
     <string name="downloaded_to">Saved to:</string>
     <string name="email_not_valid">Email is not valid</string>
@@ -87,8 +86,6 @@
     <string name="password_dont_match">Wrong password</string>
     <string name="feed_title">This is the main feed. Here you can find memes which are selected for you personally</string>
     <string name="description_feed_icon">Feed</string>
-    <string name="mem_bar_title">Mem bar</string>
-    <string name="mem_bar_description">This is meme bar - it allows you to control meme sections as simple as possible</string>
     <string name="hello_fab">Hello!</string>
     <string name="hello_fab_description">It all starts with this button. Try to click it!</string>
     <string name="hot_title">Hot</string>

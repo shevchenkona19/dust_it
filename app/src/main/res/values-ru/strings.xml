@@ -11,7 +11,6 @@
     <string name="crop_photo">Обрежьте фото</string>
     <string name="login">Войти</string>
     <string name="register">Зарегистрироваться</string>
-    <string name="edit_profile">Редактировать профиль</string>
     <string name="deleted_from_favorites">Удалено из избранных</string>
     <string name="downloaded_to">Сохранено в:</string>
     <string name="email_not_valid">Неверный адрес</string>
@@ -87,8 +86,6 @@
     <string name="password_dont_match">Неверный пароль</string>
     <string name="feed_title">Фид</string>
     <string name="description_feed_icon">Это - главный фид, в котором находятся мемы, подобранные специально для вас</string>
-    <string name="mem_bar_title">Мем бар</string>
-    <string name="mem_bar_description">Это мем бар - с его помощью вы можете управлять разделами мемов всего одним нажатием</string>
     <string name="hello_fab">Привет!</string>
     <string name="hello_fab_description">В MemSpace всё начинается с этой кнопки. Попробуйте на неё нажать</string>
     <string name="hot_title">Топ</string>
