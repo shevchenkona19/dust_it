@@ -28,26 +28,6 @@ public class SettingsActivityPresenter extends BasePresenter<ISettingsActivityVi
 
     @Override
     public void logout() {
-        /*addSubscription(dataManager.logout()
-                .subscribe(new Subscriber<ResponseEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        dataManager.saveToken("");
-                        getView().onSuccessfullyLogout();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onErrorLogout(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(ResponseEntity responseEntity) {
-                        if (responseEntity.getResponse()!=200) {
-                            getView().onErrorLogout("Error");
-                        }
-                    }
-                }));*/
         dataManager.saveToken("");
         getView().onSuccessfullyLogout();
     }

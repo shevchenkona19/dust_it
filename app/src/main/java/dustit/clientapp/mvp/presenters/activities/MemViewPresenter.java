@@ -64,7 +64,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     public void loadCommentsWithOffset(String id, int offset) {
         getView().onStartLoading();
         final List<CommentEntity> list = new ArrayList<>();
-        dataManager.getComments(id, 5, offset)
+        addSubscription(dataManager.getComments(id, 5, offset)
                 .subscribe(new Subscriber<CommentEntity>() {
                     @Override
                     public void onCompleted() {
@@ -81,7 +81,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                     public void onNext(CommentEntity commentEntity) {
                         list.add(commentEntity);
                     }
-                });
+                }));
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             return;
         }
         PostCommentEntity commentEntity = new PostCommentEntity(text);
-        dataManager.postComment(id, commentEntity)
+        addSubscription(dataManager.postComment(id, commentEntity)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
@@ -110,7 +110,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                             getView().onCommentSendFail();
                         }
                     }
-                });
+                }));
     }
 
     @Override
