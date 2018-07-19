@@ -78,7 +78,7 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnResultGo"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"

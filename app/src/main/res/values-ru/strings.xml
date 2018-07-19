@@ -21,6 +21,8 @@
     <string name="try_to_load_one_more_time">Попробовать загрузить ещё раз</string>
     <string name="sry_cant_load_account">Упс… не удается загрузить ваш аккаунт</string>
     <string name="edit_account">Редактировать аккаунт</string>
+    <string name="personalSettings">Редактирование аккаунта</string>
+    <string name="account_settings">Настройки аккаунта</string>
     <string name="settings">Настройки</string>
     <string name="sry_something_is_wrong">Упс… Кажется, что-то пошло не так</string>
     <string name="empty_set_favorites">Тут пока пусто… \n Не расстраивайтесь, просто нажмите на иконку \'сохранить\' на любом понравившемся меме.</string>
@@ -98,5 +100,7 @@
     <string name="add_to_favourites_description">Когда вы нажимаете на эту кнопку, мем созраняется в ваш список избранного. Оттуда мем можно сохранить на устройство или отправить друзьям</string>
     <string name="all_favs_title">Список избранного</string>
     <string name="all_favs_description">Перейдя в этот раздел, вы можете просмотреть свои избранные мемы, сохранить их на устройство или отправить другу</string>
+    <string name="write_us_title">Связаться с разработчиком</string>
+    <string name="correct_this">Исправить это</string>
 
 </resources>

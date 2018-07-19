@@ -21,11 +21,13 @@
     <string name="try_to_load_one_more_time">Try to load once more</string>
     <string name="sry_cant_load_account">Oops… failed to load your account</string>
     <string name="edit_account">Edit your account</string>
+    <string name="personalSettings">Edit account</string>
     <string name="settings">Settings</string>
     <string name="sry_something_is_wrong">Oops… Something went wrong</string>
     <string name="empty_set_favorites">It\'s empty here now… \n Don\'t get disappointed, just click on the \'save\' icon on any meme you like.</string>
     <string name="not_registred_question">Not registered yet?</string>
     <string name="login_edit_text_hint">Login</string>
+    <string name="account_settings">Account settings</string>
     <string name="password_edit_text_hint">Password</string>
     <string name="begin">Let\'s get started</string>
     <string name="welcome_to_memspace">Welcome to MemSpace!</string>
@@ -98,5 +100,8 @@
     <string name="add_to_favourites_description">If you press this button, the meme will be added to your favourites. Once added, you can share it with friends or download on device</string>
     <string name="all_favs_title">Favourites</string>
     <string name="all_favs_description">Here you can find your favourite memes, download them or share with friends</string>
+    <string name="write_us_title">Contact developer</string>
+    <string name="correct_this">Correct this</string>
+
 
 </resources>

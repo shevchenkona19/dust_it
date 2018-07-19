@@ -15,7 +15,7 @@
         android:background="?attr/colorPrimary"
         android:theme="?attr/actionBarTheme"
         app:navigationIcon="@drawable/ic_arrow_left_simple"
-        app:title="Связаться с разработчиками" />
+        app:title="@string/write_us_title" />
 
     <FrameLayout
         android:id="@+id/flUserFeedbackCardContainer"
