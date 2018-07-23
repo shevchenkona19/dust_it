@@ -41,6 +41,7 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.L
 import dustit.clientapp.utils.TimeTracking
 import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.ThemeManager
@@ -79,6 +80,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_explore_white_pressed)
     private var spinnerInteractionListener: ICategoriesSpinnerInteractionListener? = null
 
+    private val deque = ArrayDeque<Int>()
+    private var isBackPressed = false
+
     @Inject
     lateinit var themeManager: ThemeManager
     @Inject
@@ -98,6 +102,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         setContentView(R.layout.activity_feed)
         presenter.bind(this)
         bindViews()
+        deque.add(0)
         sdvUserIcon!!.setLegacyVisibilityHandlingEnabled(true)
         val point = Point()
         windowManager.defaultDisplay.getSize(point)
@@ -107,6 +112,15 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         vpFeed.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tlFeedTabs))
         tlFeedTabs!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                if (!isBackPressed) {
+                    if (deque.size + 1 > 3) {
+                        deque.removeLast()
+                    }
+                    deque.add(tab.position)
+                } else {
+                    isBackPressed = !isBackPressed
+                }
+                L.print("Deque - $deque")
                 animateFabIcon(tab.position)
                 when (tab.position) {
                     0 -> vpFeed.setCurrentItem(0, true)
@@ -395,6 +409,19 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0)
                 clLayout.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onBackPressed() {
+        if (deque.size > 1) {
+            isBackPressed = true
+            deque.pollLast()
+            vpFeed.setCurrentItem(deque.pollLast(), true)
+        } else if (deque.size == 1) {
+            isBackPressed = true
+            vpFeed.setCurrentItem(deque.pollLast(), true)
+        } else {
+            super.onBackPressed()
         }
     }
 
