@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -18,6 +19,8 @@ public class UserFeedbackPresenter extends BasePresenter<IUserFeedbackActivityVi
 
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public UserFeedbackPresenter() {
         App.get().getAppComponent().inject(this);
@@ -25,6 +28,10 @@ public class UserFeedbackPresenter extends BasePresenter<IUserFeedbackActivityVi
 
     @Override
     public void sendFeedback(String title, String message) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         getView().showLoading();
         AtomicReference<NewResponseEntity> res = new AtomicReference<>();
         addSubscription(dataManager.postUserFeedback(new UserFeedbackEntity(title, message)).subscribe(new Subscriber<NewResponseEntity>() {

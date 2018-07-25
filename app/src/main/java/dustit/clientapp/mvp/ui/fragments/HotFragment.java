@@ -75,6 +75,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         unbinder = ButterKnife.bind(this, v);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
+        bindFeedback(this);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
@@ -155,6 +156,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void reloadFeedBase() {
         presenter.loadBase();
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return isUserRegistered();
     }
 
     @Override

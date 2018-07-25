@@ -1,14 +1,10 @@
 package dustit.clientapp.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 public interface IConstants {
     String BASE_URL = "http://hqnl0060547.online-vm.com";
-//    String BASE_URL = "http://192.168.0.102                                                                                         ";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
-    String NO_REGISTRATION_USERNAME = "test";
-    String NO_REGISTRATION_PASSWORD = "test1";
-    String SHARED_TRANSITION_NAME_KEY = "sh";
+    String NO_REGISTRATION_USERNAME = "nikita";
+    String NO_REGISTRATION_PASSWORD = "someshit";
 
     interface ErrorCodes {
         String INTERNAL_ERROR = "INTERNAL_ERROR";
@@ -39,7 +35,6 @@ public interface IConstants {
         String FEED_ICON = "FEED_ICON";
         String HOT_ICON = "HOT_ICON";
         String CATEGORIES_ICON = "CATEGORIES_ICON";
-        String MEMBAR = "MEMBAR";
         String ACCOUNT_ICON = "ACCOUNT_ICON";
         String FAB_FEED = "FAB_FEED";
         String ADD_MEM_FAVS = "ADD_MEM_FAVS";

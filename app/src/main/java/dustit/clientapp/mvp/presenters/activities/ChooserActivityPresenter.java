@@ -28,6 +28,7 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
     public ChooserActivityPresenter() {
         App.get().getAppComponent().inject(this);
     }
+
     @Override
     public void checkIfRegistered() {
         if (dataManager.getToken() == null) {

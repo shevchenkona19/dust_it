@@ -56,6 +56,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         rvFeed = v.rvFeed
         srlRefresh = v.srlFeedRefresh
         unbinder = ButterKnife.bind(this, v)
+        bindFeedback(this)
         linearLayoutManager = WrapperLinearLayoutManager(context)
         rvFeed!!.layoutManager = linearLayoutManager
         adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
@@ -97,6 +98,10 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         subscribeToFeedbackChanges()
         presenter!!.loadBase()
         return v
+    }
+
+    override fun isRegistered(): Boolean {
+        return isUserRegistered;
     }
 
     override fun onDestroyView() {

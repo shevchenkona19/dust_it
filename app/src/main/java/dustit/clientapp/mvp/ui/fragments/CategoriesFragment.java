@@ -110,6 +110,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         View v = inflater.inflate(R.layout.fragment_categories, container, false);
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
+        bindFeedback(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
@@ -215,6 +216,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
             return;
         }
         presenter.loadBase(currentCategory.getId());
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return isUserRegistered();
     }
 
     @Override

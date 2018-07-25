@@ -71,7 +71,7 @@ public class StringUtil {
 
     //Password check
     private boolean isPasswordNormLength(EditText editText) {
-        return editText.getText().length() > 5 && editText.getText().length() < 23;
+        return editText.getText().length() > 3 && editText.getText().length() < 23;
     }
 
     private void setPasswordIncorrectLengthError(TextInputLayout textInputLayout) {

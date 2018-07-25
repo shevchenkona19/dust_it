@@ -86,7 +86,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void postComment(String id, String text) {
-        if (!userSettingsDataManager.isRegistered()) {
+        if (!isRegistered()) {
             getView().onNotRegistered();
             return;
         }
@@ -115,6 +115,10 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void addToFavourites(String id) {
+        if (!isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
@@ -138,6 +142,10 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void removeFromFavourites(String id) {
+        if (!isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         addSubscription(dataManager.removeFromFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
