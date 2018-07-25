@@ -53,6 +53,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
 import dustit.clientapp.mvp.datamanager.FeedbackManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
@@ -60,6 +61,7 @@ import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.KeyboardHandler;
@@ -157,6 +159,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     @Inject
     FeedbackManager feedbackManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
 
@@ -193,6 +197,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         unbinder = ButterKnife.bind(this, view);
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
+        feedbackManager.bind(this);
         presenter.isFavourite(mem.getId());
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
@@ -377,6 +382,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         ivDisexpand.setOnClickListener(view -> disExpandComments());
         tbUpperToolbar.setNavigationOnClickListener(view -> interactionListener.closeMemView());
         ivLike.setOnClickListener(view -> {
+            if (!userSettingsDataManager.isRegistered()) {
+                onNotRegistered();
+                return;
+            }
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
                 feedbackManager.deleteLike(mem);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
@@ -394,6 +403,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             refreshUi();
         });
         ivDislike.setOnClickListener(view -> {
+            if (!userSettingsDataManager.isRegistered()) {
+                onNotRegistered();
+                return;
+            }
             if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
                 feedbackManager.deleteDislike(mem);
                 mem.setDislikes(-1);
@@ -438,6 +451,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     @Override
     public void onNotRegistered() {
+        pbCommentSend.setVisibility(View.INVISIBLE);
+        ivSendComment.setVisibility(View.VISIBLE);
         AlertBuilder.showNotRegisteredPrompt(getContext());
     }
 

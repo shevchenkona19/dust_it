@@ -12,11 +12,13 @@ import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.mvp.ui.interfaces.IActivityView;
+import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
-public class FeedbackManager {
+public class FeedbackManager extends BaseFeedbackManager<IView> {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final List<IFeedbackInteraction> interactionList = new ArrayList<>();
@@ -33,10 +35,13 @@ public class FeedbackManager {
     ServerRepository serverRepository;
     @Inject
     SharedPreferencesRepository sharedPreferencesRepository;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public FeedbackManager() {
         App.get().getAppComponent().inject(this);
     }
+
 
     public interface IFeedbackInteraction {
         void changedFeedback(RefreshedMem refreshedMem);
@@ -45,24 +50,40 @@ public class FeedbackManager {
     }
 
     public void postLike(final MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         subscriptions.add(serverRepository.postLike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void postDislike(final MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         subscriptions.add(serverRepository.postDislike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void deleteLike(MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         subscriptions.add(serverRepository.deleteLike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
     }
 
     public void deleteDislike(MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         subscriptions.add(serverRepository.deleteDislike(getToken(), memEntity.getId())
                 .subscribe(createConsumer(memEntity))
         );
@@ -103,6 +124,7 @@ public class FeedbackManager {
     }
 
     public void destroy() {
+        unbind();
         subscriptions.unsubscribe();
         subscriptions.clear();
     }

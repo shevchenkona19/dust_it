@@ -47,6 +47,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         void onMemSelected(View animStart, MemEntity mem);
 
+        boolean isRegistered();
+
+        void onNotRegistered();
+
         void postLike(MemEntity mem);
 
         void deleteLike(MemEntity mem);
@@ -105,6 +109,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             final MemEntity mem = mems.get(pos);
             memViewHolder.bind(mem);
             memViewHolder.itemFeedLike.setOnClickListener(v -> {
+                if (!interactionListener.isRegistered()) {
+                    interactionListener.onNotRegistered();
+                    return;
+                }
                 switch (mem.getOpinion()) {
                     case DISLIKED:
                         mem.setDislikes(-1);
@@ -128,6 +136,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
             memViewHolder.itemFeedDislike.setOnClickListener(v -> {
+                if (!interactionListener.isRegistered()) {
+                    interactionListener.onNotRegistered();
+                    return;
+                }
                 switch (mem.getOpinion()) {
                     case LIKED:
                         mem.setLikes(-1);

@@ -39,6 +39,7 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
+import dustit.clientapp.mvp.ui.interfaces.IView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
 import dustit.clientapp.utils.L
@@ -50,6 +51,10 @@ import java.util.*
 import javax.inject.Inject
 
 class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
+    override fun isRegistered(): Boolean {
+        return userSettingsDataManager.isRegistered
+    }
+
     private var isFeedScrollIdle = true
     internal lateinit var vpFeed: ViewPager
     private lateinit var clLayout: RelativeLayout
@@ -101,6 +106,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         App.get().appComponent.inject(this)
         setContentView(R.layout.activity_feed)
         presenter.bind(this)
+        feedbackManager.bind(this)
         bindViews()
         deque.add(0)
         sdvUserIcon!!.setLegacyVisibilityHandlingEnabled(true)
