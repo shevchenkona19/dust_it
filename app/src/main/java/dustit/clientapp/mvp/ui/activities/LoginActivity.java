@@ -50,8 +50,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        etUsername.setText("zaza21");
-        etPassword.setText("zaza12");
         pbLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#f98098"), PorterDuff.Mode.MULTIPLY);
         loginActivityPresenter.bind(this);
         btnLogin.setOnClickListener(view -> {
