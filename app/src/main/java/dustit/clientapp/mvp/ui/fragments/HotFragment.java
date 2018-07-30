@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -47,6 +48,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     RecyclerView rvHot;
     @BindView(R.id.srlHotRefresh)
     SwipeRefreshLayout srlRefresh;
+    @BindView(R.id.hotEmpty)
+    ViewGroup empty;
+    @BindView(R.id.btnEmptyHot)
+    Button emptyHotRetry;
+
     private int appBarHeight;
 
 
@@ -81,6 +87,12 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         presenter.bind(this);
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
+            srlRefresh.setRefreshing(true);
+            presenter.loadBase();
+        });
+        emptyHotRetry.setOnClickListener(view -> {
+            empty.setVisibility(View.INVISIBLE);
+            srlRefresh.setVisibility(View.VISIBLE);
             srlRefresh.setRefreshing(true);
             presenter.loadBase();
         });
@@ -137,9 +149,18 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
     @Override
     public void onBaseUpdated(List<MemEntity> list) {
+        if (list.isEmpty()) {
+            showEmpty();
+            return;
+        }
         adapter.updateWhole(list);
         rvHot.scheduleLayoutAnimation();
         srlRefresh.setRefreshing(false);
+    }
+
+    private void showEmpty() {
+        empty.setVisibility(View.VISIBLE);
+        srlRefresh.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +54,33 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
+        if (userSettingsDataManager.loadLanguage().equals("INIT")) {
+            final Locale locale = getBaseContext().getResources().getConfiguration().locale;
+            String langToLoad;
+            switch (locale.getLanguage()) {
+                case "ru":
+                    langToLoad = "ru";
+                    break;
+                case "ua":
+                    langToLoad = "ua";
+                    break;
+                case "us":
+                case "uk":
+                    langToLoad = "uk";
+                    break;
+                default:
+                    langToLoad = "ru";
+            }
+            final Locale newLocale = new Locale(langToLoad);
+            Locale.setDefault(newLocale);
+            final Configuration config = new Configuration();
+            config.locale = newLocale;
+            final Resources resources = getBaseContext().getResources();
+            resources.updateConfiguration(config,
+                    resources.getDisplayMetrics());
+            userSettingsDataManager.saveNewLanguagePref(langToLoad);
+            restartActivity();
+        }
         if (!userSettingsDataManager.loadLanguage().equals(getResources().getConfiguration().locale.getLanguage())) {
             final Locale locale = new Locale(userSettingsDataManager.loadLanguage());
             Locale.setDefault(locale);
@@ -108,17 +135,17 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
             dialog.show();
         });
         tvNoRegistration.setOnClickListener(v -> {
-           final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
+            final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
                     .setTitle(getString(R.string.continue_without_registration))
                     .setMessage(getString(R.string.continue_without_registration_message))
                     .setPositiveButton(getString(R.string.yes), (dialog, which) -> mPresenter.continueNoRegistration())
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
-           alertDialog.setOnShowListener(dialog -> {
-               alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-               alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-           });
-           alertDialog.show();
+            alertDialog.setOnShowListener(dialog -> {
+                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+            });
+            alertDialog.show();
         });
     }
 

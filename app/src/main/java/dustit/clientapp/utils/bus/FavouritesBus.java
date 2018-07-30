@@ -24,9 +24,9 @@ public class FavouritesBus {
     private WeakReference<IConsumer> additionalConsumer;
 
     public void removed(String id) {
-        if (mainConsumer != null)
+        if (mainConsumer != null && mainConsumer.get() != null)
             mainConsumer.get().consumeRemoved(id);
-        if (additionalConsumer != null)
+        if (additionalConsumer != null && additionalConsumer.get() != null)
             additionalConsumer.get().consumeRemoved(id);
     }
 

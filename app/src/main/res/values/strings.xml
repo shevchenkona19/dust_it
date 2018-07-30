@@ -71,8 +71,6 @@
     <string name="share_image">Поділитися мемом:</string>
     <string name="cancel">Відмінити</string>
     <string name="added_to_favourites">Мем додано в обране</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="correct_this">Виправити це</string>
     <string name="empty_categories_feed">У вас не обрано жодної категорії. Ми не можемо нічого показати.</string>
     <string name="email_not_unique">Цей e-mail вже зареєстровано</string>
@@ -81,10 +79,10 @@
     <string name="password_not_valid">Хоча б одна латинська літера</string>
     <string name="username_not_valid">Такий логін вже використовується</string>
     <string name="internal_error">Помилка</string>
-    <string name="memes_ended">Покищо це всі меми :(</string>
+    <string name="memes_ended">Покищо це всі меми </string>
     <string name="not_registred_error">Такого користувача не існує</string>
     <string name="goto_hot">Перейти до топу</string>
-    <string name="feed_memes_ended">Покищо меми для вас закінчились :(   Саме час переглянути найпопулярніші меми у вкладці \'топ\'.</string>
+    <string name="feed_memes_ended">Покищо меми для вас закінчились   Саме час переглянути найпопулярніші меми у вкладці \'топ\'.</string>
     <string name="send">Надіслати</string>
     <string name="title">Тема повідомлення</string>
     <string name="message">Повідомлення…</string>
@@ -107,4 +105,5 @@
     <string name="all_favs_title">Список обраних</string>
     <string name="all_favs_description">Перейшовши сюди, ви зможете переглядати обрані меми, завантажувати їх на телефон або ділитись із друзями</string>
     <string name="write_us_title">Зв\'язатися с розробником</string>
+    <string name="no_hot">Пока что, популярные мемы закончились</string>
 </resources>

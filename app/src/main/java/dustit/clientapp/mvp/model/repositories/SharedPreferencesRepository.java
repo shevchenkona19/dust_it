@@ -69,7 +69,7 @@ public class SharedPreferencesRepository {
 
 
     public String loadLanguage() {
-        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "ru");
+        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "INIT");
     }
 
     public void saveTheme(ThemeManager.Theme t) {

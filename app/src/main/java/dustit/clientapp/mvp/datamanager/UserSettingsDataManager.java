@@ -7,6 +7,7 @@ import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class UserSettingsDataManager {
+
     @Inject
     SharedPreferencesRepository preferencesRepository;
 

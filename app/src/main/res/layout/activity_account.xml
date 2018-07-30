@@ -223,6 +223,7 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
+                    android:layout_marginBottom="6dp"
                     android:drawableEnd="@drawable/ic_arrow_right_simple"
                     android:drawablePadding="8dp"
                     android:gravity="start|center_vertical"
