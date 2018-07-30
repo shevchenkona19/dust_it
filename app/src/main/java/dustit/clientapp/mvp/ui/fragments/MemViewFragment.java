@@ -459,13 +459,17 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Override
     public void onBaseUpdated(List<CommentEntity> list) {
         if (list.size() > 0) {
-            srlCommentsRefresh.setRefreshing(false);
-            commentAdapter.updateListWhole(list);
-            rvComments.scheduleLayoutAnimation();
-            tvCommentEmpty.setVisibility(View.GONE);
+            if (srlCommentsRefresh != null) {
+                srlCommentsRefresh.setRefreshing(false);
+                commentAdapter.updateListWhole(list);
+                rvComments.scheduleLayoutAnimation();
+                tvCommentEmpty.setVisibility(View.GONE);
+            }
         } else {
-            rvComments.setVisibility(View.GONE);
-            tvCommentEmpty.setVisibility(View.VISIBLE);
+            if (rvComments != null) {
+                rvComments.setVisibility(View.GONE);
+                tvCommentEmpty.setVisibility(View.VISIBLE);
+            }
         }
     }
 
