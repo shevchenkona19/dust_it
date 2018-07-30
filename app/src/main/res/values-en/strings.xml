@@ -48,7 +48,7 @@
     <string name="cant_load_test">We couldn\'t load the test… </string>
     <string name="comments">Comments</string>
     <string name="your_comment">Your comment…</string>
-    <string name="cant_load_feed">An error occurred while loading the feed :(</string>
+    <string name="cant_load_feed">An error occurred while loading the feed</string>
     <string name="retry_load_feed">Reload</string>
     <string name="applied">Applied</string>
     <string name="empty_set_comments">There are no comments yet so you can be the first one!</string>
@@ -73,10 +73,10 @@
     <string name="username_not_valid">This username is already used</string>
     <string name="password_not_valid">Password is not valid</string>
     <string name="internal_error">Error</string>
-    <string name="memes_ended">That were all memes for now :(</string>
+    <string name="memes_ended">That were all memes for now</string>
     <string name="not_registred_error">Such user is not registered</string>
     <string name="goto_hot">Go to hot memes</string>
-    <string name="feed_memes_ended">That were all memes for you for now :(   Meanwhile you can explore hot memes.</string>
+    <string name="feed_memes_ended">That were all memes for you for now   Meanwhile you can explore hot memes.</string>
     <string name="continue_without_registration_message">You won\'t be able to use personalised meme feed, leave comments, save and share memes unless you are registered. Everything else will be available. Does it suit you?</string>
     <string name="empty_categories_feed">You have no categories selected. We can\'t show you anything.</string>
     <string name="send">Send</string>
@@ -95,6 +95,7 @@
     <string name="categories_title">Categories</string>
     <string name="categories_description">Here you can explore memes on specific topics which you are interested in</string>
     <string name="user_icon_title">Your account</string>
+    <string name="choose_theme">Pick theme:</string>
     <string name="user_icon_description">Here you can personalise the app, choose theme, change language or your profile picture</string>
     <string name="add_to_favourites_title">Add to favourites</string>
     <string name="add_to_favourites_description">If you press this button, the meme will be added to your favourites. Once added, you can share it with friends or download on device</string>
@@ -102,6 +103,7 @@
     <string name="all_favs_description">Here you can find your favourite memes, download them or share with friends</string>
     <string name="write_us_title">Contact developer</string>
     <string name="correct_this">Correct this</string>
+    <string name="no_hot">Пока что, популярные мемы закончились</string>
 
 
 </resources>

@@ -3,8 +3,8 @@ package dustit.clientapp.utils;
 public interface IConstants {
     String BASE_URL = "http://hqnl0060547.online-vm.com";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
-    String NO_REGISTRATION_USERNAME = "nikita";
-    String NO_REGISTRATION_PASSWORD = "someshit";
+    String NO_REGISTRATION_USERNAME = "user";
+    String NO_REGISTRATION_PASSWORD = "lolkek123";
 
     interface ErrorCodes {
         String INTERNAL_ERROR = "INTERNAL_ERROR";

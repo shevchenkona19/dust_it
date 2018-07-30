@@ -85,6 +85,7 @@
         android:drawableEnd="@drawable/ic_arrow_right_simple"
         android:text="@string/to_memes"
         android:drawableTint="#eee"
+        android:textColor="#eee"
         android:visibility="gone"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -48,7 +48,7 @@
     <string name="cant_load_test">Нам не удаётся загрузить тест…</string>
     <string name="comments">Комментарии</string>
     <string name="your_comment">Комментарий…</string>
-    <string name="cant_load_feed">Произошла ошибка при загрузке ленты  :(</string>
+    <string name="cant_load_feed">Произошла ошибка при загрузке ленты</string>
     <string name="retry_load_feed">Загрузить ещё раз</string>
     <string name="applied">Применено</string>
     <string name="empty_set_comments">Тут пока что нет ни одного комментария, а значит вы можете стать первонахом!</string>
@@ -75,7 +75,7 @@
     <string name="memes_ended">Пока что это все мемы…</string>
     <string name="not_registred_error">Такого пользователя не существует</string>
     <string name="goto_hot">Перейти к топу</string>
-    <string name="feed_memes_ended">Пока что мемы для вас закончились :(  Самое время посмотреть, что сейчас актуально в разделе "топ"</string>
+    <string name="feed_memes_ended">Пока что мемы для вас закончились  Самое время посмотреть, что сейчас актуально в разделе "топ"</string>
     <string name="theme_dark">Тёмная</string>
     <string name="continue_without_registration_message">Если вы не зарегистрируетесь, то не сможете использовать персонализированную ленту мемов, оставлять комментарии, добавлять мемы в избранное, а также отправлять их друзьям. Всё остальное будет работать. Вас это устраивает?</string>
     <string name="empty_categories_feed">У вас не выбрано ни одной категории. Мы не можем ничего показать.</string>
@@ -93,6 +93,7 @@
     <string name="hot_title">Топ</string>
     <string name="hot_description">Здесь вы найдёте самые популярные мемы со всех тематик</string>
     <string name="categories_title">Категории</string>
+    <string name="choose_theme">Выберите тему:</string>
     <string name="categories_description">Здесь можно посмотреть мемы, которые относятся только к одной категории, которую вы можете выбрать сверху из списка</string>
     <string name="user_icon_title">Ваш аккаунт</string>
     <string name="user_icon_description">Перейдя сюда, вы можете настроить приложение под себя: выбрать тему, изменить язык или ваше фото, а также написать нам предложения или замечания</string>
@@ -102,5 +103,6 @@
     <string name="all_favs_description">Перейдя в этот раздел, вы можете просмотреть свои избранные мемы, сохранить их на устройство или отправить другу</string>
     <string name="write_us_title">Связаться с разработчиком</string>
     <string name="correct_this">Исправить это</string>
+    <string name="no_hot">Пока что, популярные мемы закончились</string>
 
 </resources>
