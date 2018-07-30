@@ -56,7 +56,7 @@
     <string name="change_selected_categories">Изменить выбранные категории</string>
     <string name="continue_without_registration">Продолжить без регистрации</string>
     <string name="you_arent_registered">Вы не зарегистрированы</string>
-    <string name="function_disabled_not_registered">Данная функция недоступна, потому что вы не зарегестрированы в MemSpace. Но не расстраивайтесь - вы всегда можете создать аккаунт! Создать прямо сейчас?</string>
+    <string name="function_disabled_not_registered">Данная функция недоступна, потому что вы не зарегистрированы в MemSpace. Но не расстраивайтесь - вы всегда можете создать аккаунт! Создать прямо сейчас?</string>
     <string name="i_will_think">Я подумаю</string>
     <string name="favorites">Избранное</string>
     <string name="about_mem_title">О меме</string>
@@ -69,7 +69,7 @@
     <string name="email_not_unique">Данный e-mail уже зарегистрирован</string>
     <string name="INTERNAL_ERROR">Упс… Ошибка. Попробуйте ещё раз</string>
     <string name="no_categories">Вы ещё не выбрали ни одной категории</string>
-    <string name="password_not_valid">Неверный пароль</string>
+    <string name="password_not_valid">Хотя бы одна латинская буква</string>
     <string name="username_not_valid">Такой логин уже используется</string>
     <string name="internal_error">Ошибка</string>
     <string name="memes_ended">Пока что это все мемы…</string>
