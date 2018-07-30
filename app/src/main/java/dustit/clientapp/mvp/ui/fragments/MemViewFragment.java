@@ -283,7 +283,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         if (startComments) {
             expandComments(true);
         }
-        if (presenter.isRegistered()) {
+        if (presenter.isRegistered() && !startComments) {
             new SpotlightView.Builder(Objects.requireNonNull(getActivity()))
                     .introAnimationDuration(400)
                     .enableRevealAnimation(true)
