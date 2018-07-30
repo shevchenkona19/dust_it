@@ -69,7 +69,7 @@
     <string name="email_not_unique">Данный e-mail уже зарегистрирован</string>
     <string name="INTERNAL_ERROR">Упс… Ошибка. Попробуйте ещё раз</string>
     <string name="no_categories">Вы ещё не выбрали ни одной категории</string>
-    <string name="password_not_valid">Неверный пароль</string>
+    <string name="password_not_valid">Хотя бы одна латинская буква</string>
     <string name="username_not_valid">Такой логин уже используется</string>
     <string name="internal_error">Ошибка</string>
     <string name="memes_ended">Пока что это все мемы…</string>

@@ -71,7 +71,7 @@
     <string name="INTERNAL_ERROR">Oops… Error. Try again.</string>
     <string name="no_categories">You haven\'t selected any category yet</string>
     <string name="username_not_valid">This username is already used</string>
-    <string name="password_not_valid">Password is not valid</string>
+    <string name="password_not_valid">At least one letter</string>
     <string name="internal_error">Error</string>
     <string name="memes_ended">That were all memes for now :(</string>
     <string name="not_registred_error">Such user is not registered</string>

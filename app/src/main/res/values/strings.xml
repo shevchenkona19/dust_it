@@ -78,7 +78,7 @@
     <string name="email_not_unique">Цей e-mail вже зареєстровано</string>
     <string name="INTERNAL_ERROR">Упс… Помилка. Спробуйте ще раз</string>
     <string name="no_categories">Ви ще не обрали жодної категорії</string>
-    <string name="password_not_valid">Невірний пароль</string>
+    <string name="password_not_valid">Хоча б одна латинська літера</string>
     <string name="username_not_valid">Такий логін вже використовується</string>
     <string name="internal_error">Помилка</string>
     <string name="memes_ended">Покищо це всі меми :(</string>
