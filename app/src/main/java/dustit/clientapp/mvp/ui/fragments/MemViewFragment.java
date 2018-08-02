@@ -198,7 +198,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
         feedbackManager.bind(this);
-        presenter.isFavourite(mem.getId());
+        if (userSettingsDataManager.isRegistered()) {
+            presenter.isFavourite(mem.getId());
+        }
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();

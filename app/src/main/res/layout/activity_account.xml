@@ -132,6 +132,21 @@
                     app:layout_constraintRight_toRightOf="@+id/sdvAccountUserIcon"
                     app:layout_constraintTop_toBottomOf="@+id/cpbAccountLoadingPhoto" />
 
+                <Button
+                    android:id="@+id/btnAccountRegister"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/register"
+                    android:textColor="#fff"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAccountFavoritesCounter"
+                    app:layout_constraintEnd_toEndOf="@+id/tvAccountUsername"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintLeft_toRightOf="@+id/sdvAccountUserIcon"
+                    app:layout_constraintStart_toStartOf="@+id/tvAccountUsername"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAccountUsername" />
+
                 <ImageView
                     android:id="@+id/ivAccountToFavorites"
                     android:layout_width="50dp"

@@ -57,6 +57,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         linearLayoutManager = WrapperLinearLayoutManager(context)
         rvFeed!!.layoutManager = linearLayoutManager
         adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
+        adapter.setHasStableIds(true)
         rvFeed!!.adapter = adapter
         rlEmptyCategories = v.hotEmpty
         presenter = FeedFragmentPresenter()

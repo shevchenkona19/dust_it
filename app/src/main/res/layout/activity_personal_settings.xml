@@ -7,27 +7,27 @@
     android:layout_height="match_parent"
     tools:context="dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity">
 
-    <FrameLayout
-        android:id="@+id/flPersonalSettingsContainer"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:background="@color/colorPrimary"
-        android:layout_height="match_parent" />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tbPersonalSettingsToolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:elevation="9dp"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@drawable/ic_arrow_left_simple"
-        app:title="@string/personalSettings" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tbPersonalSettingsToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:navigationIcon="@drawable/ic_arrow_left_simple"
+            app:title="@string/personalSettings" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/clPersonalSettingsChangeCategories"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_below="@id/tbPersonalSettingsToolbar">
+        android:layout_below="@id/appbar">
 
         <TextView
             android:id="@+id/tvPersonalCategoriesChangeLabel"
@@ -58,5 +58,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_below="@id/appbar"
+        android:id="@+id/flPersonalSettingsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:visibility="gone" />
 
 </RelativeLayout>

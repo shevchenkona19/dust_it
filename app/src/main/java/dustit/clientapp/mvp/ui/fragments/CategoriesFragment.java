@@ -114,6 +114,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        adapter.setHasStableIds(true);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {

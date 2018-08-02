@@ -106,4 +106,6 @@
     <string name="all_favs_description">Перейшовши сюди, ви зможете переглядати обрані меми, завантажувати їх на телефон або ділитись із друзями</string>
     <string name="write_us_title">Зв\'язатися с розробником</string>
     <string name="no_hot">Пока что, популярные мемы закончились</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="description_create_account">Вы хотите зарегистрироваться в MemSpace?</string>
 </resources>

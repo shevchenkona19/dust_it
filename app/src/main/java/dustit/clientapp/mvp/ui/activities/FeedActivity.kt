@@ -113,7 +113,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         val point = Point()
         windowManager.defaultDisplay.getSize(point)
         FAB_HIDDEN_Y = point.y + fabColapsed.height + 15
-        presenter.getMyUsername()
+        if (userSettingsDataManager.isRegistered) {
+            presenter.getMyUsername()
+        }
         clLayout.getHitRect(screenBounds)
         vpFeed.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tlFeedTabs))
         tlFeedTabs!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -199,6 +201,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         animateFabIcon(0)
         if (!presenter.isFeedFirstTime) {
             wasToolbarRevealed = true
+        }
+        if (!userSettingsDataManager.isRegistered) {
+            val uri = Uri.parse("android.resource://" + this.packageName + "/drawable/noimage")
+            sdvUserIcon.setImageURI(uri)
         }
         val layoutTransition = LayoutTransition()
         layoutTransition.disableTransitionType(LayoutTransition.DISAPPEARING)

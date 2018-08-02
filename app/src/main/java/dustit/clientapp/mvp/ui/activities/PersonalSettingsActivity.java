@@ -45,18 +45,24 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
         App.get().getAppComponent().inject(this);
         setContentView(R.layout.activity_personal_settings);
         ButterKnife.bind(this);
-        clChangeCategories.setOnClickListener(view -> {
-            if (!userSettingsDataManager.isRegistered()) {
-                onNotRegistered();
-                return;
-            }
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(CATEGORIES_FRAGMENT)
-                    .add(R.id.flPersonalSettingsContainer, ChangeCategoriesFragment.newInstance())
-                    .commit();
-            container.setVisibility(View.VISIBLE);
-        });
+        if (userSettingsDataManager.isRegistered()) {
+            tvChangeLabel.setText(R.string.change_selected_categories);
+            clChangeCategories.setOnClickListener(view -> {
+                if (!userSettingsDataManager.isRegistered()) {
+                    onNotRegistered();
+                    return;
+                }
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(CATEGORIES_FRAGMENT)
+                        .add(R.id.flPersonalSettingsContainer, ChangeCategoriesFragment.newInstance())
+                        .commit();
+                container.setVisibility(View.VISIBLE);
+            });
+        } else {
+            tvChangeLabel.setText(R.string.register);
+            clChangeCategories.setOnClickListener(view -> AlertBuilder.showRegisterPrompt(this));
+        }
         toolbar.setNavigationOnClickListener(v -> finish());
     }
 
@@ -78,10 +84,5 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
 
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -104,5 +104,7 @@
     <string name="write_us_title">Связаться с разработчиком</string>
     <string name="correct_this">Исправить это</string>
     <string name="no_hot">Пока что, популярные мемы закончились</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="description_create_account">Вы хотите зарегистрироваться в MemSpace?</string>
 
 </resources>

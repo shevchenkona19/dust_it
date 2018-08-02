@@ -43,10 +43,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.AccountActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
@@ -88,6 +91,11 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
     RelativeLayout cvAccountCard;
     @BindView(R.id.btnAccountWriteUs)
     Button btnWriteUs;
+    @BindView(R.id.btnAccountRegister)
+    Button btnRegister;
+
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     private final AccountActivityPresenter mPresenter = new AccountActivityPresenter();
 
@@ -135,39 +143,43 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
             final Intent i = new Intent(AccountActivity.this, SettingsActivity.class);
             startActivity(i);
         });
-        sdvIcon.setOnClickListener(view -> {
-            final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
-                    .setTitle(getString(R.string.change_profile_pic_title))
-                    .setMessage(getString(R.string.change_profile_pic_question))
-                    .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
-                        final int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                Manifest.permission.READ_EXTERNAL_STORAGE);
-                        final int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                        if (permCheckRead != PackageManager.PERMISSION_GRANTED
-                                && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(AccountActivity.this,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                    PERMISSION_DIALOG);
-                        } else {
-                            final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                            getIntent.setType("image/*");
-                            final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            pickIntent.setType("image/*");
-                            final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                            startActivityForResult(chooserIntent, PICK_IMAGE);
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.no), null)
-                    .create();
-            dialog.setOnShowListener(dialogInterface -> {
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-            });
+        if (userSettingsDataManager.isRegistered()) {
+            sdvIcon.setOnClickListener(view -> {
+                final AlertDialog dialog = new AlertDialog.Builder(AccountActivity.this)
+                        .setTitle(getString(R.string.change_profile_pic_title))
+                        .setMessage(getString(R.string.change_profile_pic_question))
+                        .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
+                            final int permCheckRead = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE);
+                            final int permCheckWrite = ContextCompat.checkSelfPermission(AccountActivity.this,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                            if (permCheckRead != PackageManager.PERMISSION_GRANTED
+                                    && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(AccountActivity.this,
+                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        PERMISSION_DIALOG);
+                            } else {
+                                final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                                getIntent.setType("image/*");
+                                final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                pickIntent.setType("image/*");
+                                final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+                                startActivityForResult(chooserIntent, PICK_IMAGE);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .create();
+                dialog.setOnShowListener(dialogInterface -> {
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+                });
 
-            dialog.show();
-        });
+                dialog.show();
+            });
+        } else {
+            sdvIcon.setOnClickListener(view -> onNotRegistered());
+        }
         ivToFavorites.setOnClickListener(view -> {
             final Intent intent = new Intent(this, FavoritesActivity.class);
             final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
@@ -224,11 +236,16 @@ public class AccountActivity extends AppCompatActivity implements IAccountActivi
                     .usageId(IConstants.ISpotlight.ACCOUNT_ALL_FAVS)
                     .show();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        if (!userSettingsDataManager.isRegistered()) {
+            Uri uri = Uri.parse("android.resource://" + this.getPackageName() + "/drawable/noimage");
+            sdvIcon.setImageURI(uri);
+            ivToFavorites.setVisibility(View.GONE);
+            tvFavoritesCounter.setVisibility(View.GONE);
+            btnRegister.setVisibility(View.VISIBLE);
+            btnRegister.setOnClickListener((view -> {
+                AlertBuilder.showRegisterPrompt(this);
+            }));
+        }
     }
 
     protected void unRevealActivity() {

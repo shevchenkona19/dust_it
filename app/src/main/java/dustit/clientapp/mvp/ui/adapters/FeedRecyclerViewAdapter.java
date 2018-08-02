@@ -77,6 +77,20 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.appBarHeight = appBarHeight;
     }
 
+    @Override
+    public long getItemId(int position) {
+        final MemEntity mem = mems.get(position);
+        if (mem == null && isError) {
+            return -2;
+        } else if (isMemesEnded && mem == null) {
+            return -3;
+        } else if (mem == null) {
+            return -1;
+        } else {
+            return Long.parseLong(mem.getId());
+        }
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
