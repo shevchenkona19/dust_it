@@ -55,7 +55,7 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
     public void setCategoriesLoaded(boolean categoriesLoaded) {
         isCategoriesLoaded = categoriesLoaded;
-        categoriesFragment.get().onCategoriesLoaded();
+        categoriesFragment.get().onCategoriesLoaded(categoriesLoaded);
     }
 
     @Override
