@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,11 +63,11 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         rlEmptyCategories = v.hotEmpty
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
-        v.btnEmptyHot.setOnClickListener({
+        v.btnEmptyHot.setOnClickListener {
             changingCategories = true
             val intent = Intent(context, PersonalSettingsActivity::class.java)
             startActivity(intent)
-        })
+        }
         srlRefresh!!.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100)
         srlRefresh!!.setOnRefreshListener {
             srlRefresh!!.isRefreshing = true
@@ -93,6 +94,8 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             }
         }
         rvFeed!!.addOnScrollListener(scrollListener)
+        (rvFeed!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
         subscribeToFeedbackChanges()
         presenter!!.loadBase()
         return v

@@ -105,7 +105,8 @@
     <string name="all_favs_title">Список обраних</string>
     <string name="all_favs_description">Перейшовши сюди, ви зможете переглядати обрані меми, завантажувати їх на телефон або ділитись із друзями</string>
     <string name="write_us_title">Зв\'язатися с розробником</string>
-    <string name="no_hot">Пока что, популярные мемы закончились</string>
-    <string name="create_account">Создать аккаунт</string>
-    <string name="description_create_account">Вы хотите зарегистрироваться в MemSpace?</string>
+    <string name="no_hot">Наразі популярних мемів немає.</string>
+    <string name="create_account">Створити акаунт</string>
+    <string name="description_create_account">Ви бажаєте зареєструватися в MemSpace?</string>
+    <string name="restart_test">Пройти мем-тест заново</string>
 </resources>

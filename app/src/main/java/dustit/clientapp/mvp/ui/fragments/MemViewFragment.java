@@ -156,6 +156,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     SlidingUpPanelLayout supPanel;
     @BindView(R.id.rlExpandablePanelWrapper)
     View rlExpandablePanelWrapper;
+    @BindView(R.id.tvMemViewCommentsCount)
+    TextView tvCommentsCount;
 
     @Inject
     FeedbackManager feedbackManager;
@@ -339,6 +341,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         } else {
             setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
         }
+        tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
         if (tvLikeCount != null) {
             tvLikeCount.setText(mem.getLikes());
             tvDislikeCount.setText(mem.getDislikes());

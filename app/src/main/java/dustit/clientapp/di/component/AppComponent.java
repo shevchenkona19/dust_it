@@ -41,7 +41,6 @@ import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
-import dustit.clientapp.mvp.ui.fragments.MemViewActivity;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.utils.FavoritesUtils;
 
@@ -67,8 +66,6 @@ public interface AppComponent {
     void inject(SharedPreferencesRepository sharedPreferencesRepository);
 
     void inject(FeedRecyclerViewAdapter feedRecyclerViewAdapter);
-
-    void inject(MemViewActivity memViewActivity);
 
     void inject(ChooserActivityPresenter chooserActivityPresenter);
 

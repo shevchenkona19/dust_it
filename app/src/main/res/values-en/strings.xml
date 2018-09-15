@@ -103,9 +103,10 @@
     <string name="all_favs_description">Here you can find your favourite memes, download them or share with friends</string>
     <string name="write_us_title">Contact developer</string>
     <string name="correct_this">Correct this</string>
-    <string name="no_hot">Пока что, популярные мемы закончились</string>
-    <string name="create_account">Создать аккаунт</string>
-    <string name="description_create_account">Вы хотите зарегистрироваться в MemSpace?</string>
+    <string name="no_hot">No popular memes for you for now.</string>
+    <string name="create_account">Create account</string>
+    <string name="description_create_account">Do you want to create account in MemSpace?</string>
+    <string name="restart_test">Retake mem-test</string>
 
 
 </resources>
