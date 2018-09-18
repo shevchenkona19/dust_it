@@ -1,13 +1,8 @@
 package dustit.clientapp.mvp.ui.base;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,13 +10,11 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.FeedbackManager;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IFragmentView;
-import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.AlertBuilder;
 import rx.exceptions.OnErrorNotImplementedException;
 

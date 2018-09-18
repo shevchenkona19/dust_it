@@ -101,6 +101,10 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         return v
     }
 
+    fun scrollToTop() {
+        rvFeed?.smoothScrollToPosition(0)
+    }
+
     override fun isRegistered(): Boolean {
         return isUserRegistered;
     }

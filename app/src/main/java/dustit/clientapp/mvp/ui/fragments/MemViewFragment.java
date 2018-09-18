@@ -320,47 +320,50 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     private void initAutoHide() {
-        pdvMem.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
-            if ((imageHeight == -1 && imageWidth == -1)) {
-                imageHeight = pdvMem.getHeight() / 2;
-                imageWidth = pdvMem.getWidth() / 2;
-            }
-            if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
-                //hide ui
-                if (navVisible) {
-                    setNavVisible(false);
-                    isExpanded = true;
+        if (pdvMem != null) {
+            pdvMem.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
+                if ((imageHeight == -1 && imageWidth == -1)) {
+                    imageHeight = pdvMem.getHeight() / 2;
+                    imageWidth = pdvMem.getWidth() / 2;
                 }
-            }
-        });
+                if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
+                    if (navVisible) {
+                        setNavVisible(false);
+                        isExpanded = true;
+                    }
+                }
+            });
+        }
     }
 
     private void refreshUi() {
-        if (mem.isFavorite()) {
-            setImageDrawable(ivAddToFavourites, R.drawable.ic_saved);
-        } else {
-            setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
-        }
-        tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
-        if (tvLikeCount != null) {
-            tvLikeCount.setText(mem.getLikes());
-            tvDislikeCount.setText(mem.getDislikes());
-            final IConstants.OPINION opinion = mem.getOpinion();
-            switch (opinion) {
-                case LIKED:
-                    setImageDrawable(ivLike, R.drawable.ic_like_pressed);
-                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                    break;
-                case DISLIKED:
-                    setImageDrawable(ivLike, R.drawable.ic_like);
-                    setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
-                    break;
-                case NEUTRAL:
-                    setImageDrawable(ivLike, R.drawable.ic_like);
-                    setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                    break;
-                default:
-                    break;
+        if (getContext() != null) {
+            if (mem.isFavorite()) {
+                setImageDrawable(ivAddToFavourites, R.drawable.ic_saved);
+            } else {
+                setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
+            }
+            tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
+            if (tvLikeCount != null) {
+                tvLikeCount.setText(mem.getLikes());
+                tvDislikeCount.setText(mem.getDislikes());
+                final IConstants.OPINION opinion = mem.getOpinion();
+                switch (opinion) {
+                    case LIKED:
+                        setImageDrawable(ivLike, R.drawable.ic_like_pressed);
+                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                        break;
+                    case DISLIKED:
+                        setImageDrawable(ivLike, R.drawable.ic_like);
+                        setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
+                        break;
+                    case NEUTRAL:
+                        setImageDrawable(ivLike, R.drawable.ic_like);
+                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

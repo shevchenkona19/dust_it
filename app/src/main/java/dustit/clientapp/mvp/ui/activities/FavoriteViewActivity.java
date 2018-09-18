@@ -1,8 +1,14 @@
 package dustit.clientapp.mvp.ui.activities;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -38,6 +44,7 @@ import me.relex.photodraweeview.PhotoDraweeView;
 
 public class FavoriteViewActivity extends AppCompatActivity implements IFavoriteViewActivityView {
     public static final String ID_KEY = "idket";
+    private static final int PERMISSION_DIALOG = 1010;
 
     @BindView(R.id.tivFavoriteViewImage)
     PhotoDraweeView tivImage;
@@ -94,15 +101,14 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initClicks() {
-       // ivDelete.setOnClickListener(view -> mPresenter.removeFromFavorites(mFavoriteId));
         ivDelete.setOnClickListener(view -> setIsAdded(mFavoriteId));
         ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
         toolbar.setNavigationOnClickListener(view -> finish());
         ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
     }
 
-    private void setIsAdded(String mFavoriteId){
-        if (isAdded){
+    private void setIsAdded(String mFavoriteId) {
+        if (isAdded) {
             mPresenter.removeFromFavorites(mFavoriteId);
         } else {
             mPresenter.addToFavourites(mFavoriteId);
@@ -141,9 +147,24 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
 
     @Override
     public void onDownloaded(String pathToImage) {
-        /*sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-                Uri.parse("file://" + Environment.getExternalStorageDirectory())));*/
         Toast.makeText(this, getString(R.string.downloaded_to) + pathToImage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean checkPermission() {
+        int permCheckRead = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permCheckWrite = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permCheckRead == PackageManager.PERMISSION_GRANTED
+                || permCheckWrite == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void getPermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                PERMISSION_DIALOG);
     }
 
     @Override
@@ -173,5 +194,23 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_DIALOG: {
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                        mPresenter.downloadImage(mFavoriteId);
+                    }
+                } else {
+                    onError();
+                }
+            }
+        }
     }
 }

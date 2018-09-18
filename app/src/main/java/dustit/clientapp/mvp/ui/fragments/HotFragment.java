@@ -84,6 +84,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         rvHot.setLayoutManager(linearLayoutManager);
         bindFeedback(this);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        adapter.setIsHot();
         adapter.setHasStableIds(true);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
@@ -125,6 +126,10 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
         subscribeToFeedbackChanges();
         return v;
+    }
+
+    public void scrollToTop() {
+        rvHot.smoothScrollToPosition(0);
     }
 
     @Override
@@ -169,6 +174,10 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
     @Override
     public void onPartialUpdate(List<MemEntity> list) {
+        if (list.isEmpty()) {
+            adapter.onMemesEnded();
+            return;
+        }
         adapter.updateAtEnding(list);
     }
 

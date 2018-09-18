@@ -83,7 +83,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private var fabScrollYNormalPos: Float = 0f
     private val screenBounds = Rect()
-    private val ids = intArrayOf(R.drawable.ic_feed_pressed, R.drawable.ic_hot_pressed, R.drawable.ic_explore_white_pressed)
     private var spinnerInteractionListener: ICategoriesSpinnerInteractionListener? = null
 
     private val deque = ArrayDeque<Int>()
@@ -129,7 +128,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                 } else {
                     isBackPressed = !isBackPressed
                 }
-                L.print("Deque - $deque")
                 animateFabIcon(tab.position)
                 when (tab.position) {
                     0 -> vpFeed.setCurrentItem(0, true)
@@ -212,6 +210,9 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         layoutTransition.disableTransitionType(LayoutTransition.APPEARING)
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         layoutTransition.setDuration(LayoutTransition.CHANGING, 100)
+        toolbar.setOnClickListener {
+            adapter?.scrollToTop(vpFeed.currentItem)
+        }
         clLayout.layoutTransition = layoutTransition
         presenter.getCategories()
         SpotlightView.Builder(this)
@@ -290,7 +291,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             fabX = fabColapsed.x.toInt()
             fabY = fabColapsed.y.toInt()
         }
-//        if (presenter.isFeedFirstTime) {
     }
 
     private fun animateFabIcon(tabPos: Int) {

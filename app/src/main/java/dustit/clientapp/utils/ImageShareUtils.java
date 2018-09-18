@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -45,6 +47,9 @@ public class ImageShareUtils {
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
+            bmpUri = FileProvider.getUriForFile(context,
+                    "dustit.fileprovider",
+                    file);
             bmpUri = Uri.fromFile(file);
         } catch (IOException e) {
             e.printStackTrace();

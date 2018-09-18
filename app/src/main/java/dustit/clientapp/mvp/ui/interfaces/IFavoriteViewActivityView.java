@@ -6,6 +6,10 @@ public interface IFavoriteViewActivityView extends IActivityView{
     void onErrorRemovingFromFavorites();
     void onDownloaded(String pathToImage);
 
+    boolean checkPermission();
+
+    void getPermissions();
+
     void onDownloadFailed();
 
     void onError();

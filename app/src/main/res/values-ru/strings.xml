@@ -98,7 +98,7 @@
     <string name="user_icon_title">Ваш аккаунт</string>
     <string name="user_icon_description">Перейдя сюда, вы можете настроить приложение под себя: выбрать тему, изменить язык или ваше фото, а также написать нам предложения или замечания</string>
     <string name="add_to_favourites_title">Добавить в избранное</string>
-    <string name="add_to_favourites_description">Когда вы нажимаете на эту кнопку, мем созраняется в ваш список избранного. Оттуда мем можно сохранить на устройство или отправить друзьям</string>
+    <string name="add_to_favourites_description">Когда вы нажимаете на эту кнопку, мем сохраняется в ваш список избранного. Оттуда мем можно сохранить на устройство или отправить друзьям</string>
     <string name="all_favs_title">Список избранного</string>
     <string name="all_favs_description">Перейдя в этот раздел, вы можете просмотреть свои избранные мемы, сохранить их на устройство или отправить другу</string>
     <string name="write_us_title">Связаться с разработчиком</string>

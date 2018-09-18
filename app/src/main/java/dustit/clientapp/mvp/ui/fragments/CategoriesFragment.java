@@ -177,6 +177,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.onDestroyView();
     }
 
+    public void scrollToTop() {
+        rvFeed.smoothScrollToPosition(0);
+    }
+
     public void onCategoriesLoaded(boolean isCategoriesLoaded) {
         this.isCategoriesLoaded = isCategoriesLoaded;
     }
