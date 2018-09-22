@@ -310,9 +310,6 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onDestroy() {
-        val b = Bundle()
-        b.putLong("TIME_TRACK", System.currentTimeMillis() - TimeTracking.getInstance().startDate)
-        FirebaseAnalytics.getInstance(this).logEvent("TIME_TRACK", b)
         feedbackManager.destroy()
         presenter.unbind()
         adapter!!.destroy()
@@ -426,15 +423,21 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onBackPressed() {
-        if (deque.size > 1) {
-            isBackPressed = true
-            deque.pollLast()
-            vpFeed.setCurrentItem(deque.pollLast(), true)
-        } else if (deque.size == 1) {
-            isBackPressed = true
-            vpFeed.setCurrentItem(deque.pollLast(), true)
-        } else {
-            super.onBackPressed()
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+            return
+        }
+        when {
+            deque.size > 1 -> {
+                isBackPressed = true
+                deque.pollLast()
+                vpFeed.setCurrentItem(deque.pollLast(), true)
+            }
+            deque.size == 1 -> {
+                isBackPressed = true
+                vpFeed.setCurrentItem(deque.pollLast(), true)
+            }
+            else -> super.onBackPressed()
         }
     }
 

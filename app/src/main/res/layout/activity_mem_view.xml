@@ -150,13 +150,13 @@
                             android:layout_width="26dp"
                             android:layout_height="0dp"
                             android:layout_marginBottom="8dp"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
+                            app:layout_constraintRight_toLeftOf="@id/tvMemViewLikeCount"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_like" />
 
@@ -170,25 +170,25 @@
                             android:textSize="18sp"
                             android:textColor="#b3b3b3"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/ivMemViewDisliked"
+                            android:id="@id/ivMemViewDisliked"
                             android:layout_width="26dp"
                             android:layout_height="0dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginTop="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/ivMemViewLike"
+                            app:layout_constraintRight_toLeftOf="@+id/tvMemViewDislikeCount"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_dislike" />
 
                         <TextView
-                            android:id="@+id/tvMemViewDislikeCount"
+                            android:id="@id/tvMemViewDislikeCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -197,7 +197,7 @@
                             android:textSize="18sp"
                             android:textColor="#b3b3b3"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
+                            app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                     </android.support.constraint.ConstraintLayout>

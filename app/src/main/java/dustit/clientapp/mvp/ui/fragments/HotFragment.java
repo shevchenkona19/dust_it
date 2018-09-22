@@ -129,7 +129,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     }
 
     public void scrollToTop() {
-        rvHot.smoothScrollToPosition(0);
+        rvHot.scrollToPosition(0);
     }
 
     @Override
