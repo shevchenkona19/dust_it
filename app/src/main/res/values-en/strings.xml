@@ -76,4 +76,5 @@
     <string name="not_registred_error">Такого пользователя нет</string>
     <string name="goto_hot">Перейти к горячему</string>
     <string name="feed_memes_ended">Пока что, мемы для тебя закончились :(   Можешь пока посмотреть самый лайкаемые мемы :)</string>
+    <string name="view_policy">Ознайомитися з політикою приватності</string>
 </resources>

@@ -12,6 +12,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tbSettingsToolbar"
+
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -109,6 +110,35 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlSettingsPrivacy"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+                        <TextView
+                            android:id="@+id/tvSettingPrivacyLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/view_policy"
+                            tools:ignore="RelativeOverlap" />
+
+                        <ImageView
+                            android:id="@+id/ivSettingsPrivacyArrow"
+                            android:layout_width="30dp"
+                            app:srcCompat="@drawable/ic_arrow_right_simple"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:contentDescription="@string/view_policy" />
 
 
                     </RelativeLayout>

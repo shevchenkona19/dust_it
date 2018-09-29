@@ -50,8 +50,8 @@
     <string name="cant_load_feed">Сталася помилка при завантаженні мемів :(</string>
     <string name="retry_load_feed">Завантажити ще раз</string>
     <string name="applied">Застосовано</string>
-    <string name="empty_set_comments">Тут пока что нет ни одного комментария, а значит ты можешь быть первонахом!</string>
-    <string name="theme_light">Светлая</string>
+    <string name="empty_set_comments">Тут поки що немає жодного коментара, а це означає, що ти можеш бути першим!</string>
+    <string name="theme_light">Світла</string>
     <string name="theme_default">Стандартная</string>
     <string name="theme_dark">Тёмная</string>
     <string name="account_settings">Налаштування акаунта</string>
@@ -75,9 +75,6 @@
     <string name="share_image">Поделиться мемом:</string>
     <string name="cancel">Отмена</string>
     <string name="added_to_favourites">Мем добавлен в избранное</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="correct_this">Исправить это</string>
     <string name="empty_categories_feed">У вас не отмечено ни одной ктегории. Мы не можем ничего показать. лол</string>
     <string name="email_not_unique">Ваш email уже зарегестрирован</string>
@@ -90,4 +87,5 @@
     <string name="not_registred_error">Такого пользователя нет</string>
     <string name="goto_hot">Перейти к горячему</string>
     <string name="feed_memes_ended">Пока что, мемы для тебя закончились :(   Можешь пока посмотреть самый лайкаемые мемы :)</string>
+    <string name="view_policy">Ознайомитися з політикою приватності</string>
 </resources>
