@@ -12,6 +12,7 @@ import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.managers.ThemeManager;
 

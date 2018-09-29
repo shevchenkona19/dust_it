@@ -1,24 +1,18 @@
 package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.Objects;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +21,6 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
 import dustit.clientapp.mvp.model.entities.Category;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.activities.FeedActivity;
@@ -35,8 +28,6 @@ import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -110,13 +101,15 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         View v = inflater.inflate(R.layout.fragment_categories, container, false);
         unbinder = ButterKnife.bind(this, v);
         presenter.bind(this);
+        bindFeedback(this);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        adapter.setHasStableIds(true);
         rvFeed.setAdapter(adapter);
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
-            if (isCategoriesLoaded) {
+            if (currentCategory != null) {
                 srlRefresh.setRefreshing(true);
                 presenter.loadBase(currentCategory.getId());
             } else {
@@ -165,6 +158,8 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
             }
         });
         rvFeed.addOnScrollListener(scrollListener);
+        ((SimpleItemAnimator) rvFeed.getItemAnimator()).setSupportsChangeAnimations(false);
+
         subscribeToFeedbackChanges();
         if (!isCategoriesLoaded) {
             adapter.onFailedToLoad();
@@ -182,8 +177,12 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.onDestroyView();
     }
 
-    public void onCategoriesLoaded() {
+    public void scrollToTop() {
+        rvFeed.scrollToPosition(0);
+    }
 
+    public void onCategoriesLoaded(boolean isCategoriesLoaded) {
+        this.isCategoriesLoaded = isCategoriesLoaded;
     }
 
     @Override
@@ -206,6 +205,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     public void onErrorInLoading() {
         srlRefresh.setRefreshing(false);
         adapter.onFailedToLoad();
+        showErrorToast();
     }
 
     @Override
@@ -215,6 +215,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
             return;
         }
         presenter.loadBase(currentCategory.getId());
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return isUserRegistered();
     }
 
     @Override

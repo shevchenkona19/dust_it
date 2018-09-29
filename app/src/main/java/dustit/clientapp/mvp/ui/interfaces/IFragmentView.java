@@ -6,5 +6,4 @@ package dustit.clientapp.mvp.ui.interfaces;
  */
 
 public interface IFragmentView extends IView {
-    void onNotRegistered();
 }

@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.activities;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -137,8 +138,9 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 Locale.setDefault(locale);
                 final Configuration config = new Configuration();
                 config.locale = locale;
-                getBaseContext().getResources().updateConfiguration(config,
-                        getBaseContext().getResources().getDisplayMetrics());
+                final Resources resources = getBaseContext().getResources();
+                resources.updateConfiguration(config,
+                        resources.getDisplayMetrics());
                 userSettingsDataManager.saveNewLanguagePref(langToLoad);
                 restartActivity();
             });
@@ -160,10 +162,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
-    }
-
-    private int getColorFromResources(int c) {
-        return ContextCompat.getColor(this, c);
     }
 
     @Override

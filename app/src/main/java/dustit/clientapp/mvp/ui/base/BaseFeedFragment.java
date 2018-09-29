@@ -1,13 +1,8 @@
 package dustit.clientapp.mvp.ui.base;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,18 +10,19 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.FeedbackManager;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.interfaces.IFragmentView;
+import dustit.clientapp.utils.AlertBuilder;
 import rx.exceptions.OnErrorNotImplementedException;
 
 /**
  * Created by User on 06.03.2018.
  */
 
-public abstract class BaseFeedFragment extends Fragment implements FeedbackManager.IFeedbackInteraction, FeedRecyclerViewAdapter.IFeedInteractionListener {
+public abstract class BaseFeedFragment extends Fragment implements FeedbackManager.IFeedbackInteraction, IFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     @Inject
     FeedbackManager feedbackManager;
@@ -39,12 +35,18 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
         void notifyFeedScrollIdle(boolean b);
 
+        boolean isRegistered();
+
         void notifyFeedOnTop();
 
         void gotoFragment(byte id);
 
     }
     private IBaseFragmentInteraction fragmentInteraction;
+
+    public void bindFeedback(IFragmentView view) {
+        feedbackManager.bind(view);
+    }
 
     public void bindWithBase(Context context) {
         if (context instanceof IBaseFragmentInteraction) {
@@ -69,6 +71,10 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
     public void notifyFeedScrollChanged(int scrollY) {
         fragmentInteraction.notifyOnScrollChanged(scrollY);
+    }
+
+    public boolean isUserRegistered() {
+        return fragmentInteraction.isRegistered();
     }
 
     public void gotoFragment(byte id) {
@@ -122,5 +128,10 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
     @Override
     public void deleteDislike(@NotNull MemEntity mem) {
         feedbackManager.deleteDislike(mem);
+    }
+
+    @Override
+    public void onNotRegistered() {
+        AlertBuilder.showNotRegisteredPrompt(getContext());
     }
 }

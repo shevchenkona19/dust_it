@@ -1,5 +1,7 @@
 package dustit.clientapp.utils.bus;
 
+import java.lang.ref.WeakReference;
+
 public class FavouritesBus {
 
     private FavouritesBus() {
@@ -18,29 +20,29 @@ public class FavouritesBus {
         void consumeAdded(String id);
     }
 
-    private IConsumer mainConsumer;
-    private IConsumer additionalConsumer;
+    private WeakReference<IConsumer> mainConsumer;
+    private WeakReference<IConsumer> additionalConsumer;
 
     public void removed(String id) {
-        if (mainConsumer != null)
-            mainConsumer.consumeRemoved(id);
-        if (additionalConsumer != null)
-            additionalConsumer.consumeRemoved(id);
+        if (mainConsumer != null && mainConsumer.get() != null)
+            mainConsumer.get().consumeRemoved(id);
+        if (additionalConsumer != null && additionalConsumer.get() != null)
+            additionalConsumer.get().consumeRemoved(id);
     }
 
     public void added(String id) {
         if (mainConsumer != null)
-            mainConsumer.consumeAdded(id);
+            mainConsumer.get().consumeAdded(id);
         if (additionalConsumer != null)
-            additionalConsumer.consumeAdded(id);
+            additionalConsumer.get().consumeAdded(id);
     }
 
     public void setMainConsumer(IConsumer mainConsumer) {
-        this.mainConsumer = mainConsumer;
+        this.mainConsumer = new WeakReference<>(mainConsumer);
     }
 
     public void setAdditionalConsumer(IConsumer additionalConsumer) {
-        this.additionalConsumer = additionalConsumer;
+        this.additionalConsumer = new WeakReference<>(additionalConsumer);
     }
 
     public static void destroy() {

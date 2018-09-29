@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.INVISIBLE
 import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +17,7 @@ import dustit.clientapp.R
 import dustit.clientapp.customviews.WrapperLinearLayoutManager
 import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
-import dustit.clientapp.mvp.ui.activities.AccountActivity
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity
-import dustit.clientapp.mvp.ui.activities.SettingsActivity
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
@@ -56,18 +54,20 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         rvFeed = v.rvFeed
         srlRefresh = v.srlFeedRefresh
         unbinder = ButterKnife.bind(this, v)
+        bindFeedback(this)
         linearLayoutManager = WrapperLinearLayoutManager(context)
         rvFeed!!.layoutManager = linearLayoutManager
         adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
+        adapter.setHasStableIds(true)
         rvFeed!!.adapter = adapter
-        rlEmptyCategories = v.feedEmptyCategories
+        rlEmptyCategories = v.hotEmpty
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
-        v.btnFeedEmptyCategories.setOnClickListener({
+        v.btnEmptyHot.setOnClickListener {
             changingCategories = true
             val intent = Intent(context, PersonalSettingsActivity::class.java)
             startActivity(intent)
-        })
+        }
         srlRefresh!!.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100)
         srlRefresh!!.setOnRefreshListener {
             srlRefresh!!.isRefreshing = true
@@ -94,9 +94,19 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             }
         }
         rvFeed!!.addOnScrollListener(scrollListener)
+        (rvFeed!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
         subscribeToFeedbackChanges()
         presenter!!.loadBase()
         return v
+    }
+
+    fun scrollToTop() {
+        rvFeed?.scrollToPosition(0)
+    }
+
+    override fun isRegistered(): Boolean {
+        return isUserRegistered;
     }
 
     override fun onDestroyView() {

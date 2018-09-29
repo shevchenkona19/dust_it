@@ -69,7 +69,7 @@ public class SharedPreferencesRepository {
 
 
     public String loadLanguage() {
-        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "ru");
+        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "INIT");
     }
 
     public void saveTheme(ThemeManager.Theme t) {
@@ -105,5 +105,21 @@ public class SharedPreferencesRepository {
         preferences.edit()
                 .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered)
                 .apply();
+    }
+
+    public void setFeedVisited() {
+        preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_FEED, false).apply();
+    }
+
+    public boolean isFeedFirstTime() {
+        return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_FEED, true);
+    }
+
+    public void setAccountVisited() {
+        preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, false).apply();
+    }
+
+    public boolean isAccountFirstTime() {
+        return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, true);
     }
 }

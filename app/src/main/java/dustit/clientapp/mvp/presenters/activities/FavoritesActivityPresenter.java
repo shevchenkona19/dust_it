@@ -33,11 +33,6 @@ public class FavoritesActivityPresenter extends BasePresenter<IFavoriteActivityV
             getView().onNotRegistered();
             return;
         }
-        /*List<FavoritesUpperEntity.FavoriteEntity> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            list.add(new FavoritesUpperEntity.FavoriteEntity("http://www.gettyimages.com/gi-resources/images/VR/GettyImages-500977426.jpg"));
-        }
-        getView().onFavoritesArrived(list);*/
         final FavoritesUpperEntity[] favoritesEntity = new FavoritesUpperEntity[1];
         addSubscription(dataManager.getAllFavorites()
                 .subscribe(new Subscriber<FavoritesUpperEntity>() {

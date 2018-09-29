@@ -132,6 +132,21 @@
                     app:layout_constraintRight_toRightOf="@+id/sdvAccountUserIcon"
                     app:layout_constraintTop_toBottomOf="@+id/cpbAccountLoadingPhoto" />
 
+                <Button
+                    android:id="@+id/btnAccountRegister"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/register"
+                    android:textColor="#fff"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAccountFavoritesCounter"
+                    app:layout_constraintEnd_toEndOf="@+id/tvAccountUsername"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintLeft_toRightOf="@+id/sdvAccountUserIcon"
+                    app:layout_constraintStart_toStartOf="@+id/tvAccountUsername"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAccountUsername" />
+
                 <ImageView
                     android:id="@+id/ivAccountToFavorites"
                     android:layout_width="50dp"
@@ -184,25 +199,25 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true"
-            app:layout_constraintTop_toBottomOf="@+id/guideline8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline8">
 
             <LinearLayout
                 android:id="@+id/clAccountSettingsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:weightSum="1"
+                android:weightSum="3"
                 tools:context="dustit.clientapp.mvp.ui.activities.AccountActivity">
 
                 <Button
                     android:id="@+id/btnAccountEdit"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:drawableEnd="@drawable/ic_arrow_right_simple"
                     android:drawablePadding="8dp"
                     android:gravity="start|center_vertical"
@@ -213,12 +228,25 @@
                     android:id="@+id/btnAccountSettings"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/ic_arrow_right_simple"
+                    android:drawablePadding="4dp"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/settings"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btnAccountWriteUs"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="6dp"
                     android:drawableEnd="@drawable/ic_arrow_right_simple"
                     android:drawablePadding="8dp"
                     android:gravity="start|center_vertical"
-                    android:text="@string/settings"
+                    android:text="@string/write_us"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -229,7 +257,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7"/>
+            app:layout_constraintGuide_percent="0.7" />
 
     </android.support.constraint.ConstraintLayout>
 </RelativeLayout>

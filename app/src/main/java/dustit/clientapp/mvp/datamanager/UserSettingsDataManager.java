@@ -7,6 +7,7 @@ import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class UserSettingsDataManager {
+
     @Inject
     SharedPreferencesRepository preferencesRepository;
 
@@ -36,6 +37,22 @@ public class UserSettingsDataManager {
 
     public void setRegistered(boolean registered) {
         preferencesRepository.setRegistered(registered);
+    }
+
+    public boolean isFeedFirstTime() {
+        return preferencesRepository.isFeedFirstTime();
+    }
+
+    public boolean isAccountFirstTime() {
+        return preferencesRepository.isAccountFirstTime();
+    }
+
+    public void setFeedVisited() {
+        preferencesRepository.setFeedVisited();
+    }
+
+    public void setAccountVisited() {
+        preferencesRepository.setAccountVisited();
     }
 
 }

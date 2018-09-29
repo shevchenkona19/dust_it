@@ -2,11 +2,9 @@ package dustit.clientapp.utils;
 
 public interface IConstants {
     String BASE_URL = "http://hqnl0060547.online-vm.com";
-//    String BASE_URL = "http://192.168.0.102                                                                                         ";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
-    String NO_REGISTRATION_USERNAME = "test";
-    String NO_REGISTRATION_PASSWORD = "test1";
-    String SHARED_TRANSITION_NAME_KEY = "sh";
+    String NO_REGISTRATION_USERNAME = "user";
+    String NO_REGISTRATION_PASSWORD = "lolkek123";
 
     interface ErrorCodes {
         String INTERNAL_ERROR = "INTERNAL_ERROR";
@@ -29,7 +27,18 @@ public interface IConstants {
         String LANGUAGE_KEY = "lang ";
         String THEME_KEY = "Theme";
         String REGISTRATION_KEY = "REGISTRATION";
-        String IMMERSIVE_KEY = "immersive";
+        String FIRST_TIME_FEED = "FIRST_TIME_FEED";
+        String FIRST_TIME_ACCOUNT = "FIRST_TIME_ACCOUNT";
+    }
+
+    interface ISpotlight {
+        String FEED_ICON = "FEED_ICON";
+        String HOT_ICON = "HOT_ICON";
+        String CATEGORIES_ICON = "CATEGORIES_ICON";
+        String ACCOUNT_ICON = "ACCOUNT_ICON";
+        String FAB_FEED = "FAB_FEED";
+        String ADD_MEM_FAVS = "ADD_MEM_FAVS";
+        String ACCOUNT_ALL_FAVS = "ACCOUNT_ALL_FAVS";
     }
 
     enum OPINION {

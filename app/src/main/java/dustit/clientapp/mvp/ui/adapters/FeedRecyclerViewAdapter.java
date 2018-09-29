@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,13 +40,17 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean isLoading = true;
     private boolean isError = false;
     private boolean isMemesEnded = false;
+    private boolean isHot = false;
     private int appBarHeight;
-    private Context context;
 
     public interface IFeedInteractionListener {
         void reloadFeedBase();
 
         void onMemSelected(View animStart, MemEntity mem);
+
+        boolean isRegistered();
+
+        void onNotRegistered();
 
         void postLike(MemEntity mem);
 
@@ -68,9 +73,22 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         layoutInflater = LayoutInflater.from(context);
         mems = new ArrayList<>();
         mems.add(null);
-        this.context = context;
         interactionListener = feedInteractionListener;
         this.appBarHeight = appBarHeight;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        final MemEntity mem = mems.get(position);
+        if (mem == null && isError) {
+            return -2;
+        } else if (isMemesEnded && mem == null) {
+            return -3;
+        } else if (mem == null) {
+            return -1;
+        } else {
+            return Long.parseLong(mem.getId());
+        }
     }
 
     @NonNull
@@ -83,6 +101,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 return new FailedViewHolder(layoutInflater.inflate(R.layout.item_feed_failed_to_load, parent, false));
             case 3:
                 return new MemesEndedViewHolder(layoutInflater.inflate(R.layout.item_feed_memes_ended, parent, false));
+            case 4:
+                return new HotMemesEndedViewHolder(layoutInflater.inflate(R.layout.item_hot_memes_ended, parent, false));
             case 0:
             default:
                 return new MemViewHolder(layoutInflater.inflate(R.layout.item_feed, parent, false));
@@ -105,6 +125,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             final MemEntity mem = mems.get(pos);
             memViewHolder.bind(mem);
             memViewHolder.itemFeedLike.setOnClickListener(v -> {
+                if (!interactionListener.isRegistered()) {
+                    interactionListener.onNotRegistered();
+                    return;
+                }
                 switch (mem.getOpinion()) {
                     case DISLIKED:
                         mem.setDislikes(-1);
@@ -128,6 +152,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
             memViewHolder.itemFeedDislike.setOnClickListener(v -> {
+                if (!interactionListener.isRegistered()) {
+                    interactionListener.onNotRegistered();
+                    return;
+                }
                 switch (mem.getOpinion()) {
                     case LIKED:
                         mem.setLikes(-1);
@@ -174,6 +202,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    public void setIsHot() {
+        isHot = true;
+    }
+
     public void updateWhole(List<MemEntity> list) {
         isLoading = false;
         isError = false;
@@ -215,7 +247,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (mem == null && isError) {
             return 2;
         } else if (isMemesEnded && mem == null) {
-            return 3;
+            if (isHot) return 4;
+            else return 3;
         } else if (mem == null) {
             return 1;
         } else {
@@ -321,6 +354,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         FailedViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    static class HotMemesEndedViewHolder extends RecyclerView.ViewHolder {
+        public HotMemesEndedViewHolder(View itemView) {
+            super(itemView);
         }
     }
 

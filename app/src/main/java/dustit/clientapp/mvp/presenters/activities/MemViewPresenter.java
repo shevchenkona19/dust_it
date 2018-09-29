@@ -64,7 +64,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     public void loadCommentsWithOffset(String id, int offset) {
         getView().onStartLoading();
         final List<CommentEntity> list = new ArrayList<>();
-        dataManager.getComments(id, 5, offset)
+        addSubscription(dataManager.getComments(id, 5, offset)
                 .subscribe(new Subscriber<CommentEntity>() {
                     @Override
                     public void onCompleted() {
@@ -81,17 +81,17 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                     public void onNext(CommentEntity commentEntity) {
                         list.add(commentEntity);
                     }
-                });
+                }));
     }
 
     @Override
     public void postComment(String id, String text) {
-        if (!userSettingsDataManager.isRegistered()) {
+        if (!isRegistered()) {
             getView().onNotRegistered();
             return;
         }
         PostCommentEntity commentEntity = new PostCommentEntity(text);
-        dataManager.postComment(id, commentEntity)
+        addSubscription(dataManager.postComment(id, commentEntity)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
@@ -110,11 +110,15 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                             getView().onCommentSendFail();
                         }
                     }
-                });
+                }));
     }
 
     @Override
     public void addToFavourites(String id) {
+        if (!isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
@@ -138,6 +142,10 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
     @Override
     public void removeFromFavourites(String id) {
+        if (!isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         addSubscription(dataManager.removeFromFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
@@ -179,6 +187,10 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                 favouriteContainer.put(isFavourite);
             }
         }));
+    }
+
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
     }
 
 

@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -47,6 +49,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     RecyclerView rvHot;
     @BindView(R.id.srlHotRefresh)
     SwipeRefreshLayout srlRefresh;
+    @BindView(R.id.hotEmpty)
+    ViewGroup empty;
+    @BindView(R.id.btnEmptyHot)
+    Button emptyHotRetry;
+
     private int appBarHeight;
 
 
@@ -75,11 +82,20 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         unbinder = ButterKnife.bind(this, v);
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
+        bindFeedback(this);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        adapter.setIsHot();
+        adapter.setHasStableIds(true);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
+            srlRefresh.setRefreshing(true);
+            presenter.loadBase();
+        });
+        emptyHotRetry.setOnClickListener(view -> {
+            empty.setVisibility(View.INVISIBLE);
+            srlRefresh.setVisibility(View.VISIBLE);
             srlRefresh.setRefreshing(true);
             presenter.loadBase();
         });
@@ -106,8 +122,14 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
             }
         };
         rvHot.addOnScrollListener(scrollListener);
+        ((SimpleItemAnimator) rvHot.getItemAnimator()).setSupportsChangeAnimations(false);
+
         subscribeToFeedbackChanges();
         return v;
+    }
+
+    public void scrollToTop() {
+        rvHot.scrollToPosition(0);
     }
 
     @Override
@@ -136,13 +158,26 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
 
     @Override
     public void onBaseUpdated(List<MemEntity> list) {
+        if (list.isEmpty()) {
+            showEmpty();
+            return;
+        }
         adapter.updateWhole(list);
         rvHot.scheduleLayoutAnimation();
         srlRefresh.setRefreshing(false);
     }
 
+    private void showEmpty() {
+        empty.setVisibility(View.VISIBLE);
+        srlRefresh.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onPartialUpdate(List<MemEntity> list) {
+        if (list.isEmpty()) {
+            adapter.onMemesEnded();
+            return;
+        }
         adapter.updateAtEnding(list);
     }
 
@@ -155,6 +190,11 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void reloadFeedBase() {
         presenter.loadBase();
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return isUserRegistered();
     }
 
     @Override

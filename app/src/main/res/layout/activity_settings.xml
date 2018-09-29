@@ -9,7 +9,6 @@
     android:orientation="vertical"
     tools:context="dustit.clientapp.mvp.ui.activities.SettingsActivity">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/tbSettingsToolbar"
 
@@ -110,8 +109,6 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp" />
-
-
                     </RelativeLayout>
 
                     <RelativeLayout

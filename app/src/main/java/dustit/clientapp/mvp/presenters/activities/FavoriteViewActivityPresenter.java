@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.Request;
@@ -68,30 +69,35 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
 
     @Override
     public void downloadImage(String id) {
-        Picasso.get()
-                .load(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + id))
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        String res = saveImage(bitmap);
-                        if (res.equals("")) {
+        boolean permCheck = getView().checkPermission();
+        if (permCheck) {
+            Picasso.get()
+                    .load(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + id))
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            String res = saveImage(bitmap);
+                            if (res.equals("")) {
+                                getView().onDownloadFailed();
+                            } else {
+                                getView().onDownloaded(res);
+
+                            }
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                             getView().onDownloadFailed();
-                        } else {
-                            getView().onDownloaded(res);
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
                         }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        getView().onDownloadFailed();
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+                    });
+        } else {
+            getView().getPermissions();
+        }
     }
 
     private String saveImage(Bitmap finalBitmap) {
@@ -101,16 +107,15 @@ public class FavoriteViewActivityPresenter extends BasePresenter<IFavoriteViewAc
         Random generator = new Random();
         int n = 1000000;
         n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ())
-            file.delete ();
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
         try {
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
             out.flush();
             out.close();
-
         } catch (Exception e) {
             e.printStackTrace();
             return "";

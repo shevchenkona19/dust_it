@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="dustit.clientapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        tools:replace="android:supportsRtl"
         android:name=".App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -17,6 +19,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashScreenStyle">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,20 +28,24 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".mvp.ui.activities.ChooserActivity"
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/HelloTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".mvp.ui.activities.RegisterActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/HelloTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".mvp.ui.activities.PreTestActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/HelloTheme" />
         <activity
@@ -49,6 +56,7 @@
         <activity
             android:name=".mvp.ui.activities.ResultActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/HelloTheme" />
         <activity
             android:name=".mvp.ui.activities.FeedActivity"
@@ -58,14 +66,17 @@
         <activity
             android:name=".mvp.ui.activities.AccountActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/MasterDayNight" />
         <activity
             android:name=".mvp.ui.activities.SettingsActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeDayNight" />
         <activity
             android:name=".mvp.ui.activities.PersonalSettingsActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeDayNight" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
@@ -74,11 +85,28 @@
         <activity
             android:name=".mvp.ui.activities.FavoritesActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/DetailDayNight" />
         <activity
             android:name=".mvp.ui.activities.FavoriteViewActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/AppThemeDayNight" />
+        <activity
+            android:name=".mvp.ui.activities.UserFeedbackActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/AppThemeDayNight"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="dustit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_path" />
+        </provider>
     </application>
 
 </manifest>

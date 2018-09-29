@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.model.apis;
 
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
@@ -16,6 +17,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import okhttp3.MultipartBody;
 import retrofit2.Response;
@@ -131,5 +133,9 @@ public interface ServerAPI {
     @GET("/favorites/isFavourite")
     Observable<IsFavourite> isFavourite(@Header("Authorization") String token,
                                         @Query("id") String id);
+
+    @POST("/feedback/messageForDev")
+    Observable<NewResponseEntity> postUserFeedback(@Header("Authorization") String token,
+                                                   @Body UserFeedbackEntity userFeedbackEntity);
 
 }

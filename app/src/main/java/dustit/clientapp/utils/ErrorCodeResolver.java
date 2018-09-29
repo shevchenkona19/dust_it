@@ -55,6 +55,9 @@ public class ErrorCodeResolver {
             case IConstants.ErrorCodes.NOT_REGISTERED:
                 error = contextWeakReference.get().getString(R.string.not_registred_error);
                 break;
+            case IConstants.ErrorCodes.PASSWORDS_DONT_MATCH:
+                error = contextWeakReference.get().getString(R.string.password_dont_match);
+                break;
             default:
                 error = contextWeakReference.get().getString(R.string.internal_error);
                 break;
