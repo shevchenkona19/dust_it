@@ -152,6 +152,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
 
             @Override
             public void onCategorySelected(@NonNull Category category) {
+                scrollToTop();
                 currentCategory = category;
                 srlRefresh.setEnabled(true);
                 presenter.loadBase(category.getId());

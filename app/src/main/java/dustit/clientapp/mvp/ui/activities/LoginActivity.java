@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     ProgressBar pbLoading;
     @BindView(R.id.tvLoginNotRegistered)
     TextView tvNotRegistered;
+    @BindView(R.id.ivLoginGoBack)
+    ImageView ivGoBack;
 
     private final LoginActivityPresenter loginActivityPresenter = new LoginActivityPresenter();
     private final StringUtil stringUtil = new StringUtil(this);
@@ -69,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             finish();
         });
+        ivGoBack.setOnClickListener(v -> finish());
     }
 
     @Override

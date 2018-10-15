@@ -65,6 +65,7 @@
                         android:id="@+id/relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
+                        android:background="?attr/selectableItemBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +91,7 @@
                         android:id="@+id/rlSettingsLanguagePicker"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
+                        android:background="?attr/selectableItemBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
@@ -115,30 +117,62 @@
                         android:id="@+id/rlSettingsPrivacy"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
+                        android:background="?attr/selectableItemBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
                         <TextView
                             android:id="@+id/tvSettingPrivacyLabel"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_toStartOf="@+id/ivSettingsPrivacyArrow"
+                            android:layout_alignParentStart="true"
                             android:text="@string/view_policy"
                             tools:ignore="RelativeOverlap" />
 
                         <ImageView
-                            android:id="@+id/ivSettingsPrivacyArrow"
-                            android:layout_width="30dp"
+                            android:id="@id/ivSettingsPrivacyArrow"
+                            android:layout_width="15dp"
                             app:srcCompat="@drawable/ic_arrow_right_simple"
-                            android:layout_height="30dp"
+                            android:layout_height="15dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp"
                             android:contentDescription="@string/view_policy" />
-
-
                     </RelativeLayout>
+                    <RelativeLayout
+                    android:id="@+id/rlSettingsNotifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:background="?attr/selectableItemBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+                    <TextView
+                        android:id="@+id/tvSettingsNotifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_toStartOf="@+id/swSettingsNotifications"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/enable_notifications"
+                        tools:ignore="RelativeOverlap" />
+
+                    <Switch
+                        android:id="@id/swSettingsNotifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp" />
+                </RelativeLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </FrameLayout>

@@ -37,7 +37,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <me.relex.photodraweeview.PhotoDraweeView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/zdvMem"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -156,12 +156,12 @@
                             android:clickable="true"
                             android:focusable="true"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@id/tvMemViewLikeCount"
+                            app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_like" />
 
                         <TextView
-                            android:id="@+id/tvMemViewLikeCount"
+                            android:id="@id/tvMemViewLikeCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"

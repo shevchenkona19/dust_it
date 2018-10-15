@@ -55,4 +55,19 @@ public class UserSettingsDataManager {
         preferencesRepository.setAccountVisited();
     }
 
+    public void setNotificationsEnabled(boolean enabled) {
+        preferencesRepository.setNotificationsEnabled(enabled);
+    }
+
+    public boolean isNotificationsEnabled() {
+        return preferencesRepository.isNotificationsEnabled();
+    }
+
+    public boolean enabledAutoStart() {
+        return preferencesRepository.enabledAutoStart();
+    }
+
+    public void setEnabledAutostart(boolean enabled) {
+        preferencesRepository.setEnabledAutostart(enabled);
+    }
 }

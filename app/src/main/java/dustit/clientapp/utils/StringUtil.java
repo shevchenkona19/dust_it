@@ -32,7 +32,8 @@ public class StringUtil {
 
     //Username check
     private boolean isUsernameNormLength(EditText editText) {
-        return editText.getText().length() > 0 && editText.getText().length() < 17;
+        int textL = editText.getText().toString().length();
+        return textL > 0 && textL < 17;
     }
 
     private void setUsernameIncorrectLengthError(TextInputLayout textInputLayout) {
@@ -79,15 +80,14 @@ public class StringUtil {
     }
 
     private boolean isPasswordContainLetterNumber(EditText editText) {
-        boolean isLetter = false;
         char[] c = editText.getText().toString().toCharArray();
         for (char ch : c
                 ) {
             if (Pattern.matches("[a-zA-Z]+", String.valueOf(ch))) {
-                isLetter = true;
+                return true;
             }
         }
-        return (isLetter);
+        return false;
     }
 
     private void setPasswordNoLetterNumberError(TextInputLayout textInputLayout) {
@@ -114,8 +114,7 @@ public class StringUtil {
      **/
     public boolean isCorrectInput(EditText etRegisterEmail, EditText etRegisterPassword,
                                   EditText etRegisterUsername) {
-        return (isUsernameContainLetter(etRegisterUsername) &&
-                isUsernameNormLength(etRegisterUsername) && isUsernameValid(etRegisterUsername) &&
+        return (isUsernameNormLength(etRegisterUsername) && isUsernameValid(etRegisterUsername) &&
                 isPasswordContainLetterNumber(etRegisterPassword) &&
                 isPasswordNormLength(etRegisterPassword) && isPasswordValid(etRegisterPassword) &&
                 isEmailCorrect(etRegisterEmail));

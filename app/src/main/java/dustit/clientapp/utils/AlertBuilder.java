@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 
+import java.lang.ref.WeakReference;
+
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.RegisterActivity;
+import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 
 public class AlertBuilder {
 
@@ -61,5 +64,18 @@ public class AlertBuilder {
             alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#000000"));
         });
         alertDialog.show();
+    }
+
+    public static AlertDialog.Builder getReviewDialog(WeakReference<Context> reference) {
+        Context context = reference.get();
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.review_title))
+                .setMessage(context.getString(R.string.review_message));
+    }
+
+    public static AlertDialog.Builder showXiaomiNotifications(Context context) {
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.enable_autostart))
+                .setMessage(context.getString(R.string.autostart));
     }
 }

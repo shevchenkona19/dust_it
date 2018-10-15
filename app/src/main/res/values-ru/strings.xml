@@ -13,7 +13,7 @@
     <string name="register">Зарегистрироваться</string>
     <string name="deleted_from_favorites">Удалено из избранных</string>
     <string name="downloaded_to">Сохранено в:</string>
-    <string name="email_not_valid">Неверный адрес</string>
+    <string name="email_not_valid">Неверный адрес почты</string>
     <string name="login_length">Длина логина от 4 до 16 символов</string>
     <string name="must_containt_at_least_one_latin">Хотя бы одна латинская буква</string>
     <string name="only_numbers_and_latin">Только цифры и латинские буквы</string>
@@ -108,5 +108,16 @@
     <string name="description_create_account">Вы хотите зарегистрироваться в MemSpace?</string>
     <string name="restart_test">Перепройти тест</string>
     <string name="view_policy">Ознакомиться с политикой приватности</string>
+    <string name="continue_policy_view">Используя наш сервис, вы соглашаетесь с нашей политикой приватности</string>
+    <string name="connection_issue">У вас возникли проблемы с сетью. Подключитесь к интернету и попробуйте ещё раз</string>
+    <string name="never">Никогда</string>
+    <string name="leave_review">Оставить отзыв</string>
+    <string name="review_title">Нравятся мемы?</string>
+    <string name="review_message">Как вам MemSpace? Оставьте свой отзыв!</string>
+    <string name="return_notification_title">MemSpace вызывает</string>
+    <string name="return_notitfication_message">Вас давно не было… А у нас тут куча новых мемов!</string>
+    <string name="enable_notifications">Получать уведомления</string>
+    <string name="enable_autostart">Разрешить автозапуск приложения</string>
+    <string name="autostart">Чтобы получать уведомления о новых мемах, пожалуйста, включите автозапуск MemSpace</string>
 
 </resources>

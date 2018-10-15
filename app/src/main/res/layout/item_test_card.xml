@@ -5,9 +5,18 @@
     android:layout_height="match_parent"
     app:cardCornerRadius="12dp"
     app:cardUseCompatPadding="true">
+    
+    <ProgressBar
+        android:id="@+id/pbTestCardLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/clTestCard"
         android:layout_width="match_parent"
+        android:visibility="invisible"
         android:layout_height="match_parent">
 
         <ImageView

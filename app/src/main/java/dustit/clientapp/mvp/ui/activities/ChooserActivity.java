@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +29,7 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IChooserActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.IConstants;
 
 public class ChooserActivity extends AppCompatActivity implements IChooserActivityView {
     @BindView(R.id.btnChooserLogin)
@@ -44,6 +46,8 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     ConstraintLayout clMainLayout;
     @BindView(R.id.pbChooserLoading)
     View rlLoadingLayout;
+    @BindView(R.id.tvChooserViewPolicy)
+    TextView tvViewPolicy;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
@@ -146,6 +150,10 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
                 alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
             });
             alertDialog.show();
+        });
+        tvViewPolicy.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(IConstants.BASE_URL + "/account/policy"));
+            startActivity(browserIntent);
         });
     }
 

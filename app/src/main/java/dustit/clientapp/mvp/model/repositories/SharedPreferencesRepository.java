@@ -122,4 +122,44 @@ public class SharedPreferencesRepository {
     public boolean isAccountFirstTime() {
         return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, true);
     }
+
+    public int getPositiveCount() {
+        return preferences.getInt(IConstants.IPreferences.POSITIVE_KEY, 0);
+    }
+
+    public void savePositiveCount(int positive) {
+        preferences.edit().putInt(IConstants.IPreferences.POSITIVE_KEY, positive).apply();
+    }
+
+    public int getPositiveLimit() {
+        return preferences.getInt(IConstants.IPreferences.POSITIVE_LIMIT, 3);
+    }
+
+    public void setPositiveLimit(int limit) {
+        preferences.edit().putInt(IConstants.IPreferences.POSITIVE_LIMIT, limit).apply();
+    }
+
+    public boolean isReviewed() {
+        return preferences.getBoolean(IConstants.IPreferences.REVIEW, false);
+    }
+
+    public void setReviewed(boolean isReviewed) {
+        preferences.edit().putBoolean(IConstants.IPreferences.REVIEW, isReviewed).apply();
+    }
+
+    public void setNotificationsEnabled(boolean enabled) {
+        preferences.edit().putBoolean(IConstants.IPreferences.NOTIFICATIONS, enabled).apply();
+    }
+
+    public boolean isNotificationsEnabled() {
+        return preferences.getBoolean(IConstants.IPreferences.NOTIFICATIONS, true);
+    }
+
+    public boolean enabledAutoStart() {
+        return preferences.getBoolean(IConstants.IPreferences.AUTOSTART, true);
+    }
+
+    public void setEnabledAutostart(boolean enabledAutostart) {
+        preferences.edit().putBoolean(IConstants.IPreferences.AUTOSTART, enabledAutostart).apply();
+    }
 }

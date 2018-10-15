@@ -32,6 +32,7 @@ import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.TestDeckAdapter;
 import dustit.clientapp.mvp.ui.interfaces.ITestActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.L;
 
 public class TestActivity extends AppCompatActivity implements ITestActivityView, TestDeckAdapter.ITestDeckListener {
 
@@ -62,6 +63,8 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
     private TestDeckAdapter adapter;
     private final List<String> interestedCategories = new ArrayList<>();
     private final List<TestMemEntity> arrivedCategories = new ArrayList<>();
+    private boolean isFinished = false;
+    private boolean isFinishedProceed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +128,11 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
 
     private void checkFinished() {
         if (currentIndex == arrivedCategories.size()) {
-            onTestFinished();
-            hideCorrectButton();
+            if (!isFinished) {
+                onTestFinished();
+                hideCorrectButton();
+                isFinished = true;
+            }
         }
     }
 
@@ -142,6 +148,8 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
         currentIndex++;
         updateProgress(currentIndex);
     }
+
+
 
     private void correctPrevious() {
         csvTestDeck.reverse();
@@ -169,14 +177,17 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
     }
 
     private void onTestFinished() {
-        csvTestDeck.setVisibility(View.GONE);
-        final Intent intent = new Intent(this, ResultActivity.class);
-        String[] array = new String[interestedCategories.size()];
-        array = interestedCategories.toArray(array);
-        intent.putExtra(CATEGORY_LIST_KEY, array);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        if (!isFinishedProceed) {
+            isFinishedProceed = true;
+            csvTestDeck.setVisibility(View.GONE);
+            final Intent intent = new Intent(this, ResultActivity.class);
+            String[] array = new String[interestedCategories.size()];
+            array = interestedCategories.toArray(array);
+            intent.putExtra(CATEGORY_LIST_KEY, array);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setupCorrectButton() {
@@ -274,5 +285,10 @@ public class TestActivity extends AppCompatActivity implements ITestActivityView
         AnimatorSet overlayAnimationSet = new AnimatorSet();
         overlayAnimationSet.playTogether(overlayAnimator);
         csvTestDeck.swipe(SwipeDirection.Left, cardAnimationSet, overlayAnimationSet);
+    }
+
+    @Override
+    public void finish() {
+        onTestFinished();
     }
 }

@@ -46,6 +46,7 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
                     @Override
                     public void onError(Throwable e) {
+                        L.print("----------------------------------------------------, " + e.getMessage());
                         getView().onError(e.getMessage());
                     }
 

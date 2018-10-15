@@ -16,7 +16,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import dustit.clientapp.utils.Converter;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
+import dustit.clientapp.utils.managers.ReviewManager;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
@@ -42,6 +45,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean isMemesEnded = false;
     private boolean isHot = false;
     private int appBarHeight;
+    private Context context;
 
     public interface IFeedInteractionListener {
         void reloadFeedBase();
@@ -73,6 +77,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         layoutInflater = LayoutInflater.from(context);
         mems = new ArrayList<>();
         mems.add(null);
+        this.context = context;
         interactionListener = feedInteractionListener;
         this.appBarHeight = appBarHeight;
     }
@@ -136,12 +141,16 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                         mem.setOpinion(IConstants.OPINION.LIKED);
                         notifyItemChanged(pos);
                         interactionListener.postLike(mem);
+                        if (context != null)
+                            ReviewManager.get().positiveCount(new WeakReference<>(context));
                         break;
                     case NEUTRAL:
                         mem.setLikes(1);
                         mem.setOpinion(IConstants.OPINION.LIKED);
                         notifyItemChanged(pos);
                         interactionListener.postLike(mem);
+                        if (context != null)
+                            ReviewManager.get().positiveCount(new WeakReference<>(context));
                         break;
                     case LIKED:
                         mem.setLikes(-1);

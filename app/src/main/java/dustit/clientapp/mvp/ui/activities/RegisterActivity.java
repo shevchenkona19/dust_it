@@ -1,13 +1,15 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.ErrorCodeResolver;
 import dustit.clientapp.utils.StringUtil;
+import dustit.clientapp.utils.managers.ErrorManager;
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView {
     @BindView(R.id.etRegisterUsername)
@@ -44,6 +47,9 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     TextView tvRegistered;
     @BindView(R.id.btnRegisterWrapper)
     View btnRegisterWrapper;
+    @BindView(R.id.ivRegisterGoBack)
+    ImageView ivGoBack;
+    private ErrorManager errorManager = ErrorManager.get();
 
     private final RegisterActivityPresenter presenter = new RegisterActivityPresenter();
     private final StringUtil stringUtil = new StringUtil(this);
@@ -69,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                         tilRegisterPassword, tilRegisterUsername);
             }
         });
+        ivGoBack.setOnClickListener(v -> finish());
         tvRegistered.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
     }
 
@@ -97,9 +104,11 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         tilRegisterUsername.setVisibility(View.VISIBLE);
         btnRegisterWrapper.setVisibility(View.VISIBLE);
         pbLoading.setVisibility(View.GONE);
-        Toast.makeText(this,
-                ErrorCodeResolver.resolveError(message, new WeakReference<>(this)),
-                Toast.LENGTH_SHORT)
-                .show();
+        String error = ErrorCodeResolver.resolveError(message, new WeakReference<>(this));
+        if (error.equals(getString(R.string.error))) {
+            error = getString(R.string.connection_issue);
+        }
+        errorManager.showError(error,
+                new WeakReference<>(this));
     }
 }

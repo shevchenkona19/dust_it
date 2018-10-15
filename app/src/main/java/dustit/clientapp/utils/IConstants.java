@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://hqnl0060547.online-vm.com";
+    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
@@ -29,6 +29,13 @@ public interface IConstants {
         String REGISTRATION_KEY = "REGISTRATION";
         String FIRST_TIME_FEED = "FIRST_TIME_FEED";
         String FIRST_TIME_ACCOUNT = "FIRST_TIME_ACCOUNT";
+        String POSITIVE_KEY = "POSITIVE_KEY";
+        String POSITIVE_LIMIT = "POSITIVE_LIMIT";
+        String REVIEW = "REVIEW";
+        String NOTIFICATIONS = "NOTIFICATIONS";
+        String LAST_RUN = "LAST_RUN";
+        String AUTOSTART = "AUTOSTART";
+        String FIRST_TIME = "FIRST_TIME";
     }
 
     interface ISpotlight {

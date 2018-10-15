@@ -43,6 +43,7 @@ import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.utils.FavoritesUtils;
+import dustit.clientapp.utils.managers.ReviewManager;
 
 /**
  * Created by shevc on 22.09.2017.
@@ -122,4 +123,6 @@ public interface AppComponent {
     void inject(BaseFeedFragment baseFeedFragment);
 
     void inject(UserFeedbackPresenter userFeedbackPresenter);
+
+    void inject(ReviewManager reviewManager);
 }

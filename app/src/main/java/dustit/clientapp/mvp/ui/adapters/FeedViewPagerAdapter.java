@@ -22,6 +22,7 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         appbarHeight = appBarHeight;
     }
+
     private int appbarHeight;
     private WeakReference<FeedFragment> feedFragment;
     private WeakReference<HotFragment> hotFragment;
@@ -62,13 +63,16 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
     public void scrollToTop(int itemNum) {
         switch (itemNum) {
             case 0:
-                feedFragment.get().scrollToTop();
+                if (feedFragment != null)
+                    feedFragment.get().scrollToTop();
                 break;
             case 1:
-                hotFragment.get().scrollToTop();
+                if (hotFragment != null)
+                    hotFragment.get().scrollToTop();
                 break;
             case 2:
-                categoriesFragment.get().scrollToTop();
+                if (categoriesFragment != null)
+                    categoriesFragment.get().scrollToTop();
                 break;
         }
     }

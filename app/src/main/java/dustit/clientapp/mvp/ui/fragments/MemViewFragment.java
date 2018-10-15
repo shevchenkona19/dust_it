@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +31,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
@@ -38,9 +41,11 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.wooplr.spotlight.SpotlightView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +71,10 @@ import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.KeyboardHandler;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.managers.ReviewManager;
 import me.relex.photodraweeview.PhotoDraweeView;
+
+import static dustit.clientapp.utils.IConstants.BASE_URL;
 
 public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
@@ -147,7 +155,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @BindView(R.id.abMemViewUpperBarLayout)
     AppBarLayout toolbar;
     @BindView(R.id.zdvMem)
-    PhotoDraweeView pdvMem;
+    PhotoView pdvMem;
     @BindView(R.id.tvMemViewCommentsLabel)
     TextView tvCommentsLabel;
     @BindView(R.id.ivMemViewAddToPhotos)
@@ -215,29 +223,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             tvCommentEmpty.setVisibility(View.INVISIBLE);
         });
         clUpperLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId())
-                .setTapToRetryEnabled(true)
-                .setOldController(pdvMem.getController())
-                .setControllerListener(new BaseControllerListener<ImageInfo>() {
-                    @Override
-                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                        super.onFinalImageSet(id, imageInfo, animatable);
-                        if (imageInfo == null || pdvMem == null) {
-                            return;
-                        }
-                        if (getActivity() != null) {
-                            ActivityCompat.startPostponedEnterTransition(getActivity());
-                        }
-                        pdvMem.update(imageInfo.getWidth(), imageInfo.getHeight());
-                    }
-                })
-                .build();
-        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
-                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
-                .setProgressBarImage(new ProgressBarDrawable())
-                .build();
-        pdvMem.setController(ctrl);
-        pdvMem.setHierarchy(hierarchy);
+        Glide.with(this)
+                .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
+                .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
+                .into(pdvMem);
         supPanel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -256,12 +245,14 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                             canPerformTap = false;
                         break;
                     case EXPANDED:
+                        enableClicks();
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         canPerformTap = true;
                         presenter.loadCommentsBase(mem.getId());
                         supPanel.setDragView(clExpandedUpperLayout);
                         break;
                     case COLLAPSED:
+                        disableClicks();
                         prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         KeyboardHandler.hideKeyboard(getActivity());
                         canPerformTap = true;
@@ -312,6 +303,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         return view;
     }
 
+    private void enableClicks() {
+        ivLike.setVisibility(View.GONE);
+        ivDislike.setVisibility(View.GONE);
+    }
+
+    private void disableClicks() {
+        ivLike.setVisibility(View.VISIBLE);
+        ivDislike.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onDestroyView() {
         unbinder.unbind();
@@ -343,26 +344,28 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             } else {
                 setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);
             }
-            tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
-            if (tvLikeCount != null) {
-                tvLikeCount.setText(mem.getLikes());
-                tvDislikeCount.setText(mem.getDislikes());
-                final IConstants.OPINION opinion = mem.getOpinion();
-                switch (opinion) {
-                    case LIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like_pressed);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    case DISLIKED:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
-                        break;
-                    case NEUTRAL:
-                        setImageDrawable(ivLike, R.drawable.ic_like);
-                        setImageDrawable(ivDislike, R.drawable.ic_dislike);
-                        break;
-                    default:
-                        break;
+            if (tvDislikeCount != null) {
+                tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
+                if (tvLikeCount != null) {
+                    tvLikeCount.setText(mem.getLikes());
+                    tvDislikeCount.setText(mem.getDislikes());
+                    final IConstants.OPINION opinion = mem.getOpinion();
+                    switch (opinion) {
+                        case LIKED:
+                            setImageDrawable(ivLike, R.drawable.ic_like_pressed);
+                            setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                            break;
+                        case DISLIKED:
+                            setImageDrawable(ivLike, R.drawable.ic_like);
+                            setImageDrawable(ivDislike, R.drawable.ic_dislike_pressed);
+                            break;
+                        case NEUTRAL:
+                            setImageDrawable(ivLike, R.drawable.ic_like);
+                            setImageDrawable(ivDislike, R.drawable.ic_dislike);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -399,11 +402,15 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
                 mem.setLikes(-1);
             } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
+                if (getContext() != null)
+                    ReviewManager.get().positiveCount(new WeakReference<>(getContext()));
                 feedbackManager.postLike(mem);
                 mem.setLikes(1);
                 mem.setDislikes(-1);
                 mem.setOpinion(IConstants.OPINION.LIKED);
             } else {
+                if (getContext() != null)
+                    ReviewManager.get().positiveCount(new WeakReference<>(getContext()));
                 feedbackManager.postLike(mem);
                 mem.setLikes(1);
                 mem.setOpinion(IConstants.OPINION.LIKED);
@@ -447,6 +454,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             if (mem.isFavorite()) {
                 presenter.removeFromFavourites(mem.getId());
             } else {
+                if (getContext() != null)
+                    ReviewManager.get().positiveCount(new WeakReference<>(getContext()));
                 presenter.addToFavourites(mem.getId());
             }
         });
@@ -563,10 +572,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private void setImageDrawable(ImageView ivImage, int d) {
         if (getContext() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ivImage.setImageDrawable(getContext().getDrawable(d));
-            } else {
-                ivImage.setImageDrawable(getContext().getResources().getDrawable(d));
+            if (ivImage != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ivImage.setImageDrawable(getContext().getDrawable(d));
+                } else {
+                    ivImage.setImageDrawable(getContext().getResources().getDrawable(d));
+                }
             }
         }
     }

@@ -108,6 +108,15 @@
     <string name="description_create_account">Do you want to create account in MemSpace?</string>
     <string name="restart_test">Retake mem-test</string>
     <string name="view_policy">View our privacy policy</string>
-
-
+    <string name="continue_policy_view">By continuing using our service you accept our Privacy Policy</string>
+    <string name="connection_issue">You have connectivity issues. Connect to the internet and try again</string>
+    <string name="never">Never</string>
+    <string name="leave_review">Review</string>
+    <string name="review_title">Do you like our memes?</string>
+    <string name="review_message">Like MemSpace? Leave a review!</string>
+    <string name="return_notification_title">MemSpace calling</string>
+    <string name="return_notitfication_message">We haven\'t seen you in a while… We have plenty of new memes waiting for you!</string>
+    <string name="enable_notifications">Enable notifications</string>
+    <string name="enable_autostart">Allow autostart</string>
+    <string name="autostart">If you want to get notifications about new memes, please allow MemSpace to autostart</string>
 </resources>

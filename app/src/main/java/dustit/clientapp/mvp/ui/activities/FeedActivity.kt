@@ -46,10 +46,12 @@ import dustit.clientapp.utils.IConstants
 import dustit.clientapp.utils.L
 import dustit.clientapp.utils.TimeTracking
 import dustit.clientapp.utils.bus.FavouritesBus
+import dustit.clientapp.utils.managers.NotifyManager
 import dustit.clientapp.utils.managers.ThemeManager
 import kotlinx.android.synthetic.main.activity_feed.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
     override fun isRegistered(): Boolean {
@@ -65,6 +67,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     internal lateinit var container: ViewGroup
     internal lateinit var toolbar: android.support.v7.widget.Toolbar
     private lateinit var tabs: android.support.design.widget.TabLayout
+    private var categories: List<Category> = ArrayList()
 
     private var adapter: FeedViewPagerAdapter? = null
     private val presenter: FeedActivityPresenter = FeedActivityPresenter()
@@ -235,6 +238,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                 .enableDismissAfterShown(false)
                 .usageId(IConstants.ISpotlight.FAB_FEED)
                 .show()
+        startService(Intent(this, NotifyManager::class.java))
     }
 
     private fun showIntro() {
@@ -331,31 +335,29 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     override fun onCategoriesArrived(categoryList: List<Category>) {
         if (!categoryList.isEmpty()) {
+            categories = ArrayList(categoryList)
             val categoryNames = ArrayList<String>()
             for (category in categoryList) categoryNames.add(category.name)
             val adapter = ArrayAdapter(this,
                     android.R.layout.simple_spinner_item, categoryNames)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spCategoriesChooser!!.adapter = adapter
-            spCategoriesChooser!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    if (spinnerInteractionListener != null) {
-                        spinnerInteractionListener!!.onCategorySelected(categoryList[position])
+            spinnerInteractionListener?.onCategoriesArrived()
+            spCategoriesChooser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (view != null) {
+                        spinnerInteractionListener?.onCategorySelected(categories[position])
                     }
                 }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
-            if (spinnerInteractionListener != null)
-                spinnerInteractionListener!!.onCategoriesArrived()
         }
     }
 
     override fun onCategoriesFailedToLoad() {
         adapter?.setCategoriesLoaded(false)
-        if (spinnerInteractionListener != null) {
-            spinnerInteractionListener!!.onCategoriesFailed()
-        }
+        spinnerInteractionListener?.onCategoriesFailed()
         onError()
     }
 
