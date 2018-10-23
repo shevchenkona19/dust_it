@@ -31,9 +31,9 @@ public class FavouritesBus {
     }
 
     public void added(String id) {
-        if (mainConsumer != null)
+        if (mainConsumer != null && mainConsumer.get() != null)
             mainConsumer.get().consumeAdded(id);
-        if (additionalConsumer != null)
+        if (additionalConsumer != null  && additionalConsumer.get() != null)
             additionalConsumer.get().consumeAdded(id);
     }
 

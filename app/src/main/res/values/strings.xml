@@ -52,7 +52,7 @@
     <string name="empty_set_comments">Тут покищо немає жодного коментаря, а отже ви можете стати першонахом!</string>
     <string name="theme_light">Світла</string>
     <string name="theme_dark">Темна</string>
-    <string name="account_settings">Налаштування акаунта</string>
+    <string name="profile">Ваш профіль</string>
     <string name="choose_theme">Оберіть тему:</string>
     <string name="personalSettings">Редагування акаунта</string>
     <string name="change_selected_categories">Змінити обрані категорії</string>

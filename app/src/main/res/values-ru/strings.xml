@@ -22,7 +22,7 @@
     <string name="sry_cant_load_account">Упс… не удается загрузить ваш аккаунт</string>
     <string name="edit_account">Редактировать аккаунт</string>
     <string name="personalSettings">Редактирование аккаунта</string>
-    <string name="account_settings">Настройки аккаунта</string>
+    <string name="profile">Ваш профиль</string>
     <string name="settings">Настройки</string>
     <string name="sry_something_is_wrong">Упс… Кажется, что-то пошло не так</string>
     <string name="empty_set_favorites">Тут пока пусто… \n Не расстраивайтесь, просто нажмите на иконку \'сохранить\' на любом понравившемся меме.</string>

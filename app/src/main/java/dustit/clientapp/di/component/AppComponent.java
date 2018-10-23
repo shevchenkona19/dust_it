@@ -20,6 +20,7 @@ import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
+import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.RegisterActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
@@ -29,11 +30,10 @@ import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
-import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
 import dustit.clientapp.mvp.ui.activities.FavoriteViewActivity;
-import dustit.clientapp.mvp.ui.activities.FavoritesActivity;
 import dustit.clientapp.mvp.ui.activities.FeedActivity;
+import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
@@ -102,13 +102,9 @@ public interface AppComponent {
 
     void inject(SettingsActivity settingsActivity);
 
-    void inject(AccountActivity accountActivity);
-
     void inject(App app);
 
     void inject(PersonalSettingsActivity personalSettingsActivity);
-
-    void inject(FavoritesActivity favoritesActivity);
 
     void inject(CategoriesFragment categoriesFragment);
 
@@ -125,4 +121,8 @@ public interface AppComponent {
     void inject(UserFeedbackPresenter userFeedbackPresenter);
 
     void inject(ReviewManager reviewManager);
+
+    void inject(NewAccountActivity newAccountActivity);
+
+    void inject(NewAccountActivityPresenter newAccountActivityPresenter);
 }

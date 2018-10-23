@@ -9,9 +9,7 @@ import android.support.v7.app.AlertDialog;
 import java.lang.ref.WeakReference;
 
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.RegisterActivity;
-import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 
 public class AlertBuilder {
 

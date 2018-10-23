@@ -2,14 +2,12 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.app.TaskStackBuilder;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -20,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -39,7 +36,6 @@ import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.ISettingsActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivityView {
@@ -192,7 +188,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     private void restartCurrentAndBackstack() {
         final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, FeedActivity.class))
-                .addNextIntent(new Intent(this, AccountActivity.class))
+                .addNextIntent(new Intent(this, NewAccountActivity.class))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
         stackBuilder.startActivities();
         finish();

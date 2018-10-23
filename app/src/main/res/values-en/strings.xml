@@ -27,7 +27,7 @@
     <string name="empty_set_favorites">It\'s empty here now… \n Don\'t get disappointed, just click on the \'save\' icon on any meme you like.</string>
     <string name="not_registred_question">Not registered yet?</string>
     <string name="login_edit_text_hint">Login</string>
-    <string name="account_settings">Account settings</string>
+    <string name="profile">Your profile</string>
     <string name="password_edit_text_hint">Password</string>
     <string name="begin">Let\'s get started</string>
     <string name="welcome_to_memspace">Welcome to MemSpace!</string>

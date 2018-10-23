@@ -306,7 +306,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     private fun revealAccount(view: View) {
-        val intent = Intent(this, AccountActivity::class.java)
+        val intent = Intent(this, NewAccountActivity::class.java)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                 view,
                 getString(R.string.account_photo_transition))
