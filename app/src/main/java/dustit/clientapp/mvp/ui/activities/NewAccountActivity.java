@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,13 +56,16 @@ import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
+import dustit.clientapp.mvp.model.entities.Achievement;
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
+import dustit.clientapp.mvp.ui.adapters.AchievementAdapter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.KeyboardHandler;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.bus.FavouritesBus;
 
 public class NewAccountActivity extends AppCompatActivity implements INewAccountActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback {
@@ -77,8 +82,6 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     TextView tvUsername;
     @BindView(R.id.cpbAccountLoadingPhoto)
     CircularProgressView cpbPhotoLoading;
-    @BindView(R.id.clAccountLayout)
-    ConstraintLayout clAccount;
     @BindView(R.id.clAccountLoadingLayout)
     ConstraintLayout clAccountLoading;
     @BindView(R.id.pbAccountLoading)
@@ -103,15 +106,23 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     ConstraintLayout clParent;
     @BindView(R.id.btnAccountRegister)
     Button btnRegister;
+    @BindView(R.id.svAccountView)
+    ScrollView svAccountView;
+    @BindView(R.id.achievementsList)
+    RecyclerView rvAchievements;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
 
     private FavoritesRecyclerViewAdapter mAdapter;
+    private AchievementAdapter achievementAdapter;
     private final NewAccountActivityPresenter mPresenter = new NewAccountActivityPresenter();
     private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
 
     private String myUsername = "";
+
+    private String userId = "";
+    private boolean isMe = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,73 +148,84 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         sdvIcon.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mPresenter.bind(this);
         setSupportActionBar(tbAccount);
-        mPresenter.getUsername();
-        mPresenter.loadFavorites();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (!bundle.getBoolean(IConstants.IBundle.IS_ME)) {
+                userId = bundle.getString(IConstants.IBundle.ID);
+            } else {
+                userId = mPresenter.loadMyId();
+                isMe = true;
+            }
+        }
+        mPresenter.getUsername(userId);
+        mPresenter.loadFavorites(userId);
+        mPresenter.getAchievements(userId);
         btnReload.setOnClickListener(view -> {
             tvFailedToLoad.setVisibility(View.GONE);
             btnReload.setVisibility(View.GONE);
             pbLoading.setVisibility(View.VISIBLE);
-            mPresenter.getUsername();
-            mPresenter.loadFavorites();
+            mPresenter.getUsername(userId);
+            mPresenter.loadFavorites(userId);
         });
         sdvIcon.setLegacyVisibilityHandlingEnabled(true);
-        if (userSettingsDataManager.isRegistered()) {
-            sdvIcon.setOnClickListener(view -> {
-                final AlertDialog dialog = new AlertDialog.Builder(NewAccountActivity.this)
-                        .setTitle(getString(R.string.change_profile_pic_title))
-                        .setMessage(getString(R.string.change_profile_pic_question))
-                        .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
-                            final int permCheckRead = ContextCompat.checkSelfPermission(NewAccountActivity.this,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE);
-                            final int permCheckWrite = ContextCompat.checkSelfPermission(NewAccountActivity.this,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                            if (permCheckRead != PackageManager.PERMISSION_GRANTED
-                                    && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(NewAccountActivity.this,
-                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        PERMISSION_DIALOG);
-                            } else {
-                                final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                                getIntent.setType("image/*");
-                                final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                pickIntent.setType("image/*");
-                                final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
-                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                                startActivityForResult(chooserIntent, PICK_IMAGE);
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), null)
-                        .create();
-                dialog.setOnShowListener(dialogInterface -> {
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                sdvIcon.setOnClickListener(view -> {
+                    final AlertDialog dialog = new AlertDialog.Builder(NewAccountActivity.this)
+                            .setTitle(getString(R.string.change_profile_pic_title))
+                            .setMessage(getString(R.string.change_profile_pic_question))
+                            .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
+                                final int permCheckRead = ContextCompat.checkSelfPermission(NewAccountActivity.this,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE);
+                                final int permCheckWrite = ContextCompat.checkSelfPermission(NewAccountActivity.this,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                                if (permCheckRead != PackageManager.PERMISSION_GRANTED
+                                        && permCheckWrite != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(NewAccountActivity.this,
+                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            PERMISSION_DIALOG);
+                                } else {
+                                    final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    getIntent.setType("image/*");
+                                    final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    pickIntent.setType("image/*");
+                                    final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+                                    startActivityForResult(chooserIntent, PICK_IMAGE);
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.no), null)
+                            .create();
+                    dialog.setOnShowListener(dialogInterface -> {
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+                    });
+                    dialog.show();
                 });
-                dialog.show();
-            });
-        } else {
-            sdvIcon.setOnClickListener(view -> onNotRegistered());
+            } else {
+                sdvIcon.setOnClickListener(view -> onNotRegistered());
+            }
         }
         tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
         mAdapter = new FavoritesRecyclerViewAdapter(this, this);
         rvFavorites.setAdapter(mAdapter);
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
+        achievementAdapter = new AchievementAdapter(this);
+        rvAchievements.setAdapter(achievementAdapter);
+        rvAchievements.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false));
         pbFavsLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         btnFavsReload.setOnClickListener(view -> {
-            mPresenter.loadFavorites();
+            mPresenter.loadFavorites(userId);
             hideError();
         });
-        if (!userSettingsDataManager.isRegistered()) {
-            Uri uri = Uri.parse("android.resource://" + this.getPackageName() + "/drawable/noimage");
-            sdvIcon.setImageURI(uri);
-            supLayout.setPanelHeight(0);
-            btnRegister.setVisibility(View.VISIBLE);
-            btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
-            /*ivToFavorites.setVisibility(View.GONE);
-            tvFavoritesCounter.setVisibility(View.GONE);
-            btnRegister.setVisibility(View.VISIBLE);
-            btnRegister.setOnClickListener((view -> {
-                AlertBuilder.showRegisterPrompt(this);
-            }));*/
+        if (isMe) {
+            if (!userSettingsDataManager.isRegistered()) {
+                Uri uri = Uri.parse("android.resource://" + this.getPackageName() + "/drawable/noimage");
+                sdvIcon.setImageURI(uri);
+                supLayout.setPanelHeight(0);
+                btnRegister.setVisibility(View.VISIBLE);
+                btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
+            }
         }
         supLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -233,23 +255,26 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 }
             }
         });
-        FavouritesBus.getInstance().setMainConsumer(new FavouritesBus.IConsumer() {
-            @Override
-            public void consumeRemoved(String id) {
-                mPresenter.loadFavorites();
-            }
+        if (isMe) {
+            FavouritesBus.getInstance().setMainConsumer(new FavouritesBus.IConsumer() {
+                @Override
+                public void consumeRemoved(String id) {
+                    mPresenter.loadFavorites(userId);
+                }
 
-            @Override
-            public void consumeAdded(String id) {
-                mPresenter.loadFavorites();
-            }
-        });
+                @Override
+                public void consumeAdded(String id) {
+                    mPresenter.loadFavorites(userId);
+                }
+            });
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu, menu);
-        return true;
+        if (isMe)
+            getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return isMe;
     }
 
     @Override
@@ -401,15 +426,20 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     @Override
     public void onUsernameArrived(String username) {
         myUsername = username;
-        tvUsername.setText(myUsername);
+        if (isMe) {
+            tvUsername.setText(myUsername);
+        } else {
+            tvUsername.setVisibility(View.INVISIBLE);
+            tbAccount.setTitle(myUsername);
+        }
         clAccountLoading.setVisibility(View.GONE);
-        clAccount.setVisibility(View.VISIBLE);
+        svAccountView.setVisibility(View.VISIBLE);
         sdvIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + myUsername));
     }
 
     @Override
     public void onUsernameFailedToLoad() {
-        clAccount.setVisibility(View.GONE);
+        svAccountView.setVisibility(View.GONE);
         clAccountLoading.setVisibility(View.VISIBLE);
         pbLoading.setVisibility(View.GONE);
         tvFailedToLoad.setVisibility(View.VISIBLE);
@@ -440,6 +470,22 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     }
 
     @Override
+    public void onAchievementsLoaded(AchievementsEntity achievementsEntity) {
+        List<Achievement> items = new ArrayList<>();
+        items.add(achievementsEntity.getLikes());
+        items.add(achievementsEntity.getDislikes());
+        items.add(achievementsEntity.getComments());
+        items.add(achievementsEntity.getViews());
+        items.add(achievementsEntity.getFavourites());
+        achievementAdapter.update(achievementsEntity.isFirstHundred(), achievementsEntity.isFirstThousand(), items);
+    }
+
+    @Override
+    public void onFailedToLoadAchievements() {
+        L.print("failed to load achievements");
+    }
+
+    @Override
     public void showEmpty() {
         rvFavorites.setVisibility(View.GONE);
         pbFavsLoading.setVisibility(View.GONE);
@@ -463,7 +509,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     @Override
     public void onFavoriteChosen(String id) {
         if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
-            startActivity(new Intent(this, FavoriteViewActivity.class).putExtra(FavoriteViewActivity.ID_KEY, id));
+            startActivity(new Intent(this, FavoriteViewActivity.class).putExtra(FavoriteViewActivity.ID_KEY, id).putExtra(IConstants.IBundle.IS_ME, isMe));
         else
             supLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }

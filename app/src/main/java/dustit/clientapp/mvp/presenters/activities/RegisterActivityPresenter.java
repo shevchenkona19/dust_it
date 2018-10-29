@@ -37,6 +37,7 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
                         TokenEntity tokenEntity = token.get();
                         if (tokenEntity.getMessage().equals("")) {
                             dataManager.saveToken(tokenEntity.getToken());
+                            dataManager.saveId(tokenEntity.getId());
                             userSettingsDataManager.setRegistered(true);
                             getView().onRegisteredSuccessfully();
                         } else {

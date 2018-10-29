@@ -1,16 +1,21 @@
 package dustit.clientapp.mvp.ui.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,6 +35,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
+import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.utils.IConstants;
 
 /**
@@ -40,6 +46,8 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<CommentEntity> list;
     private LayoutInflater inflater;
     private boolean isLoading = false;
+    private Context context;
+    private String myId;
 
     private boolean sent = false;
     private int offset = 6;
@@ -48,10 +56,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Inject
     DataManager dataManager;
 
-    public CommentsRecyclerViewAdapter(Context context, ICommentInteraction listener) {
+    public CommentsRecyclerViewAdapter(Context context, String myId, ICommentInteraction listener) {
         list = new ArrayList<>();
         inflater = LayoutInflater.from(context);
         interactionListener = listener;
+        this.myId = myId;
+        this.context = context;
         App.get().getAppComponent().inject(this);
     }
 
@@ -101,9 +111,25 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof CommentViewHolder) {
             final CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             CommentEntity comment = list.get(pos);
-            commentViewHolder.tvUsername.setText(comment.getUsername());
-            commentViewHolder.tvText.setText(comment.getText());
-            commentViewHolder.sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + comment.getUsername());
+            commentViewHolder.bind(comment);
+            commentViewHolder.sdvUserPhoto.setOnClickListener((v) -> {
+                String userId = comment.getUserId();
+                Intent intent = new Intent(context, NewAccountActivity.class);
+                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
+                if (!userId.equals(myId)) {
+                    intent.putExtra(IConstants.IBundle.ID, comment.getUserId());
+                }
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, commentViewHolder.sdvUserPhoto, context.getString(R.string.account_photo_transition));
+                context.startActivity(intent, options.toBundle());
+            });
+            commentViewHolder.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", comment.getLikeAchievementLvl()));
+            commentViewHolder.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", comment.getDislikesAchievementLvl()));
+            commentViewHolder.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
+            commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
+            commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
+
+//            commentViewHolder.ivFirst.setImageResource();
+
             final String monthDay = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') - 5, comment.getDateOfPost().indexOf('T'));
             final String hourMinute = comment.getDateOfPost().substring(
@@ -178,6 +204,92 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return list;
     }
 
+    private int resolveAchievementIcon(String name, int lvl) {
+        switch (name) {
+            case "likes":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_like_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_comment_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_comment_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_comment_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_comment_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_comment_6_small;
+                }
+            case "dislikes":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_dislike_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_dislike_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_dislike_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_dislike_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_dislike_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_dislike_6_small;
+                }
+            case "comments":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_comment_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_comment_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_comment_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_comment_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_comment_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_comment_6_small;
+                }
+            case "views":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_views_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_views_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_views_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_views_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_views_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_views_6_small;
+                    case 7:
+                        return R.drawable.ic_achievement_views_7_small;
+                    case 8:
+                        return R.drawable.ic_achievement_views_8_small;
+                }
+            case "favourites":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_fav_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_fav_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_fav_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_fav_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_fav_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_fav_6_small;
+                }
+            default:
+                return 0;
+        }
+    }
+
     static class CommentViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.sdvItemCommentsUserPhoto)
         SimpleDraweeView sdvUserPhoto;
@@ -187,10 +299,34 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         TextView tvText;
         @BindView(R.id.tvItemCommentDateStamp)
         TextView tvDateStamp;
+        @BindView(R.id.ivLikeAchievementLevel)
+        ImageView ivLikeLevel;
+        @BindView(R.id.ivDislikeAchievementLevel)
+        ImageView ivDislikeLevel;
+        @BindView(R.id.ivCommentsAchievementLevel)
+        ImageView ivCommentsLevel;
+        @BindView(R.id.ivFavouritesAchievementLevel)
+        ImageView ivFavouritesLevel;
+        @BindView(R.id.ivViewsAchievementLevel)
+        ImageView ivViewsLevel;
+        @BindView(R.id.ivFirst)
+        ImageView ivFirst;
 
         CommentViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(CommentEntity comment) {
+            tvUsername.setText(comment.getUsername());
+            tvText.setText(comment.getText());
+            sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + comment.getUsername());
+            sdvUserPhoto.setLegacyVisibilityHandlingEnabled(true);
+            final String monthDay = comment.getDateOfPost().substring(
+                    comment.getDateOfPost().indexOf('T') - 5, comment.getDateOfPost().indexOf('T'));
+            final String hourMinute = comment.getDateOfPost().substring(
+                    comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
+            tvDateStamp.setText(hourMinute + " " + monthDay);
         }
     }
 

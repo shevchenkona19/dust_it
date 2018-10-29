@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             getView().onUsernameArrived(dataManager.getCachedUsername());
         } else {
             final Container<String> container = new Container<>();
-            addSubscription(dataManager.getMyUsername().subscribe(new Subscriber<UsernameEntity>() {
+            addSubscription(dataManager.getUsername(dataManager.loadId()).subscribe(new Subscriber<UsernameEntity>() {
                 @Override
                 public void onCompleted() {
                     getView().onUsernameArrived(container.get());
@@ -95,5 +97,10 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
     @Override
     public boolean isFeedFirstTime() {
         return userSettingsDataManager.isFeedFirstTime();
+    }
+
+    @NotNull
+    public String loadId() {
+        return dataManager.loadId();
     }
 }

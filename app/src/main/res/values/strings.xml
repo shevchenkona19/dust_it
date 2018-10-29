@@ -121,5 +121,8 @@
     <string name="enable_notifications">Отримувати сповіщення</string>
     <string name="enable_autostart">Дозвольте автозапуск додатку</string>
     <string name="autostart">Щоб отримувати усі сповіщення про нові меми, будь ласка, дозвольте MemSpace самостійно запускатися</string>
+    <string name="first_hundred">Первые 100</string>
+    <string name="first_thousand">first thousand</string>
+    <string name="next_target_is">Next target is %1$d %2$s</string>
 
 </resources>

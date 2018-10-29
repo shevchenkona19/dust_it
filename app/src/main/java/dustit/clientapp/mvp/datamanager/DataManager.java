@@ -1,14 +1,11 @@
 package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
-import android.content.Intent;
-
-import java.io.IOException;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
@@ -24,10 +21,8 @@ import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
-import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
-import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
@@ -35,11 +30,6 @@ import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
-import dustit.clientapp.mvp.ui.activities.SettingsActivity;
-import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.ProgressRequestBody;
-import okhttp3.MultipartBody;
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -79,14 +69,12 @@ public class DataManager {
         }
     }
 
-    public Observable<MemEntity> getHot(int count, int offset) {
-        return serverRepository.getHot(getToken(), count, offset)
-                .flatMap((Func1<MemUpperEntity, Observable<MemEntity>>) memUpperEntity -> Observable.from(memUpperEntity.getMemEntities()));
+    public Observable<MemUpperEntity> getHot(int count, int offset) {
+        return serverRepository.getHot(getToken(), count, offset);
     }
 
-    public Observable<MemEntity> getCategoriesFeed(String categoryId, int count, int offset) {
-        return serverRepository.getCategoryFeed(getToken(), categoryId, count, offset)
-                .flatMap((Func1<MemUpperEntity, Observable<MemEntity>>) memUpperEntity -> Observable.from(memUpperEntity.getMemEntities()));
+    public Observable<MemUpperEntity> getCategoriesFeed(String categoryId, int count, int offset) {
+        return serverRepository.getCategoryFeed(getToken(), categoryId, count, offset);
     }
 
     public Observable<Category> getCategories() {
@@ -112,8 +100,8 @@ public class DataManager {
         return serverRepository.addToFavorites(getToken(), id);
     }
 
-    public Observable<FavoritesUpperEntity> getAllFavorites() {
-        return serverRepository.getFavorites(getToken());
+    public Observable<FavoritesUpperEntity> getAllFavorites(String id) {
+        return serverRepository.getFavorites(id);
     }
 
     public Observable<ResponseEntity> postComment(String id, PostCommentEntity entity) {
@@ -148,8 +136,12 @@ public class DataManager {
         return serverRepository.removeFromFavorites(getToken(), id);
     }
 
-    public Observable<UsernameEntity> getMyUsername() {
-        return serverRepository.getMyUsername(getToken());
+    public Observable<UsernameEntity> getUsername(String id) {
+        return serverRepository.getUsername(id);
+    }
+
+    public Observable<AchievementsEntity> getAchievements(String userId) {
+        return serverRepository.getAchievements(userId);
     }
 
     public void cacheUsername(String username) {
@@ -174,5 +166,13 @@ public class DataManager {
 
     public Observable<NewResponseEntity> postUserFeedback(UserFeedbackEntity userFeedbackEntity) {
         return serverRepository.postUserFeedback(getToken(), userFeedbackEntity);
+    }
+
+    public void saveId(String id) {
+        preferencesRepository.saveMyId(id);
+    }
+
+    public String loadId() {
+        return preferencesRepository.loadId();
     }
 }

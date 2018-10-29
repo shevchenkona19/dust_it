@@ -1,21 +1,17 @@
 package dustit.clientapp.mvp.presenters.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
-import dustit.clientapp.mvp.model.entities.MemEntity;
-import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IHotFragmentPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
-import dustit.clientapp.utils.FavoritesUtils;
 import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
 
 /**
@@ -36,12 +32,18 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
 
     @Override
     public void loadBase() {
-        final List<MemEntity> list = new ArrayList<>();
+        AtomicReference<MemUpperEntity> atomicReference = new AtomicReference<>();
         addSubscription(dataManager.getHot(6, 0)
-                .subscribe(new Subscriber<MemEntity>() {
+                .subscribe(new Subscriber<MemUpperEntity>() {
                     @Override
                     public void onCompleted() {
-                        getView().onBaseUpdated(list);
+                        MemUpperEntity mem = atomicReference.get();
+                        if (mem != null) {
+                            getView().onBaseUpdated(mem.getMemEntities());
+                            if (mem.isAchievementUpdate()) {
+                                getView().onAchievementUpdate(mem.getAchievementEntity());
+                            }
+                        }
                     }
 
                     @Override
@@ -51,20 +53,26 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
                     }
 
                     @Override
-                    public void onNext(MemEntity memEntity) {
-                        list.add(memEntity);
+                    public void onNext(MemUpperEntity memEntity) {
+                        atomicReference.set(memEntity);
                     }
                 }));
     }
 
     @Override
     public void loadWithOffset(int offset) {
-        final List<MemEntity> list = new ArrayList<>();
+        AtomicReference<MemUpperEntity> atomicReference = new AtomicReference<>();
         addSubscription(dataManager.getHot(5, offset)
-                .subscribe(new Subscriber<MemEntity>() {
+                .subscribe(new Subscriber<MemUpperEntity>() {
                     @Override
                     public void onCompleted() {
-                        getView().onPartialUpdate(list);
+                        MemUpperEntity mem = atomicReference.get();
+                        if (mem != null) {
+                            getView().onPartialUpdate(mem.getMemEntities());
+                            if (mem.isAchievementUpdate()) {
+                                getView().onAchievementUpdate(mem.getAchievementEntity());
+                            }
+                        }
                     }
 
                     @Override
@@ -74,8 +82,8 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
                     }
 
                     @Override
-                    public void onNext(MemEntity memEntity) {
-                        list.add(memEntity);
+                    public void onNext(MemUpperEntity memEntity) {
+                        atomicReference.set(memEntity);
                     }
                 }));
     }

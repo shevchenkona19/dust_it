@@ -37,6 +37,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
                     public void onCompleted() {
                         TokenEntity tokenEntity = token.get();
                         if (tokenEntity.getMessage().equals("")) {
+                            dataManager.saveId(tokenEntity.getId());
                             dataManager.saveToken(tokenEntity.getToken());
                             userSettingsDataManager.setRegistered(true);
                             getView().onLoggedSuccessfully();

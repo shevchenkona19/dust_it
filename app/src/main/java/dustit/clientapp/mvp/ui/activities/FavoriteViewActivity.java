@@ -65,6 +65,7 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     private String imageUrl;
 
     private boolean isAdded = true;
+    private boolean isMe = false;
 
 
     @Override
@@ -74,6 +75,10 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
         setContentView(R.layout.activity_favorite_view);
         ButterKnife.bind(this);
         mPresenter.bind(this);
+        Bundle opts = getIntent().getExtras();
+        if (opts != null) {
+            isMe = opts.getBoolean(IConstants.IBundle.IS_ME);
+        }
         mFavoriteId = getIntent().getStringExtra(FavoriteViewActivity.ID_KEY);
         imageUrl = IConstants.BASE_URL + "/feed/imgs?id=" + mFavoriteId;
         final DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(imageUrl)
@@ -101,7 +106,10 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     }
 
     private void initClicks() {
-        ivDelete.setOnClickListener(view -> setIsAdded(mFavoriteId));
+        ivDelete.setOnClickListener(view -> {
+            if (isMe)
+                setIsAdded(mFavoriteId);
+        });
         ivDownload.setOnClickListener(view -> mPresenter.downloadImage(mFavoriteId));
         toolbar.setNavigationOnClickListener(view -> finish());
         ivShare.setOnClickListener(view -> ImageShareUtils.shareImage(imageUrl, FavoriteViewActivity.this));
@@ -195,7 +203,6 @@ public class FavoriteViewActivity extends AppCompatActivity implements IFavorite
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
     }
-
 
 
     @Override

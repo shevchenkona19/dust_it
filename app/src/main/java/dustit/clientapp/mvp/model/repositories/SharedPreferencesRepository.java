@@ -162,4 +162,12 @@ public class SharedPreferencesRepository {
     public void setEnabledAutostart(boolean enabledAutostart) {
         preferences.edit().putBoolean(IConstants.IPreferences.AUTOSTART, enabledAutostart).apply();
     }
+
+    public void saveMyId(String id) {
+        preferences.edit().putString(IConstants.IPreferences.MY_ID, id).apply();
+    }
+
+    public String loadId() {
+        return preferences.getString(IConstants.IPreferences.MY_ID, "");
+    }
 }

@@ -1,11 +1,11 @@
 package dustit.clientapp.mvp.presenters.interfaces;
 
-import dustit.clientapp.mvp.presenters.base.BasePresenter;
-import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
-
 public interface INewAccountActivityPresenter {
     void uploadImage(String path);
-    void getUsername();
-    void loadFavorites();
+    void getUsername(String id);
+    void loadFavorites(String id);
     void removeFromFavorites(String id);
+
+    void getAchievements(String userId);
+
 }

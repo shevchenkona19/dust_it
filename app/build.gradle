@@ -75,6 +75,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation project(path: ':Spotlight-lib')
     implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.github.lightfire:Android-Gradient-Text-Color:b0047755f7'
+
 }
 repositories {
     mavenCentral()

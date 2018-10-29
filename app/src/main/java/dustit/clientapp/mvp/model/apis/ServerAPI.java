@@ -1,5 +1,6 @@
 package dustit.clientapp.mvp.model.apis;
 
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.NewResponseEntity;
@@ -102,7 +103,7 @@ public interface ServerAPI {
                                               @Query("id") String id);
 
     @GET("/favorites/allFavorites")
-    Observable<FavoritesUpperEntity> getAllFavorites(@Header("Authorization") String token);
+    Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") String userId);
 
     @POST("/feedback/comment")
     Observable<ResponseEntity> postComment(@Header("Authorization") String token,
@@ -119,8 +120,8 @@ public interface ServerAPI {
     Observable<ResponseEntity> postPhoto(@Header("Authorization") String token,
                                          @Body PhotoBody photoBody);
 
-    @GET("/account/myUsername")
-    Observable<UsernameEntity> getMyUsername(@Header("Authorization") String token);
+    @GET("/account/username")
+    Observable<UsernameEntity> getUsername(@Query("userId") String userId);
 
     @DELETE("/favorites/removeFromFavorites")
     Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token,
@@ -137,5 +138,8 @@ public interface ServerAPI {
     @POST("/feedback/messageForDev")
     Observable<NewResponseEntity> postUserFeedback(@Header("Authorization") String token,
                                                    @Body UserFeedbackEntity userFeedbackEntity);
+
+    @GET("/account/achievements")
+    Observable<AchievementsEntity> getAchievements(@Query("userId") String id);
 
 }

@@ -20,19 +20,22 @@ public class RefreshedMem {
     @Expose
     private String opinion;
 
+    @SerializedName("achievementUpdate")
+    @Expose
+    private boolean achievementUpdate;
+
+    @SerializedName("achievement")
+    @Expose
+    private NewAchievementEntity achievementEntity;
+
     private String id;
 
-    public RefreshedMem(String likes, String dislikes, String opinion) {
+    public RefreshedMem(String likes, String dislikes, String opinion, boolean achievementUpdate, NewAchievementEntity achievementEntity, String id) {
         this.likes = likes;
         this.dislikes = dislikes;
         this.opinion = opinion;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
+        this.achievementUpdate = achievementUpdate;
+        this.achievementEntity = achievementEntity;
         this.id = id;
     }
 
@@ -50,6 +53,30 @@ public class RefreshedMem {
 
     public void setDislikes(String dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public boolean isAchievementUpdate() {
+        return achievementUpdate;
+    }
+
+    public void setAchievementUpdate(boolean achievementUpdate) {
+        this.achievementUpdate = achievementUpdate;
+    }
+
+    public NewAchievementEntity getAchievementEntity() {
+        return achievementEntity;
+    }
+
+    public void setAchievementEntity(NewAchievementEntity achievementEntity) {
+        this.achievementEntity = achievementEntity;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Nullable

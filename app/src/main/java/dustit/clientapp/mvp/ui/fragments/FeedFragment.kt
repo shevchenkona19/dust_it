@@ -16,10 +16,12 @@ import butterknife.Unbinder
 import dustit.clientapp.R
 import dustit.clientapp.customviews.WrapperLinearLayoutManager
 import dustit.clientapp.mvp.model.entities.MemEntity
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
+import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
 import dustit.clientapp.utils.AlertBuilder
 import kotlinx.android.synthetic.main.fragment_feed.view.*
@@ -169,6 +171,12 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun gotoHot() {
         gotoFragment(1)
+    }
+
+    override fun onAchievementUpdate(achievementEntity: NewAchievementEntity?) {
+        if (context != null) {
+            AchievementUnlockedDialog(context).bind(achievementEntity).show()
+        }
     }
 
     companion object {

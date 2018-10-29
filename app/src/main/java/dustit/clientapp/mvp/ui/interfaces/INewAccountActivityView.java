@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.ui.interfaces;
 
 import java.util.List;
 
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 
 public interface INewAccountActivityView extends IActivityView {
@@ -15,6 +16,10 @@ public interface INewAccountActivityView extends IActivityView {
     void onFailedToLoadFavorites();
     void removedFromFavorites(String id);
     void onFailedToRemoveFromFavorites(String id);
+
+    void onAchievementsLoaded(AchievementsEntity achievementsEntity);
+
+    void onFailedToLoadAchievements();
 
     void showEmpty();
 

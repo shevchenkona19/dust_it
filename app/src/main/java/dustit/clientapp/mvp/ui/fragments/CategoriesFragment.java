@@ -22,10 +22,12 @@ import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
+import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 
@@ -207,6 +209,13 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         srlRefresh.setRefreshing(false);
         adapter.onFailedToLoad();
         showErrorToast();
+    }
+
+    @Override
+    public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
+        if (getContext() != null) {
+            new AchievementUnlockedDialog(getContext()).bind(achievementEntity).show();
+        }
     }
 
     @Override

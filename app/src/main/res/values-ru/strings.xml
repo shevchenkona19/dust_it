@@ -119,5 +119,8 @@
     <string name="enable_notifications">Получать уведомления</string>
     <string name="enable_autostart">Разрешить автозапуск приложения</string>
     <string name="autostart">Чтобы получать уведомления о новых мемах, пожалуйста, включите автозапуск MemSpace</string>
+    <string name="first_hundred">Первые 100</string>
+    <string name="first_thousand">first thousand</string>
+    <string name="next_target_is">Next target is %1$d %2$s</string>
 
 </resources>

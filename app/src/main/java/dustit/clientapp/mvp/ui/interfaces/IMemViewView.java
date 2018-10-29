@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.interfaces;
 import java.util.List;
 
 import dustit.clientapp.mvp.model.entities.CommentEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -28,4 +29,6 @@ public interface IMemViewView extends IActivityView {
     void onError();
 
     void onIsFavourite(boolean isFavourite);
+
+    void onAchievementUpdate(NewAchievementEntity achievementEntity);
 }

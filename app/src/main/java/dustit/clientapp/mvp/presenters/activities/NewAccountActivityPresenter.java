@@ -7,12 +7,14 @@ import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
@@ -72,36 +74,27 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
     }
 
     @Override
-    public void getUsername() {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onUsernameArrived("");
-            return;
-        }
-        if (dataManager.isUsernameCached()) {
-            getView().onUsernameArrived(dataManager.getCachedUsername());
-        } else {
-            final StringBuilder builder = new StringBuilder();
-            addSubscription(dataManager.getMyUsername()
-                    .subscribe(new Subscriber<UsernameEntity>() {
-                        @Override
-                        public void onCompleted() {
-                            String username = builder.toString();
-                            dataManager.cacheUsername(username);
-                            getView().onUsernameArrived(username);
-                        }
+    public void getUsername(String id) {
+        final StringBuilder builder = new StringBuilder();
+        addSubscription(dataManager.getUsername(id)
+                .subscribe(new Subscriber<UsernameEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        String username = builder.toString();
+                        getView().onUsernameArrived(username);
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            L.print(e.getMessage());
-                            getView().onUsernameFailedToLoad();
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        L.print(e.getMessage());
+                        getView().onUsernameFailedToLoad();
+                    }
 
-                        @Override
-                        public void onNext(UsernameEntity usernameEntity) {
-                            builder.append(usernameEntity.getUsername());
-                        }
-                    }));
-        }
+                    @Override
+                    public void onNext(UsernameEntity usernameEntity) {
+                        builder.append(usernameEntity.getUsername());
+                    }
+                }));
     }
 
     public boolean isRegistered() {
@@ -113,13 +106,13 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
     }
 
     @Override
-    public void loadFavorites() {
+    public void loadFavorites(String id) {
         if (!userSettingsDataManager.isRegistered()) {
             getView().onNotRegistered();
             return;
         }
         final FavoritesUpperEntity[] favoritesEntity = new FavoritesUpperEntity[1];
-        addSubscription(dataManager.getAllFavorites()
+        addSubscription(dataManager.getAllFavorites(id)
                 .subscribe(new Subscriber<FavoritesUpperEntity>() {
                     @Override
                     public void onCompleted() {
@@ -174,5 +167,32 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
                         }
                     }
                 }));
+    }
+
+    @Override
+    public void getAchievements(String userId) {
+        AtomicReference<AchievementsEntity> achievements = new AtomicReference<>();
+        addSubscription(dataManager.getAchievements(userId)
+        .subscribe(new Subscriber<AchievementsEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onAchievementsLoaded(achievements.get());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print("Error: " + e.getMessage());
+                getView().onFailedToLoadAchievements();
+            }
+
+            @Override
+            public void onNext(AchievementsEntity achievementsEntity) {
+                achievements.set(achievementsEntity);
+            }
+        }));
+    }
+
+    public String loadMyId() {
+        return dataManager.loadId();
     }
 }

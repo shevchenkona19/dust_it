@@ -25,9 +25,11 @@ import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
+import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.managers.ThemeManager;
@@ -185,6 +187,13 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     public void onErrorInLoading() {
         srlRefresh.setRefreshing(false);
         adapter.onFailedToLoad();
+    }
+
+    @Override
+    public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
+        if (getContext() != null) {
+            new AchievementUnlockedDialog(getContext()).bind(achievementEntity).show();
+        }
     }
 
     @Override

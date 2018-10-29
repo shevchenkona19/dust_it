@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="23dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/ivAchievementIcon"
+                android:layout_width="90dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_achievement_comment_1_big" />
+
+            <ProgressBar
+                android:id="@+id/pbAchievementProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="90dp"
+                android:layout_height="5dp"
+                android:layout_below="@id/ivAchievementIcon"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:indeterminate="false"
+                android:max="200"
+                android:progress="100" />
+
+            <TextView
+                android:id="@+id/tvAchievementCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pbAchievementProgress"
+                android:layout_toStartOf="@+id/tvAchievementSlash"
+                android:text="95000" />
+
+            <TextView
+                android:id="@id/tvAchievementSlash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pbAchievementProgress"
+                android:layout_centerHorizontal="true"
+                android:text="/" />
+
+            <TextView
+                android:id="@+id/tvAchievementMaximum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pbAchievementProgress"
+                android:layout_toEndOf="@id/tvAchievementSlash"
+                android:text="100000" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

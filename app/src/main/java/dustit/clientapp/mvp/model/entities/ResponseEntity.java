@@ -14,10 +14,20 @@ public class ResponseEntity {
 
     @SerializedName("message")
     @Expose
-    int response;
+    private int response;
 
-    public ResponseEntity(int response) {
+    @SerializedName("achievementUpdate")
+    @Expose
+    private boolean achievementUpdate;
+
+    @SerializedName("achievement")
+    @Expose
+    private NewAchievementEntity achievementEntity;
+
+    public ResponseEntity(int response, boolean achievementUpdate, NewAchievementEntity achievementEntity) {
         this.response = response;
+        this.achievementUpdate = achievementUpdate;
+        this.achievementEntity = achievementEntity;
     }
 
     public int getResponse() {
@@ -26,5 +36,21 @@ public class ResponseEntity {
 
     public void setResponse(int response) {
         this.response = response;
+    }
+
+    public boolean isAchievementUpdate() {
+        return achievementUpdate;
+    }
+
+    public void setAchievementUpdate(boolean achievementUpdate) {
+        this.achievementUpdate = achievementUpdate;
+    }
+
+    public NewAchievementEntity getAchievementEntity() {
+        return achievementEntity;
+    }
+
+    public void setAchievementEntity(NewAchievementEntity achievementEntity) {
+        this.achievementEntity = achievementEntity;
     }
 }

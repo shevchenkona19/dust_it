@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
@@ -47,6 +48,8 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
         void changedFeedback(RefreshedMem refreshedMem);
 
         void onError(RestoreMemEntity restoreMemEntity);
+
+        void onAchievementUpdate(NewAchievementEntity achievementEntity);
     }
 
     public void postLike(final MemEntity memEntity) {
@@ -96,9 +99,16 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             public void onCompleted() {
                 final RefreshedMem refreshedMem = container.get();
                 refreshedMem.setId(memEntity.getId());
+                boolean isSent = false;
                 for (IFeedbackInteraction interaction :
                         interactionList) {
                     interaction.changedFeedback(refreshedMem);
+                    if (!isSent) {
+                        if (refreshedMem.isAchievementUpdate()) {
+                            isSent = true;
+                            interaction.onAchievementUpdate(refreshedMem.getAchievementEntity());
+                        }
+                    }
                 }
             }
 

@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://193.111.63.173";
+    String BASE_URL = "http://192.168.0.103:3000";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
@@ -36,6 +36,7 @@ public interface IConstants {
         String LAST_RUN = "LAST_RUN";
         String AUTOSTART = "AUTOSTART";
         String FIRST_TIME = "FIRST_TIME";
+        String MY_ID = "MY_ID";
     }
 
     interface ISpotlight {
@@ -52,5 +53,10 @@ public interface IConstants {
         LIKED,
         DISLIKED,
         NEUTRAL
+    }
+
+    public interface IBundle {
+        String IS_ME = "IS_ME";
+        String ID = "ID";
     }
 }

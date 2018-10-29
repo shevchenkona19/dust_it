@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SimpleItemAnimator
 import android.transition.TransitionInflater
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -24,7 +23,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.wooplr.spotlight.SpotlightConfig
 import com.wooplr.spotlight.SpotlightView
 import com.wooplr.spotlight.utils.SpotlightSequence
@@ -40,11 +38,8 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
-import dustit.clientapp.mvp.ui.interfaces.IView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
-import dustit.clientapp.utils.L
-import dustit.clientapp.utils.TimeTracking
 import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.NotifyManager
 import dustit.clientapp.utils.managers.ThemeManager
@@ -307,6 +302,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     private fun revealAccount(view: View) {
         val intent = Intent(this, NewAccountActivity::class.java)
+        intent.putExtra(IConstants.IBundle.IS_ME, true)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                 view,
                 getString(R.string.account_photo_transition))
@@ -407,7 +403,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun launchMemView(holder: View, memEntity: MemEntity, startComments: Boolean) {
-        val fragment = MemViewFragment.newInstance(memEntity, startComments)
+        val fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId())
         val transition = TransitionInflater
                 .from(this).inflateTransition(R.transition.mem_view_transition)
         fragment.sharedElementEnterTransition = transition

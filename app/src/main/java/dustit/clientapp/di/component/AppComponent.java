@@ -13,10 +13,8 @@ import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
-import dustit.clientapp.mvp.presenters.activities.AccountActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
-import dustit.clientapp.mvp.presenters.activities.FavoritesActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.LoginActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
@@ -80,13 +78,9 @@ public interface AppComponent {
 
     void inject(ResultActivityPresenter resultActivityPresenter);
 
-    void inject(AccountActivityPresenter accountActivityPresenter);
-
     void inject(CommentsRecyclerViewAdapter commentsRecyclerViewAdapter);
 
     void inject(MemViewPresenter memViewPresenter);
-
-    void inject(FavoritesActivityPresenter favoritesActivityPresenter);
 
     void inject(FavoritesUtils favoritesUtils);
 

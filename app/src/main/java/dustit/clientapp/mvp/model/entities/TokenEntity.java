@@ -9,6 +9,9 @@ public class TokenEntity {
     @SerializedName("token")
     @Expose
     private String token = "";
+    @SerializedName("id")
+    @Expose
+    private String id = "";
     @SerializedName("message")
     @Expose
     private String message = "";
@@ -16,9 +19,18 @@ public class TokenEntity {
     public TokenEntity() {
     }
 
-    public TokenEntity(String token, String message) {
+    public TokenEntity(String token, String id, String message) {
         this.token = token;
         this.message = message;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getToken() {

@@ -4,19 +4,15 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -33,14 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.imagepipeline.image.ImageInfo;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.wooplr.spotlight.SpotlightView;
@@ -61,18 +49,17 @@ import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
-import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.KeyboardHandler;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ReviewManager;
-import me.relex.photodraweeview.PhotoDraweeView;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
@@ -84,7 +71,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private Unbinder unbinder;
     private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
-    private boolean isExpanded = false;
 
     private boolean startComments = false;
 
@@ -93,6 +79,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private int imageWidth = -1;
     private int imageHeight = -1;
+
+    private String myId = "";
 
     @Override
     public void changedFeedback(RefreshedMem refreshedMem) {
@@ -174,10 +162,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
 
-    public static MemViewFragment newInstance(MemEntity mem, boolean startComments) {
+    public static MemViewFragment newInstance(MemEntity mem, boolean startComments, String userId) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
         args.putBoolean(COMMENTS_KEY, startComments);
+        args.putString(IConstants.IBundle.ID, userId);
         final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -188,6 +177,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         super.setArguments(args);
         if (args != null) {
             mem = args.getParcelable(MEM_KEY);
+            myId = args.getString(IConstants.IBundle.ID);
             startComments = args.getBoolean(COMMENTS_KEY);
         }
     }
@@ -211,7 +201,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         if (userSettingsDataManager.isRegistered()) {
             presenter.isFavourite(mem.getId());
         }
-        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), this);
+        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
         feedbackManager.subscribe(this);
@@ -330,7 +320,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 if (imageHeight - focusX > 50 || imageWidth - focusY > 50) {
                     if (navVisible) {
                         setNavVisible(false);
-                        isExpanded = true;
                     }
                 }
             });
@@ -543,6 +532,13 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     public void onIsFavourite(boolean isFavourite) {
         mem.setFavorite(isFavourite);
         refreshUi();
+    }
+
+    @Override
+    public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
+        if (getContext() != null) {
+            new AchievementUnlockedDialog(getContext()).bind(achievementEntity).show();
+        }
     }
 
     private void disExpandComments() {

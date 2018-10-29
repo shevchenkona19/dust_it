@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.presenters.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
@@ -90,12 +91,19 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             getView().onNotRegistered();
             return;
         }
+        AtomicReference<ResponseEntity> atomicReference = new AtomicReference<>();
         PostCommentEntity commentEntity = new PostCommentEntity(text);
         addSubscription(dataManager.postComment(id, commentEntity)
                 .subscribe(new Subscriber<ResponseEntity>() {
                     @Override
                     public void onCompleted() {
                         getView().onCommentSentSuccessfully();
+                        ResponseEntity response = atomicReference.get();
+                        if (response != null) {
+                            if (response.isAchievementUpdate()) {
+                                getView().onAchievementUpdate(response.getAchievementEntity());
+                            }
+                        }
                     }
 
                     @Override
@@ -108,6 +116,8 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                     public void onNext(ResponseEntity responseEntity) {
                         if (responseEntity.getResponse() != 200) {
                             getView().onCommentSendFail();
+                        } else {
+                            atomicReference.set(responseEntity);
                         }
                     }
                 }));
@@ -119,10 +129,16 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             getView().onNotRegistered();
             return;
         }
+        AtomicReference<ResponseEntity> atomicReference = new AtomicReference<>();
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
                 getView().onAddedToFavourites();
+                ResponseEntity response = atomicReference.get();
+                if (response != null)
+                    if (response.isAchievementUpdate()) {
+                        getView().onAchievementUpdate(response.getAchievementEntity());
+                    }
             }
 
             @Override
@@ -135,6 +151,8 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             public void onNext(ResponseEntity responseEntity) {
                 if (isNotSuccess(responseEntity.getResponse())) {
                     getView().onError();
+                } else {
+                    atomicReference.set(responseEntity);
                 }
             }
         }));

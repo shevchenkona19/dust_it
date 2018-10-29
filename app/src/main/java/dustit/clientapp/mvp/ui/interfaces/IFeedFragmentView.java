@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.ui.interfaces;
 import java.util.List;
 
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 
 /**
@@ -19,4 +20,6 @@ public interface IFeedFragmentView extends IFragmentView {
     void onErrorInLoading();
 
     void onNoCategories();
+
+    void onAchievementUpdate(NewAchievementEntity achievementEntity);
 }

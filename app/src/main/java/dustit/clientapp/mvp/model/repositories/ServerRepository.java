@@ -1,9 +1,12 @@
 package dustit.clientapp.mvp.model.repositories;
 
+import android.support.annotation.StringDef;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
+import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.NewResponseEntity;
@@ -130,8 +133,8 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<FavoritesUpperEntity> getFavorites(String token) {
-        return serverAPI.getAllFavorites(token)
+    public Observable<FavoritesUpperEntity> getFavorites(String userId) {
+        return serverAPI.getAllFavorites(userId)
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
@@ -155,9 +158,9 @@ public class ServerRepository {
         return serverAPI.postPhoto(token, image).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<UsernameEntity> getMyUsername(String token) {
-        return serverAPI.getMyUsername(token).observeOn(AndroidSchedulers.mainThread());
-    }
+    public Observable<UsernameEntity> getUsername(String userId) {
+        return serverAPI.getUsername(userId).observeOn(AndroidSchedulers.mainThread());
+        }
 
     public Observable<ResponseEntity> removeFromFavorites(String token, String id) {
         return serverAPI.removeFromFavorites(token, id).observeOn(AndroidSchedulers.mainThread());
@@ -173,5 +176,9 @@ public class ServerRepository {
 
     public Observable<NewResponseEntity> postUserFeedback(String token, UserFeedbackEntity userFeedbackEntity) {
         return serverAPI.postUserFeedback(token, userFeedbackEntity).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<AchievementsEntity> getAchievements(String userId) {
+        return serverAPI.getAchievements(userId).observeOn(AndroidSchedulers.mainThread());
     }
 }
