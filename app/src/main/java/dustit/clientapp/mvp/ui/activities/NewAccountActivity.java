@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -62,6 +63,7 @@ import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.AchievementAdapter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.dialog.ViewAchievement;
 import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;

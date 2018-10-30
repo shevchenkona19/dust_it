@@ -1,7 +1,12 @@
 package dustit.clientapp.mvp.model.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Achievement {
     @SerializedName("lvl")
@@ -24,16 +29,24 @@ public class Achievement {
     @Expose
     private String name;
 
-    public Achievement(int lvl, int count, int nextPrice, boolean isFinalLevel, String name) {
+    @SerializedName("achievementName")
+    @Expose
+    private String achievementName;
+
+    @SerializedName("allNames")
+    @Expose
+    private List<String> allAchievementNames;
+
+    public Achievement() {}
+
+    public Achievement(int lvl, int count, int nextPrice, boolean isFinalLevel, String name, String achievementName, List<String> allAchievementNames) {
         this.lvl = lvl;
         this.count = count;
         this.nextPrice = nextPrice;
         this.isFinalLevel = isFinalLevel;
         this.name = name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.achievementName = achievementName;
+        this.allAchievementNames = allAchievementNames;
     }
 
     public int getLvl() {
@@ -70,5 +83,25 @@ public class Achievement {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAchievementName() {
+        return achievementName;
+    }
+
+    public void setAchievementName(String achievementName) {
+        this.achievementName = achievementName;
+    }
+
+    public List<String> getAllAchievementNames() {
+        return allAchievementNames;
+    }
+
+    public void setAllAchievementNames(List<String> allAchievementNames) {
+        this.allAchievementNames = allAchievementNames;
     }
 }

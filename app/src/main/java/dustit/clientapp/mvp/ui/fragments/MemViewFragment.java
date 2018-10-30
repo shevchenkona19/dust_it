@@ -537,7 +537,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Override
     public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
         if (getContext() != null) {
-            new AchievementUnlockedDialog(getContext()).bind(achievementEntity).show();
+            new AchievementUnlockedDialog(getContext(), achievementEntity.isFinalLevel()).bind(achievementEntity).show();
         }
     }
 

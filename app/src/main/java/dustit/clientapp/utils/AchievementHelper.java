@@ -1,5 +1,8 @@
 package dustit.clientapp.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dustit.clientapp.R;
 
 public class AchievementHelper {
@@ -97,5 +100,59 @@ public class AchievementHelper {
             default:
                 return 0;
         }
+    }
+
+    public static List<Integer> getAchievementIcons(String name) {
+        List<Integer> list = new ArrayList<>();
+        switch (name) {
+            case "likes": {
+                list.add(R.drawable.ic_achievement_like_1_big);
+                list.add(R.drawable.ic_achievement_like_2_big);
+                list.add(R.drawable.ic_achievement_like_3_big);
+                list.add(R.drawable.ic_achievement_like_4_big);
+                list.add(R.drawable.ic_achievement_like_5_big);
+                list.add(R.drawable.ic_achievement_like_6_big);
+                break;
+            }
+            case "dislikes": {
+                list.add(R.drawable.ic_achievement_dislike_1_big);
+                list.add(R.drawable.ic_achievement_dislike_2_big);
+                list.add(R.drawable.ic_achievement_dislike_3_big);
+                list.add(R.drawable.ic_achievement_dislike_4_big);
+                list.add(R.drawable.ic_achievement_dislike_5_big);
+                list.add(R.drawable.ic_achievement_dislike_6_big);
+                break;
+            }
+            case "comments": {
+                list.add(R.drawable.ic_achievement_comment_1_big);
+                list.add(R.drawable.ic_achievement_comment_2_big);
+                list.add(R.drawable.ic_achievement_comment_3_big);
+                list.add(R.drawable.ic_achievement_comment_4_big);
+                list.add(R.drawable.ic_achievement_comment_5_big);
+                list.add(R.drawable.ic_achievement_comment_6_big);
+                break;
+            }
+            case "views": {
+                list.add(R.drawable.ic_achievement_views_1_big);
+                list.add(R.drawable.ic_achievement_views_2_big);
+                list.add(R.drawable.ic_achievement_views_3_big);
+                list.add(R.drawable.ic_achievement_views_4_big);
+                list.add(R.drawable.ic_achievement_views_5_big);
+                list.add(R.drawable.ic_achievement_views_6_big);
+                list.add(R.drawable.ic_achievement_views_7_big);
+                list.add(R.drawable.ic_achievement_views_8_big);
+                break;
+            }
+            case "favourites": {
+                list.add(R.drawable.ic_achievement_fav_1_big);
+                list.add(R.drawable.ic_achievement_fav_2_big);
+                list.add(R.drawable.ic_achievement_fav_3_big);
+                list.add(R.drawable.ic_achievement_fav_4_big);
+                list.add(R.drawable.ic_achievement_fav_5_big);
+                list.add(R.drawable.ic_achievement_fav_6_big);
+                break;
+            }
+        }
+        return list;
     }
 }

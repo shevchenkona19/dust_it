@@ -214,7 +214,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
         if (getContext() != null) {
-            new AchievementUnlockedDialog(getContext()).bind(achievementEntity).show();
+            new AchievementUnlockedDialog(getContext(), achievementEntity.isFinalLevel()).bind(achievementEntity).show();
         }
     }
 

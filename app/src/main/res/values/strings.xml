@@ -124,5 +124,7 @@
     <string name="first_hundred">Первые 100</string>
     <string name="first_thousand">first thousand</string>
     <string name="next_target_is">Next target is %1$d %2$s</string>
+    <string name="achievementProgress">%1$d/%2$d</string>
+    <string name="achievement_info">Achievement info</string>
 
 </resources>

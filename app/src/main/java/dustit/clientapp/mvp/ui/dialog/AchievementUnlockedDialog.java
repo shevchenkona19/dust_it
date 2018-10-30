@@ -33,18 +33,26 @@ public class AchievementUnlockedDialog {
     Button btnOkay;
 
 
-    public AchievementUnlockedDialog(Context context) {
+    public AchievementUnlockedDialog(Context context, boolean isFinalLevel) {
         dialog = new Dialog(context);
         this.res = context.getResources();
-        dialog.setContentView(R.layout.dialog_new_achievement);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (isFinalLevel) {
+            dialog.setContentView(R.layout.dialog_final_achievement_unlock);
+        } else {
+            dialog.setContentView(R.layout.dialog_new_achievement);
+        }
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
         ButterKnife.bind(this, dialog);
     }
 
     public Dialog bind(NewAchievementEntity achievement) {
+        if (!achievement.isFinalLevel()) {
+            tvNextPrice.setText(String.format(res.getString(R.string.next_target_is), achievement.getNextPrice(), achievement.getName()));
+        }
         ivIcon.setImageResource(AchievementHelper.resolveAchievementIcon(achievement.getName(), achievement.getNewLevel()));
         tvAchievementName.setText(achievement.getAchievementName());
-        tvNextPrice.setText(String.format(res.getString(R.string.next_target_is), achievement.getNextPrice(), achievement.getName()));
         btnOkay.setOnClickListener(v -> dialog.dismiss());
         return dialog;
     }

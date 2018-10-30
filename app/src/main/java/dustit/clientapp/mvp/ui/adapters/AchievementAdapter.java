@@ -1,6 +1,9 @@
 package dustit.clientapp.mvp.ui.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Achievement;
+import dustit.clientapp.mvp.ui.dialog.ViewAchievement;
 import dustit.clientapp.utils.AchievementHelper;
+import dustit.clientapp.utils.IConstants;
 
 public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Achievement> achievements = new ArrayList<>();
@@ -29,7 +34,6 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static int ACHIEVEMENT = 1;
     private static int HUNDRED = 2;
     private static int THOUSAND = 3;
-
     public AchievementAdapter(Context context) {
         inflater = LayoutInflater.from(context);
         this.context = context;
@@ -77,6 +81,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (isThousand || isHundred) whatToGet -= 1;
         Achievement achievement = achievements.get(whatToGet);
         AchievementViewHolder achievementViewHolder = (AchievementViewHolder) holder;
+        achievementViewHolder.itemView.setOnClickListener(v -> new ViewAchievement(context).bind(achievement).show());
         achievementViewHolder.ivIcon.setImageResource(AchievementHelper.resolveAchievementIcon(achievement.getName(), achievement.getLvl()));
         if (!achievement.isFinalLevel()) {
             achievementViewHolder.pbAchievementProgress.setMax(achievement.getNextPrice());
