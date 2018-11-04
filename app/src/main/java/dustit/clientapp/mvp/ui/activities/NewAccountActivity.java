@@ -159,9 +159,18 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 isMe = true;
             }
         }
-        mPresenter.getUsername(userId);
-        mPresenter.loadFavorites(userId);
-        mPresenter.getAchievements(userId);
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                mPresenter.getUsername(userId);
+                mPresenter.loadFavorites(userId);
+                mPresenter.getAchievements(userId);
+            }
+        } else {
+            mPresenter.getUsername(userId);
+            mPresenter.loadFavorites(userId);
+            mPresenter.getAchievements(userId);
+
+        }
         btnReload.setOnClickListener(view -> {
             tvFailedToLoad.setVisibility(View.GONE);
             btnReload.setVisibility(View.GONE);
@@ -206,13 +215,14 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 });
             } else {
                 sdvIcon.setOnClickListener(view -> onNotRegistered());
+                rvAchievements.setVisibility(View.GONE);
             }
         }
         tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
         mAdapter = new FavoritesRecyclerViewAdapter(this, this);
         rvFavorites.setAdapter(mAdapter);
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
-        achievementAdapter = new AchievementAdapter(this);
+        achievementAdapter = new AchievementAdapter(this, isMe);
         rvAchievements.setAdapter(achievementAdapter);
         rvAchievements.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false));
         pbFavsLoading.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
@@ -225,6 +235,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 Uri uri = Uri.parse("android.resource://" + this.getPackageName() + "/drawable/noimage");
                 sdvIcon.setImageURI(uri);
                 supLayout.setPanelHeight(0);
+                clAccountLoading.setVisibility(View.GONE);
+                svAccountView.setVisibility(View.VISIBLE);
                 btnRegister.setVisibility(View.VISIBLE);
                 btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
             }

@@ -121,10 +121,25 @@
     <string name="enable_notifications">Отримувати сповіщення</string>
     <string name="enable_autostart">Дозвольте автозапуск додатку</string>
     <string name="autostart">Щоб отримувати усі сповіщення про нові меми, будь ласка, дозвольте MemSpace самостійно запускатися</string>
-    <string name="first_hundred">Первые 100</string>
-    <string name="first_thousand">first thousand</string>
-    <string name="next_target_is">Next target is %1$d %2$s</string>
+    <string name="first_hundred">Перші 100</string>
+    <string name="first_thousand">Перші 1000</string>
+    <string name="next_target_is">Наступна ціль: %1$d %2$s</string>
     <string name="achievementProgress">%1$d/%2$d</string>
-    <string name="achievement_info">Achievement info</string>
+    <string name="achievement_info">Інформація про ачівку</string>
+    <string name="likes_achievement">лайків</string>
+    <string name="dislikes_achievement">дизлайків</string>
+    <string name="comments_achievement">коментарів</string>
+    <string name="views_achievement">переглядів</string>
+    <string name="favourites_achievement">обраних</string>
+    <string name="final_achievement_unlocked">Ви отримали фінальну ачівку!</string>
+    <string name="final_achievement_description">Вітаємо! Ви відкрили останній рівень ачівки:</string>
+    <string name="words_about_description">Ви пройшли довгий шлях… Не зупиняйтесь!</string>
+    <string name="yeah_achievement">добре!</string>
+    <string name="new_achievement_unlocked">Ви отримали нову ачівку!</string>
+    <string name="congrats_you_have_unlocked_new_achievement">Вітаємо! Ви відкрили новий рівень ачівки:</string>
+    <string name="first_thousand_description_forme">Ви отримали цю ачівку за те, що ви були одним із 1000 перших зареєстрованих користувачив MemSpace. Команда розробників знімає перед вами свої капелюхи</string>
+    <string name="first_thousand_description_forall">Цей юзер отримав цю ачівку за те, що був одним із 1000 перших зареєстрованих користувачив MemSpace. Команда розробників знімає перед ним свої капелюхи</string>
+    <string name="first_hundred_description_forme">Ви отримали цю ачівку за те, що ви були одним із 100 перших зареєстрованих користувачив MemSpace. Ви найкращі! Ми вас любимо. Цьом</string>
+    <string name="first_hundred_description_forall">Цей юзер отримав цю ачівку за те, що був одним із 100 перших зареєстрованих користувачив MemSpace</string>
 
 </resources>

@@ -102,7 +102,7 @@ public interface ServerAPI {
     Observable<ResponseEntity> addToFavorites(@Header("Authorization") String token,
                                               @Query("id") String id);
 
-    @GET("/favorites/allFavorites")
+    @GET("/v1/favorites/allFavorites")
     Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") String userId);
 
     @POST("/feedback/comment")
@@ -120,7 +120,7 @@ public interface ServerAPI {
     Observable<ResponseEntity> postPhoto(@Header("Authorization") String token,
                                          @Body PhotoBody photoBody);
 
-    @GET("/account/username")
+    @GET("/v1/account/username")
     Observable<UsernameEntity> getUsername(@Query("userId") String userId);
 
     @DELETE("/favorites/removeFromFavorites")

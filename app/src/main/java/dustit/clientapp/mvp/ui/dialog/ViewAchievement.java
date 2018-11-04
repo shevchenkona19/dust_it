@@ -20,6 +20,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Achievement;
 import dustit.clientapp.mvp.ui.adapters.AchievementsViewAdapter;
 import dustit.clientapp.utils.AchievementHelper;
+import dustit.clientapp.utils.L;
 
 public class ViewAchievement {
     @BindView(R.id.cvDialog)
@@ -51,9 +52,9 @@ public class ViewAchievement {
         }
     }
 
-    public Dialog bind(Achievement achievement) {
+    public Dialog bind(Achievement achievement, boolean isMe) {
         tvAchievementName.setText(achievement.getAchievementName());
-        tvAchievementNextPrice.setText(String.format(context.getString(R.string.next_target_is), achievement.getNextPrice(), achievement.getName()));
+        tvAchievementNextPrice.setText(String.format(context.getString(R.string.next_target_is), achievement.getNextPrice(), AchievementHelper.resolveAchievementTargetName(context.getResources(), achievement.getName())));
         pbAchievementProgress.setMax(achievement.getNextPrice());
         pbAchievementProgress.setProgress(achievement.getCount());
         tvAchievementCount.setText(String.format(context.getString(R.string.achievementProgress), achievement.getCount(), achievement.getNextPrice()));
@@ -68,7 +69,7 @@ public class ViewAchievement {
                 .setMaxScale(1.2f)
                 .setMinScale(0.8f)
                 .setPivotX(Pivot.X.CENTER) // CENTER is a default one
-                .setPivotY(Pivot.Y.BOTTOM) // CENTER is a default one
+                .setPivotY(Pivot.Y.CENTER) // CENTER is a default one
                 .build());
         dsvAchievements.addOnItemChangedListener((viewHolder, adapterPosition) -> {
             if (adapterPosition > achievement.getLvl() - 1) {
@@ -78,13 +79,22 @@ public class ViewAchievement {
                 tvAchievementCount.setVisibility(View.INVISIBLE);
             } else {
                 tvAchievementName.setText(achievement.getAllAchievementNames().get(adapterPosition + 1));
-                tvAchievementNextPrice.setVisibility(View.VISIBLE);
-                pbAchievementProgress.setVisibility(View.VISIBLE);
-                tvAchievementCount.setVisibility(View.VISIBLE);
+                if (isMe) {
+                    if (!achievement.isFinalLevel()) {
+                        tvAchievementNextPrice.setVisibility(View.VISIBLE);
+                        pbAchievementProgress.setVisibility(View.VISIBLE);
+                        tvAchievementCount.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         });
         dsvAchievements.scrollToPosition(achievement.getLvl() - 1);
         ((View) card.getParent()).setOnClickListener(v -> dialog.dismiss());
+        if (!isMe || achievement.isFinalLevel()) {
+            pbAchievementProgress.setVisibility(View.INVISIBLE);
+            tvAchievementCount.setVisibility(View.INVISIBLE);
+            tvAchievementNextPrice.setVisibility(View.INVISIBLE);
+        }
         return dialog;
     }
 }

@@ -119,10 +119,25 @@
     <string name="enable_notifications">Получать уведомления</string>
     <string name="enable_autostart">Разрешить автозапуск приложения</string>
     <string name="autostart">Чтобы получать уведомления о новых мемах, пожалуйста, включите автозапуск MemSpace</string>
-    <string name="first_hundred">Первые 100</string>
-    <string name="first_thousand">first thousand</string>
-    <string name="next_target_is">Next target is %1$d %2$s</string>
+    <string name="first_hundred">Первые Сто</string>
+    <string name="first_thousand">Первые Тысяча</string>
+    <string name="next_target_is">Следющая цель: %1$d %2$s</string>
     <string name="achievementProgress">%1$d/%2$d</string>
-    <string name="achievement_info">Achievement info</string>
+    <string name="achievement_info">Информация про ачивку</string>
+    <string name="likes_achievement">лайков</string>
+    <string name="dislikes_achievement">дизлайков</string>
+    <string name="comments_achievement">комментариев</string>
+    <string name="views_achievement">просмотров</string>
+    <string name="favourites_achievement">избранных</string>
+    <string name="final_achievement_unlocked">Финальная ачивка открыта!</string>
+    <string name="final_achievement_description">Поздравляем! Вы получили финальную ачивку:</string>
+    <string name="words_about_description">Это был долгий путь… Не останавливайтесь! Соберите их все!</string>
+    <string name="yeah_achievement">Да!</string>
+    <string name="new_achievement_unlocked">Новая ачивка открыта!</string>
+    <string name="congrats_you_have_unlocked_new_achievement">Поздравляем! Вы открыли новую ачивку:</string>
+    <string name="first_thousand_description_forme">Вы получили эту ачивку за то, что были одним из первых 1000 зарегистрированных юзеров MemSpace. Команда разработчиков снимает перед вами шляпу</string>
+    <string name="first_thousand_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 1000 зарегистрированных юзеров MemSpace. Команда разработчиков снимает перед ним шляпу</string>
+    <string name="first_hundred_description_forme">Вы получили эту ачивку за то, что были одним из первых 100 зарегистрированных юзеров MemSpace. Вы лучший! Мы вас любим. Цём</string>
+    <string name="first_hundred_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 100 зарегистрированных юзеров MemSpace</string>
 
 </resources>

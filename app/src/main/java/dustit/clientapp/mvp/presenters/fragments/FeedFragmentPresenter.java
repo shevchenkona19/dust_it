@@ -92,4 +92,8 @@ public class FeedFragmentPresenter extends BasePresenter<IFeedFragmentView> impl
                     }
                 }));
     }
+
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
+    }
 }

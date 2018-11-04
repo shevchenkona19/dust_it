@@ -49,7 +49,7 @@ public class AchievementUnlockedDialog {
 
     public Dialog bind(NewAchievementEntity achievement) {
         if (!achievement.isFinalLevel()) {
-            tvNextPrice.setText(String.format(res.getString(R.string.next_target_is), achievement.getNextPrice(), achievement.getName()));
+            tvNextPrice.setText(String.format(res.getString(R.string.next_target_is), achievement.getNextPrice(), AchievementHelper.resolveAchievementTargetName(dialog.getContext().getResources(), achievement.getName())));
         }
         ivIcon.setImageResource(AchievementHelper.resolveAchievementIcon(achievement.getName(), achievement.getNewLevel()));
         tvAchievementName.setText(achievement.getAchievementName());

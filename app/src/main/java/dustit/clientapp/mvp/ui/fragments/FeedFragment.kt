@@ -175,6 +175,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun onAchievementUpdate(achievementEntity: NewAchievementEntity) {
         if (context != null) {
+            if (presenter!!.isRegistered)
             AchievementUnlockedDialog(context, achievementEntity.isFinalLevel).bind(achievementEntity).show()
         }
     }

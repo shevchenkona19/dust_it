@@ -119,9 +119,24 @@
     <string name="enable_notifications">Enable notifications</string>
     <string name="enable_autostart">Allow autostart</string>
     <string name="autostart">If you want to get notifications about new memes, please allow MemSpace to autostart</string>
-    <string name="first_hundred">Первые 100</string>
-    <string name="first_thousand">first thousand</string>
+    <string name="first_hundred">First Hundred</string>
+    <string name="first_thousand">First Thousand</string>
     <string name="next_target_is">Next target is %1$d %2$s</string>
     <string name="achievementProgress">%1$d/%2$d</string>
     <string name="achievement_info">Achievement info</string>
+    <string name="likes_achievement">likes</string>
+    <string name="dislikes_achievement">dislikes</string>
+    <string name="comments_achievement">comments</string>
+    <string name="views_achievement">views</string>
+    <string name="favourites_achievement">favourites</string>
+    <string name="final_achievement_unlocked">Final Achievement Unlocked!</string>
+    <string name="final_achievement_description">Congrats! You have unlocked a final level of achievement:</string>
+    <string name="words_about_description">It was a long way up… Don\'t hasitate! Go and catch them all!</string>
+    <string name="yeah_achievement">Yeah!</string>
+    <string name="new_achievement_unlocked">New Achievement Unlocked!</string>
+    <string name="congrats_you_have_unlocked_new_achievement">Congrats! You have unlocked new achievement:</string>
+    <string name="first_thousand_description_forme">This achievement is to remark that you are one of the first 1000 users who registered in MemSpace. Dev team are always pressing F to you</string>
+    <string name="first_thousand_description_forall">This achievement is to remark that this user is one of the first 1000 users who registered in MemSpace. Dev team are always pressing F to these people</string>
+    <string name="first_hundred_description_forme">This achievement is to remark that you are one of the first 100 users registered in MemSpace. Best of the Bests</string>
+    <string name="first_hundred_description_forall">This achievement is to remark that this user is one of the first 100 users registered in MemSpace. Best of the Bests</string>
 </resources>

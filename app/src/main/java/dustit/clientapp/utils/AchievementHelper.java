@@ -1,5 +1,7 @@
 package dustit.clientapp.utils;
 
+import android.content.res.Resources;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +101,23 @@ public class AchievementHelper {
                 }
             default:
                 return 0;
+        }
+    }
+
+    public static String resolveAchievementTargetName(Resources resources, String type) {
+        switch (type) {
+            case "likes":
+                return resources.getString(R.string.likes_achievement);
+            case "dislikes":
+                return resources.getString(R.string.dislikes_achievement);
+            case "comments":
+                return resources.getString(R.string.comments_achievement);
+            case "views":
+                return resources.getString(R.string.views_achievement);
+            case "favourites":
+                return resources.getString(R.string.favourites_achievement);
+            default:
+                return "";
         }
     }
 

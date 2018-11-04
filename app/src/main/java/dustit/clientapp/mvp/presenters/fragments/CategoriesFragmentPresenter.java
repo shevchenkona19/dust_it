@@ -78,4 +78,8 @@ public class CategoriesFragmentPresenter extends BasePresenter<ICategoriesFragme
                     }
                 }));
     }
+
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
+    }
 }

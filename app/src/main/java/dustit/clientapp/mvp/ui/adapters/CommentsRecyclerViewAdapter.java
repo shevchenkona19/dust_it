@@ -127,8 +127,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
             commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
-
-//            commentViewHolder.ivFirst.setImageResource();
+            if (comment.getFirstHundred()) {
+                commentViewHolder.ivFirst.setImageResource(R.drawable.ic_achievement_first100_small);
+            } else if (comment.getFirstThousand()) {
+                commentViewHolder.ivFirst.setImageResource(R.drawable.ic_achievement_first1000_small);
+            }
 
             final String monthDay = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') - 5, comment.getDateOfPost().indexOf('T'));

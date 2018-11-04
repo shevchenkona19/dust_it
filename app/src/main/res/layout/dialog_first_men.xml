@@ -11,23 +11,23 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         app:cardCornerRadius="23dp"
-        app:cardElevation="20dp"
+        app:cardElevation="9dp"
         app:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tvHeader"
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:paddingEnd="23dp"
                 android:paddingStart="23dp"
-                android:text="@string/new_achievement_unlocked"
+                android:text="@string/achievement_info"
                 android:textSize="23sp"
                 android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -35,51 +35,41 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivDialogAchievementIcon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_achievement_comment_1_big"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/ivAchievementIcon"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_achievement_first100_big"
+                app:layout_constraintTop_toBottomOf="@id/tvHeader"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
-
-            <TextView
-                android:id="@+id/tvAchievementEnter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/congrats_you_have_unlocked_new_achievement"
-                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivDialogAchievementIcon" />
+                />
 
             <com.lightfire.gradienttextcolor.GradientTextView
                 android:id="@+id/tvAchievementName"
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="Мемырь"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:gradientEnd="#ffb06a"
                 app:gradientStart="#f98098"
-                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvAchievementEnter" />
+                app:layout_constraintTop_toBottomOf="@id/ivAchievementIcon" />
 
             <TextView
-                android:id="@+id/tvAchievementNextPrice"
+                android:id="@+id/tvAchievementDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="@string/next_target_is"
+                android:text="blah blah blah"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -95,10 +85,10 @@
         android:layout_below="@id/cvDialog"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="28dp"
-        android:layout_marginTop="-57dp"
+        android:layout_marginTop="-15dp"
         app:cardCornerRadius="23dp"
-        app:cardUseCompatPadding="true"
-        app:cardElevation="21dp">
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnOkay"

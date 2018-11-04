@@ -87,4 +87,8 @@ public class HotFragmentPresenter extends BasePresenter<IHotFragmentView> implem
                     }
                 }));
     }
+
+    public boolean isRegistered() {
+        return userSettingsDataManager.isRegistered();
+    }
 }
