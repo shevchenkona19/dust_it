@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -151,7 +152,12 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
             });
             alertDialog.show();
         });
-        tvViewPolicy.setOnClickListener(v -> {
+        SharedPreferences preferences = getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        if (preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true)) {
+            preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME, false).apply();
+            mPresenter.continueNoRegistration();
+        }
+            tvViewPolicy.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(IConstants.BASE_URL + "/account/policy"));
             startActivity(browserIntent);
         });

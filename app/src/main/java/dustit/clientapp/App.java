@@ -72,8 +72,7 @@ public class App extends Application {
         if (preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true)) {
             if ("Xiaomi".equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
                 editor.putBoolean(IConstants.IPreferences.NOTIFICATIONS, false)
-                        .putBoolean(IConstants.IPreferences.AUTOSTART, false)
-                        .putBoolean(IConstants.IPreferences.FIRST_TIME, false);
+                        .putBoolean(IConstants.IPreferences.AUTOSTART, false);
             }
         }
         editor.putLong(IConstants.IPreferences.LAST_RUN, System.currentTimeMillis()).apply();

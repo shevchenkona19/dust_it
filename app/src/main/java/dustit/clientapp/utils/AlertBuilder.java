@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import java.lang.ref.WeakReference;
 
 import dustit.clientapp.R;
+import dustit.clientapp.mvp.ui.activities.ChooserActivity;
 import dustit.clientapp.mvp.ui.activities.RegisterActivity;
 
 public class AlertBuilder {
@@ -18,7 +19,8 @@ public class AlertBuilder {
                 .setTitle(context.getString(R.string.you_arent_registered))
                 .setMessage(context.getString(R.string.function_disabled_not_registered))
                 .setPositiveButton(context.getText(R.string.yes), (dialog, which) -> {
-                    final Intent intent = new Intent(context, RegisterActivity.class);
+                    L.print("wtf1");
+                    final Intent intent = new Intent(context, ChooserActivity.class);
                     context.startActivity(intent);
                 })
                 .setNegativeButton(context.getText(R.string.no), (dialog, which) -> dialog.dismiss())
@@ -49,7 +51,8 @@ public class AlertBuilder {
                 .setTitle(context.getString(R.string.create_account))
                 .setMessage(context.getString(R.string.description_create_account))
                 .setPositiveButton(context.getText(R.string.yes), (dialog, which) -> {
-                    final Intent intent = new Intent(context, RegisterActivity.class);
+                    L.print("wtf2");
+                    final Intent intent = new Intent(context, ChooserActivity.class);
                     context.startActivity(intent);
                 })
                 .setNegativeButton(context.getText(R.string.no), (dialog, which) -> dialog.dismiss())

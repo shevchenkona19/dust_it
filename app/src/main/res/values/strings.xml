@@ -99,7 +99,7 @@
     <string name="categories_title">Категорії</string>
     <string name="categories_description">Тут можна переглянути меми, що відносяться лише до однієї певної тематики, яку ви можете обрати зверху зі списку</string>
     <string name="user_icon_title">Ваш акаунт</string>
-    <string name="user_icon_description">Перейшовши сюди, ви зможете налаштувати все під себе: обрати тему, змінити мову або ваше фото, а також написати нам з пропозиціями або зауваженнями</string>
+    <string name="user_icon_description">Перейшовши сюди, ви зможете зареєструватися і налаштувати все під себе: обрати тему, змінити мову або ваше фото, а також написати нам з пропозиціями або зауваженнями</string>
     <string name="add_to_favourites_title">Додати в обране</string>
     <string name="add_to_favourites_description">Натисніть на цю кнопку, і мем буде збережено у списку обраних. Звідти його можна завантажити на ваш пристрій або відправити друзям</string>
     <string name="all_favs_title">Список обраних</string>
