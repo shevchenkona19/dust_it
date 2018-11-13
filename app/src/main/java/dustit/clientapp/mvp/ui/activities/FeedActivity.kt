@@ -233,7 +233,11 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
                 .enableDismissAfterShown(false)
                 .usageId(IConstants.ISpotlight.FAB_FEED)
                 .show()
-        startService(Intent(this, NotifyManager::class.java))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(this, NotifyManager::class.java))
+        } else {
+            startService(Intent(this, NotifyManager::class.java))
+        }
     }
 
     private fun showIntro() {
@@ -312,7 +316,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     override fun onDestroy() {
         feedbackManager.destroy()
         presenter.unbind()
-        adapter!!.destroy()
+        adapter?.destroy()
         FavouritesBus.destroy()
         super.onDestroy()
     }

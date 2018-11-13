@@ -34,6 +34,7 @@ import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
+import dustit.clientapp.mvp.ui.activities.SplashActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
@@ -119,4 +120,6 @@ public interface AppComponent {
     void inject(NewAccountActivity newAccountActivity);
 
     void inject(NewAccountActivityPresenter newAccountActivityPresenter);
+
+    void inject(SplashActivity splashActivity);
 }

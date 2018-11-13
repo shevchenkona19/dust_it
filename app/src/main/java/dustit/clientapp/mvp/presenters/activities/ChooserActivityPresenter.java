@@ -35,10 +35,7 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
             return;
         }
         if (!dataManager.getToken().equals("")) {
-            if (userSettingsDataManager.isRegistered()) {
-                L.print("token: " + dataManager.getToken());
-                getView().userAlreadyRegistered();
-            }
+            getView().userAlreadyRegistered();
         }
     }
 
@@ -47,23 +44,23 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
         userSettingsDataManager.setRegistered(false);
         getView().showLoading();
         addSubscription(dataManager.loginUser(new LoginUserEntity(IConstants.NO_REGISTRATION_USERNAME, IConstants.NO_REGISTRATION_PASSWORD))
-        .subscribe(new Subscriber<TokenEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().onNoRegistrationCompleted();
-            }
+                .subscribe(new Subscriber<TokenEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        getView().onNoRegistrationCompleted();
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                L.print("error: " + e.getMessage());
-                getView().hideLoading();
-                getView().onErrorNoRegistration();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        L.print("error: " + e.getMessage());
+                        getView().hideLoading();
+                        getView().onErrorNoRegistration();
+                    }
 
-            @Override
-            public void onNext(TokenEntity tokenEntity) {
-                dataManager.saveToken(tokenEntity.getToken());
-            }
-        }));
+                    @Override
+                    public void onNext(TokenEntity tokenEntity) {
+                        dataManager.saveToken(tokenEntity.getToken());
+                    }
+                }));
     }
 }

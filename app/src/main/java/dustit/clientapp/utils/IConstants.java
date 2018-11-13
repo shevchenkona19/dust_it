@@ -59,5 +59,6 @@ public interface IConstants {
         String IS_ME = "IS_ME";
         String ID = "ID";
         String ACHIEVEMENT = "ACHIEVEMENT";
+        String IS_FIRST_TIME = "IS_FIRST_TIME";
     }
 }

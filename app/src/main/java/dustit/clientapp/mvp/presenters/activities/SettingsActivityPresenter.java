@@ -29,6 +29,7 @@ public class SettingsActivityPresenter extends BasePresenter<ISettingsActivityVi
     @Override
     public void logout() {
         dataManager.saveToken("");
+        userSettingsDataManager.setRegistered(false);
         getView().onSuccessfullyLogout();
     }
 

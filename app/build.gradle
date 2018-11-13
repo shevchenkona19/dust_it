@@ -4,14 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "dustit.clientapp"
         minSdkVersion 21
         targetSdkVersion 27
         vectorDrawables.useSupportLibrary = true
-        versionCode 15
-        versionName "1.12"
+        versionCode 16
+        versionName "1.14"
 
     }
     lintOptions {

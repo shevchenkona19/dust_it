@@ -29,6 +29,7 @@
                 android:layout_below="@id/ivAchievementIcon"
                 android:layout_centerHorizontal="true"
                 android:paddingEnd="8dp"
+                android:gravity="center"
                 android:paddingStart="8dp"
                 android:text="/" />
         </RelativeLayout>

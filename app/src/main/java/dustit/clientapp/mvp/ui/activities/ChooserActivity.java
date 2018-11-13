@@ -31,6 +31,7 @@ import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IChooserActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 public class ChooserActivity extends AppCompatActivity implements IChooserActivityView {
     @BindView(R.id.btnChooserLogin)
@@ -59,42 +60,8 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
-        if (userSettingsDataManager.loadLanguage().equals("INIT")) {
-            final Locale locale = getBaseContext().getResources().getConfiguration().locale;
-            String langToLoad;
-            switch (locale.getLanguage()) {
-                case "ru":
-                    langToLoad = "ru";
-                    break;
-                case "ua":
-                    langToLoad = "ua";
-                    break;
-                case "us":
-                case "uk":
-                    langToLoad = "uk";
-                    break;
-                default:
-                    langToLoad = "ru";
-            }
-            final Locale newLocale = new Locale(langToLoad);
-            Locale.setDefault(newLocale);
-            final Configuration config = new Configuration();
-            config.locale = newLocale;
-            final Resources resources = getBaseContext().getResources();
-            resources.updateConfiguration(config,
-                    resources.getDisplayMetrics());
-            userSettingsDataManager.saveNewLanguagePref(langToLoad);
-            restartActivity();
-        }
-        if (!userSettingsDataManager.loadLanguage().equals(getResources().getConfiguration().locale.getLanguage())) {
-            final Locale locale = new Locale(userSettingsDataManager.loadLanguage());
-            Locale.setDefault(locale);
-            final Configuration config = new Configuration();
-            config.locale = locale;
-            getBaseContext().getResources().updateConfiguration(config,
-                    getBaseContext().getResources().getDisplayMetrics());
-            restartActivity();
-        }
+        SharedPreferences preferences = getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        final boolean isFirstTime = preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true);
         setContentView(R.layout.activity_chooser);
         ButterKnife.bind(this);
         mPresenter.bind(this);
@@ -152,12 +119,11 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
             });
             alertDialog.show();
         });
-        SharedPreferences preferences = getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        if (preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true)) {
+        if (isFirstTime) {
             preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME, false).apply();
             mPresenter.continueNoRegistration();
         }
-            tvViewPolicy.setOnClickListener(v -> {
+        tvViewPolicy.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(IConstants.BASE_URL + "/account/policy"));
             startActivity(browserIntent);
         });

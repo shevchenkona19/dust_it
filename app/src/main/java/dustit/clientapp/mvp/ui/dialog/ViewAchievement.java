@@ -72,18 +72,20 @@ public class ViewAchievement {
                 .setPivotY(Pivot.Y.CENTER) // CENTER is a default one
                 .build());
         dsvAchievements.addOnItemChangedListener((viewHolder, adapterPosition) -> {
-            if (adapterPosition > achievement.getLvl() - 1) {
-                tvAchievementName.setText("?");
-                tvAchievementNextPrice.setVisibility(View.INVISIBLE);
-                pbAchievementProgress.setVisibility(View.INVISIBLE);
-                tvAchievementCount.setVisibility(View.INVISIBLE);
-            } else {
-                tvAchievementName.setText(achievement.getAllAchievementNames().get(adapterPosition + 1));
-                if (isMe) {
-                    if (!achievement.isFinalLevel()) {
-                        tvAchievementNextPrice.setVisibility(View.VISIBLE);
-                        pbAchievementProgress.setVisibility(View.VISIBLE);
-                        tvAchievementCount.setVisibility(View.VISIBLE);
+            if (achievement.getLvl() > 0) {
+                if (adapterPosition > achievement.getLvl() - 1) {
+                    tvAchievementName.setText("?");
+                    tvAchievementNextPrice.setVisibility(View.INVISIBLE);
+                    pbAchievementProgress.setVisibility(View.INVISIBLE);
+                    tvAchievementCount.setVisibility(View.INVISIBLE);
+                } else {
+                    tvAchievementName.setText(achievement.getAllAchievementNames().get(adapterPosition + 1));
+                    if (isMe) {
+                        if (!achievement.isFinalLevel()) {
+                            tvAchievementNextPrice.setVisibility(View.VISIBLE);
+                            pbAchievementProgress.setVisibility(View.VISIBLE);
+                            tvAchievementCount.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
