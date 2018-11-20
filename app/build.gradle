@@ -10,8 +10,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         vectorDrawables.useSupportLibrary = true
-        versionCode 16
-        versionName "1.14"
+        versionCode 17
+        versionName "1.14.1"
 
     }
     lintOptions {
@@ -74,9 +74,11 @@ dependencies {
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation project(path: ':Spotlight-lib')
-    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.github.lightfire:Android-Gradient-Text-Color:b0047755f7'
     implementation 'com.yarolegovich:discrete-scrollview:1.4.9'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
 
 }
 repositories {

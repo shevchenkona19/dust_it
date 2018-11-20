@@ -17,6 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:supportsRtl">
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
@@ -106,6 +107,13 @@
 
         <service android:name=".utils.managers.NotifyManager" />
 
+        <service
+            android:name=".utils.receivers.NotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".utils.receivers.BootReceiver"
             android:enabled="true"
@@ -116,6 +124,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

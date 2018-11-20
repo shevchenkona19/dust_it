@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
+import dustit.clientapp.utils.L;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -28,20 +29,24 @@ public class SplashActivity extends AppCompatActivity {
         if (userSettingsDataManager.loadLanguage().equals("INIT")) {
             final Locale locale = getBaseContext().getResources().getConfiguration().locale;
             String langToLoad;
-            switch (locale.getLanguage()) {
+            String lang = locale.getLanguage();
+            L.print("LANG: " + lang);
+            switch (lang) {
                 case "ru":
                     langToLoad = "ru";
                     break;
                 case "ua":
-                    langToLoad = "ua";
+                    langToLoad = "uk";
                     break;
                 case "us":
                 case "uk":
-                    langToLoad = "uk";
+                case "en":
+                    langToLoad = "en";
                     break;
                 default:
                     langToLoad = "ru";
             }
+            L.print("lang to load LANG: " + langToLoad);
             final Locale newLocale = new Locale(langToLoad);
             Locale.setDefault(newLocale);
             final Configuration config = new Configuration();

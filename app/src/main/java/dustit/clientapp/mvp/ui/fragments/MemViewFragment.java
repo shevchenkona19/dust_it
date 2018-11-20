@@ -17,6 +17,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
+import dustit.clientapp.mvp.ui.adapters.AnswersCommentRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
@@ -63,7 +66,7 @@ import dustit.clientapp.utils.managers.ReviewManager;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
-public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
+public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, AnswersCommentRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
     private static final String COMMENTS_KEY = "COMMENTS_KEY";
 
@@ -81,6 +84,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private int imageHeight = -1;
 
     private String myId = "";
+
+    private String answerUserId = "";
+    private boolean isAnswering = false;
+    private String commentId = "";
+    private String answeringUsername = "";
 
     @Override
     public void changedFeedback(RefreshedMem refreshedMem) {
@@ -201,7 +209,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         if (userSettingsDataManager.isRegistered()) {
             presenter.isFavourite(mem.getId());
         }
-        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this);
+        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this, this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
         feedbackManager.subscribe(this);
@@ -290,6 +298,22 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                     .usageId(IConstants.ISpotlight.ADD_MEM_FAVS)
                     .show();
         }
+        etComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isAnswering = etComment.getText().toString().contains("@" + answeringUsername);
+            }
+        });
         return view;
     }
 
@@ -436,7 +460,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             if (!etComment.getText().toString().equals("")) {
                 pbCommentSend.setVisibility(View.VISIBLE);
                 ivSendComment.setVisibility(View.INVISIBLE);
-                presenter.postComment(mem.getId(), etComment.getText().toString());
+                if (isAnswering) {
+                    presenter.postAnswer(mem.getId(), answerUserId, etComment.getText().toString(), commentId);
+                } else {
+                    presenter.postComment(mem.getId(), etComment.getText().toString());
+                }
             }
         });
         ivAddToFavourites.setOnClickListener(v -> {
@@ -542,6 +570,23 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         }
     }
 
+    @Override
+    public void onAnswersLoaded(List<CommentEntity> answers, String commentId) {
+        commentAdapter.onAnswersLoaded(answers, commentId);
+    }
+
+    @Override
+    public void onAnswerSentSuccessfully() {
+        etComment.setText("");
+        isAnswering = false;
+        answerUserId = "";
+        answeringUsername = "";
+        pbCommentSend.setVisibility(View.INVISIBLE);
+        ivSendComment.setVisibility(View.VISIBLE);
+        presenter.loadAnswersForComment(commentId);
+        commentId = "";
+    }
+
     private void disExpandComments() {
         if (getContext() != null)
             KeyboardHandler.hideKeyboard(getActivity());
@@ -565,6 +610,20 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     public void loadCommentsBase() {
         srlCommentsRefresh.setRefreshing(false);
         presenter.loadCommentsBase(mem.getId());
+    }
+
+    @Override
+    public void answerComment(CommentEntity comment, String commentId) {
+        etComment.setText("@" + comment.getUsername() + ",");
+        isAnswering = true;
+        answerUserId = comment.getUserId();
+        answeringUsername = comment.getUsername();
+        this.commentId = commentId;
+    }
+
+    @Override
+    public void loadAnswers(String commentId) {
+        presenter.loadAnswersForComment(commentId);
     }
 
     private void setImageDrawable(ImageView ivImage, int d) {

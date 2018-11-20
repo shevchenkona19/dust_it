@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +19,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,10 +28,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
+import dustit.clientapp.customviews.CustomLinearLayoutManager;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -52,14 +49,16 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private boolean sent = false;
     private int offset = 6;
     private int lastPos;
+    private RecyclerView rvComments;
 
     @Inject
     DataManager dataManager;
 
-    public CommentsRecyclerViewAdapter(Context context, String myId, ICommentInteraction listener) {
+    public CommentsRecyclerViewAdapter(Context context, String myId, ICommentInteraction commentInteraction, AnswersCommentRecyclerViewAdapter.ICommentInteraction commentInteraction1) {
         list = new ArrayList<>();
         inflater = LayoutInflater.from(context);
-        interactionListener = listener;
+        interactionListener = commentInteraction;
+        this.commentInteraction = commentInteraction1;
         this.myId = myId;
         this.context = context;
         App.get().getAppComponent().inject(this);
@@ -69,9 +68,14 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         void loadCommentsPartial(int offset);
 
         void loadCommentsBase();
+
+        void answerComment(CommentEntity comment, String commentId);
+
+        void loadAnswers(String commentId);
     }
 
     private ICommentInteraction interactionListener;
+    private AnswersCommentRecyclerViewAdapter.ICommentInteraction commentInteraction;
 
     @NonNull
     @Override
@@ -79,6 +83,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         switch (viewType) {
             case 0:
                 View v = inflater.inflate(R.layout.item_comments_comment, parent, false);
+                L.print("Build new ViewHolder");
                 return new CommentViewHolder(v);
             case 1:
                 if (isLoading) {
@@ -89,7 +94,8 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     return new FeedRecyclerViewAdapter.FailedViewHolder(v2);
                 }
             default:
-                return null;
+                View v3 = inflater.inflate(R.layout.item_comments_comment, parent, false);
+                return new CommentViewHolder(v3);
         }
     }
 
@@ -111,7 +117,19 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof CommentViewHolder) {
             final CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             CommentEntity comment = list.get(pos);
-            commentViewHolder.bind(comment);
+            commentViewHolder.isExpanded = comment.isExpanded();
+            commentViewHolder.bind(comment, new CommentViewHolder.IAnswersListener() {
+                @Override
+                public void onExpandList() {
+                    comment.setExpanded(true);
+                    interactionListener.loadAnswers(comment.getId());
+                }
+
+                @Override
+                public void onCollapseList() {
+                    comment.setExpanded(false);
+                }
+            });
             commentViewHolder.sdvUserPhoto.setOnClickListener((v) -> {
                 String userId = comment.getUserId();
                 Intent intent = new Intent(context, NewAccountActivity.class);
@@ -127,6 +145,21 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
             commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
+            if (comment.getAnswers() > 0) {
+                commentViewHolder.tvAnswersCount.setText("Answers count: " + comment.getAnswers());
+                commentViewHolder.showAnswers();
+                L.print("is null pos: " + position + "; adapter: " + commentViewHolder.adapter);
+                if (commentViewHolder.adapter == null) {
+                    L.print("new adapter for " + position);
+                    commentViewHolder.adapter = new AnswersCommentRecyclerViewAdapter(context, myId, commentInteraction, comment.getId());
+                }
+                L.print("after create pos: " + position + "; adapter: " + commentViewHolder.adapter);
+                commentViewHolder.rvAnswers.setLayoutManager(new CustomLinearLayoutManager(context));
+                commentViewHolder.rvAnswers.setAdapter(commentViewHolder.adapter);
+            } else {
+                commentViewHolder.hideAnswers();
+            }
+            commentViewHolder.btnAnswer.setOnClickListener(v -> interactionListener.answerComment(comment, comment.getId()));
             if (comment.getFirstHundred()) {
                 commentViewHolder.ivFirst.setImageResource(R.drawable.ic_achievement_first100_small);
             } else if (comment.getFirstThousand()) {
@@ -147,6 +180,16 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     interactionListener.loadCommentsBase();
                 }
             });
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        final CommentEntity comment = list.get(position);
+        if (comment == null) {
+            return -1;
+        } else {
+            return Long.parseLong(comment.getId());
         }
     }
 
@@ -293,6 +336,39 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.rvComments = recyclerView;
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.rvComments = null;
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    public void onAnswersLoaded(List<CommentEntity> commentEntities, String commentId) {
+        int pos = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId().equals(commentId)) {
+                pos = i;
+            }
+        }
+        if (pos >= 0) {
+            if (rvComments != null) {
+                RecyclerView.ViewHolder vh = rvComments.findViewHolderForAdapterPosition(pos);
+                if (vh instanceof CommentViewHolder) {
+                    CommentViewHolder commentViewHolder = (CommentViewHolder) vh;
+                    if (commentViewHolder.adapter != null) {
+                        L.print("update in comments: " + pos);
+                        commentViewHolder.adapter.updateList(commentEntities);
+                    }
+                }
+            }
+        }
+    }
+
     static class CommentViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.sdvItemCommentsUserPhoto)
         SimpleDraweeView sdvUserPhoto;
@@ -314,13 +390,36 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         ImageView ivViewsLevel;
         @BindView(R.id.ivFirst)
         ImageView ivFirst;
+        @BindView(R.id.btnRespond)
+        Button btnAnswer;
+        @BindView(R.id.tvAnswersCount)
+        TextView tvAnswersCount;
+        @BindView(R.id.expandResponds)
+        ImageView ivAnswers;
+        @BindView(R.id.rvAnswersList)
+        RecyclerView rvAnswers;
+
+        private boolean isExpanded = false;
+        private AnswersCommentRecyclerViewAdapter adapter;
+        private IAnswersListener answersListener;
+
+        public interface IAnswersListener {
+            void onExpandList();
+            void onCollapseList();
+        }
 
         CommentViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(CommentEntity comment) {
+        public void bind(CommentEntity comment, IAnswersListener answersListener) {
+            this.answersListener = answersListener;
+            if (isExpanded) {
+                quietExpand();
+            } else {
+                quietCollapse();
+            }
             tvUsername.setText(comment.getUsername());
             tvText.setText(comment.getText());
             sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + comment.getUsername());
@@ -330,7 +429,57 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             final String hourMinute = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
             tvDateStamp.setText(hourMinute + " " + monthDay);
+            tvAnswersCount.setOnClickListener((v -> {
+                if (isExpanded) {
+                    collapseList();
+                } else {
+                    expandList();
+                }
+            }));
+            ivAnswers.setOnClickListener(v -> {
+                if (isExpanded) {
+                    collapseList();
+                } else {
+                    expandList();
+                }
+            });
+
         }
+
+        private void expandList() {
+            answersListener.onExpandList();
+            isExpanded = true;
+            rvAnswers.setVisibility(View.VISIBLE);
+            ivAnswers.setRotation(90);
+        }
+
+        private void quietExpand() {
+            rvAnswers.setVisibility(View.VISIBLE);
+            ivAnswers.setRotation(90);
+        }
+
+        private void quietCollapse() {
+            rvAnswers.setVisibility(View.GONE);
+            ivAnswers.setRotation(270);
+        }
+
+        private void collapseList() {
+            answersListener.onCollapseList();
+            isExpanded = false;
+            rvAnswers.setVisibility(View.GONE);
+            ivAnswers.setRotation(270);
+        }
+
+        private void hideAnswers() {
+            tvAnswersCount.setVisibility(View.GONE);
+            ivAnswers.setVisibility(View.GONE);
+        }
+
+        private void showAnswers() {
+            tvAnswersCount.setVisibility(View.VISIBLE);
+            ivAnswers.setVisibility(View.VISIBLE);
+        }
+
     }
 
     static class FeedLoadingViewHolder extends RecyclerView.ViewHolder {

@@ -3,11 +3,19 @@ package dustit.clientapp.mvp.model.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Никита on 09.11.2017.
  */
 
 public class CommentEntity {
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+
     @SerializedName("text")
     @Expose
     private String text;
@@ -27,6 +35,18 @@ public class CommentEntity {
     @SerializedName("time")
     @Expose
     private String time;
+
+    @SerializedName("parentId")
+    @Expose
+    private int parentId;
+
+    @SerializedName("answers")
+    @Expose
+    private int answers;
+
+    @SerializedName("answerUserId")
+    @Expose
+    private int answerUserId;
 
     @SerializedName("likeAchievementLvl")
     @Expose
@@ -56,8 +76,12 @@ public class CommentEntity {
     @Expose
     private boolean firstThousand;
 
+    private List<CommentEntity> answerList;
 
-    public CommentEntity(String text, String dateOfPost, String username, String userId, String time, int likeAchievementLvl, int dislikesAchievementLvl, int commentsAchievementLvl, int favouritesAchievementLvl, int viewsAchievementLvl, boolean firstHundred, boolean firstThousand) {
+    private boolean isExpanded = false;
+
+
+    public CommentEntity(String id, int parentId, int answerUserId, int answers, String text, String dateOfPost, String username, String userId, String time, int likeAchievementLvl, int dislikesAchievementLvl, int commentsAchievementLvl, int favouritesAchievementLvl, int viewsAchievementLvl, boolean firstHundred, boolean firstThousand) {
         this.text = text;
         this.dateOfPost = dateOfPost;
         this.username = username;
@@ -70,6 +94,10 @@ public class CommentEntity {
         this.viewsAchievementLvl = viewsAchievementLvl;
         this.firstHundred = firstHundred;
         this.firstThousand = firstThousand;
+        this.parentId = parentId;
+        this.answers = answers;
+        this.answerUserId = answerUserId;
+        this.id = id;
     }
 
     public String getText() {
@@ -160,11 +188,71 @@ public class CommentEntity {
         this.firstHundred = firstHundred;
     }
 
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(int answers) {
+        this.answers = answers;
+    }
+
+    public boolean isFirstHundred() {
+        return firstHundred;
+    }
+
+    public boolean isFirstThousand() {
+        return firstThousand;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public boolean getFirstThousand() {
         return firstThousand;
     }
 
     public void setFirstThousand(boolean firstThousand) {
         this.firstThousand = firstThousand;
+    }
+
+    public int getAnswerUserId() {
+        return answerUserId;
+    }
+
+    public void setAnswerUserId(int answerUserId) {
+        this.answerUserId = answerUserId;
+    }
+
+    public List<CommentEntity> getAnswerList() {
+        if (answerList == null) {
+            answerList = new ArrayList<>();
+        }
+        return answerList;
+    }
+
+    public void setAnswerList(List<CommentEntity> answerList) {
+        this.answerList.clear();
+        this.answerList.addAll(answerList);
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

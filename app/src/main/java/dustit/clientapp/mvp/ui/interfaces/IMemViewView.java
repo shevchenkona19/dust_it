@@ -31,4 +31,8 @@ public interface IMemViewView extends IActivityView {
     void onIsFavourite(boolean isFavourite);
 
     void onAchievementUpdate(NewAchievementEntity achievementEntity);
+
+    void onAnswersLoaded(List<CommentEntity> answers, String commentId);
+
+    void onAnswerSentSuccessfully();
 }

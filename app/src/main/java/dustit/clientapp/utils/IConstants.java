@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://193.111.63.173";
+    String BASE_URL = "http://192.168.1.192";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";

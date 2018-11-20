@@ -2,6 +2,8 @@ package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
 
+import org.w3c.dom.Comment;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -174,5 +176,14 @@ public class DataManager {
 
     public String loadId() {
         return preferencesRepository.loadId();
+    }
+
+    public Observable<CommentEntity> getAnswersForComment(String commentId) {
+        return serverRepository.getAnswersForComment(commentId)
+                .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
+    }
+
+    public Observable<ResponseEntity> postAnswerForComment(String imageId, String commentId, String userId, PostCommentEntity entity) {
+        return serverRepository.postAnswerForComment(getToken(), imageId, commentId, userId, entity);
     }
 }

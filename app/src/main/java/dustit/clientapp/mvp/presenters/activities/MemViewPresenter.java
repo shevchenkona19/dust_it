@@ -18,7 +18,6 @@ import dustit.clientapp.mvp.presenters.interfaces.IMemViewPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Container;
-import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -205,6 +204,66 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                 favouriteContainer.put(isFavourite);
             }
         }));
+    }
+
+    @Override
+    public void loadAnswersForComment(String commentId) {
+        List<CommentEntity> answers = new ArrayList<>();
+        addSubscription(dataManager.getAnswersForComment(commentId).subscribe(new Subscriber<CommentEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onAnswersLoaded(answers, commentId);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                L.print("Error: " + e.getMessage());
+                getView().onError();
+            }
+
+            @Override
+            public void onNext(CommentEntity commentEntity) {
+                answers.add(commentEntity);
+            }
+        }));
+    }
+
+    @Override
+    public void postAnswer(String id, String answerId, String text, String commentId) {
+        if (!isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        AtomicReference<ResponseEntity> atomicReference = new AtomicReference<>();
+        PostCommentEntity commentEntity = new PostCommentEntity(text);
+        addSubscription(dataManager.postAnswerForComment(id, commentId, answerId, commentEntity)
+                .subscribe(new Subscriber<ResponseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        getView().onAnswerSentSuccessfully();
+                        ResponseEntity response = atomicReference.get();
+                        if (response != null) {
+                            if (response.isAchievementUpdate()) {
+                                getView().onAchievementUpdate(response.getAchievementEntity());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        L.print(e.getMessage());
+                        getView().onCommentSendFail();
+                    }
+
+                    @Override
+                    public void onNext(ResponseEntity responseEntity) {
+                        if (responseEntity.getResponse() != 200) {
+                            getView().onCommentSendFail();
+                        } else {
+                            atomicReference.set(responseEntity);
+                        }
+                    }
+                }));
     }
 
     public boolean isRegistered() {

@@ -159,18 +159,6 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 isMe = true;
             }
         }
-        if (isMe) {
-            if (userSettingsDataManager.isRegistered()) {
-                mPresenter.getUsername(userId);
-                mPresenter.loadFavorites(userId);
-                mPresenter.getAchievements(userId);
-            }
-        } else {
-            mPresenter.getUsername(userId);
-            mPresenter.loadFavorites(userId);
-            mPresenter.getAchievements(userId);
-
-        }
         btnReload.setOnClickListener(view -> {
             tvFailedToLoad.setVisibility(View.GONE);
             btnReload.setVisibility(View.GONE);
@@ -281,6 +269,22 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                     mPresenter.loadFavorites(userId);
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                mPresenter.getUsername(userId);
+                mPresenter.loadFavorites(userId);
+                mPresenter.getAchievements(userId);
+            }
+        } else {
+            mPresenter.getUsername(userId);
+            mPresenter.loadFavorites(userId);
+            mPresenter.getAchievements(userId);
         }
     }
 

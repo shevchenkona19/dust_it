@@ -141,5 +141,6 @@
     <string name="first_thousand_description_forall">Цей юзер отримав цю ачівку за те, що був одним із 1000 перших зареєстрованих користувачив MemSpace. Команда розробників знімає перед ним свої капелюхи</string>
     <string name="first_hundred_description_forme">Ви отримали цю ачівку за те, що ви були одним із 100 перших зареєстрованих користувачив MemSpace. Ви найкращі! Ми вас любимо. Цьом</string>
     <string name="first_hundred_description_forall">Цей юзер отримав цю ачівку за те, що був одним із 100 перших зареєстрованих користувачив MemSpace</string>
+    <string name="respondToComment">answer</string>
 
 </resources>

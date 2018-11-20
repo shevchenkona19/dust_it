@@ -142,4 +142,14 @@ public interface ServerAPI {
     @GET("/account/achievements")
     Observable<AchievementsEntity> getAchievements(@Query("userId") String id);
 
+    @GET("/feedback/answersForComment")
+    Observable<CommentUpperEntity> getAnswersForComment(@Query("commentId") String commentId);
+
+    @POST("/feedback/commentAnswer")
+    Observable<ResponseEntity> postCommentAnswer(@Header("Authorization") String token,
+                                                 @Query("id") String imageId,
+                                                 @Query("commentId") String commentId,
+                                                 @Query("answerUserId") String answerUserId,
+                                                 @Body PostCommentEntity postCommentEntity);
+
 }

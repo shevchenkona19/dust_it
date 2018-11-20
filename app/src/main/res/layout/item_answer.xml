@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/sdvItemCommentsUserPhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundAsCircle="true" />
+
+    <TextView
+        android:id="@+id/tvItemCommentUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="11dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvItemCommentText"
+        app:layout_constraintStart_toEndOf="@+id/sdvItemCommentsUserPhoto"
+        app:layout_constraintTop_toTopOf="@+id/sdvItemCommentsUserPhoto" />
+
+    <TextView
+        android:id="@+id/tvItemCommentText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvItemCommentDateStamp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@id/sdvItemCommentsUserPhoto"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvItemCommentUsername" />
+
+    <TextView
+        android:id="@+id/tvItemCommentDateStamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvItemCommentText" />
+
+
+    <ImageView
+        android:id="@+id/ivLikeAchievementLevel"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/sdvItemCommentsUserPhoto"
+        app:layout_constraintTop_toBottomOf="@id/sdvItemCommentsUserPhoto" />
+
+    <ImageView
+        android:id="@+id/ivDislikeAchievementLevel"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivCommentsAchievementLevel"
+        app:layout_constraintStart_toEndOf="@id/ivLikeAchievementLevel"
+        app:layout_constraintTop_toBottomOf="@id/sdvItemCommentsUserPhoto" />
+
+    <ImageView
+        android:id="@id/ivCommentsAchievementLevel"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@id/sdvItemCommentsUserPhoto"
+        app:layout_constraintTop_toBottomOf="@id/sdvItemCommentsUserPhoto" />
+
+    <ImageView
+        android:id="@+id/ivFavouritesAchievementLevel"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="2.5dp"
+        app:layout_constraintStart_toStartOf="@id/sdvItemCommentsUserPhoto"
+        app:layout_constraintTop_toBottomOf="@id/ivCommentsAchievementLevel" />
+
+    <ImageView
+        android:id="@+id/ivViewsAchievementLevel"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivFirst"
+        app:layout_constraintStart_toEndOf="@id/ivFavouritesAchievementLevel"
+        app:layout_constraintTop_toBottomOf="@id/ivCommentsAchievementLevel" />
+
+    <ImageView
+        android:id="@id/ivFirst"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@id/sdvItemCommentsUserPhoto"
+        app:layout_constraintTop_toBottomOf="@id/ivCommentsAchievementLevel" />
+
+</android.support.constraint.ConstraintLayout>

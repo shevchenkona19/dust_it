@@ -1,6 +1,5 @@
 package dustit.clientapp.mvp.model.repositories;
 
-import android.support.annotation.StringDef;
 
 import javax.inject.Inject;
 
@@ -8,26 +7,23 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.apis.ServerAPI;
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.IsFavourite;
-import dustit.clientapp.mvp.model.entities.NewResponseEntity;
-import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
-import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
-import okhttp3.MultipartBody;
-import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -40,7 +36,7 @@ public class ServerRepository {
     @Inject
     ServerAPI serverAPI;
 
-    public ServerRepository(){
+    public ServerRepository() {
         App.get().getAppComponent().inject(this);
     }
 
@@ -160,7 +156,7 @@ public class ServerRepository {
 
     public Observable<UsernameEntity> getUsername(String userId) {
         return serverAPI.getUsername(userId).observeOn(AndroidSchedulers.mainThread());
-        }
+    }
 
     public Observable<ResponseEntity> removeFromFavorites(String token, String id) {
         return serverAPI.removeFromFavorites(token, id).observeOn(AndroidSchedulers.mainThread());
@@ -180,5 +176,19 @@ public class ServerRepository {
 
     public Observable<AchievementsEntity> getAchievements(String userId) {
         return serverAPI.getAchievements(userId).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<CommentUpperEntity> getAnswersForComment(String commentId) {
+        return serverAPI.getAnswersForComment(commentId)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ResponseEntity> postAnswerForComment(String token,
+                                                           String imageId,
+                                                           String commentId,
+                                                           String userId,
+                                                           PostCommentEntity entity) {
+        return serverAPI.postCommentAnswer(token, imageId, commentId, userId, entity)
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

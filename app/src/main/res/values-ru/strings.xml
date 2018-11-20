@@ -139,5 +139,6 @@
     <string name="first_thousand_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 1000 зарегистрированных юзеров MemSpace. Команда разработчиков снимает перед ним шляпу</string>
     <string name="first_hundred_description_forme">Вы получили эту ачивку за то, что были одним из первых 100 зарегистрированных юзеров MemSpace. Вы лучший! Мы вас любим. Цём</string>
     <string name="first_hundred_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 100 зарегистрированных юзеров MemSpace</string>
+    <string name="respondToComment">answer</string>
 
 </resources>

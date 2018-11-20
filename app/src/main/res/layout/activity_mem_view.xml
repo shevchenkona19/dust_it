@@ -226,7 +226,7 @@
             android:layout_above="@+id/cvMemViewCommentSendView"
             android:layout_below="@id/ablExpandablePanel">
 
-            <android.support.v7.widget.RecyclerView
+            <dustit.clientapp.customviews.NestedRecyclerView
                 android:id="@id/rvMemViewComments"
                 android:layoutAnimation="@anim/item_feed_layout_animation"
                 android:layout_width="match_parent"
