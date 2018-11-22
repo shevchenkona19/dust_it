@@ -50,6 +50,8 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private int offset = 6;
     private int lastPos;
     private RecyclerView rvComments;
+    private boolean scrollToAnswer = false;
+    private String newCommentId = "";
 
     @Inject
     DataManager dataManager;
@@ -207,6 +209,14 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    public void openCommentAnswers(int pos, String newCommentId) {
+        this.newCommentId = newCommentId;
+        scrollToAnswer = true;
+        list.get(pos).setExpanded(true);
+        notifyItemChanged(pos);
+        interactionListener.loadAnswers(list.get(pos).getId());
+    }
+
     public void onStartLoading() {
         Handler handler = new Handler();
         isLoading = true;
@@ -361,8 +371,18 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 if (vh instanceof CommentViewHolder) {
                     CommentViewHolder commentViewHolder = (CommentViewHolder) vh;
                     if (commentViewHolder.adapter != null) {
-                        L.print("update in comments: " + pos);
                         commentViewHolder.adapter.updateList(commentEntities);
+                        if (scrollToAnswer) {
+                            scrollToAnswer = false;
+                            int newCommentPos = -1;
+                            for (int i = 0; i < commentEntities.size(); i++) {
+                                if (commentEntities.get(i).getId().equals(newCommentId)) {
+                                    newCommentPos = i;
+                                    break;
+                                }
+                            }
+                            commentViewHolder.rvAnswers.scrollToPosition(newCommentPos);
+                        }
                     }
                 }
             }

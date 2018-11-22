@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.presenters.interfaces;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by shevc on 07.10.2017.
  * Let's GO!
@@ -10,4 +12,6 @@ public interface IFeedActivityPresenter {
     void getCategories();
     void setFeedVisited();
     boolean isFeedFirstTime();
+
+    void loadMemForComments(@Nullable String memId, @Nullable String parentComment, @Nullable String newComment);
 }

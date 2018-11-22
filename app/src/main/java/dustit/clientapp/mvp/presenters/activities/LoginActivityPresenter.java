@@ -8,6 +8,7 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
+import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.ILoginActivityPresenter;
@@ -28,6 +29,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
     public LoginActivityPresenter() {
         App.get().getAppComponent().inject(this);
     }
+
     @Override
     public void loginUser(String username, String password) {
         AtomicReference<TokenEntity> token = new AtomicReference<>();
@@ -40,6 +42,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
                             dataManager.saveId(tokenEntity.getId());
                             dataManager.saveToken(tokenEntity.getToken());
                             userSettingsDataManager.setRegistered(true);
+                            setFcmForUser();
                             getView().onLoggedSuccessfully();
                         } else {
                             getView().onError(tokenEntity.getMessage());
@@ -56,5 +59,31 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
                         token.set(tokenEntity);
                     }
                 }));
+    }
+
+    private void setFcmForUser() {
+        if (!userSettingsDataManager.getFcm().equals("")) {
+            AtomicReference<ResponseEntity> reference = new AtomicReference<>();
+            addSubscription(dataManager.setFcmId(userSettingsDataManager.getFcm()).subscribe(new Subscriber<ResponseEntity>() {
+                @Override
+                public void onCompleted() {
+                    if (reference.get().getResponse() == 200) {
+                        userSettingsDataManager.setFcmUpdate(true);
+                    } else {
+                        userSettingsDataManager.setFcmUpdate(false);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    userSettingsDataManager.setFcmUpdate(false);
+                }
+
+                @Override
+                public void onNext(ResponseEntity responseEntity) {
+                    reference.set(responseEntity);
+                }
+            }));
+        }
     }
 }

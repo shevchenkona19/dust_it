@@ -8,6 +8,7 @@ public interface IMemViewPresenter {
     void removeFromFavourites(String id);
     void isFavourite(String id);
     void loadAnswersForComment(String commentId);
+    void getCommentsToCommentId(String memId, String toCommentId);
 
     void postAnswer(String id, String answerId, String text, String commentId);
 }

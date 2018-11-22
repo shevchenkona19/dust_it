@@ -13,17 +13,22 @@ import com.bumptech.glide.Glide;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.picasso.Picasso;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.di.component.AppComponent;
 import dustit.clientapp.di.component.DaggerAppComponent;
 import dustit.clientapp.di.modules.AppModule;
+import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
+import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.TimeTracking;
 import dustit.clientapp.utils.managers.NotifyManager;
 import dustit.clientapp.utils.managers.ThemeManager;
+import rx.Subscriber;
 
 public class App extends Application {
 
@@ -42,6 +47,8 @@ public class App extends Application {
     ThemeManager themeManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
+    @Inject
+    DataManager dataManager;
 
 
     @Override
@@ -73,6 +80,33 @@ public class App extends Application {
             if ("Xiaomi".equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
                 editor.putBoolean(IConstants.IPreferences.NOTIFICATIONS, false)
                         .putBoolean(IConstants.IPreferences.AUTOSTART, false);
+            }
+        }
+        if (!userSettingsDataManager.isFcmUpdated()) {
+            if (!userSettingsDataManager.getFcm().equals("")) {
+                AtomicReference<ResponseEntity> reference = new AtomicReference<>();
+                dataManager.setFcmId(userSettingsDataManager.getFcm()).subscribe(new Subscriber<ResponseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        L.print("New FCM Token set!");
+                        if (reference.get().getResponse() == 200) {
+                            userSettingsDataManager.setFcmUpdate(true);
+                        } else {
+                            userSettingsDataManager.setFcmUpdate(false);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        L.print("Error setting FCM Token: " + e.getMessage());
+                        userSettingsDataManager.setFcmUpdate(false);
+                    }
+
+                    @Override
+                    public void onNext(ResponseEntity responseEntity) {
+                        reference.set(responseEntity);
+                    }
+                });
             }
         }
         editor.putLong(IConstants.IPreferences.LAST_RUN, System.currentTimeMillis()).apply();

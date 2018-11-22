@@ -37,6 +37,8 @@ public interface IConstants {
         String AUTOSTART = "AUTOSTART";
         String FIRST_TIME = "FIRST_TIME";
         String MY_ID = "MY_ID";
+        String FCM_ID = "FCM_ID";
+        String FCM_UPDATE = "FCM_UPDATE";
     }
 
     interface ISpotlight {
@@ -55,10 +57,14 @@ public interface IConstants {
         NEUTRAL
     }
 
-    public interface IBundle {
+    interface IBundle {
         String IS_ME = "IS_ME";
         String ID = "ID";
         String ACHIEVEMENT = "ACHIEVEMENT";
         String IS_FIRST_TIME = "IS_FIRST_TIME";
+        String SHOW_COMMENTS = "SHOW_COMMENTS";
+        String MEM_ID = "MEM_ID";
+        String PARENT_COMMENT_ID = "PARENT_COMMENT_ID";
+        String NEW_COMMENT_ID = "NEW_COMMENT_ID";
     }
 }

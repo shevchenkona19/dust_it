@@ -40,6 +40,7 @@ import dustit.clientapp.mvp.ui.fragments.MemViewFragment
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView
 import dustit.clientapp.utils.AlertBuilder
 import dustit.clientapp.utils.IConstants
+import dustit.clientapp.utils.L
 import dustit.clientapp.utils.bus.FavouritesBus
 import dustit.clientapp.utils.managers.NotifyManager
 import dustit.clientapp.utils.managers.ThemeManager
@@ -238,6 +239,23 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         } else {
             startService(Intent(this, NotifyManager::class.java))
         }
+        showComments()
+    }
+
+    private fun showComments() {
+        val intent = intent
+        L.print("show comments start")
+        if (intent.extras != null) {
+            L.print("extras are not null!")
+            val extras = intent.extras
+            if (extras.getBoolean(IConstants.IBundle.SHOW_COMMENTS)) {
+                val memId = extras.getString(IConstants.IBundle.MEM_ID)
+                val parentComment = extras.getString(IConstants.IBundle.PARENT_COMMENT_ID)
+                val newComment = extras.getString(IConstants.IBundle.NEW_COMMENT_ID)
+                L.print("loading memFor comments; memId: $memId; parentComment: $parentComment; newComment: $newComment")
+                presenter.loadMemForComments(memId, parentComment, newComment)
+            }
+        }
     }
 
     private fun showIntro() {
@@ -424,6 +442,24 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         }
     }
 
+    fun launchMemViewForComments(memEntity: MemEntity, startComments: Boolean, parentComment: String?, newComment: String?) {
+        val fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId(), parentComment, newComment)
+        val transition = TransitionInflater
+                .from(this).inflateTransition(R.transition.mem_view_transition)
+        fragment.sharedElementEnterTransition = transition
+        fragment.sharedElementReturnTransition = transition
+        supportFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.feedContainer, fragment)
+                .addToBackStack(null)
+                .commit()
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0)
+                clLayout.visibility = View.VISIBLE
+        }
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -593,6 +629,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
 
     override fun onDetachFromActivity() {
         spinnerInteractionListener = null
+    }
+
+    override fun onMemReadyForComments(memEntity: MemEntity, parentComment: String, newComment: String) {
+        launchMemViewForComments(memEntity, true, parentComment, newComment)
     }
 
     companion object {

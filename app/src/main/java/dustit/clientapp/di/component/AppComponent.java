@@ -43,6 +43,7 @@ import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.utils.FavoritesUtils;
 import dustit.clientapp.utils.managers.ReviewManager;
+import dustit.clientapp.utils.receivers.NotificationService;
 
 /**
  * Created by shevc on 22.09.2017.
@@ -122,4 +123,7 @@ public interface AppComponent {
     void inject(NewAccountActivityPresenter newAccountActivityPresenter);
 
     void inject(SplashActivity splashActivity);
+
+    void inject(NotificationService notificationService);
+
 }

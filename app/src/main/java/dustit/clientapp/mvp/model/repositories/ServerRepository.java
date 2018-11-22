@@ -11,6 +11,7 @@ import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
 import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
@@ -190,5 +191,17 @@ public class ServerRepository {
                                                            PostCommentEntity entity) {
         return serverAPI.postCommentAnswer(token, imageId, commentId, userId, entity)
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ResponseEntity> setFcmId(String token, String fcmId) {
+        return serverAPI.postFcmId(token, fcmId).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<MemEntity> getMemById(String memId) {
+        return serverAPI.getMemById(memId).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<CommentUpperEntity> getCommentsToCommentId(String memId, String toCommentId) {
+        return serverAPI.getCommentsToCommentId(memId, toCommentId).observeOn(AndroidSchedulers.mainThread());
     }
 }

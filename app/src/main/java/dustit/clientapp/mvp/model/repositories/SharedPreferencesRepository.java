@@ -170,4 +170,20 @@ public class SharedPreferencesRepository {
     public String loadId() {
         return preferences.getString(IConstants.IPreferences.MY_ID, "");
     }
+
+    public void saveFcmId(String fcmId) {
+        preferences.edit().putString(IConstants.IPreferences.FCM_ID, fcmId).apply();
+    }
+
+    public boolean isFcmUpdate() {
+        return preferences.getBoolean(IConstants.IPreferences.FCM_UPDATE, false);
+    }
+
+    public void setFcmUpdate(boolean update) {
+        preferences.edit().putBoolean(IConstants.IPreferences.FCM_UPDATE, update).apply();
+    }
+
+    public String getFcm() {
+        return preferences.getString(IConstants.IPreferences.FCM_ID, "");
+    }
 }

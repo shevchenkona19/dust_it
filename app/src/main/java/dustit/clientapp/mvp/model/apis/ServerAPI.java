@@ -3,6 +3,7 @@ package dustit.clientapp.mvp.model.apis;
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
@@ -151,5 +152,16 @@ public interface ServerAPI {
                                                  @Query("commentId") String commentId,
                                                  @Query("answerUserId") String answerUserId,
                                                  @Body PostCommentEntity postCommentEntity);
+
+    @POST("/account/fcmId")
+    Observable<ResponseEntity> postFcmId(@Header("Authorization") String token,
+                                         @Query("fcmId") String fcmId);
+
+    @GET("/feed/mem")
+    Observable<MemEntity> getMemById(@Query("memId") String memId);
+
+    @GET("/feedback/commentsToCommentId")
+    Observable<CommentUpperEntity> getCommentsToCommentId(@Query("memId") String memId,
+                                                          @Query("toCommentId") String toCommentId);
 
 }

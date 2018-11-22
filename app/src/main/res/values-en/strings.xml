@@ -140,4 +140,5 @@
     <string name="first_hundred_description_forme">This achievement is to remark that you are one of the first 100 users registered in MemSpace. Best of the Bests</string>
     <string name="first_hundred_description_forall">This achievement is to remark that this user is one of the first 100 users registered in MemSpace. Best of the Bests</string>
     <string name="respondToComment">answer</string>
+    <string name="new_comment">%1$s left a new comment</string>
 </resources>

@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.datamanager;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -69,5 +71,21 @@ public class UserSettingsDataManager {
 
     public void setEnabledAutostart(boolean enabled) {
         preferencesRepository.setEnabledAutostart(enabled);
+    }
+
+    public void saveFcmId(String fcmId) {
+        preferencesRepository.saveFcmId(fcmId);
+    }
+
+    public boolean isFcmUpdated() {
+        return preferencesRepository.isFcmUpdate();
+    }
+
+    public void setFcmUpdate(boolean update) {
+        preferencesRepository.setFcmUpdate(update);
+    }
+
+    public String getFcm() {
+        return preferencesRepository.getFcm();
     }
 }

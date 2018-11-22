@@ -186,4 +186,17 @@ public class DataManager {
     public Observable<ResponseEntity> postAnswerForComment(String imageId, String commentId, String userId, PostCommentEntity entity) {
         return serverRepository.postAnswerForComment(getToken(), imageId, commentId, userId, entity);
     }
+
+    public Observable<ResponseEntity> setFcmId(String fcmId) {
+        return serverRepository.setFcmId(getToken(), fcmId);
+    }
+
+    public Observable<MemEntity> getMemById(String memId) {
+        return serverRepository.getMemById(memId);
+    }
+
+    public Observable<CommentEntity> getCommentsToCommentId(String memId, String toCommentId) {
+        return serverRepository.getCommentsToCommentId(memId, toCommentId)
+                .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
+    }
 }

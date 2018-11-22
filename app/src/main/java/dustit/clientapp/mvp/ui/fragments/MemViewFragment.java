@@ -35,6 +35,8 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.wooplr.spotlight.SpotlightView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
@@ -90,21 +92,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private String commentId = "";
     private String answeringUsername = "";
 
-    @Override
-    public void changedFeedback(RefreshedMem refreshedMem) {
-        mem.setLikes(refreshedMem.getLikes());
-        mem.setDislikes(refreshedMem.getDislikes());
-        mem.setOpinion(refreshedMem.getOpinion());
-        refreshUi();
-    }
-
-    @Override
-    public void onError(RestoreMemEntity restoreMemEntity) {
-        mem.setLikes(restoreMemEntity.getLikes());
-        mem.setDislikes(restoreMemEntity.getDislikes());
-        mem.setOpinion(restoreMemEntity.getOpinion());
-        refreshUi();
-    }
+    private boolean showNewComment = false;
+    private String newCommentParentId = "";
+    private String newCommentId = "";
 
     public interface IMemViewRatingInteractionListener {
         void closeMemView();
@@ -180,6 +170,18 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         return fragment;
     }
 
+    public static MemViewFragment newInstance(@NotNull MemEntity memEntity, boolean startComments, String loadId, String parentComment, String newComment) {
+        Bundle args = new Bundle();
+        args.putParcelable(MEM_KEY, memEntity);
+        args.putBoolean(COMMENTS_KEY, startComments);
+        args.putString(IConstants.IBundle.ID, loadId);
+        args.putString(IConstants.IBundle.PARENT_COMMENT_ID, parentComment);
+        args.putString(IConstants.IBundle.NEW_COMMENT_ID, newComment);
+        final MemViewFragment fragment = new MemViewFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
@@ -187,6 +189,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             mem = args.getParcelable(MEM_KEY);
             myId = args.getString(IConstants.IBundle.ID);
             startComments = args.getBoolean(COMMENTS_KEY);
+            if (args.getString(IConstants.IBundle.PARENT_COMMENT_ID) != null) {
+                showNewComment = true;
+                newCommentParentId = args.getString(IConstants.IBundle.PARENT_COMMENT_ID);
+                newCommentId = args.getString(IConstants.IBundle.NEW_COMMENT_ID);
+            }
         }
     }
 
@@ -246,7 +253,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         enableClicks();
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         canPerformTap = true;
-                        presenter.loadCommentsBase(mem.getId());
+                        if (!showNewComment) {
+                            presenter.loadCommentsBase(mem.getId());
+                        } else {
+                            presenter.getCommentsToCommentId(mem.getId(), newCommentParentId);
+                        }
                         supPanel.setDragView(clExpandedUpperLayout);
                         break;
                     case COLLAPSED:
@@ -519,6 +530,22 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     @Override
+    public void changedFeedback(RefreshedMem refreshedMem) {
+        mem.setLikes(refreshedMem.getLikes());
+        mem.setDislikes(refreshedMem.getDislikes());
+        mem.setOpinion(refreshedMem.getOpinion());
+        refreshUi();
+    }
+
+    @Override
+    public void onError(RestoreMemEntity restoreMemEntity) {
+        mem.setLikes(restoreMemEntity.getLikes());
+        mem.setDislikes(restoreMemEntity.getDislikes());
+        mem.setOpinion(restoreMemEntity.getOpinion());
+        refreshUi();
+    }
+
+    @Override
     public void onStartLoading() {
         commentAdapter.onStartLoading();
     }
@@ -585,6 +612,14 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         ivSendComment.setVisibility(View.VISIBLE);
         presenter.loadAnswersForComment(commentId);
         commentId = "";
+    }
+
+    @Override
+    public void onCommentsToCommentIdLoaded(List<CommentEntity> list) {
+        showNewComment = false;
+        commentAdapter.updateListWhole(list);
+        rvComments.scrollToPosition(list.size() - 1);
+        commentAdapter.openCommentAnswers(list.size() - 1, newCommentId);
     }
 
     private void disExpandComments() {

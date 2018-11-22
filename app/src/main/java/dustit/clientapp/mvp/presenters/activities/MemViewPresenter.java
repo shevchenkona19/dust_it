@@ -11,6 +11,7 @@ import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
@@ -224,6 +225,28 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
             @Override
             public void onNext(CommentEntity commentEntity) {
                 answers.add(commentEntity);
+            }
+        }));
+    }
+
+    @Override
+    public void getCommentsToCommentId(String memId, String toCommentId) {
+        getView().onStartLoading();
+        List<CommentEntity> list = new ArrayList<>();
+        addSubscription(dataManager.getCommentsToCommentId(memId, toCommentId).subscribe(new Subscriber<CommentEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onCommentsToCommentIdLoaded(list);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorInLoading();
+            }
+
+            @Override
+            public void onNext(CommentEntity commentEntity) {
+                list.add(commentEntity);
             }
         }));
     }
