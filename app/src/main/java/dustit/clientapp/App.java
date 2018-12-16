@@ -119,7 +119,7 @@ public class App extends Application {
             CharSequence name = "MemSpace";
             String description = "MemSpace";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("MemSpace", name, importance);
+            NotificationChannel channel = new NotificationChannel(IConstants.INotifications.CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

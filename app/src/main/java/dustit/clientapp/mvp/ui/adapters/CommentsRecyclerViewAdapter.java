@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,16 +121,31 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             final CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             CommentEntity comment = list.get(pos);
             commentViewHolder.isExpanded = comment.isExpanded();
-            commentViewHolder.bind(comment, new CommentViewHolder.IAnswersListener() {
-                @Override
-                public void onExpandList() {
+            commentViewHolder.bind(comment);
+            commentViewHolder.tvAnswersCount.setOnClickListener((v -> {
+                if (commentViewHolder.isExpanded) {
+                    commentViewHolder.collapseList();
+                    comment.setExpanded(false);
+                    TransitionManager.beginDelayedTransition(rvComments);
+
+                } else {
+                    commentViewHolder.expandList();
                     comment.setExpanded(true);
                     interactionListener.loadAnswers(comment.getId());
+                    TransitionManager.beginDelayedTransition(rvComments);
                 }
-
-                @Override
-                public void onCollapseList() {
+            }));
+            commentViewHolder.ivAnswers.setOnClickListener(v -> {
+                if (commentViewHolder.isExpanded) {
+                    commentViewHolder.collapseList();
                     comment.setExpanded(false);
+                    TransitionManager.beginDelayedTransition(rvComments);
+
+                } else {
+                    commentViewHolder.expandList();
+                    comment.setExpanded(true);
+                    interactionListener.loadAnswers(comment.getId());
+                    TransitionManager.beginDelayedTransition(rvComments);
                 }
             });
             commentViewHolder.sdvUserPhoto.setOnClickListener((v) -> {
@@ -148,14 +164,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
             if (comment.getAnswers() > 0) {
-                commentViewHolder.tvAnswersCount.setText("Answers count: " + comment.getAnswers());
+                commentViewHolder.tvAnswersCount.setText(String.valueOf(comment.getAnswers()));
                 commentViewHolder.showAnswers();
-                L.print("is null pos: " + position + "; adapter: " + commentViewHolder.adapter);
                 if (commentViewHolder.adapter == null) {
-                    L.print("new adapter for " + position);
                     commentViewHolder.adapter = new AnswersCommentRecyclerViewAdapter(context, myId, commentInteraction, comment.getId());
                 }
-                L.print("after create pos: " + position + "; adapter: " + commentViewHolder.adapter);
                 commentViewHolder.rvAnswers.setLayoutManager(new CustomLinearLayoutManager(context));
                 commentViewHolder.rvAnswers.setAdapter(commentViewHolder.adapter);
             } else {
@@ -433,8 +446,8 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(CommentEntity comment, IAnswersListener answersListener) {
-            this.answersListener = answersListener;
+        public void bind(CommentEntity comment ) {
+//            this.answersListener = answersListener;
             if (isExpanded) {
                 quietExpand();
             } else {
@@ -449,25 +462,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             final String hourMinute = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
             tvDateStamp.setText(hourMinute + " " + monthDay);
-            tvAnswersCount.setOnClickListener((v -> {
-                if (isExpanded) {
-                    collapseList();
-                } else {
-                    expandList();
-                }
-            }));
-            ivAnswers.setOnClickListener(v -> {
-                if (isExpanded) {
-                    collapseList();
-                } else {
-                    expandList();
-                }
-            });
+
 
         }
 
         private void expandList() {
-            answersListener.onExpandList();
+//            answersListener.onExpandList();
             isExpanded = true;
             rvAnswers.setVisibility(View.VISIBLE);
             ivAnswers.setRotation(90);
@@ -484,10 +484,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         private void collapseList() {
-            answersListener.onCollapseList();
+//            answersListener.onCollapseList();
             isExpanded = false;
             rvAnswers.setVisibility(View.GONE);
             ivAnswers.setRotation(270);
+            TransitionManager.beginDelayedTransition(rvAnswers);
         }
 
         private void hideAnswers() {

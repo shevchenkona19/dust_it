@@ -297,4 +297,29 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     private boolean isNotSuccess(int code) {
         return code != 200;
     }
+
+    public void updateFcmId() {
+        String fcmId = userSettingsDataManager.getFcm();
+        final boolean[] isError = {false};
+        addSubscription(dataManager.setFcmId(fcmId).subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                if (!isError[0]) {
+                    userSettingsDataManager.setFcmUpdate(true);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                if (responseEntity.getResponse() != 200) {
+                    isError[0] = true;
+                }
+            }
+        }));
+    }
 }

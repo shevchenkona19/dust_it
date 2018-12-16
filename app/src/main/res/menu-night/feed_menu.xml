@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@drawable/ic_feed_bar"
+        android:title="@string/feed_title" />
+    <item
+        android:icon="@drawable/ic_hot_bar"
+        android:title="@string/hot_title" />
+    <item
+        android:icon="@drawable/ic_categories_bar"
+        android:title="@string/categories_title" />
+
+</menu>

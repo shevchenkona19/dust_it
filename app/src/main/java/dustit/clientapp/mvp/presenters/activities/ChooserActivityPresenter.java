@@ -35,18 +35,21 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
             return;
         }
         if (!dataManager.getToken().equals("")) {
-            getView().userAlreadyRegistered();
+            if (!userSettingsDataManager.isNoRegistration())
+                getView().userAlreadyRegistered();
         }
     }
 
     @Override
     public void continueNoRegistration() {
+        L.print("continueNoRegistration");
         userSettingsDataManager.setRegistered(false);
         getView().showLoading();
         addSubscription(dataManager.loginUser(new LoginUserEntity(IConstants.NO_REGISTRATION_USERNAME, IConstants.NO_REGISTRATION_PASSWORD))
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
+                        userSettingsDataManager.setNoRegistration(true);
                         getView().onNoRegistrationCompleted();
                     }
 

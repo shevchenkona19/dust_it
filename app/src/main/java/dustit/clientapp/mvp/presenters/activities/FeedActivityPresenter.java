@@ -16,6 +16,7 @@ import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IFeedActivityPresenter;
@@ -125,6 +126,31 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
         } else {
             L.print("NULL FOR LOAD MEM");
         }
+    }
+
+    public void updateFcmId() {
+        String fcmId = userSettingsDataManager.getFcm();
+        final boolean[] isError = {false};
+        addSubscription(dataManager.setFcmId(fcmId).subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                if (!isError[0]) {
+                    userSettingsDataManager.setFcmUpdate(true);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                if (responseEntity.getResponse() != 200) {
+                    isError[0] = true;
+                }
+            }
+        }));
     }
 
     @NotNull

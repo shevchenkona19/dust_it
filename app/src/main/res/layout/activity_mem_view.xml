@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/supPanel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -54,7 +53,7 @@
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
         android:clickable="true"
-        tools:ignore="KeyboardInaccessibleWidget">
+        android:focusable="true">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/ablExpandablePanel"
@@ -121,11 +120,11 @@
                             android:id="@id/ivMemViewExpandComments"
                             android:layout_width="35dp"
                             android:layout_height="0dp"
+                            android:layout_marginStart="16dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="5dp"
-                            android:layout_marginStart="16dp"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
@@ -136,11 +135,11 @@
                             android:id="@+id/tvMemViewCommentsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
-                            android:textSize="18sp"
+                            android:layout_marginBottom="8dp"
                             android:textColor="#b3b3b3"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@id/ivMemViewExpandComments"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -149,9 +148,9 @@
                             android:id="@+id/ivMemViewLike"
                             android:layout_width="26dp"
                             android:layout_height="0dp"
-                            android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
@@ -164,11 +163,11 @@
                             android:id="@id/tvMemViewLikeCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="16dp"
                             android:layout_marginTop="8dp"
-                            android:textSize="18sp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
                             android:textColor="#b3b3b3"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -177,8 +176,8 @@
                             android:id="@id/ivMemViewDisliked"
                             android:layout_width="26dp"
                             android:layout_height="0dp"
-                            android:layout_marginEnd="8dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
@@ -191,11 +190,11 @@
                             android:id="@id/tvMemViewDislikeCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
                             android:layout_marginTop="8dp"
-                            android:textSize="18sp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
                             android:textColor="#b3b3b3"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -212,8 +211,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/empty_set_comments"
@@ -228,9 +227,9 @@
 
             <dustit.clientapp.customviews.NestedRecyclerView
                 android:id="@id/rvMemViewComments"
-                android:layoutAnimation="@anim/item_feed_layout_animation"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layoutAnimation="@anim/item_feed_layout_animation" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
 
@@ -250,29 +249,37 @@
                     android:id="@+id/etMemViewComment"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/comment_edittext"
                     android:hint="@string/your_comment"
                     android:inputType="text"
-                    android:alpha="0.5"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="7dp"
+                    android:textColor="?attr/colorAccent"
                     android:textCursorDrawable="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ivMemViewCommentSend"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/ivMemViewCommentSend"
-                    android:layout_width="wrap_content"
+                    android:layout_width="45dp"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:background="?attr/selectableItemBackground"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/btn_hello_accent"
                     android:clickable="true"
                     android:focusable="true"
+                    android:tint="#fff"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_send_comment" />
+                    app:srcCompat="@drawable/ic_reply_arrow" />
 
                 <ProgressBar
                     android:id="@+id/pbIMemViewCommentSendingLoading"

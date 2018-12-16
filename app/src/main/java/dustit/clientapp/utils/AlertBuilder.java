@@ -51,7 +51,6 @@ public class AlertBuilder {
                 .setTitle(context.getString(R.string.create_account))
                 .setMessage(context.getString(R.string.description_create_account))
                 .setPositiveButton(context.getText(R.string.yes), (dialog, which) -> {
-                    L.print("wtf2");
                     final Intent intent = new Intent(context, ChooserActivity.class);
                     context.startActivity(intent);
                 })

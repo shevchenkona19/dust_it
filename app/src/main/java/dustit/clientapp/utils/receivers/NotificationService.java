@@ -38,22 +38,61 @@ public class NotificationService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             if (userSettingsDataManager.isNotificationsEnabled()) {
                 Map<String, String> data = remoteMessage.getData();
-                String username = data.get("username");
-                String text = data.get("text");
-                Intent intent = new Intent(this, FeedActivity.class);
-                intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
-                intent.putExtra(IConstants.IBundle.MEM_ID, data.get("memId"));
-                intent.putExtra(IConstants.IBundle.PARENT_COMMENT_ID, data.get("parentCommentId"));
-                intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, data.get("newCommentId"));
-                sendNotification(username, text, intent);
+                String type = data.get("type");
+                if (type.equals(IConstants.INotifications.NEW_MEMES)) {
+                    buildNewMemesNotification(data);
+                } else if (type.equals(IConstants.INotifications.COMMENT_RESPOND)) {
+                    buildNewRespondNotification(data);
+                }
+
             }
         }
     }
 
-    private void sendNotification(String username, String text, Intent toLaunch) {
+    private void buildNewMemesNotification(Map<String, String> data) {
+        String memesCount = data.get("memesCount");
+        sendNewMemesNotification(memesCount);
+    }
+
+    private void buildNewRespondNotification(Map<String, String> data) {
+        String username = data.get("username");
+        String text = data.get("text");
+        Intent intent = new Intent(this, FeedActivity.class);
+        intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
+        intent.putExtra(IConstants.IBundle.MEM_ID, data.get("memId"));
+        intent.putExtra(IConstants.IBundle.PARENT_COMMENT_ID, data.get("parentCommentId"));
+        intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, data.get("newCommentId"));
+        sendNewRespondOnCommentNotification(username, text, intent);
+    }
+
+    private void sendNewMemesNotification(String memesCount) {
+        if (memesCount == null || memesCount.equals("undefined")) return;
+        Intent toLaunch = new Intent(this, FeedActivity.class);
         toLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        Notification noti = new NotificationCompat.Builder(this, "MemSpace")
+        Notification noti = new NotificationCompat.Builder(this, IConstants.INotifications.CHANNEL_ID)
+                .setContentTitle(getString(R.string.return_notification_title))
+                .setContentText(String.format(getString(R.string.return_notitfication_message), Integer.valueOf(memesCount)))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSmallIcon(R.drawable.ic_notific)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(String.format(getString(R.string.return_notitfication_message), Integer.valueOf(memesCount))))
+                .setContentIntent(PendingIntent.getActivity(this, 131314, toLaunch,
+                        PendingIntent.FLAG_UPDATE_CURRENT))
+                .setAutoCancel(true)
+                .setChannelId(IConstants.INotifications.CHANNEL_ID)
+                .build();
+
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+
+        notificationManager.notify(456243, noti);
+    }
+
+    private void sendNewRespondOnCommentNotification(String username, String text, Intent toLaunch) {
+        toLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        Notification noti = new NotificationCompat.Builder(this, IConstants.INotifications.CHANNEL_ID)
                 .setContentTitle(String.format(getString(R.string.new_comment), username))
                 .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -63,6 +102,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentIntent(PendingIntent.getActivity(this, 131314, toLaunch,
                         PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
+                .setChannelId(IConstants.INotifications.CHANNEL_ID)
                 .build();
 
 

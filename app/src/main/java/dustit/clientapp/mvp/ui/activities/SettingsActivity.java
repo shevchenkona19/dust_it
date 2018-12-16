@@ -188,7 +188,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     private void restartCurrentAndBackstack() {
         final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, FeedActivity.class))
-                .addNextIntent(new Intent(this, NewAccountActivity.class))
+                .addNextIntent(new Intent(this, NewAccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
         stackBuilder.startActivities();
         finish();

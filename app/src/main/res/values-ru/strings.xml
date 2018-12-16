@@ -115,7 +115,7 @@
     <string name="review_title">Нравятся мемы?</string>
     <string name="review_message">Как вам MemSpace? Оставьте свой отзыв!</string>
     <string name="return_notification_title">MemSpace вызывает</string>
-    <string name="return_notitfication_message">Вас давно не было… А у нас тут куча новых мемов!</string>
+    <string name="return_notitfication_message">А ми підібрали для вас %1$d нових мемів!</string>
     <string name="enable_notifications">Получать уведомления</string>
     <string name="enable_autostart">Разрешить автозапуск приложения</string>
     <string name="autostart">Чтобы получать уведомления о новых мемах, пожалуйста, включите автозапуск MemSpace</string>

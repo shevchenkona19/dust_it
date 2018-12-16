@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.datamanager;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
@@ -88,4 +86,13 @@ public class UserSettingsDataManager {
     public String getFcm() {
         return preferencesRepository.getFcm();
     }
+
+    public void setNoRegistration(boolean noRegistration) {
+        preferencesRepository.setNoRegistration(noRegistration);
+    }
+
+    public boolean isNoRegistration() {
+        return preferencesRepository.isNoRegistration();
+    }
+
 }

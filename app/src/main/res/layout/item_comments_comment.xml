@@ -4,15 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?attr/colorPrimary"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdvItemCommentsUserPhoto"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:roundAsCircle="true" />
@@ -70,11 +73,15 @@
 
     <TextView
         android:id="@+id/tvItemCommentUsername"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="11dp"
+        android:ellipsize="end"
+        android:text=""
         app:layout_constraintBottom_toTopOf="@+id/tvItemCommentText"
+        app:layout_constraintEnd_toStartOf="@id/tvItemCommentDateStamp"
         app:layout_constraintStart_toEndOf="@+id/sdvItemCommentsUserPhoto"
         app:layout_constraintTop_toTopOf="@+id/sdvItemCommentsUserPhoto" />
 
@@ -82,10 +89,11 @@
         android:id="@+id/tvItemCommentText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
+        android:text="ddmvcejnviwndcewenckwneckwnecknwkecwkmckwckwekvnwknvw-------------------------------ciemncimneivneivnrinvirnvinribveimvemvekfdngskldrjgnaljrnglkajnrgvlajnrfnvklsjnkrdjvnlakjrnvaskjv"
         app:layout_constraintBottom_toTopOf="@+id/tvItemCommentDateStamp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@id/sdvItemCommentsUserPhoto"
@@ -96,67 +104,79 @@
         android:id="@+id/tvItemCommentDateStamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvItemCommentText" />
+        android:layout_marginBottom="20dp"
+        android:text="10-11 20.11.2018"
+        app:layout_constraintBaseline_toBaselineOf="@id/tvItemCommentUsername"
+        app:layout_constraintEnd_toEndOf="@id/tvItemCommentText" />
 
     <View
+        android:id="@+id/commentsSeparator"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.3"
-        android:background="?attr/colorAccent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="#50c0c0c0"
+        app:layout_constraintVertical_bias="100"
+        app:layout_constraintTop_toTopOf="@id/rvAnswersList"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btnRespond"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/btn_hello_accent"
+        android:drawableStart="@drawable/ic_reply_arrow"
         android:text="@string/respondToComment"
-        android:textColor="?attr/colorAccent"
+        android:textColor="#eee"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvItemCommentDateStamp" />
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        app:layout_constraintEnd_toEndOf="@id/tvItemCommentText"
+        app:layout_constraintTop_toBottomOf="@+id/tvItemCommentText" />
 
     <TextView
         android:id="@+id/tvAnswersCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="answers: 35"
+        android:text="35"
         android:textColor="#999999"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintBaseline_toBaselineOf="@id/btnRespond"
-        app:layout_constraintEnd_toStartOf="@+id/expandResponds" />
+        app:layout_constraintEnd_toStartOf="@+id/btnRespond" />
 
     <ImageView
-        android:id="@id/expandResponds"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:rotation="2700"
+        android:id="@+id/expandResponds"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="2dp"
+        android:padding="3dp"
+        android:rotation="270"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_arrow_left_simple"
         android:tint="#707070"
-        app:layout_constraintBottom_toBottomOf="@id/tvAnswersCount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvAnswersCount" />
+        app:layout_constraintBottom_toBottomOf="@+id/tvAnswersCount"
+        app:layout_constraintEnd_toStartOf="@+id/tvAnswersCount"
+        app:layout_constraintTop_toTopOf="@+id/tvAnswersCount" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvAnswersList"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="400dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRespond"
-        tools:itemCount="27" />
+        app:layout_constraintStart_toStartOf="@+id/tvItemCommentText"
+        app:layout_constraintTop_toBottomOf="@id/btnRespond" />
 </android.support.constraint.ConstraintLayout>

@@ -143,6 +143,7 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
 
     @Override
     public void userAlreadyRegistered() {
+        L.print("alreadyReg");
         startActivity(new Intent(this, FeedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
         finish();
     }

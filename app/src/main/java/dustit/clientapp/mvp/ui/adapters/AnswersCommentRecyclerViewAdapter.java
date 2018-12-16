@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,6 +208,8 @@ public class AnswersCommentRecyclerViewAdapter extends RecyclerView.Adapter<Answ
         ImageView ivAnswers;
         @BindView(R.id.rvAnswersList)
         RecyclerView rvAnswers;
+        @BindView(R.id.commentsSeparator)
+        View separator;
 
         public AnswerViewHolder(View itemView) {
             super(itemView);
@@ -214,6 +217,13 @@ public class AnswersCommentRecyclerViewAdapter extends RecyclerView.Adapter<Answ
         }
 
         private void bind(CommentEntity comment) {
+            separator.setVisibility(View.INVISIBLE);
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) sdvUserPhoto.getLayoutParams();
+            params.setMarginStart(0);
+            sdvUserPhoto.setLayoutParams(params);
+            ConstraintLayout.LayoutParams params1 = (ConstraintLayout.LayoutParams) tvText.getLayoutParams();
+            params1.setMarginEnd(0);
+            tvText.setLayoutParams(params1);
             rvAnswers.setVisibility(View.GONE);
             tvAnswersCount.setVisibility(View.GONE);
             ivAnswers.setVisibility(View.GONE);

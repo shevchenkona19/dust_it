@@ -9,6 +9,6 @@ public interface IMemViewPresenter {
     void isFavourite(String id);
     void loadAnswersForComment(String commentId);
     void getCommentsToCommentId(String memId, String toCommentId);
-
+    void updateFcmId();
     void postAnswer(String id, String answerId, String text, String commentId);
 }

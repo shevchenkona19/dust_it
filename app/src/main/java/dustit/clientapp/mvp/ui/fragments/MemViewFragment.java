@@ -133,7 +133,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @BindView(R.id.etMemViewComment)
     EditText etComment;
     @BindView(R.id.ivMemViewCommentSend)
-    ImageView ivSendComment;
+    View ivSendComment;
     @BindView(R.id.srlMemViewRefreshComments)
     SwipeRefreshLayout srlCommentsRefresh;
     @BindView(R.id.pbIMemViewCommentSendingLoading)
@@ -325,6 +325,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 isAnswering = etComment.getText().toString().contains("@" + answeringUsername);
             }
         });
+        if (!userSettingsDataManager.isFcmUpdated()) {
+            presenter.updateFcmId();
+        }
         return view;
     }
 

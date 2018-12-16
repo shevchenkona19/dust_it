@@ -127,6 +127,13 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     private boolean isMe = false;
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(IConstants.IBundle.IS_ME, isMe);
+        outState.putString(IConstants.IBundle.ID, userId);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             requestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
@@ -151,6 +158,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         mPresenter.bind(this);
         setSupportActionBar(tbAccount);
         Bundle bundle = getIntent().getExtras();
+        if (bundle == null) bundle = savedInstanceState;
         if (bundle != null) {
             if (!bundle.getBoolean(IConstants.IBundle.IS_ME)) {
                 userId = bundle.getString(IConstants.IBundle.ID);
@@ -300,6 +308,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         switch (item.getItemId()) {
             case R.id.toSettings:
                 final Intent i = new Intent(this, SettingsActivity.class);
+                i.putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle());
                 startActivity(i);
                 return true;
             case R.id.toEditAccount:

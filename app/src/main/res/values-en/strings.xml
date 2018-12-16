@@ -115,7 +115,7 @@
     <string name="review_title">Do you like our memes?</string>
     <string name="review_message">Like MemSpace? Leave a review!</string>
     <string name="return_notification_title">MemSpace calling</string>
-    <string name="return_notitfication_message">We haven\'t seen you in a while… We have plenty of new memes waiting for you!</string>
+    <string name="return_notitfication_message">А ми підібрали для вас %1$d нових мемів!</string>
     <string name="enable_notifications">Enable notifications</string>
     <string name="enable_autostart">Allow autostart</string>
     <string name="autostart">If you want to get notifications about new memes, please allow MemSpace to autostart</string>

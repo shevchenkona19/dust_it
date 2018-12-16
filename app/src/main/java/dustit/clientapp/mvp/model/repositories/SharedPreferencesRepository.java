@@ -107,6 +107,16 @@ public class SharedPreferencesRepository {
                 .apply();
     }
 
+    public boolean isNoRegistration() {
+        return preferences.getBoolean(IConstants.IPreferences.IS_NO_REGISTRATION, false);
+    }
+
+    public void setNoRegistration(boolean isNoRegistration) {
+        preferences.edit()
+                .putBoolean(IConstants.IPreferences.IS_NO_REGISTRATION, isNoRegistration)
+                .apply();
+    }
+
     public void setFeedVisited() {
         preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_FEED, false).apply();
     }

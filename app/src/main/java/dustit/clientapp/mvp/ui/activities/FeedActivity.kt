@@ -59,10 +59,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     private lateinit var clLayout: RelativeLayout
     internal lateinit var tvAppName: TextView
     private lateinit var appBar: ViewGroup
-    private lateinit var fabColapsed: FloatingActionButton
     internal lateinit var container: ViewGroup
     internal lateinit var toolbar: android.support.v7.widget.Toolbar
-    private lateinit var tabs: android.support.design.widget.TabLayout
     private var categories: List<Category> = ArrayList()
 
     private var adapter: FeedViewPagerAdapter? = null
@@ -200,9 +198,8 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
         if (!presenter.isFeedFirstTime) {
             wasToolbarRevealed = true
         }
-        if (!userSettingsDataManager.isRegistered) {
-            val uri = Uri.parse("android.resource://" + this.packageName + "/drawable/noimage")
-            sdvUserIcon.setImageURI(uri)
+        if (userSettingsDataManager.isNoRegistration) {
+            sdvUserIcon.setImageURI("android.resource://" + this.packageName + "/drawable/noimage")
         }
         val layoutTransition = LayoutTransition()
         layoutTransition.disableTransitionType(LayoutTransition.DISAPPEARING)
@@ -240,19 +237,19 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
             startService(Intent(this, NotifyManager::class.java))
         }
         showComments()
+        if (!userSettingsDataManager.isFcmUpdated) {
+            presenter.updateFcmId()
+        }
     }
 
     private fun showComments() {
         val intent = intent
-        L.print("show comments start")
         if (intent.extras != null) {
-            L.print("extras are not null!")
             val extras = intent.extras
             if (extras.getBoolean(IConstants.IBundle.SHOW_COMMENTS)) {
                 val memId = extras.getString(IConstants.IBundle.MEM_ID)
                 val parentComment = extras.getString(IConstants.IBundle.PARENT_COMMENT_ID)
                 val newComment = extras.getString(IConstants.IBundle.NEW_COMMENT_ID)
-                L.print("loading memFor comments; memId: $memId; parentComment: $parentComment; newComment: $newComment")
                 presenter.loadMemForComments(memId, parentComment, newComment)
             }
         }
@@ -348,7 +345,7 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     }
 
     override fun onUsernameArrived(s: String) {
-        sdvUserIcon.setImageURI(Uri.parse(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + s))
+        sdvUserIcon.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + s)
     }
 
     override fun onCategoriesArrived(categoryList: List<Category>) {

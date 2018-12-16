@@ -5,19 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/clMainLayout"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:visibility="visible">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarActivityFeed"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="?attr/actionBarTheme"
-            android:visibility="visible">
+            android:layout_height="?attr/actionBarSize">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/tbFeedActivity"
@@ -52,9 +50,9 @@
                         android:layout_height="40dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
                         app:actualImageScaleType="centerInside"
                         app:roundAsCircle="true"
                         app:roundingBorderColor="#eee" />
@@ -62,51 +60,32 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vpFeedPager"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tlFeedTabs"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vpFeedPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bnvFeedNavigation"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/btn_hello_accent"
-            android:clipToPadding="false"
-            android:visibility="invisible"
-            app:elevation="4dp"
-            app:tabIndicatorColor="#00ffffff"
-            app:tabMode="fixed">
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            app:layout_behavior="dustit.clientapp.utils.behaviour.BottomNavigationBehaviour"
+            app:menu="@menu/feed_menu">
+        </android.support.design.widget.BottomNavigationView>
 
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabFeedHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/slc_tab_feed" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabFeedHot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/slc_tab_hot" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabFeedCategories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/slc_tab_categories" />
-        </android.support.design.widget.TabLayout>
-
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/feedContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </RelativeLayout>

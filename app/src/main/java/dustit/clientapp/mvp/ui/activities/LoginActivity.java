@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     @Override
     public void onLoggedSuccessfully() {
         final Intent intent = new Intent(this, FeedActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

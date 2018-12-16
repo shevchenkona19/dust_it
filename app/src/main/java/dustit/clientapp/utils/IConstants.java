@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://192.168.1.192";
+    String BASE_URL = "http://192.168.0.103";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
@@ -39,6 +39,7 @@ public interface IConstants {
         String MY_ID = "MY_ID";
         String FCM_ID = "FCM_ID";
         String FCM_UPDATE = "FCM_UPDATE";
+        String IS_NO_REGISTRATION = "IS_NO_REGISTRATION";
     }
 
     interface ISpotlight {
@@ -66,5 +67,11 @@ public interface IConstants {
         String MEM_ID = "MEM_ID";
         String PARENT_COMMENT_ID = "PARENT_COMMENT_ID";
         String NEW_COMMENT_ID = "NEW_COMMENT_ID";
+    }
+
+    interface INotifications {
+        String NEW_MEMES = "NEW_MEMES";
+        String COMMENT_RESPOND = "COMMENT_RESPOND";
+        String CHANNEL_ID = "CHANNEL_ID";
     }
 }
