@@ -59,8 +59,10 @@ class FeedActivity : AppCompatActivity(), CategoriesFragment.ICategoriesFragment
     private lateinit var clLayout: RelativeLayout
     internal lateinit var tvAppName: TextView
     private lateinit var appBar: ViewGroup
+    private lateinit var fabColapsed: FloatingActionButton
     internal lateinit var container: ViewGroup
     internal lateinit var toolbar: android.support.v7.widget.Toolbar
+    private lateinit var tabs: android.support.design.widget.TabLayout
     private var categories: List<Category> = ArrayList()
 
     private var adapter: FeedViewPagerAdapter? = null
