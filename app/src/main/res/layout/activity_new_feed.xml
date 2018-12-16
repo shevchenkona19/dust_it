@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/clMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -21,7 +22,8 @@
                 android:id="@+id/tbFeedActivity"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -66,7 +68,7 @@
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v4.view.ViewPager
+            <dustit.clientapp.customviews.NonSwipeableViewPager
                 android:id="@+id/vpFeedPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -78,9 +80,11 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
+            android:background="?attr/colorPrimary"
+            app:itemIconTint="@drawable/menu_feed_selector"
+            app:itemTextColor="@drawable/menu_feed_selector"
             app:layout_behavior="dustit.clientapp.utils.behaviour.BottomNavigationBehaviour"
-            app:menu="@menu/feed_menu">
-        </android.support.design.widget.BottomNavigationView>
+            app:menu="@menu/feed_menu" />
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -30,8 +30,8 @@ import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
 import dustit.clientapp.mvp.ui.activities.FavoriteViewActivity;
-import dustit.clientapp.mvp.ui.activities.FeedActivity;
 import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
+import dustit.clientapp.mvp.ui.activities.NewFeedActivity;
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SettingsActivity;
 import dustit.clientapp.mvp.ui.activities.SplashActivity;
@@ -94,8 +94,6 @@ public interface AppComponent {
 
     void inject(ChooserActivity chooserActivity);
 
-    void inject(FeedActivity feedActivity);
-
     void inject(SettingsActivity settingsActivity);
 
     void inject(App app);
@@ -125,5 +123,7 @@ public interface AppComponent {
     void inject(SplashActivity splashActivity);
 
     void inject(NotificationService notificationService);
+
+    void inject(NewFeedActivity newFeedActivity);
 
 }

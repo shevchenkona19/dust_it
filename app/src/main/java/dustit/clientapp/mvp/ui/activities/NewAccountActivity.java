@@ -20,15 +20,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionSet;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -112,6 +116,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     ScrollView svAccountView;
     @BindView(R.id.achievementsList)
     RecyclerView rvAchievements;
+    @BindView(R.id.cvAccountFavoritesCard)
+    CardView cvAccountFavoritesCard;
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
@@ -240,15 +246,22 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         supLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
+                float dps = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12 * (1 - slideOffset),
+                        getResources().getDisplayMetrics());
+                cvAccountFavoritesCard.setRadius(dps);
             }
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 switch (newState) {
                     case EXPANDED:
+                        cvAccountFavoritesCard.setRadius(0);
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         break;
                     case COLLAPSED:
+                        float twelveDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
+                                getResources().getDisplayMetrics());
+                        cvAccountFavoritesCard.setRadius(twelveDp);
                         prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         break;
                     case ANCHORED:
@@ -277,6 +290,27 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                     mPresenter.loadFavorites(userId);
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
         }
     }
 

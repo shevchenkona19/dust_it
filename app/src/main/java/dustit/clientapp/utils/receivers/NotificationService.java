@@ -19,7 +19,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
-import dustit.clientapp.mvp.ui.activities.FeedActivity;
+import dustit.clientapp.mvp.ui.activities.NewFeedActivity;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import rx.Subscriber;
@@ -57,7 +57,7 @@ public class NotificationService extends FirebaseMessagingService {
     private void buildNewRespondNotification(Map<String, String> data) {
         String username = data.get("username");
         String text = data.get("text");
-        Intent intent = new Intent(this, FeedActivity.class);
+        Intent intent = new Intent(this, NewFeedActivity.class);
         intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
         intent.putExtra(IConstants.IBundle.MEM_ID, data.get("memId"));
         intent.putExtra(IConstants.IBundle.PARENT_COMMENT_ID, data.get("parentCommentId"));
@@ -67,7 +67,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void sendNewMemesNotification(String memesCount) {
         if (memesCount == null || memesCount.equals("undefined")) return;
-        Intent toLaunch = new Intent(this, FeedActivity.class);
+        Intent toLaunch = new Intent(this, NewFeedActivity.class);
         toLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         Notification noti = new NotificationCompat.Builder(this, IConstants.INotifications.CHANNEL_ID)

@@ -27,7 +27,8 @@ public class BottomNavigationBehaviour<V extends View> extends CoordinatorLayout
             return false;
         }
         lastStartedType = type;
-        offsetAnimator.cancel();
+        if (offsetAnimator != null)
+            offsetAnimator.cancel();
         return true;
     }
 

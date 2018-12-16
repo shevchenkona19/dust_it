@@ -9,7 +9,6 @@ import java.lang.ref.WeakReference;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.FeedFragment;
 import dustit.clientapp.mvp.ui.fragments.HotFragment;
-import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 04.10.2017
@@ -21,6 +20,9 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
     public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight) {
         super(fm);
         appbarHeight = appBarHeight;
+        feedFragment = new WeakReference<>(null);
+        hotFragment = new WeakReference<>(null);
+        categoriesFragment = new WeakReference<>(null);
     }
 
     private int appbarHeight;
@@ -57,22 +59,26 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
     public void setCategoriesLoaded(boolean categoriesLoaded) {
         isCategoriesLoaded = categoriesLoaded;
-        categoriesFragment.get().onCategoriesLoaded(categoriesLoaded);
+        if (categoriesFragment.get() != null)
+            categoriesFragment.get().onCategoriesLoaded(categoriesLoaded);
     }
 
     public void scrollToTop(int itemNum) {
         switch (itemNum) {
             case 0:
                 if (feedFragment != null)
-                    feedFragment.get().scrollToTop();
+                    if (feedFragment.get() != null)
+                        feedFragment.get().scrollToTop();
                 break;
             case 1:
                 if (hotFragment != null)
-                    hotFragment.get().scrollToTop();
+                    if (hotFragment.get() != null)
+                        hotFragment.get().scrollToTop();
                 break;
             case 2:
                 if (categoriesFragment != null)
-                    categoriesFragment.get().scrollToTop();
+                    if (categoriesFragment.get() != null)
+                        categoriesFragment.get().scrollToTop();
                 break;
         }
     }

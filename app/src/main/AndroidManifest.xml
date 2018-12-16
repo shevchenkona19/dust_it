@@ -61,7 +61,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/HelloTheme" />
         <activity
-            android:name=".mvp.ui.activities.FeedActivity"
+            android:name=".mvp.ui.activities.NewFeedActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeDayNight" />

@@ -1,12 +1,16 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.animation.LayoutTransition;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -88,6 +92,27 @@ public class UserFeedbackActivity extends AppCompatActivity implements IUserFeed
         layoutTransition.enableTransitionType(LayoutTransition.APPEARING);
         layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
         rlContainer.setLayoutTransition(layoutTransition);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
     }
 
     @Override

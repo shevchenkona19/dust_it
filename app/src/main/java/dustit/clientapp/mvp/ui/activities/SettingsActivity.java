@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -185,9 +188,30 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
+    }
+
     private void restartCurrentAndBackstack() {
         final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
-                .addNextIntent(new Intent(this, FeedActivity.class))
+                .addNextIntent(new Intent(this, NewFeedActivity.class))
                 .addNextIntent(new Intent(this, NewAccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
         stackBuilder.startActivities();
@@ -195,7 +219,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     public void restartActivity() {
-        final Intent intent = new Intent(this, FeedActivity.class);
+        final Intent intent = new Intent(this, NewFeedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

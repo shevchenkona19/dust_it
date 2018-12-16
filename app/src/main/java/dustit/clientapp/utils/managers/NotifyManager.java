@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.ui.activities.FeedActivity;
+import dustit.clientapp.mvp.ui.activities.NewFeedActivity;
 import dustit.clientapp.utils.IConstants;
 
 public class NotifyManager extends Service {
@@ -69,7 +69,7 @@ public class NotifyManager extends Service {
 
     public void sendNotification() {
 
-        Intent mainIntent = new Intent(this, FeedActivity.class);
+        Intent mainIntent = new Intent(this, NewFeedActivity.class);
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         Notification noti = new NotificationCompat.Builder(this, "MemSpace")

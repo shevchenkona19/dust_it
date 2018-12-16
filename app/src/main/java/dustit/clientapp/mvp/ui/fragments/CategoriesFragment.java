@@ -24,7 +24,7 @@ import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
-import dustit.clientapp.mvp.ui.activities.FeedActivity;
+import dustit.clientapp.mvp.ui.activities.NewFeedActivity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
@@ -54,7 +54,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private boolean isCategoriesLoaded = false;
 
     public interface ICategoriesFragmentInteractionListener {
-        void onAttachToActivity(FeedActivity.ICategoriesSpinnerInteractionListener listener);
+        void onAttachToActivity(NewFeedActivity.ICategoriesSpinnerInteractionListener listener);
 
         void reloadCategories();
 
@@ -141,7 +141,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 notifyFeedScrollChanged(dy);
             }
         };
-        listener.onAttachToActivity(new FeedActivity.ICategoriesSpinnerInteractionListener() {
+        listener.onAttachToActivity(new NewFeedActivity.ICategoriesSpinnerInteractionListener() {
             @Override
             public void onCategoriesFailed() {
                 srlRefresh.setRefreshing(false);
