@@ -78,7 +78,7 @@
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bnvFeedNavigation"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="55dp"
             android:layout_gravity="bottom"
             android:background="?attr/colorPrimary"
             app:itemIconTint="@drawable/menu_feed_selector"

@@ -434,12 +434,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private boolean isExpanded = false;
         private AnswersCommentRecyclerViewAdapter adapter;
-        private IAnswersListener answersListener;
-
-        public interface IAnswersListener {
-            void onExpandList();
-            void onCollapseList();
-        }
 
         CommentViewHolder(View itemView) {
             super(itemView);
@@ -447,12 +441,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bind(CommentEntity comment ) {
-//            this.answersListener = answersListener;
             if (isExpanded) {
                 quietExpand();
             } else {
                 quietCollapse();
             }
+            rvAnswers.setHasFixedSize(true);
             tvUsername.setText(comment.getUsername());
             tvText.setText(comment.getText());
             sdvUserPhoto.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + comment.getUsername());
@@ -462,12 +456,9 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             final String hourMinute = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
             tvDateStamp.setText(hourMinute + " " + monthDay);
-
-
         }
 
         private void expandList() {
-//            answersListener.onExpandList();
             isExpanded = true;
             rvAnswers.setVisibility(View.VISIBLE);
             ivAnswers.setRotation(90);
@@ -484,7 +475,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         private void collapseList() {
-//            answersListener.onCollapseList();
             isExpanded = false;
             rvAnswers.setVisibility(View.GONE);
             ivAnswers.setRotation(270);

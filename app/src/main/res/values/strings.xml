@@ -143,5 +143,7 @@
     <string name="first_hundred_description_forall">Цей юзер отримав цю ачівку за те, що був одним із 100 перших зареєстрованих користувачив MemSpace</string>
     <string name="respondToComment">answer</string>
     <string name="new_comment">%1$s left a new comment</string>
+    <string name="on_added_to_favourites">Mem has been added to favourites</string>
+    <string name="on_removed_from_favourites">Mem has been removed from favourites</string>
 
 </resources>

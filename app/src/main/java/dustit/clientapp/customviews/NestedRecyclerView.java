@@ -1,7 +1,7 @@
 package dustit.clientapp.customviews;
-
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +61,7 @@ public class NestedRecyclerView extends RecyclerView implements NestedScrollingP
     }
 
     @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+    public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
 
         if (target == nestedScrollTarget && !nestedScrollTargetIsBeingDragged) {
@@ -82,7 +82,7 @@ public class NestedRecyclerView extends RecyclerView implements NestedScrollingP
     }
 
     @Override
-    public void onNestedScrollAccepted(View child, View target, int axes) {
+    public void onNestedScrollAccepted(@NonNull View child, @NonNull View target, int axes) {
         if (axes!=0 && View.SCROLL_AXIS_VERTICAL != 0) {
             // A descendent started scrolling, so we'll observe it.
             nestedScrollTarget = target;
@@ -94,13 +94,13 @@ public class NestedRecyclerView extends RecyclerView implements NestedScrollingP
     }
 
     @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        boolean secondPart = View.SCROLL_AXIS_VERTICAL != 0;
+    public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int nestedScrollAxes) {
+        boolean secondPart = Build.VERSION.SDK_INT < 21 || View.SCROLL_AXIS_VERTICAL != 0;
         return (nestedScrollAxes!=0 && secondPart);
     }
 
     @Override
-    public void onStopNestedScroll(View child) {
+    public void onStopNestedScroll(@NonNull View child) {
         nestedScrollTarget = null;
         nestedScrollTargetIsBeingDragged = false;
         nestedScrollTargetWasUnableToScroll = false;

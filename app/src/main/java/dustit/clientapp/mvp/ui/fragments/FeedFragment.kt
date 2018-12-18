@@ -59,10 +59,11 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         bindFeedback(this)
         linearLayoutManager = WrapperLinearLayoutManager(context)
         rvFeed!!.layoutManager = linearLayoutManager
-        adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight) }
+        adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight, rvFeed) }
         adapter.setHasStableIds(true)
         rvFeed!!.adapter = adapter
         rlEmptyCategories = v.hotEmpty
+        setFeedPool(rvFeed!!.recycledViewPool)
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
         v.btnEmptyHot.setOnClickListener {

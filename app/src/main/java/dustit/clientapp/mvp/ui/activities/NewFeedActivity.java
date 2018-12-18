@@ -7,9 +7,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.transition.Transition;
 import android.support.transition.TransitionInflater;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -214,16 +216,14 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     @Override
     protected void onResume() {
         super.onResume();
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
                 int flags = 0;
                 window.getDecorView().setSystemUiVisibility(flags);
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            } else {
                 int flags = window.getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 window.getDecorView().setSystemUiVisibility(flags);
@@ -283,15 +283,16 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     @Override
     public void launchMemView(View holder, MemEntity memEntity, boolean startComments) {
         MemViewFragment fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId());
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.feedContainer, fragment)
-                .addToBackStack(null)
-                .commit();
+        showFragment(fragment);
     }
 
-    private void launchMemViewForComments(MemEntity memEntity, boolean startComments, String parentComment, String newComment) {
+    private void launchMemViewForComments(MemEntity memEntity, boolean startComments, String
+            parentComment, String newComment) {
         MemViewFragment fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId(), parentComment, newComment);
+        showFragment(fragment);
+    }
+
+    private void showFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .setReorderingAllowed(true)
@@ -321,6 +322,11 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     }
 
     @Override
+    public void onError(String error) {
+        showError(error);
+    }
+
+    @Override
     public void onAttachToActivity(ICategoriesSpinnerInteractionListener listener) {
         spinnerInteractionListener = listener;
     }
@@ -343,7 +349,15 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
 
     @Override
     public void onError() {
-        //TODO: show snackbar
+        showError();
+    }
+
+    private void showError(String message) {
+        Snackbar.make(clLayout, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showError() {
+        showError(getString(R.string.error));
     }
 
     @Override
@@ -390,7 +404,8 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     }
 
     @Override
-    public void onMemReadyForComments(MemEntity memEntity, String parentComment, String newComment) {
+    public void onMemReadyForComments(MemEntity memEntity, String parentComment, String
+            newComment) {
         launchMemViewForComments(memEntity, true, parentComment, newComment);
     }
 

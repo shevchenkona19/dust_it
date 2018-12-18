@@ -50,7 +50,6 @@ public class ImageShareUtils {
             bmpUri = FileProvider.getUriForFile(context,
                     "dustit.fileprovider",
                     file);
-            bmpUri = Uri.fromFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

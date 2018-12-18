@@ -156,6 +156,40 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
             window.setSharedElementEnterTransition(transitionSet);
             window.setSharedElementExitTransition(transitionSet);
         }
+        getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                if (isMe) {
+                    if (userSettingsDataManager.isRegistered()) {
+                        mPresenter.loadFavorites(userId);
+                        mPresenter.getAchievements(userId);
+                    }
+                } else {
+                    mPresenter.loadFavorites(userId);
+                    mPresenter.getAchievements(userId);
+                }
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
         setContentView(R.layout.account_new);
@@ -180,6 +214,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
             mPresenter.getUsername(userId);
             mPresenter.loadFavorites(userId);
         });
+        rvAchievements.setHasFixedSize(true);
+        rvFavorites.setHasFixedSize(true);
         sdvIcon.setLegacyVisibilityHandlingEnabled(true);
         if (isMe) {
             if (userSettingsDataManager.isRegistered()) {
@@ -200,8 +236,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                                 } else {
                                     final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                                     getIntent.setType("image/*");
-                                    final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    pickIntent.setType("image/*");
+                                    final Intent pickIntent = new Intent(Intent.ACTION_PICK);
+                                    pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                                     final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
                                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
                                     startActivityForResult(chooserIntent, PICK_IMAGE);
@@ -243,11 +279,19 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
             }
         }
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                mPresenter.getUsername(userId);
+            }
+        } else {
+            mPresenter.getUsername(userId);
+        }
         supLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 float dps = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12 * (1 - slideOffset),
                         getResources().getDisplayMetrics());
+                if (dps > 0 && dps < 1) return;
                 cvAccountFavoritesCard.setRadius(dps);
             }
 
@@ -296,37 +340,19 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     @Override
     protected void onResume() {
         super.onResume();
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
                 int flags = 0;
                 window.getDecorView().setSystemUiVisibility(flags);
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            } else {
                 int flags = window.getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 window.getDecorView().setSystemUiVisibility(flags);
                 window.setStatusBarColor(Color.WHITE);
             }
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (isMe) {
-            if (userSettingsDataManager.isRegistered()) {
-                mPresenter.getUsername(userId);
-                mPresenter.loadFavorites(userId);
-                mPresenter.getAchievements(userId);
-            }
-        } else {
-            mPresenter.getUsername(userId);
-            mPresenter.loadFavorites(userId);
-            mPresenter.getAchievements(userId);
         }
     }
 
@@ -513,6 +539,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         rvFavorites.setVisibility(View.VISIBLE);
         tvEmptyText.setVisibility(View.GONE);
         mAdapter.updateAll(list);
+        rvFavorites.scheduleLayoutAnimation();
     }
 
     @Override
@@ -539,6 +566,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         items.add(achievementsEntity.getViews());
         items.add(achievementsEntity.getFavourites());
         achievementAdapter.update(achievementsEntity.isFirstHundred(), achievementsEntity.isFirstThousand(), items);
+        rvAchievements.scheduleLayoutAnimation();
     }
 
     @Override

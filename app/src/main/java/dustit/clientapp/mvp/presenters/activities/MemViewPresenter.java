@@ -133,12 +133,17 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
             public void onCompleted() {
-                getView().onAddedToFavourites();
                 ResponseEntity response = atomicReference.get();
-                if (response != null)
+                if (response != null) {
+                    if (isNotSuccess(response.getResponse())) {
+                        getView().onError();
+                        return;
+                    }
+                    getView().onAddedToFavourites();
                     if (response.isAchievementUpdate()) {
                         getView().onAchievementUpdate(response.getAchievementEntity());
                     }
+                }
             }
 
             @Override
@@ -149,11 +154,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
 
             @Override
             public void onNext(ResponseEntity responseEntity) {
-                if (isNotSuccess(responseEntity.getResponse())) {
-                    getView().onError();
-                } else {
-                    atomicReference.set(responseEntity);
-                }
+                atomicReference.set(responseEntity);
             }
         }));
     }

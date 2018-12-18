@@ -85,11 +85,12 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         linearLayoutManager = new WrapperLinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
         bindFeedback(this);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight, rvHot);
         adapter.setIsHot();
         adapter.setHasStableIds(true);
         rvHot.setAdapter(adapter);
         presenter.bind(this);
+        rvHot.setRecycledViewPool(getFeedPool());
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
             srlRefresh.setRefreshing(true);

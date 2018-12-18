@@ -191,16 +191,14 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     @Override
     protected void onResume() {
         super.onResume();
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
                 int flags = 0;
                 window.getDecorView().setSystemUiVisibility(flags);
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            } else {
                 int flags = window.getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 window.getDecorView().setSystemUiVisibility(flags);

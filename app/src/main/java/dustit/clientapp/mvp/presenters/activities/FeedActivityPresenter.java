@@ -42,7 +42,7 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
 
     @Override
     public void getMyUsername() {
-        if (dataManager.isUsernameCached()) {
+        if (dataManager.isUsernameCached() && !dataManager.getCachedUsername().equals("")) {
             getView().onUsernameArrived(dataManager.getCachedUsername());
         } else {
             final Container<String> container = new Container<>();

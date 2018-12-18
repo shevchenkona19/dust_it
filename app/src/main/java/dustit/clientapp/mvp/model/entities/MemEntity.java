@@ -24,7 +24,7 @@ public class MemEntity implements Parcelable {
     @SerializedName("opinion")
     @Expose
     private String opinion;
-    @SerializedName("isFavorite")
+    @SerializedName("isFavourite")
     @Expose
     private boolean favorite;
     @SerializedName("source")

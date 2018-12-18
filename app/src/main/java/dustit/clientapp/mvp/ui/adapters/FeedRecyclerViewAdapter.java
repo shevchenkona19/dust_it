@@ -10,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.daimajia.swipe.SwipeLayout;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +35,7 @@ import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.utils.Converter;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
+import dustit.clientapp.utils.SwipeRevealLayout;
 import dustit.clientapp.utils.containers.Pair;
 import dustit.clientapp.utils.managers.ReviewManager;
 
@@ -46,6 +51,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean isHot = false;
     private int appBarHeight;
     private Context context;
+    private RecyclerView rvFeed;
 
     public interface IFeedInteractionListener {
         void reloadFeedBase();
@@ -71,15 +77,22 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         void loadMore(int offset);
 
         void gotoHot();
+
+        void addToFavourites(String id, int pos);
+
+        void removeFromFavourites(String id, int pos);
+
+        void shareMem(MemEntity mem);
     }
 
-    public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener feedInteractionListener, int appBarHeight) {
+    public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener feedInteractionListener, int appBarHeight, RecyclerView rvFeed) {
         layoutInflater = LayoutInflater.from(context);
         mems = new ArrayList<>();
         mems.add(null);
         this.context = context;
         interactionListener = feedInteractionListener;
         this.appBarHeight = appBarHeight;
+        this.rvFeed = rvFeed;
     }
 
     @Override
@@ -160,6 +173,14 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                         break;
                 }
             });
+            memViewHolder.ibAddToFavs.setOnClickListener(v -> {
+                if (mem.isFavorite()) {
+                    interactionListener.removeFromFavourites(mem.getId(), pos);
+                } else {
+                    interactionListener.addToFavourites(mem.getId(), pos);
+                }
+            });
+            memViewHolder.ibShare.setOnClickListener(v -> interactionListener.shareMem(mem));
             memViewHolder.itemFeedDislike.setOnClickListener(v -> {
                 if (!interactionListener.isRegistered()) {
                     interactionListener.onNotRegistered();
@@ -265,6 +286,31 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    public void onAddedToFavourites(int position) {
+        mems.get(position).setFavorite(true);
+        closeSrlForPosition(position);
+    }
+
+    public void onRemovedFromFavourites(int position) {
+        mems.get(position).setFavorite(false);
+        closeSrlForPosition(position);
+    }
+
+    private void closeSrlForPosition(int position) {
+        RecyclerView.ViewHolder vh = rvFeed.findViewHolderForAdapterPosition(position);
+        if (vh != null) {
+            if (vh instanceof MemViewHolder) {
+                MemViewHolder mem = (MemViewHolder) vh;
+                if (mems.get(position).isFavorite()) {
+                    mem.ibAddToFavs.setImageResource(R.drawable.ic_saved);
+                } else {
+                    mem.ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
+                }
+                mem.srlReveal.close(true);
+            }
+        }
+    }
+
     public void refreshMem(RefreshedMem refreshedMem) {
         final Pair<Integer, MemEntity> pair = findMemAndPositionById(refreshedMem.getId());
         if (pair != null) {
@@ -317,6 +363,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         View icComments;
         @BindView(R.id.clItemFeedLayout)
         ConstraintLayout clLayout;
+        @BindView(R.id.ibAddToFavsBack)
+        ImageButton ibAddToFavs;
+        @BindView(R.id.ibShareBack)
+        ImageButton ibShare;
+        @BindView(R.id.srlItemFeedReveal)
+        SwipeLayout srlReveal;
 
         MemViewHolder(View itemView) {
             super(itemView);
@@ -329,6 +381,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
                     .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
                     .into(itemFeed);
+
+            srlReveal.close(true);
 
             switch (mem.getOpinion()) {
                 case LIKED:
@@ -344,7 +398,14 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
                     break;
             }
-            tvCommentsCount.setText(mem.getCommentsCount() + "");
+
+            if (mem.isFavorite()) {
+                ibAddToFavs.setImageResource(R.drawable.ic_saved);
+            } else {
+                ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
+            }
+
+            tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
             tvDislikeCount.setText(mem.getDislikes());
             tvLikeCount.setText(mem.getLikes());
         }

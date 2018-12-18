@@ -24,6 +24,7 @@ import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.UserFeedbackPresenter;
+import dustit.clientapp.mvp.presenters.fragments.BaseFeedFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter;
@@ -125,5 +126,7 @@ public interface AppComponent {
     void inject(NotificationService notificationService);
 
     void inject(NewFeedActivity newFeedActivity);
+
+    void inject(BaseFeedFragmentPresenter baseFeedFragmentPresenter);
 
 }

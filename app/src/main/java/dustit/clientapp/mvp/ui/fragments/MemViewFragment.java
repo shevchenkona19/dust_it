@@ -213,14 +213,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
         feedbackManager.bind(this);
-        if (userSettingsDataManager.isRegistered()) {
-            presenter.isFavourite(mem.getId());
-        }
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this, this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
         feedbackManager.subscribe(this);
         rvComments.setAdapter(commentAdapter);
+        rvComments.setNestedScrollingEnabled(true);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
         srlCommentsRefresh.setOnRefreshListener(() -> {
             srlCommentsRefresh.setRefreshing(true);

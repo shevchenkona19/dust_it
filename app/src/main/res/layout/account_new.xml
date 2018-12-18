@@ -5,14 +5,14 @@
     android:id="@+id/supFavoritesPanel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@null"
     android:gravity="bottom"
-    app:umanoFadeColor="@android:color/transparent"
+    app:umanoFadeColor="@null"
     app:umanoOverlay="true"
     app:umanoPanelHeight="100dp"
     app:umanoParallaxOffset="200dp"
-    app:umanoShadowHeight="0dp"
-    app:umanoScrollableView="@+id/rvFavoritesList">
+    app:umanoScrollableView="@+id/rvFavoritesList"
+    app:umanoShadowHeight="0dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -40,8 +40,8 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="100dp"
-            android:layout_below="@id/appbarAccount">
+            android:layout_below="@id/appbarAccount"
+            android:layout_marginBottom="100dp">
 
             <RelativeLayout
                 android:id="@+id/cvAccountSettingsCard"
@@ -207,7 +207,7 @@
         android:id="@+id/cvAccountFavoritesCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="true"
+        android:clipChildren="false"
         app:cardCornerRadius="12dp">
 
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
