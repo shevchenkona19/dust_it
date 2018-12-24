@@ -3,4 +3,8 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#bbb</color>
     <color name="colorAccent">#000</color>
+    <color name="commentsBackground">#f0f1f5</color>
+    <color name="commentUsernameColor">#2b2b2b</color>
+    <color name="commentDateColor">#c7c9cb</color>
+    <color name="baseCommentBackground">#eeeeee</color>
 </resources>

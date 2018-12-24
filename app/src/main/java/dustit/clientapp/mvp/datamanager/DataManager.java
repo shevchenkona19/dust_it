@@ -178,12 +178,15 @@ public class DataManager {
         return preferencesRepository.loadId();
     }
 
-    public Observable<CommentEntity> getAnswersForComment(String commentId) {
-        return serverRepository.getAnswersForComment(commentId)
+    public Observable<CommentEntity> getAnswersForComment(String commentId, int limit, int offset) {
+        return serverRepository.getAnswersForComment(commentId, limit, offset)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
 
-    public Observable<ResponseEntity> postAnswerForComment(String imageId, String commentId, String userId, PostCommentEntity entity) {
+    public Observable<ResponseEntity> postAnswerForComment(String imageId,
+                                                           String commentId,
+                                                           String userId,
+                                                           PostCommentEntity entity) {
         return serverRepository.postAnswerForComment(getToken(), imageId, commentId, userId, entity);
     }
 
@@ -197,6 +200,11 @@ public class DataManager {
 
     public Observable<CommentEntity> getCommentsToCommentId(String memId, String toCommentId) {
         return serverRepository.getCommentsToCommentId(memId, toCommentId)
+                .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
+    }
+
+    public Observable<CommentEntity> getAnswersForCommentToId(String childCommentId, String parentCommentId, String imageId) {
+        return serverRepository.getAnswersForCommentToId(parentCommentId, childCommentId, imageId)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
 }

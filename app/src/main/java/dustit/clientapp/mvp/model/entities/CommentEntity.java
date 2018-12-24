@@ -1,5 +1,8 @@
 package dustit.clientapp.mvp.model.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * Created by Никита on 09.11.2017.
  */
 
-public class CommentEntity {
+public class CommentEntity implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -99,6 +102,66 @@ public class CommentEntity {
         this.answerUserId = answerUserId;
         this.id = id;
     }
+
+    protected CommentEntity(Parcel in) {
+        id = in.readString();
+        text = in.readString();
+        dateOfPost = in.readString();
+        username = in.readString();
+        userId = in.readString();
+        time = in.readString();
+        parentId = in.readInt();
+        answers = in.readInt();
+        answerUserId = in.readInt();
+        likeAchievementLvl = in.readInt();
+        dislikesAchievementLvl = in.readInt();
+        commentsAchievementLvl = in.readInt();
+        favouritesAchievementLvl = in.readInt();
+        viewsAchievementLvl = in.readInt();
+        firstHundred = in.readByte() != 0;
+        firstThousand = in.readByte() != 0;
+        answerList = in.createTypedArrayList(CommentEntity.CREATOR);
+        isExpanded = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(text);
+        dest.writeString(dateOfPost);
+        dest.writeString(username);
+        dest.writeString(userId);
+        dest.writeString(time);
+        dest.writeInt(parentId);
+        dest.writeInt(answers);
+        dest.writeInt(answerUserId);
+        dest.writeInt(likeAchievementLvl);
+        dest.writeInt(dislikesAchievementLvl);
+        dest.writeInt(commentsAchievementLvl);
+        dest.writeInt(favouritesAchievementLvl);
+        dest.writeInt(viewsAchievementLvl);
+        dest.writeByte((byte) (firstHundred ? 1 : 0));
+        dest.writeByte((byte) (firstThousand ? 1 : 0));
+        dest.writeTypedList(answerList);
+        dest.writeByte((byte) (isExpanded ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CommentEntity> CREATOR = new Creator<CommentEntity>() {
+        @Override
+        public CommentEntity createFromParcel(Parcel in) {
+            return new CommentEntity(in);
+        }
+
+        @Override
+        public CommentEntity[] newArray(int size) {
+            return new CommentEntity[size];
+        }
+    };
 
     public String getText() {
         return text;

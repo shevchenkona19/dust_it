@@ -209,28 +209,6 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     }
 
     @Override
-    public void loadAnswersForComment(String commentId) {
-        List<CommentEntity> answers = new ArrayList<>();
-        addSubscription(dataManager.getAnswersForComment(commentId).subscribe(new Subscriber<CommentEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().onAnswersLoaded(answers, commentId);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print("Error: " + e.getMessage());
-                getView().onError();
-            }
-
-            @Override
-            public void onNext(CommentEntity commentEntity) {
-                answers.add(commentEntity);
-            }
-        }));
-    }
-
-    @Override
     public void getCommentsToCommentId(String memId, String toCommentId) {
         getView().onStartLoading();
         List<CommentEntity> list = new ArrayList<>();

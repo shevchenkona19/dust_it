@@ -144,7 +144,9 @@ public interface ServerAPI {
     Observable<AchievementsEntity> getAchievements(@Query("userId") String id);
 
     @GET("/feedback/answersForComment")
-    Observable<CommentUpperEntity> getAnswersForComment(@Query("commentId") String commentId);
+    Observable<CommentUpperEntity> getAnswersForComment(@Query("commentId") String commentId,
+                                                        @Query("limit") int limit,
+                                                        @Query("offset") int offset);
 
     @POST("/feedback/commentAnswer")
     Observable<ResponseEntity> postCommentAnswer(@Header("Authorization") String token,
@@ -163,5 +165,10 @@ public interface ServerAPI {
     @GET("/feedback/commentsToCommentId")
     Observable<CommentUpperEntity> getCommentsToCommentId(@Query("memId") String memId,
                                                           @Query("toCommentId") String toCommentId);
+
+    @GET("/feedback/answersForCommentToId")
+    Observable<CommentUpperEntity> getAnswersForCommentToId(@Query("parentCommentId") String parentCommentId,
+                                                         @Query("childCommentId") String childCommentId,
+                                                         @Query("imageId") String imageId);
 
 }

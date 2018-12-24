@@ -32,8 +32,6 @@ public interface IMemViewView extends IActivityView {
 
     void onAchievementUpdate(NewAchievementEntity achievementEntity);
 
-    void onAnswersLoaded(List<CommentEntity> answers, String commentId);
-
     void onAnswerSentSuccessfully();
 
     void onCommentsToCommentIdLoaded(List<CommentEntity> list);

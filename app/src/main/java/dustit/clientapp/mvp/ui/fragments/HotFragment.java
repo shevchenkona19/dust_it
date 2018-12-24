@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
@@ -14,16 +15,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.Objects;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dustit.clientapp.R;
-import dustit.clientapp.customviews.WrapperLinearLayoutManager;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
@@ -32,7 +28,6 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.managers.ThemeManager;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -45,7 +40,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     private final HotFragmentPresenter presenter = new HotFragmentPresenter();
     private boolean isFirstTimeVisible = true;
     private RecyclerView.OnScrollListener scrollListener;
-    private WrapperLinearLayoutManager linearLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
 
     @BindView(R.id.rvHot)
     RecyclerView rvHot;
@@ -82,7 +77,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_hot, container, false);
         unbinder = ButterKnife.bind(this, v);
-        linearLayoutManager = new WrapperLinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
         bindFeedback(this);
         adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight, rvHot);

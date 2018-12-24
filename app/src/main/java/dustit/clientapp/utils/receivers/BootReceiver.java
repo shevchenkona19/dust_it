@@ -14,15 +14,5 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (action != null) {
-            if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(new Intent(context, NotifyManager.class));
-                } else {
-                    context.startService(new Intent(context, NotifyManager.class));
-                }
-            }
-        }
     }
 }

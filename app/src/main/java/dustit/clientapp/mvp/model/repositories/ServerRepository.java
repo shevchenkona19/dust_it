@@ -179,8 +179,8 @@ public class ServerRepository {
         return serverAPI.getAchievements(userId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<CommentUpperEntity> getAnswersForComment(String commentId) {
-        return serverAPI.getAnswersForComment(commentId)
+    public Observable<CommentUpperEntity> getAnswersForComment(String commentId, int limit, int offset) {
+        return serverAPI.getAnswersForComment(commentId, limit, offset)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -203,5 +203,9 @@ public class ServerRepository {
 
     public Observable<CommentUpperEntity> getCommentsToCommentId(String memId, String toCommentId) {
         return serverAPI.getCommentsToCommentId(memId, toCommentId).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<CommentUpperEntity> getAnswersForCommentToId(String parentCommentId, String childCommentId, String imageId) {
+        return serverAPI.getAnswersForCommentToId(parentCommentId, childCommentId, imageId).observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -2,7 +2,6 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -67,7 +66,6 @@ import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.AchievementAdapter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
-import dustit.clientapp.mvp.ui.dialog.ViewAchievement;
 import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
@@ -141,55 +139,19 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            requestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-            final Transition fade = new android.transition.Fade();
-            fade.excludeTarget(android.R.id.statusBarBackground, true);
-            fade.excludeTarget(android.R.id.navigationBarBackground, true);
-            final Window window = getWindow();
-            window.setEnterTransition(fade);
-            window.setReturnTransition(fade);
-            window.setExitTransition(fade);
-            final TransitionSet transitionSet = DraweeTransition
-                    .createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
-                            ScalingUtils.ScaleType.CENTER_CROP);
-            window.setSharedElementEnterTransition(transitionSet);
-            window.setSharedElementExitTransition(transitionSet);
-        }
-        getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionEnd(Transition transition) {
-                if (isMe) {
-                    if (userSettingsDataManager.isRegistered()) {
-                        mPresenter.loadFavorites(userId);
-                        mPresenter.getAchievements(userId);
-                    }
-                } else {
-                    mPresenter.loadFavorites(userId);
-                    mPresenter.getAchievements(userId);
-                }
-            }
-
-            @Override
-            public void onTransitionCancel(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionPause(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionResume(Transition transition) {
-
-            }
-        });
+        requestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        final Transition fade = new android.transition.Fade();
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground, true);
+        final Window window = getWindow();
+        window.setEnterTransition(fade);
+        window.setReturnTransition(fade);
+        window.setExitTransition(fade);
+        final TransitionSet transitionSet = DraweeTransition
+                .createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
+                        ScalingUtils.ScaleType.CENTER_CROP);
+        window.setSharedElementEnterTransition(transitionSet);
+        window.setSharedElementExitTransition(transitionSet);
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
         setContentView(R.layout.account_new);
@@ -207,6 +169,109 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 isMe = true;
             }
         }
+        init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            } else {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                mPresenter.getUsername(userId);
+                mPresenter.loadFavorites(userId);
+                mPresenter.getAchievements(userId);
+            }
+        } else {
+            mPresenter.getUsername(userId);
+            mPresenter.loadFavorites(userId);
+            mPresenter.getAchievements(userId);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (!savedInstanceState.getBoolean(IConstants.IBundle.IS_ME)) {
+                userId = savedInstanceState.getString(IConstants.IBundle.ID);
+            } else {
+                userId = mPresenter.loadMyId();
+                isMe = true;
+            }
+            init();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isMe)
+            getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return isMe;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toSettings:
+                final Intent i = new Intent(this, SettingsActivity.class);
+                i.putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle());
+                startActivity(i);
+                return true;
+            case R.id.toEditAccount:
+                final Intent intent = new Intent(this, PersonalSettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.toWriteUs:
+                Intent intent2 = new Intent(this, UserFeedbackActivity.class);
+                startActivity(intent2);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected void unRevealActivity() {
+        supportFinishAfterTransition();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            supLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            return;
+        }
+        unRevealActivity();
+    }
+
+    @Override
+    protected void onDestroy() {
+        sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
+        mPresenter.unbind();
+        FavouritesBus.destroy();
+        mPresenter.unbind();
+        super.onDestroy();
+    }
+
+    private void init()  {
         btnReload.setOnClickListener(view -> {
             tvFailedToLoad.setVisibility(View.GONE);
             btnReload.setVisibility(View.GONE);
@@ -279,13 +344,6 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
             }
         }
-        if (isMe) {
-            if (userSettingsDataManager.isRegistered()) {
-                mPresenter.getUsername(userId);
-            }
-        } else {
-            mPresenter.getUsername(userId);
-        }
         supLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -299,10 +357,12 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 switch (newState) {
                     case EXPANDED:
+                        setStatusbarForExpand();
                         cvAccountFavoritesCard.setRadius(0);
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         break;
                     case COLLAPSED:
+                        setStatusbarForCollapse();
                         float twelveDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
                                 getResources().getDisplayMetrics());
                         cvAccountFavoritesCard.setRadius(twelveDp);
@@ -338,80 +398,10 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-                int flags = 0;
-                window.getDecorView().setSystemUiVisibility(flags);
-            } else {
-                int flags = window.getDecorView().getSystemUiVisibility();
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                window.getDecorView().setSystemUiVisibility(flags);
-                window.setStatusBarColor(Color.WHITE);
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (isMe)
-            getMenuInflater().inflate(R.menu.profile_menu, menu);
-        return isMe;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toSettings:
-                final Intent i = new Intent(this, SettingsActivity.class);
-                i.putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle());
-                startActivity(i);
-                return true;
-            case R.id.toEditAccount:
-                final Intent intent = new Intent(this, PersonalSettingsActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.toWriteUs:
-                Intent intent2 = new Intent(this, UserFeedbackActivity.class);
-                startActivity(intent2);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    protected void unRevealActivity() {
-        supportFinishAfterTransition();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            supLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            return;
-        }
-        unRevealActivity();
-    }
-
-    @Override
-    protected void onDestroy() {
-        sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
-        mPresenter.unbind();
-        FavouritesBus.destroy();
-        mPresenter.unbind();
-        super.onDestroy();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_DIALOG: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                         final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -425,6 +415,22 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 }
             }
         }
+    }
+
+    private void setStatusbarForExpand() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(cvAccountFavoritesCard.getCardBackgroundColor().getDefaultColor());
+            }
+    }
+
+    private void setStatusbarForCollapse() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            }
     }
 
     @Override

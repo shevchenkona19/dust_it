@@ -3,25 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="12dp"
-    android:background="@null">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:background="@color/baseCommentBackground">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdvItemCommentsUserPhoto"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="24dp"
-        android:elevation="1dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:elevation="1dp"
         android:focusable="true"
         app:layout_constraintEnd_toStartOf="@id/cvCommentCard"
         app:layout_constraintStart_toStartOf="@id/guideline8"
@@ -47,13 +47,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="43dp"
-                android:layout_marginTop="33dp"
+                android:layout_marginTop="38dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="11dp"
                 android:ellipsize="end"
                 android:text="Nikita Sheva"
                 android:textColor="@color/commentUsernameColor"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/clAchievements"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,48 +70,48 @@
 
                 <ImageView
                     android:id="@+id/ivLikeAchievementLevel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/ivDislikeAchievementLevel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="4dp"
                     app:layout_constraintStart_toEndOf="@id/ivLikeAchievementLevel"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/ivCommentsAchievementLevel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="4dp"
                     app:layout_constraintStart_toEndOf="@id/ivDislikeAchievementLevel"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/ivFavouritesAchievementLevel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginTop="4dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLikeAchievementLevel" />
 
                 <ImageView
                     android:id="@+id/ivViewsAchievementLevel"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
                     app:layout_constraintStart_toEndOf="@id/ivFavouritesAchievementLevel"
                     app:layout_constraintTop_toBottomOf="@id/ivLikeAchievementLevel" />
 
                 <ImageView
                     android:id="@+id/ivFirst"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
                     app:layout_constraintStart_toEndOf="@id/ivViewsAchievementLevel"
@@ -131,7 +131,7 @@
                 android:gravity="center_vertical"
                 android:text="10-11 20.11.2018"
                 android:textColor="@color/commentDateColor"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvItemCommentUsername" />
@@ -144,8 +144,8 @@
                 android:layout_marginTop="33dp"
                 android:layout_marginEnd="16dp"
                 android:text="ddmvcejnviwndcewenckwneckwnecknwkecwkmckwckwekvnwknvw-------------------------------ciemncimneivneivnrinvirnvinribveimvemvekfdngskldrjgnaljrnglkajnrgvlajnrfnvklsjnkrdjvnlakjrnvaskjv"
-                android:textColor="?attr/colorAccent"
-                android:textSize="15sp"
+                android:textColor="@color/colorAccent"
+                android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvItemCommentDateStamp" />
@@ -164,51 +164,25 @@
 
             <Button
                 android:id="@+id/btnRespond"
-                android:layout_width="0dp"
-                android:layout_height="25dp"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/btn_hello_accent"
                 android:drawableStart="@drawable/ic_reply_arrow"
-                android:paddingStart="6dp"
+                android:elevation="9dp"
+                android:paddingStart="16dp"
                 android:paddingTop="3dp"
                 android:paddingEnd="6dp"
                 android:paddingBottom="3dp"
                 android:text="@string/respondToComment"
                 android:textColor="#eee"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/commentsSeparator" />
 
-            <ImageView
-                android:id="@+id/expandResponds"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="43dp"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="3dp"
-                android:rotation="270"
-                android:src="@drawable/ic_arrow_left_simple"
-                android:tint="#707070"
-                app:layout_constraintBottom_toBottomOf="@id/btnRespond"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnRespond" />
-
-            <TextView
-                android:id="@+id/tvAnswersCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="35"
-                android:textColor="?attr/colorAccent"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/expandResponds"
-                app:layout_constraintStart_toEndOf="@id/expandResponds"
-                app:layout_constraintTop_toTopOf="@id/expandResponds" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 

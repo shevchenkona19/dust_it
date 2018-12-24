@@ -10,4 +10,8 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000</color>
     <color name="colorAccent">#fff</color>
+    <color name="commentsBackground">#2c2d2d</color>
+    <color name="commentUsernameColor">#d8d8d8</color>
+    <color name="commentDateColor">#c7c9cb</color>
+    <color name="baseCommentBackground">#404040</color>
 </resources>

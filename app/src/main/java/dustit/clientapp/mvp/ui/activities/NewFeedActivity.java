@@ -1,15 +1,12 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.transition.Transition;
-import android.support.transition.TransitionInflater;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -48,10 +45,8 @@ import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.FeedPageTransformer;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.bus.FavouritesBus;
 import dustit.clientapp.utils.managers.NotifyManager;
-import dustit.clientapp.utils.managers.ThemeManager;
 
 public class NewFeedActivity extends AppCompatActivity implements CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
     @BindView(R.id.vpFeedPager)
@@ -202,11 +197,6 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         vpFeed.setPageTransformer(false, new FeedPageTransformer());
         toolbar.setOnClickListener(v -> adapter.scrollToTop(vpFeed.getCurrentItem()));
         presenter.getCategories();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(this, NotifyManager.class));
-        } else {
-            startService(new Intent(this, NotifyManager.class));
-        }
         showComments();
         if (!userSettingsDataManager.isFcmUpdated()) {
             presenter.updateFcmId();

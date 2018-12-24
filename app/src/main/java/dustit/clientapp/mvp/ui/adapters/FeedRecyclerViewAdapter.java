@@ -3,7 +3,6 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,13 +17,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.daimajia.swipe.SwipeLayout;
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,10 +28,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
-import dustit.clientapp.utils.Converter;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.SwipeRevealLayout;
 import dustit.clientapp.utils.containers.Pair;
 import dustit.clientapp.utils.managers.ReviewManager;
 
@@ -114,7 +107,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case 1:
-                return new LoadingViewHolder(layoutInflater.inflate(R.layout.item_feed_loading, parent, false));
+                return new LoadingViewHolder(layoutInflater.inflate(R.layout.item_loading, parent, false));
             case 2:
                 return new FailedViewHolder(layoutInflater.inflate(R.layout.item_feed_failed_to_load, parent, false));
             case 3:
@@ -131,13 +124,15 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (pos == 0) {
+            final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, appBarHeight, 0, 0);
-        } else {
+            holder.itemView.setLayoutParams(params);
+        } else if (holder.itemView.getLayoutParams() instanceof RelativeLayout.LayoutParams && ((RelativeLayout.LayoutParams) holder.itemView.getLayoutParams()).topMargin != 0) {
+            final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 0);
+            holder.itemView.setLayoutParams(params);
         }
-        holder.itemView.setLayoutParams(params);
         if (holder instanceof MemViewHolder) {
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
@@ -248,7 +243,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void updateAtEnding(List<MemEntity> list) {
         isLoading = false;
         isError = false;
-        final int lastPos = mems.size() - 2;
+        int lastPos = mems.size() - 1;
         mems.remove(mems.size() - 1);
         mems.addAll(list);
         mems.add(null);

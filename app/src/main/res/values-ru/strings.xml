@@ -143,5 +143,7 @@
     <string name="new_comment">%1$s left a new comment</string>
     <string name="on_added_to_favourites">Mem has been added to favourites</string>
     <string name="on_removed_from_favourites">Mem has been removed from favourites</string>
+    <string name="answers">Answers</string>
+    <string name="answering_to">Answering to %1$s</string>
 
 </resources>

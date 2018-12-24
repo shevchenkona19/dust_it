@@ -39,12 +39,12 @@ public class NotificationService extends FirebaseMessagingService {
             if (userSettingsDataManager.isNotificationsEnabled()) {
                 Map<String, String> data = remoteMessage.getData();
                 String type = data.get("type");
+                L.print("new message!");
                 if (type.equals(IConstants.INotifications.NEW_MEMES)) {
                     buildNewMemesNotification(data);
                 } else if (type.equals(IConstants.INotifications.COMMENT_RESPOND)) {
                     buildNewRespondNotification(data);
                 }
-
             }
         }
     }
@@ -57,6 +57,7 @@ public class NotificationService extends FirebaseMessagingService {
     private void buildNewRespondNotification(Map<String, String> data) {
         String username = data.get("username");
         String text = data.get("text");
+        L.print("new notification: " + text + " " + username);
         Intent intent = new Intent(this, NewFeedActivity.class);
         intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
         intent.putExtra(IConstants.IBundle.MEM_ID, data.get("memId"));
@@ -104,6 +105,9 @@ public class NotificationService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setChannelId(IConstants.INotifications.CHANNEL_ID)
                 .build();
+
+
+        L.print("new notification send!");
 
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());

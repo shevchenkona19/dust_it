@@ -51,160 +51,156 @@
         android:id="@+id/rlExpandablePanelWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
+        android:background="@color/commentsBackground"
         android:clickable="true"
         android:focusable="true">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.Toolbar
             android:id="@+id/ablExpandablePanel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="?attr/actionBarTheme">
+            android:layout_height="?attr/actionBarSize">
 
-            <android.support.v7.widget.Toolbar
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
-                <FrameLayout
+                <RelativeLayout
+                    android:id="@+id/rvMemViewExpandedUpperLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:visibility="visible">
 
-                    <RelativeLayout
-                        android:id="@+id/rvMemViewExpandedUpperLayout"
+                    <TextView
+                        android:id="@+id/tvMemViewCommentsLabel"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:alpha="0"
-                        android:visibility="visible">
+                        android:gravity="center|start"
+                        android:text="@string/comments"
+                        android:textStyle="bold"
+                        android:textColor="@color/commentUsernameColor"
+                        android:textSize="22sp" />
 
-                        <TextView
-                            android:id="@+id/tvMemViewCommentsLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center|start"
-                            android:text="@string/comments"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:id="@+id/ivMemViewExpandedToNotExpanded"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:srcCompat="@drawable/ic_delete_comment" />
+                </RelativeLayout>
 
-                        <ImageView
-                            android:id="@+id/ivMemViewExpandedToNotExpanded"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="16dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:srcCompat="@drawable/ic_delete_comment" />
-                    </RelativeLayout>
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/clMemViewNotExpandedBottomLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
 
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/clMemViewNotExpandedBottomLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="visible">
+                    <ImageView
+                        android:id="@+id/ivMemViewAddToPhotos"
+                        android:layout_width="17dp"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:srcCompat="@drawable/ic_add_to_favourites" />
 
-                        <ImageView
-                            android:id="@+id/ivMemViewAddToPhotos"
-                            android:layout_width="17dp"
-                            android:layout_height="0dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            app:srcCompat="@drawable/ic_add_to_favourites" />
+                    <ImageView
+                        android:id="@id/ivMemViewExpandComments"
+                        android:layout_width="35dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="5dp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_comment" />
 
-                        <ImageView
-                            android:id="@id/ivMemViewExpandComments"
-                            android:layout_width="35dp"
-                            android:layout_height="0dp"
-                            android:layout_marginStart="16dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:padding="5dp"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toRightOf="@id/ivMemViewAddToPhotos"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_comment" />
+                    <TextView
+                        android:id="@+id/tvMemViewCommentsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="#b3b3b3"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/ivMemViewExpandComments"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/tvMemViewCommentsCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#b3b3b3"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toRightOf="@id/ivMemViewExpandComments"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@+id/ivMemViewLike"
+                        android:layout_width="26dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_like" />
 
-                        <ImageView
-                            android:id="@+id/ivMemViewLike"
-                            android:layout_width="26dp"
-                            android:layout_height="0dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/tvMemViewLikeCount"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_like" />
+                    <TextView
+                        android:id="@id/tvMemViewLikeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="#b3b3b3"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@id/tvMemViewLikeCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#b3b3b3"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/ivMemViewDisliked"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@id/ivMemViewDisliked"
+                        android:layout_width="26dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/tvMemViewDislikeCount"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_dislike" />
 
-                        <ImageView
-                            android:id="@id/ivMemViewDisliked"
-                            android:layout_width="26dp"
-                            android:layout_height="0dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/tvMemViewDislikeCount"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_dislike" />
+                    <TextView
+                        android:id="@id/tvMemViewDislikeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="#b3b3b3"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@id/tvMemViewDislikeCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#b3b3b3"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </android.support.constraint.ConstraintLayout>
-                </FrameLayout>
+                </android.support.constraint.ConstraintLayout>
+            </FrameLayout>
 
 
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
+        </android.support.v7.widget.Toolbar>
 
         <TextView
             android:id="@+id/tvCommentEmptySet"

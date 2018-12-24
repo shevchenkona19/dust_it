@@ -13,6 +13,7 @@ import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
+import dustit.clientapp.mvp.presenters.activities.AnswersActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.FavoriteViewActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
@@ -109,7 +110,7 @@ public interface AppComponent {
 
     void inject(FeedbackManager feedbackManager);
 
-    void inject(@NotNull FeedFragment feedFragment);
+    void inject(FeedFragment feedFragment);
 
     void inject(BaseFeedFragment baseFeedFragment);
 
@@ -128,5 +129,7 @@ public interface AppComponent {
     void inject(NewFeedActivity newFeedActivity);
 
     void inject(BaseFeedFragmentPresenter baseFeedFragmentPresenter);
+
+    void inject(AnswersActivityPresenter answersActivityPresenter);
 
 }

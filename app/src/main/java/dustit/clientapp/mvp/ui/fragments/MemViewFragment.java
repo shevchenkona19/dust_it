@@ -2,6 +2,7 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -12,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +22,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -57,18 +59,19 @@ import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.activities.MemViewPresenter;
-import dustit.clientapp.mvp.ui.adapters.AnswersCommentRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.activities.AnswersActivity;
 import dustit.clientapp.mvp.ui.adapters.CommentsRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.KeyboardHandler;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ReviewManager;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
-public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, AnswersCommentRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
+public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
     private static final String COMMENTS_KEY = "COMMENTS_KEY";
 
@@ -113,7 +116,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @BindView(R.id.tvMemViewLikeCount)
     TextView tvLikeCount;
     @BindView(R.id.ablExpandablePanel)
-    AppBarLayout tbLikePanel;
+    View tbLikePanel;
     @BindView(R.id.clMemViewUpperLayout)
     ConstraintLayout clUpperLayout;
     @BindView(R.id.tbUpperMemView)
@@ -213,7 +216,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
         feedbackManager.bind(this);
-        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this, this);
+        commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
         feedbackManager.subscribe(this);
@@ -249,6 +252,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         break;
                     case EXPANDED:
                         enableClicks();
+                        setStatusbarForComments();
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         canPerformTap = true;
                         if (!showNewComment) {
@@ -260,6 +264,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         break;
                     case COLLAPSED:
                         disableClicks();
+                        setStatusbarForMemView();
                         prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         KeyboardHandler.hideKeyboard(getActivity());
                         canPerformTap = true;
@@ -284,6 +289,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         initAutoHide();
         if (startComments) {
             expandComments(true);
+            setStatusbarForComments();
         }
         if (presenter.isRegistered() && !startComments) {
             new SpotlightView.Builder(Objects.requireNonNull(getActivity()))
@@ -320,7 +326,13 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
             @Override
             public void afterTextChanged(Editable s) {
-                isAnswering = etComment.getText().toString().contains("@" + answeringUsername);
+                if (isAnswering) {
+                    if (!etComment.getText().toString().contains("@" + answeringUsername) && !etComment.getText().toString().equals("")) {
+                        isAnswering = false;
+                        answeringUsername = "";
+                        answerUserId = "";
+                    }
+                }
             }
         });
         if (!userSettingsDataManager.isFcmUpdated()) {
@@ -329,14 +341,34 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         return view;
     }
 
+    private void setStatusbarForComments() {
+        if (getActivity() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.commentsBackground));
+            }
+    }
+
+    private void setStatusbarForMemView() {
+        if (getActivity() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getActivity().getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            }
+    }
+
     private void enableClicks() {
         ivLike.setVisibility(View.GONE);
         ivDislike.setVisibility(View.GONE);
+        ivAddToFavourites.setVisibility(View.GONE);
     }
 
     private void disableClicks() {
         ivLike.setVisibility(View.VISIBLE);
         ivDislike.setVisibility(View.VISIBLE);
+        ivAddToFavourites.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -491,11 +523,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     @Override
-    public void setExitSharedElementCallback(SharedElementCallback callback) {
-        super.setExitSharedElementCallback(callback);
-    }
-
-    @Override
     public void onNotRegistered() {
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
@@ -599,19 +626,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     @Override
-    public void onAnswersLoaded(List<CommentEntity> answers, String commentId) {
-        commentAdapter.onAnswersLoaded(answers, commentId);
-    }
-
-    @Override
     public void onAnswerSentSuccessfully() {
-        etComment.setText("");
-        isAnswering = false;
+        presenter.getCommentsToCommentId(mem.getId(), commentId);
         answerUserId = "";
         answeringUsername = "";
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
-        presenter.loadAnswersForComment(commentId);
         commentId = "";
     }
 
@@ -619,8 +639,17 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     public void onCommentsToCommentIdLoaded(List<CommentEntity> list) {
         showNewComment = false;
         commentAdapter.updateListWhole(list);
+        L.print("Size: " + list.size());
+        for (CommentEntity commentEntity : list) {
+            L.print("comment: " + commentEntity.getUsername());
+        }
         rvComments.scrollToPosition(list.size() - 1);
-        commentAdapter.openCommentAnswers(list.size() - 1, newCommentId);
+        if (!isAnswering) {
+            openAnswersForComment(list.get(list.size() - 1), true, newCommentId);
+        } else {
+            etComment.setText("");
+            isAnswering = false;
+        }
     }
 
     private void disExpandComments() {
@@ -658,8 +687,26 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     @Override
-    public void loadAnswers(String commentId) {
-        presenter.loadAnswersForComment(commentId);
+    public void openAnswersForComment(CommentEntity commentEntity) {
+        if (getContext() != null) {
+            Intent intent = new Intent(getContext(), AnswersActivity.class);
+            intent.putExtra(IConstants.IBundle.BASE_COMMENT, commentEntity);
+            intent.putExtra(IConstants.IBundle.MEM_ID, mem.getId());
+            L.print("Start two");
+            startActivity(intent);
+        }
+    }
+
+    public void openAnswersForComment(CommentEntity commentEntity, boolean startComments, String newCommentId) {
+        if (getContext() != null) {
+            Intent intent = new Intent(getContext(), AnswersActivity.class);
+            intent.putExtra(IConstants.IBundle.BASE_COMMENT, commentEntity);
+            intent.putExtra(IConstants.IBundle.MEM_ID, mem.getId());
+            intent.putExtra(IConstants.IBundle.SHOW_COMMENT, startComments);
+            intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, newCommentId);
+            L.print("Start one");
+            startActivity(intent);
+        }
     }
 
     private void setImageDrawable(ImageView ivImage, int d) {

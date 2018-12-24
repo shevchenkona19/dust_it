@@ -1,7 +1,8 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://193.111.63.173";
+    String BASE_URL = "http://192.168.1.195";
+//    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
@@ -67,6 +68,8 @@ public interface IConstants {
         String MEM_ID = "MEM_ID";
         String PARENT_COMMENT_ID = "PARENT_COMMENT_ID";
         String NEW_COMMENT_ID = "NEW_COMMENT_ID";
+        String BASE_COMMENT = "BASE_COMMENT";
+        String SHOW_COMMENT = "SHOW_COMMENT";
     }
 
     interface INotifications {
