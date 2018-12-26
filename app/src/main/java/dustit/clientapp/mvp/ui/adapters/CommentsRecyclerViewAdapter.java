@@ -32,6 +32,7 @@ import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -111,6 +112,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
             if (comment.getAnswers() > 0) {
+                commentViewHolder.tvAnswersCount.setVisibility(View.VISIBLE);
                 commentViewHolder.tvAnswersCount.setText(String.valueOf(comment.getAnswers()));
             } else {
                 commentViewHolder.tvAnswersCount.setVisibility(View.GONE);

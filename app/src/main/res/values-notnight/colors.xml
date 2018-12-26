@@ -7,4 +7,5 @@
     <color name="commentUsernameColor">#2b2b2b</color>
     <color name="commentDateColor">#c7c9cb</color>
     <color name="baseCommentBackground">#eeeeee</color>
+    <color name="placeholder_color">#efefef</color>
 </resources>

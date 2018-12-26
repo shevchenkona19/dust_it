@@ -11,6 +11,7 @@
     <string name="crop_photo">Crop the photo</string>
     <string name="login">Log in</string>
     <string name="register">Sign up</string>
+    <string name="register_account">Sign up / Login</string>
     <string name="deleted_from_favorites">Deleted from favourites</string>
     <string name="downloaded_to">Saved to:</string>
     <string name="email_not_valid">Email is not valid</string>
@@ -140,7 +141,7 @@
     <string name="first_hundred_description_forme">This achievement is to remark that you are one of the first 100 users registered in MemSpace. Best of the Bests</string>
     <string name="first_hundred_description_forall">This achievement is to remark that this user is one of the first 100 users registered in MemSpace. Best of the Bests</string>
     <string name="respondToComment">answer</string>
-    <string name="new_comment">%1$s left a new comment</string>
+    <string name="new_comment">%1$s answered to your comment</string>
     <string name="on_added_to_favourites">Mem has been added to favourites</string>
     <string name="on_removed_from_favourites">Mem has been removed from favourites</string>
     <string name="answers">Answers</string>

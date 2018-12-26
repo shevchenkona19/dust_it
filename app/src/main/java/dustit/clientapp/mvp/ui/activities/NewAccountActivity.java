@@ -271,7 +271,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         super.onDestroy();
     }
 
-    private void init()  {
+    private void init() {
         btnReload.setOnClickListener(view -> {
             tvFailedToLoad.setVisibility(View.GONE);
             btnReload.setVisibility(View.GONE);
@@ -341,7 +341,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 clAccountLoading.setVisibility(View.GONE);
                 svAccountView.setVisibility(View.VISIBLE);
                 btnRegister.setVisibility(View.VISIBLE);
-                btnRegister.setOnClickListener((view -> AlertBuilder.showRegisterPrompt(this)));
+                btnRegister.setOnClickListener((view -> startActivity(new Intent(this, ChooserActivity.class))));
             }
         }
         supLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -418,19 +418,19 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     }
 
     private void setStatusbarForExpand() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(cvAccountFavoritesCard.getCardBackgroundColor().getDefaultColor());
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(cvAccountFavoritesCard.getCardBackgroundColor().getDefaultColor());
+        }
     }
 
     private void setStatusbarForCollapse() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override

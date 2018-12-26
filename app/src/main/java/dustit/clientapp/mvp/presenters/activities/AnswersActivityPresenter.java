@@ -93,7 +93,7 @@ public class AnswersActivityPresenter extends BasePresenter<IAnswersActivityView
                         if (responseEntity.isAchievementUpdate()) {
                             getView().onAchievementUpdate(responseEntity.getAchievementEntity());
                         }
-                        getView().onAnswered();
+                        getView().onAnswered(responseEntity.getNewCommentId());
                     } else getView().onAnswerFailed();
                 }
             }

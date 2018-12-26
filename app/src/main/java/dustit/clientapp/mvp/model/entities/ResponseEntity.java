@@ -24,6 +24,10 @@ public class ResponseEntity {
     @Expose
     private NewAchievementEntity achievementEntity;
 
+    @SerializedName("newCommentId")
+    @Expose
+    private String newCommentId;
+
     public ResponseEntity(int response, boolean achievementUpdate, NewAchievementEntity achievementEntity) {
         this.response = response;
         this.achievementUpdate = achievementUpdate;
@@ -52,5 +56,13 @@ public class ResponseEntity {
 
     public void setAchievementEntity(NewAchievementEntity achievementEntity) {
         this.achievementEntity = achievementEntity;
+    }
+
+    public String getNewCommentId() {
+        return newCommentId;
+    }
+
+    public void setNewCommentId(String newCommentId) {
+        this.newCommentId = newCommentId;
     }
 }

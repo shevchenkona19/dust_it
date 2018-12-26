@@ -144,7 +144,7 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (list.size() > 0) {
             this.list.addAll(list);
             this.list.add(null);
-            notifyItemRangeInserted(startPos, list.size());
+            notifyItemRangeInserted(startPos, list.size() + 1);
         } else {
             notifyItemChanged(this.list.size() - 1);
         }

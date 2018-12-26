@@ -1,9 +1,11 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.daimajia.swipe.SwipeLayout;
+import dustit.clientapp.customviews.SwipeLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
+import dustit.clientapp.utils.GlideApp;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.containers.Pair;
 import dustit.clientapp.utils.managers.ReviewManager;
@@ -137,6 +138,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
             memViewHolder.bind(mem);
+            GlideApp.with(context)
+                    .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
+                    .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color)))
+                    .into(memViewHolder.itemFeed);
             memViewHolder.itemFeedLike.setOnClickListener(v -> {
                 if (!interactionListener.isRegistered()) {
                     interactionListener.onNotRegistered();
@@ -371,12 +376,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         public void bind(MemEntity mem) {
-
-            Glide.with(itemView)
-                    .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
-                    .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
-                    .into(itemFeed);
-
             srlReveal.close(true);
 
             switch (mem.getOpinion()) {
@@ -423,7 +422,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     static class HotMemesEndedViewHolder extends RecyclerView.ViewHolder {
-        public HotMemesEndedViewHolder(View itemView) {
+        HotMemesEndedViewHolder(View itemView) {
             super(itemView);
         }
     }

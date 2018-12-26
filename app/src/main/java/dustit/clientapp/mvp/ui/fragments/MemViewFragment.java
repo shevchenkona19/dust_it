@@ -35,13 +35,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.wooplr.spotlight.SpotlightView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -291,28 +289,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             expandComments(true);
             setStatusbarForComments();
         }
-        if (presenter.isRegistered() && !startComments) {
-            new SpotlightView.Builder(Objects.requireNonNull(getActivity()))
-                    .introAnimationDuration(400)
-                    .enableRevealAnimation(true)
-                    .performClick(true)
-                    .fadeinTextDuration(400)
-                    .headingTvColor(Color.parseColor("#f98098"))
-                    .headingTvSize(32)
-                    .headingTvText(getString(R.string.add_to_favourites_title))
-                    .subHeadingTvColor(Color.parseColor("#ffffff"))
-                    .subHeadingTvSize(16)
-                    .subHeadingTvText(getString(R.string.add_to_favourites_description))
-                    .maskColor(Color.parseColor("#dc000000"))
-                    .target(ivAddToFavourites)
-                    .lineAnimDuration(400)
-                    .lineAndArcColor(Color.parseColor("#ffb06a"))
-                    .dismissOnTouch(false)
-                    .dismissOnBackPress(false)
-                    .enableDismissAfterShown(false)
-                    .usageId(IConstants.ISpotlight.ADD_MEM_FAVS)
-                    .show();
-        }
         etComment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -339,6 +315,18 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             presenter.updateFcmId();
         }
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getContext() != null) {
+            if (supPanel.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                setStatusbarForComments();
+            } else if (supPanel.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                setStatusbarForMemView();
+            }
+        }
     }
 
     private void setStatusbarForComments() {
@@ -536,6 +524,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 srlCommentsRefresh.setRefreshing(false);
                 commentAdapter.updateListWhole(list);
                 rvComments.scheduleLayoutAnimation();
+                rvComments.setVisibility(View.VISIBLE);
                 tvCommentEmpty.setVisibility(View.GONE);
             }
         } else {

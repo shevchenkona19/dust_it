@@ -13,5 +13,6 @@
     <color name="commentsBackground">#2c2d2d</color>
     <color name="commentUsernameColor">#d8d8d8</color>
     <color name="commentDateColor">#c7c9cb</color>
-    <color name="baseCommentBackground">#404040</color>
+    <color name="baseCommentBackground">#202020</color>
+    <color name="placeholder_color">#202020</color>
 </resources>

@@ -1,8 +1,10 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
+import dustit.clientapp.utils.GlideApp;
 import dustit.clientapp.utils.IConstants;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
@@ -54,9 +57,9 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
     @Override
     public void onBindViewHolder(@NonNull final FavoriteViewHolder holder, int position) {
-        Glide.with(holder.itemView)
+        GlideApp.with(holder.itemView)
                 .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + list.get(position).getId()))
-                .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
+                .placeholder(new ColorDrawable(ContextCompat.getColor(holder.itemView.getContext(), R.color.placeholder_color)))
                 .into(holder.sdvImage);
         holder.sdvImage.setOnClickListener(view -> callback.onFavoriteChosen(list.get(holder.getAdapterPosition()).getId()));
     }

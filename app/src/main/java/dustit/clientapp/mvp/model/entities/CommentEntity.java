@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Никита on 09.11.2017.
@@ -79,8 +77,6 @@ public class CommentEntity implements Parcelable {
     @Expose
     private boolean firstThousand;
 
-    private List<CommentEntity> answerList;
-
     private boolean isExpanded = false;
 
 
@@ -120,7 +116,6 @@ public class CommentEntity implements Parcelable {
         viewsAchievementLvl = in.readInt();
         firstHundred = in.readByte() != 0;
         firstThousand = in.readByte() != 0;
-        answerList = in.createTypedArrayList(CommentEntity.CREATOR);
         isExpanded = in.readByte() != 0;
     }
 
@@ -142,7 +137,6 @@ public class CommentEntity implements Parcelable {
         dest.writeInt(viewsAchievementLvl);
         dest.writeByte((byte) (firstHundred ? 1 : 0));
         dest.writeByte((byte) (firstThousand ? 1 : 0));
-        dest.writeTypedList(answerList);
         dest.writeByte((byte) (isExpanded ? 1 : 0));
     }
 
@@ -297,18 +291,6 @@ public class CommentEntity implements Parcelable {
 
     public void setAnswerUserId(int answerUserId) {
         this.answerUserId = answerUserId;
-    }
-
-    public List<CommentEntity> getAnswerList() {
-        if (answerList == null) {
-            answerList = new ArrayList<>();
-        }
-        return answerList;
-    }
-
-    public void setAnswerList(List<CommentEntity> answerList) {
-        this.answerList.clear();
-        this.answerList.addAll(answerList);
     }
 
     public boolean isExpanded() {

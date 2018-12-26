@@ -139,11 +139,12 @@
     <string name="first_thousand_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 1000 зарегистрированных юзеров MemSpace. Команда разработчиков снимает перед ним шляпу</string>
     <string name="first_hundred_description_forme">Вы получили эту ачивку за то, что были одним из первых 100 зарегистрированных юзеров MemSpace. Вы лучший! Мы вас любим. Цём</string>
     <string name="first_hundred_description_forall">Пользователь получил эту ачивку за то, что был одним из первых 100 зарегистрированных юзеров MemSpace</string>
-    <string name="respondToComment">answer</string>
-    <string name="new_comment">%1$s left a new comment</string>
-    <string name="on_added_to_favourites">Mem has been added to favourites</string>
-    <string name="on_removed_from_favourites">Mem has been removed from favourites</string>
-    <string name="answers">Answers</string>
-    <string name="answering_to">Answering to %1$s</string>
+    <string name="respondToComment">Ответить</string>
+    <string name="new_comment">%1$s ответил на ваш комментарий</string>
+    <string name="on_added_to_favourites">Мем добавлен в избранное</string>
+    <string name="on_removed_from_favourites">Мем удалён из избранного</string>
+    <string name="answers">Ответы</string>
+    <string name="answering_to">Отвечаете %1$s</string>
+    <string name="register_account">Зарегистрироваться / Войти в аккаунт</string>
 
 </resources>

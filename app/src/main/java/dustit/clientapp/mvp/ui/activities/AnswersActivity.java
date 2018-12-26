@@ -1,18 +1,21 @@
 package dustit.clientapp.mvp.ui.activities;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,6 +32,7 @@ import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IAnswersActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 public class AnswersActivity extends Activity implements IAnswersActivityView, AnswersCommentAdapter.IAnswersInteraction {
     @BindView(R.id.ibCloseAnswers)
@@ -42,7 +46,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
     @BindView(R.id.ivMemViewCommentSend)
     View sendComment;
     @BindView(R.id.clLayout)
-    CoordinatorLayout clLayout;
+    RelativeLayout clLayout;
     @BindView(R.id.tvAnswerUsername)
     TextView tvAnswerUsername;
 
@@ -77,7 +81,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
         adapter = new AnswersCommentAdapter(this, this, baseComment);
         presenter = new AnswersActivityPresenter(baseComment.getId());
         rvAnswers.setAdapter(adapter);
-        rvAnswers.setLayoutManager(new LinearLayoutManager(this));
+        rvAnswers.setLayoutManager(new WrapperLinearLayoutManager(this));
         presenter.loadBase();
         refreshLayout.setOnRefreshListener(() -> presenter.loadBase());
         presenter.bind(this);
@@ -118,6 +122,25 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            } else {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         presenter.unbind();
         super.onDestroy();
@@ -128,8 +151,13 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
     }
 
     @Override
-    public void onAnswered() {
-        presenter.loadBase();
+    public void onAnswered(String newCommentId) {
+        isAnsweringToSomebody = false;
+        setAnsweringUsername(baseComment.getUsername());
+        commentField.setText("");
+        answeringUserId = "";
+        answeringUsername = "";
+        presenter.loadCommentsToId(newCommentId, baseComment.getId(), imageId);
     }
 
     @Override

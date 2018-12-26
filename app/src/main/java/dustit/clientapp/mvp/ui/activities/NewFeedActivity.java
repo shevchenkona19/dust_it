@@ -309,6 +309,17 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     @Override
     public void gotoFragment(byte id) {
         vpFeed.setCurrentItem(id, true);
+        switch (id) {
+            case 0:
+                bnvFeed.setSelectedItemId(R.id.feed);
+                break;
+            case 1:
+                bnvFeed.setSelectedItemId(R.id.hot);
+                break;
+            case 2:
+                bnvFeed.setSelectedItemId(R.id.categories);
+                break;
+        }
     }
 
     @Override
