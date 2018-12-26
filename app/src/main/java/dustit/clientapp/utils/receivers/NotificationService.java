@@ -3,6 +3,8 @@ package dustit.clientapp.utils.receivers;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -71,6 +73,8 @@ public class NotificationService extends FirebaseMessagingService {
         Intent toLaunch = new Intent(this, NewFeedActivity.class);
         toLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         Notification noti = new NotificationCompat.Builder(this, IConstants.INotifications.CHANNEL_ID)
                 .setContentTitle(getString(R.string.return_notification_title))
                 .setContentText(String.format(getString(R.string.return_notitfication_message), Integer.valueOf(memesCount)))
@@ -82,6 +86,7 @@ public class NotificationService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
                 .setChannelId(IConstants.INotifications.CHANNEL_ID)
+                .setSound(uri)
                 .build();
 
 
@@ -92,6 +97,8 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void sendNewRespondOnCommentNotification(String username, String text, Intent toLaunch) {
         toLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         Notification noti = new NotificationCompat.Builder(this, IConstants.INotifications.CHANNEL_ID)
                 .setContentTitle(String.format(getString(R.string.new_comment), username))
@@ -104,6 +111,7 @@ public class NotificationService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
                 .setChannelId(IConstants.INotifications.CHANNEL_ID)
+                .setSound(uri)
                 .build();
 
 
