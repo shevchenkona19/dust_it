@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import dustit.clientapp.customviews.SwipeLayout;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,6 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
-import dustit.clientapp.mvp.ui.adapters.base.RecyclerSwipeAdapter;
 import dustit.clientapp.utils.GlideApp;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.containers.Pair;
@@ -36,7 +33,7 @@ import dustit.clientapp.utils.managers.ReviewManager;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
-public class FeedRecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolder> {
+public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<MemEntity> mems;
     private LayoutInflater layoutInflater;
     private IFeedInteractionListener interactionListener;
@@ -47,11 +44,6 @@ public class FeedRecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerView.V
     private int appBarHeight;
     private Context context;
     private RecyclerView rvFeed;
-
-    @Override
-    public int getSwipeLayoutResourceId(int position) {
-        return R.id.srlItemFeedReveal;
-    }
 
     public interface IFeedInteractionListener {
         void reloadFeedBase();
@@ -143,7 +135,7 @@ public class FeedRecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerView.V
         if (holder instanceof MemViewHolder) {
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
-            mItemManger.bind(memViewHolder.itemView, position);
+//            mItemManger.bind(memViewHolder.itemView, position);
             memViewHolder.bind(mem);
             GlideApp.with(context)
                     .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
@@ -375,7 +367,7 @@ public class FeedRecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerView.V
         @BindView(R.id.ibShareBack)
         ImageButton ibShare;
         @BindView(R.id.srlItemFeedReveal)
-        SwipeLayout srlReveal;
+        dustit.clientapp.utils.SwipeRevealLayout srlReveal;
 
         MemViewHolder(View itemView) {
             super(itemView);
@@ -383,6 +375,8 @@ public class FeedRecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerView.V
         }
 
         public void bind(MemEntity mem) {
+
+            srlReveal.close(false);
 
             switch (mem.getOpinion()) {
                 case LIKED:

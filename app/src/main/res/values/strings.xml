@@ -147,6 +147,6 @@
     <string name="on_removed_from_favourites">Мем був видалений з обраного</string>
     <string name="answers">Відповіді</string>
     <string name="answering_to">Відповідаєте %1$s</string>
-    <string name="register_account">Зареєструватісь / Увійти в акаунт</string>
+    <string name="register_account">Зареєструватись / Увійти в акаунт</string>
 
 </resources>

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IBaseFeedFragmentPresenter;
@@ -15,6 +16,8 @@ import rx.Subscriber;
 public class BaseFeedFragmentPresenter extends BasePresenter<IBaseFeedFragment> implements IBaseFeedFragmentPresenter {
     @Inject
     DataManager dataManager;
+    @Inject
+    UserSettingsDataManager userSettingsDataManager;
 
     public BaseFeedFragmentPresenter() {
         App.get().getAppComponent().inject(this);
@@ -22,6 +25,10 @@ public class BaseFeedFragmentPresenter extends BasePresenter<IBaseFeedFragment> 
 
     @Override
     public void addToFavourites(String id, int position) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         AtomicReference<ResponseEntity> response = new AtomicReference<>();
         addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -54,6 +61,10 @@ public class BaseFeedFragmentPresenter extends BasePresenter<IBaseFeedFragment> 
 
     @Override
     public void removeFromFavourites(String id, int position) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
         AtomicReference<ResponseEntity> response = new AtomicReference<>();
         addSubscription(dataManager.removeFromFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
             @Override

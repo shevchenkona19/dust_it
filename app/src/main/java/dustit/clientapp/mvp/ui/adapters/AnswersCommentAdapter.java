@@ -1,6 +1,9 @@
 package dustit.clientapp.mvp.ui.adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
+import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
 import dustit.clientapp.utils.IConstants;
 
 public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -72,6 +76,14 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             BaseComment baseComment = (BaseComment) holder;
             baseComment.bind(this.baseComment);
             baseComment.btnAnswer.setOnClickListener((v) -> interaction.onAnswerClicked(this.baseComment));
+            baseComment.sdvUser.setOnClickListener((v) -> {
+                String userId = this.baseComment.getUserId();
+                Intent intent = new Intent(context, NewAccountActivity.class);
+                intent.putExtra(IConstants.IBundle.IS_ME, true);
+                intent.putExtra(IConstants.IBundle.ID, userId);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, baseComment.sdvUser, context.getString(R.string.account_photo_transition));
+                context.startActivity(intent, options.toBundle());
+            });
             baseComment.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", this.baseComment.getLikeAchievementLvl()));
             baseComment.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", this.baseComment.getDislikesAchievementLvl()));
             baseComment.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", this.baseComment.getCommentsAchievementLvl()));
@@ -92,6 +104,14 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             answer.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
             answer.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             answer.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
+            answer.sdvUser.setOnClickListener((v) -> {
+                String userId = this.baseComment.getUserId();
+                Intent intent = new Intent(context, NewAccountActivity.class);
+                intent.putExtra(IConstants.IBundle.IS_ME, true);
+                intent.putExtra(IConstants.IBundle.ID, userId);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, answer.sdvUser, context.getString(R.string.account_photo_transition));
+                context.startActivity(intent, options.toBundle());
+            });
         } else {
             if (!isLoading) {
                 interaction.onLoadMore(list.size() - 2);

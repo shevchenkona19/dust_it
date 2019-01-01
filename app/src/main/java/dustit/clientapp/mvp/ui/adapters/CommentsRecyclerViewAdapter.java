@@ -114,6 +114,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             if (comment.getAnswers() > 0) {
                 commentViewHolder.tvAnswersCount.setVisibility(View.VISIBLE);
                 commentViewHolder.tvAnswersCount.setText(String.valueOf(comment.getAnswers()));
+                commentViewHolder.ivAnswers.setVisibility(View.VISIBLE);
             } else {
                 commentViewHolder.tvAnswersCount.setVisibility(View.GONE);
                 commentViewHolder.ivAnswers.setVisibility(View.GONE);
@@ -208,17 +209,17 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             case "likes":
                 switch (lvl) {
                     case 1:
-                        return R.drawable.ic_achievement_comment_1_small;
+                        return R.drawable.ic_achievement_like_1_small;
                     case 2:
-                        return R.drawable.ic_achievement_comment_2_small;
+                        return R.drawable.ic_achievement_like_2_small;
                     case 3:
-                        return R.drawable.ic_achievement_comment_3_small;
+                        return R.drawable.ic_achievement_like_3_small;
                     case 4:
-                        return R.drawable.ic_achievement_comment_4_small;
+                        return R.drawable.ic_achievement_like_4_small;
                     case 5:
-                        return R.drawable.ic_achievement_comment_5_small;
+                        return R.drawable.ic_achievement_like_5_small;
                     case 6:
-                        return R.drawable.ic_achievement_comment_6_small;
+                        return R.drawable.ic_achievement_like_6_small;
                 }
             case "dislikes":
                 switch (lvl) {

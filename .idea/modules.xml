@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Spotlight-library/Spotlight-lib.iml" filepath="$PROJECT_DIR$/Spotlight-library/Spotlight-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library-release/library-release.iml" filepath="$PROJECT_DIR$/library-release/library-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/memspace_client.iml" filepath="$PROJECT_DIR$/memspace_client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spotlight/spotlight.iml" filepath="$PROJECT_DIR$/spotlight/spotlight.iml" />
     </modules>
   </component>
 </project>

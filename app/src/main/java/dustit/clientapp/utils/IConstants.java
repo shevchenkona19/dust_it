@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-//    String BASE_URL = "http://192.168.1.195";
+//    String BASE_URL = "http://192.168.0.102";
     String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
@@ -41,16 +41,6 @@ public interface IConstants {
         String FCM_ID = "FCM_ID";
         String FCM_UPDATE = "FCM_UPDATE";
         String IS_NO_REGISTRATION = "IS_NO_REGISTRATION";
-    }
-
-    interface ISpotlight {
-        String FEED_ICON = "FEED_ICON";
-        String HOT_ICON = "HOT_ICON";
-        String CATEGORIES_ICON = "CATEGORIES_ICON";
-        String ACCOUNT_ICON = "ACCOUNT_ICON";
-        String FAB_FEED = "FAB_FEED";
-        String ADD_MEM_FAVS = "ADD_MEM_FAVS";
-        String ACCOUNT_ALL_FAVS = "ACCOUNT_ALL_FAVS";
     }
 
     enum OPINION {
