@@ -17,6 +17,7 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -116,14 +117,10 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
                 .subscribe(new Subscriber<FavoritesUpperEntity>() {
                     @Override
                     public void onCompleted() {
-                        if (favoritesEntity[0].getIds().length == 0) {
+                        if (favoritesEntity[0].getLength() == 0) {
                             getView().showEmpty();
                         } else {
-                            final List<FavoriteEntity> list = new ArrayList<>();
-                            for (String id :
-                                    favoritesEntity[0].getIds()) {
-                                list.add(new FavoriteEntity(id));
-                            }
+                            final List<MemEntity> list = favoritesEntity[0].getList();
                             getView().onFavoritesArrived(list);
                         }
                     }

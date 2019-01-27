@@ -103,7 +103,7 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
             });
             builder.setNegativeButton(getString(R.string.cancel), null);
             final AlertDialog dialog = builder.create();
-            dialog.setOnShowListener(dialog0 -> dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000")));
+            dialog.setOnShowListener(dialog0 -> dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent)));
             dialog.show();
         });
         tvNoRegistration.setOnClickListener(v -> {
@@ -114,8 +114,8 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
             alertDialog.setOnShowListener(dialog -> {
-                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
             });
             alertDialog.show();
         });

@@ -1,8 +1,10 @@
 package dustit.clientapp.mvp.ui.fragments;
 
+import android.Manifest;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -12,7 +14,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -63,8 +67,8 @@ import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.ImageShareUtils;
 import dustit.clientapp.utils.KeyboardHandler;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ReviewManager;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
@@ -72,6 +76,8 @@ import static dustit.clientapp.utils.IConstants.BASE_URL;
 public class MemViewFragment extends Fragment implements CommentsRecyclerViewAdapter.ICommentInteraction, IMemViewView, FeedbackManager.IFeedbackInteraction {
     private static final String MEM_KEY = "MEM_ENTITY";
     private static final String COMMENTS_KEY = "COMMENTS_KEY";
+    private static final String SHOW_FAVORITES = "SHOW_FAVORITES";
+    private static final int PERMISSION_DIALOG = 2020;
 
     private MemEntity mem;
     private Unbinder unbinder;
@@ -92,6 +98,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private boolean isAnswering = false;
     private String commentId = "";
     private String answeringUsername = "";
+    private boolean showFavorites = false;
 
     private boolean showNewComment = false;
     private String newCommentParentId = "";
@@ -171,6 +178,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         return fragment;
     }
 
+    public static MemViewFragment newInstance(MemEntity mem, String userId, boolean showFavorites) {
+        Bundle args = new Bundle();
+        args.putParcelable(MEM_KEY, mem);
+        args.putBoolean(SHOW_FAVORITES, showFavorites);
+        args.putString(IConstants.IBundle.ID, userId);
+        final MemViewFragment fragment = new MemViewFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static MemViewFragment newInstance(@NotNull MemEntity memEntity, boolean startComments, String loadId, String parentComment, String newComment) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, memEntity);
@@ -190,6 +207,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             mem = args.getParcelable(MEM_KEY);
             myId = args.getString(IConstants.IBundle.ID);
             startComments = args.getBoolean(COMMENTS_KEY);
+            showFavorites = args.getBoolean(SHOW_FAVORITES, false);
             if (args.getString(IConstants.IBundle.PARENT_COMMENT_ID) != null) {
                 showNewComment = true;
                 newCommentParentId = args.getString(IConstants.IBundle.PARENT_COMMENT_ID);
@@ -231,6 +249,22 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
                 .apply(new RequestOptions().placeholder(R.drawable.mem_placeholder))
                 .into(pdvMem);
+        if (showFavorites) {
+            tbUpperToolbar.inflateMenu(R.menu.favorites_controls);
+            tbUpperToolbar.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.share:
+                        shareMem();
+                        return true;
+                    case R.id.download:
+                        downloadMem();
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+        }
         supPanel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -315,6 +349,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             presenter.updateFcmId();
         }
         return view;
+    }
+
+    private void shareMem() {
+        if (getContext() != null) {
+            ImageShareUtils.shareImage(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId(), getContext());
+        }
+    }
+
+    private void downloadMem() {
+        presenter.downloadImage(mem.getId());
     }
 
     @Override
@@ -628,10 +672,6 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     public void onCommentsToCommentIdLoaded(List<CommentEntity> list) {
         showNewComment = false;
         commentAdapter.updateListWhole(list);
-        L.print("Size: " + list.size());
-        for (CommentEntity commentEntity : list) {
-            L.print("comment: " + commentEntity.getUsername());
-        }
         rvComments.scrollToPosition(list.size() - 1);
         if (!isAnswering) {
             openAnswersForComment(list.get(list.size() - 1), true, newCommentId);
@@ -639,6 +679,39 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             etComment.setText("");
             isAnswering = false;
         }
+    }
+
+    @Override
+    public void onDownloaded(String pathToImage) {
+        if (getContext() != null)
+            Toast.makeText(getContext(), getString(R.string.downloaded_to) + pathToImage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean checkPermission() {
+        if (getContext() != null) {
+            int permCheckRead = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE);
+            int permCheckWrite = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return permCheckRead == PackageManager.PERMISSION_GRANTED
+                    || permCheckWrite == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    @Override
+    public void getPermissions() {
+        if (getActivity() != null)
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_DIALOG);
+    }
+
+    @Override
+    public void onDownloadFailed() {
+        if (getContext() != null)
+            Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
     }
 
     private void disExpandComments() {
@@ -681,7 +754,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             Intent intent = new Intent(getContext(), AnswersActivity.class);
             intent.putExtra(IConstants.IBundle.BASE_COMMENT, commentEntity);
             intent.putExtra(IConstants.IBundle.MEM_ID, mem.getId());
-            L.print("Start two");
+            intent.putExtra(IConstants.IBundle.MY_ID, myId);
             startActivity(intent);
         }
     }
@@ -693,7 +766,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             intent.putExtra(IConstants.IBundle.MEM_ID, mem.getId());
             intent.putExtra(IConstants.IBundle.SHOW_COMMENT, startComments);
             intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, newCommentId);
-            L.print("Start one");
+            intent.putExtra(IConstants.IBundle.MY_ID, myId);
             startActivity(intent);
         }
     }
@@ -705,6 +778,21 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                     ivImage.setImageDrawable(getContext().getDrawable(d));
                 } else {
                     ivImage.setImageDrawable(getContext().getResources().getDrawable(d));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_DIALOG: {
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                        presenter.downloadImage(mem.getId());
+                    }
+                } else {
+                    onError();
                 }
             }
         }

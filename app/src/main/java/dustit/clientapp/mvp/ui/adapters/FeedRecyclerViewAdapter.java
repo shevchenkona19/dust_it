@@ -135,7 +135,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (holder instanceof MemViewHolder) {
             final MemViewHolder memViewHolder = (MemViewHolder) holder;
             final MemEntity mem = mems.get(pos);
-//            mItemManger.bind(memViewHolder.itemView, position);
             memViewHolder.bind(mem);
             GlideApp.with(context)
                     .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
@@ -151,7 +150,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                         mem.setDislikes(-1);
                         mem.setLikes(1);
                         mem.setOpinion(IConstants.OPINION.LIKED);
-                        notifyItemChanged(pos);
+                        bind(memViewHolder, mem);
                         interactionListener.postLike(mem);
                         if (context != null)
                             ReviewManager.get().positiveCount(new WeakReference<>(context));
@@ -159,7 +158,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     case NEUTRAL:
                         mem.setLikes(1);
                         mem.setOpinion(IConstants.OPINION.LIKED);
-                        notifyItemChanged(pos);
+                        bind(memViewHolder, mem);
                         interactionListener.postLike(mem);
                         if (context != null)
                             ReviewManager.get().positiveCount(new WeakReference<>(context));
@@ -167,8 +166,35 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     case LIKED:
                         mem.setLikes(-1);
                         mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                        notifyItemChanged(pos);
+                        bind(memViewHolder, mem);
                         interactionListener.deleteLike(mem);
+                        break;
+                }
+            });
+            memViewHolder.itemFeedDislike.setOnClickListener(v -> {
+                if (!interactionListener.isRegistered()) {
+                    interactionListener.onNotRegistered();
+                    return;
+                }
+                switch (mem.getOpinion()) {
+                    case LIKED:
+                        mem.setLikes(-1);
+                        mem.setDislikes(1);
+                        mem.setOpinion(IConstants.OPINION.DISLIKED);
+                        bind(memViewHolder, mem);
+                        interactionListener.postDislike(mem);
+                        break;
+                    case NEUTRAL:
+                        mem.setDislikes(1);
+                        mem.setOpinion(IConstants.OPINION.DISLIKED);
+                        bind(memViewHolder, mem);
+                        interactionListener.postDislike(mem);
+                        break;
+                    case DISLIKED:
+                        mem.setDislikes(-1);
+                        mem.setOpinion(IConstants.OPINION.NEUTRAL);
+                        bind(memViewHolder, mem);
+                        interactionListener.deleteDislike(mem);
                         break;
                 }
             });
@@ -180,33 +206,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
             memViewHolder.ibShare.setOnClickListener(v -> interactionListener.shareMem(mem));
-            memViewHolder.itemFeedDislike.setOnClickListener(v -> {
-                if (!interactionListener.isRegistered()) {
-                    interactionListener.onNotRegistered();
-                    return;
-                }
-                switch (mem.getOpinion()) {
-                    case LIKED:
-                        mem.setLikes(-1);
-                        mem.setDislikes(1);
-                        mem.setOpinion(IConstants.OPINION.DISLIKED);
-                        notifyItemChanged(pos);
-                        interactionListener.postDislike(mem);
-                        break;
-                    case NEUTRAL:
-                        mem.setDislikes(1);
-                        mem.setOpinion(IConstants.OPINION.DISLIKED);
-                        notifyItemChanged(pos);
-                        interactionListener.postDislike(mem);
-                        break;
-                    case DISLIKED:
-                        mem.setDislikes(-1);
-                        mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                        notifyItemChanged(pos);
-                        interactionListener.deleteDislike(mem);
-                        break;
-                }
-            });
             memViewHolder.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(memViewHolder.itemView, mem));
             memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
         } else if (holder instanceof FailedViewHolder) {
@@ -228,6 +227,39 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else if (holder instanceof MemesEndedViewHolder) {
             MemesEndedViewHolder memesEndedViewHolder = (MemesEndedViewHolder) holder;
             memesEndedViewHolder.btnToHot.setOnClickListener(v -> interactionListener.gotoHot());
+        }
+    }
+
+    private void bind(MemViewHolder memViewHolder, MemEntity mem) {
+        if (memViewHolder != null) {
+            if (memViewHolder.itemView != null) {
+                if (memViewHolder.itemFeedLike != null) {
+                    switch (mem.getOpinion()) {
+                        case LIKED:
+                            memViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like_pressed);
+                            memViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                            break;
+                        case NEUTRAL:
+                            memViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like);
+                            memViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                            break;
+                        case DISLIKED:
+                            memViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like);
+                            memViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
+                            break;
+                    }
+
+                    if (mem.isFavorite()) {
+                        memViewHolder.ibAddToFavs.setImageResource(R.drawable.ic_saved);
+                    } else {
+                        memViewHolder.ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
+                    }
+
+                    memViewHolder.tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
+                    memViewHolder.tvDislikeCount.setText(mem.getDislikes());
+                    memViewHolder.tvLikeCount.setText(mem.getLikes());
+                }
+            }
         }
     }
 
@@ -317,7 +349,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             pair.getMem().setLikes(refreshedMem.getLikes());
             pair.getMem().setDislikes(refreshedMem.getDislikes());
             pair.getMem().setOpinion(refreshedMem.getOpinion());
-            notifyItemChanged(pair.getPosition());
+            MemViewHolder memViewHolder = (MemViewHolder) rvFeed.findViewHolderForAdapterPosition(pair.getPosition());
+            bind(memViewHolder, pair.getMem());
         }
     }
 
@@ -330,7 +363,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             mem.setLikes(restoreMemEntity.getLikes());
             mem.setDislikes(restoreMemEntity.getDislikes());
             mem.setOpinion(restoreMemEntity.getOpinion());
-            notifyItemChanged(pos);
+            MemViewHolder memViewHolder = (MemViewHolder) rvFeed.findViewHolderForAdapterPosition(pos);
+            bind(memViewHolder, mem);
         }
     }
 

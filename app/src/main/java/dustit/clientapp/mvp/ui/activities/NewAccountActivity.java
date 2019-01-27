@@ -11,11 +11,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,16 +66,18 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.Achievement;
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.AchievementAdapter;
 import dustit.clientapp.mvp.ui.adapters.FavoritesRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.bus.FavouritesBus;
 
-public class NewAccountActivity extends AppCompatActivity implements INewAccountActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback {
+public class NewAccountActivity extends AppCompatActivity implements INewAccountActivityView, FavoritesRecyclerViewAdapter.IFavoritesCallback, MemViewFragment.IMemViewRatingInteractionListener {
 
     private static final int PICK_IMAGE = 222;
     private static final int CROPPED_IMAGE = 223;
@@ -120,7 +125,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     @Inject
     UserSettingsDataManager userSettingsDataManager;
 
-    private FavoritesRecyclerViewAdapter mAdapter;
+    private FavoritesRecyclerViewAdapter favoritesRecyclerViewAdapter;
     private AchievementAdapter achievementAdapter;
     private final NewAccountActivityPresenter mPresenter = new NewAccountActivityPresenter();
     private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
@@ -129,16 +134,21 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
 
     private String userId = "";
     private boolean isMe = false;
+    private boolean isFavoritesLoaded = false;
+    public static boolean isReload = false;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IConstants.IBundle.IS_ME, isMe);
         outState.putString(IConstants.IBundle.ID, userId);
+        outState.putBoolean(IConstants.IBundle.RELOAD, true);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        postponeEnterTransition();
         requestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         final Transition fade = new android.transition.Fade();
         fade.excludeTarget(android.R.id.statusBarBackground, true);
@@ -150,13 +160,45 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
         final TransitionSet transitionSet = DraweeTransition
                 .createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
                         ScalingUtils.ScaleType.CENTER_CROP);
+        transitionSet.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                if (isMe) {
+                    if (userSettingsDataManager.isRegistered()) {
+                        mPresenter.getAchievements(userId);
+                    }
+                } else {
+                    mPresenter.getAchievements(userId);
+                }
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
         window.setSharedElementEnterTransition(transitionSet);
         window.setSharedElementExitTransition(transitionSet);
-        super.onCreate(savedInstanceState);
-        App.get().getAppComponent().inject(this);
         setContentView(R.layout.account_new);
+        App.get().getAppComponent().inject(this);
         ButterKnife.bind(this);
         sdvIcon.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        startPostponedEnterTransition();
         mPresenter.bind(this);
         setSupportActionBar(tbAccount);
         Bundle bundle = getIntent().getExtras();
@@ -168,8 +210,49 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 userId = mPresenter.loadMyId();
                 isMe = true;
             }
+
+        }
+        if (isMe) {
+            if (userSettingsDataManager.isRegistered()) {
+                mPresenter.getUsername(userId);
+            }
+        } else {
+            mPresenter.getUsername(userId);
+        }
+        if (isReload) {
+            if (isMe) {
+                if (userSettingsDataManager.isRegistered()) {
+                    mPresenter.getAchievements(userId);
+                    isReload = false;
+                }
+            } else {
+                mPresenter.getAchievements(userId);
+                isReload = false;
+            }
         }
         init();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        if (savedInstanceState != null) {
+            if (!savedInstanceState.getBoolean(IConstants.IBundle.IS_ME)) {
+                userId = savedInstanceState.getString(IConstants.IBundle.ID);
+            } else {
+                userId = mPresenter.loadMyId();
+                isMe = true;
+            }
+            if (savedInstanceState.getBoolean(IConstants.IBundle.RELOAD)) {
+                if (isMe) {
+                    if (userSettingsDataManager.isRegistered()) {
+                        mPresenter.getAchievements(userId);
+                    }
+                } else {
+                    mPresenter.getAchievements(userId);
+                }
+            }
+        }
     }
 
     @Override
@@ -188,22 +271,6 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                 window.getDecorView().setSystemUiVisibility(flags);
                 window.setStatusBarColor(Color.WHITE);
             }
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (isMe) {
-            if (userSettingsDataManager.isRegistered()) {
-                mPresenter.getUsername(userId);
-                mPresenter.loadFavorites(userId);
-                mPresenter.getAchievements(userId);
-            }
-        } else {
-            mPresenter.getUsername(userId);
-            mPresenter.loadFavorites(userId);
-            mPresenter.getAchievements(userId);
         }
     }
 
@@ -255,6 +322,10 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
 
     @Override
     public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return;
+        }
         if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             supLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             return;
@@ -279,6 +350,20 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
             mPresenter.getUsername(userId);
             mPresenter.loadFavorites(userId);
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                int flags = 0;
+                window.getDecorView().setSystemUiVisibility(flags);
+            } else {
+                int flags = window.getDecorView().getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.setStatusBarColor(Color.WHITE);
+            }
+        }
         rvAchievements.setHasFixedSize(true);
         rvFavorites.setHasFixedSize(true);
         sdvIcon.setLegacyVisibilityHandlingEnabled(true);
@@ -311,8 +396,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                             .setNegativeButton(getString(R.string.no), null)
                             .create();
                     dialog.setOnShowListener(dialogInterface -> {
-                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
                     });
                     dialog.show();
                 });
@@ -322,8 +407,8 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
             }
         }
         tbAccount.setNavigationOnClickListener(v -> unRevealActivity());
-        mAdapter = new FavoritesRecyclerViewAdapter(this, this);
-        rvFavorites.setAdapter(mAdapter);
+        favoritesRecyclerViewAdapter = new FavoritesRecyclerViewAdapter(this, this);
+        rvFavorites.setAdapter(favoritesRecyclerViewAdapter);
         rvFavorites.setLayoutManager(new GridLayoutManager(this, 2));
         achievementAdapter = new AchievementAdapter(this, isMe);
         rvAchievements.setAdapter(achievementAdapter);
@@ -360,6 +445,14 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
                         setStatusbarForExpand();
                         cvAccountFavoritesCard.setRadius(0);
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
+                        if (!isFavoritesLoaded) {
+                            isFavoritesLoaded = true;
+                            if (isMe) {
+                                if (userSettingsDataManager.isRegistered()) {
+                                    mPresenter.loadFavorites(userId);
+                                }
+                            } else mPresenter.loadFavorites(userId);
+                        }
                         break;
                     case COLLAPSED:
                         setStatusbarForCollapse();
@@ -540,11 +633,11 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     }
 
     @Override
-    public void onFavoritesArrived(List<FavoriteEntity> list) {
+    public void onFavoritesArrived(List<MemEntity> list) {
         pbFavsLoading.setVisibility(View.GONE);
         rvFavorites.setVisibility(View.VISIBLE);
         tvEmptyText.setVisibility(View.GONE);
-        mAdapter.updateAll(list);
+        favoritesRecyclerViewAdapter.updateAll(list);
         rvFavorites.scheduleLayoutAnimation();
     }
 
@@ -555,7 +648,7 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
 
     @Override
     public void removedFromFavorites(String id) {
-        mAdapter.removeById(id);
+        favoritesRecyclerViewAdapter.removeById(id);
     }
 
     @Override
@@ -602,15 +695,31 @@ public class NewAccountActivity extends AppCompatActivity implements INewAccount
     }
 
     @Override
-    public void onFavoriteChosen(String id) {
-        if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
-            startActivity(new Intent(this, FavoriteViewActivity.class).putExtra(FavoriteViewActivity.ID_KEY, id).putExtra(IConstants.IBundle.IS_ME, isMe));
+    public void onFavoriteChosen(MemEntity mem) {
+        if (supLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            MemViewFragment fragment = MemViewFragment.newInstance(mem, userId, true);
+            showFragment(fragment);
+        }
         else
             supLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
+
+    private void showFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.feedContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
+    }
+
+    @Override
+    public void closeMemView() {
+        getSupportFragmentManager().popBackStack();
     }
 }

@@ -146,4 +146,5 @@
     <string name="on_removed_from_favourites">Mem has been removed from favourites</string>
     <string name="answers">Answers</string>
     <string name="answering_to">Answering to %1$s</string>
+    <string name="save">save</string>
 </resources>

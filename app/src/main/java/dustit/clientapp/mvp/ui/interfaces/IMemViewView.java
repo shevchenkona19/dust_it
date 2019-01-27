@@ -35,4 +35,12 @@ public interface IMemViewView extends IActivityView {
     void onAnswerSentSuccessfully();
 
     void onCommentsToCommentIdLoaded(List<CommentEntity> list);
+
+    boolean checkPermission();
+
+    void onDownloadFailed();
+
+    void onDownloaded(String res);
+
+    void getPermissions();
 }

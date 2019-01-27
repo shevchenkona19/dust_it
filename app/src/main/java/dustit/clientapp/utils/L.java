@@ -15,7 +15,7 @@ public class L {
     }
 
     public static void print(int a) {
-        if (debug) Log.d("MY", "" + a);
+        if (debug) print("" + a);
     }
 
 }

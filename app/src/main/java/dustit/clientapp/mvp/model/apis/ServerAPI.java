@@ -103,7 +103,7 @@ public interface ServerAPI {
     Observable<ResponseEntity> addToFavorites(@Header("Authorization") String token,
                                               @Query("id") String id);
 
-    @GET("/v1/favorites/allFavorites")
+    @GET("/v2/favorites/allFavorites")
     Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") String userId);
 
     @POST("/feedback/comment")

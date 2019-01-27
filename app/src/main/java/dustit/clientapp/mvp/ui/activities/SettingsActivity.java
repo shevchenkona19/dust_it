@@ -177,8 +177,8 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                             .setNegativeButton(R.string.no, null).create();
                     swNotifications.setChecked(false);
                     dialog.setOnShowListener(dialog12 -> {
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
                     });
                     dialog.show();
                     return;
@@ -208,6 +208,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private void restartCurrentAndBackstack() {
+        NewAccountActivity.isReload = true;
         final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, NewFeedActivity.class))
                 .addNextIntent(new Intent(this, NewAccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))

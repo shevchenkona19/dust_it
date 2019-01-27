@@ -60,6 +60,8 @@ public interface IConstants {
         String NEW_COMMENT_ID = "NEW_COMMENT_ID";
         String BASE_COMMENT = "BASE_COMMENT";
         String SHOW_COMMENT = "SHOW_COMMENT";
+        String MY_ID = "MY_ID";
+        String RELOAD = "RELOAD";
     }
 
     interface INotifications {

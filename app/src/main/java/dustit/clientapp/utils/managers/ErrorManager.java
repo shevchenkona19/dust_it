@@ -30,7 +30,7 @@ public class ErrorManager {
                 .setMessage(error)
                 .setPositiveButton(context.get().getString(R.string.ok), null)
                 .create();
-        dialog.setOnShowListener(dialog1 -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000")));
+        dialog.setOnShowListener(dialog1 -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.get().getResources().getColor(R.color.colorAccent)));
         return dialog;
     }
 }

@@ -32,6 +32,7 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private CommentEntity baseComment;
 
     private boolean isLoading = true;
+    private String myId;
 
     private interface ViewTypes {
         int BASE_COMMENT = 1;
@@ -47,13 +48,14 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private IAnswersInteraction interaction;
 
-    public AnswersCommentAdapter(Context context, IAnswersInteraction interaction, CommentEntity baseComment) {
+    public AnswersCommentAdapter(Context context, IAnswersInteraction interaction, CommentEntity baseComment, String myId) {
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.interaction = interaction;
         list = new ArrayList<>();
         list.add(null);
         list.add(null);
+        this.myId = myId;
         this.baseComment = baseComment;
     }
 
@@ -79,7 +81,7 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             baseComment.sdvUser.setOnClickListener((v) -> {
                 String userId = this.baseComment.getUserId();
                 Intent intent = new Intent(context, NewAccountActivity.class);
-                intent.putExtra(IConstants.IBundle.IS_ME, true);
+                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
                 intent.putExtra(IConstants.IBundle.ID, userId);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, baseComment.sdvUser, context.getString(R.string.account_photo_transition));
                 context.startActivity(intent, options.toBundle());
@@ -105,9 +107,9 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             answer.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
             answer.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
             answer.sdvUser.setOnClickListener((v) -> {
-                String userId = this.baseComment.getUserId();
+                String userId = comment.getUserId();
                 Intent intent = new Intent(context, NewAccountActivity.class);
-                intent.putExtra(IConstants.IBundle.IS_ME, true);
+                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
                 intent.putExtra(IConstants.IBundle.ID, userId);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, answer.sdvUser, context.getString(R.string.account_photo_transition));
                 context.startActivity(intent, options.toBundle());
@@ -266,17 +268,17 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case "likes":
                 switch (lvl) {
                     case 1:
-                        return R.drawable.ic_achievement_comment_1_small;
+                        return R.drawable.ic_achievement_like_1_small;
                     case 2:
-                        return R.drawable.ic_achievement_comment_2_small;
+                        return R.drawable.ic_achievement_like_2_small;
                     case 3:
-                        return R.drawable.ic_achievement_comment_3_small;
+                        return R.drawable.ic_achievement_like_3_small;
                     case 4:
-                        return R.drawable.ic_achievement_comment_4_small;
+                        return R.drawable.ic_achievement_like_4_small;
                     case 5:
-                        return R.drawable.ic_achievement_comment_5_small;
+                        return R.drawable.ic_achievement_like_5_small;
                     case 6:
-                        return R.drawable.ic_achievement_comment_6_small;
+                        return R.drawable.ic_achievement_like_6_small;
                 }
             case "dislikes":
                 switch (lvl) {

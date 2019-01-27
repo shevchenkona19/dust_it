@@ -96,12 +96,6 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             achievementViewHolder.tvMax.setVisibility(View.GONE);
             achievementViewHolder.tvSlash.setText(String.valueOf(achievement.getCount()));
         }
-        if (!isMe) {
-            achievementViewHolder.pbAchievementProgress.setVisibility(View.GONE);
-            achievementViewHolder.tvAchievementCount.setVisibility(View.GONE);
-            achievementViewHolder.tvMax.setVisibility(View.GONE);
-            achievementViewHolder.tvSlash.setVisibility(View.GONE);
-        }
     }
 
     @Override

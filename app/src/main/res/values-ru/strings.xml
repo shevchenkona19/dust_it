@@ -146,5 +146,6 @@
     <string name="answers">Ответы</string>
     <string name="answering_to">Отвечаете %1$s</string>
     <string name="register_account">Зарегистрироваться / Войти в аккаунт</string>
+    <string name="save">save</string>
 
 </resources>

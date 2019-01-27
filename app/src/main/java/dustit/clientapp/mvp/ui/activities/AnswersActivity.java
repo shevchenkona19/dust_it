@@ -61,6 +61,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
 
     private boolean startComment = false;
     private String newCommentId = "";
+    private String myId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            myId = bundle.getString(IConstants.IBundle.MY_ID);
             baseComment = bundle.getParcelable(IConstants.IBundle.BASE_COMMENT);
             imageId = bundle.getString(IConstants.IBundle.MEM_ID);
             startComment = bundle.getBoolean(IConstants.IBundle.SHOW_COMMENT);
@@ -78,7 +80,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
             return;
         }
         setAnsweringUsername(baseComment.getUsername());
-        adapter = new AnswersCommentAdapter(this, this, baseComment);
+        adapter = new AnswersCommentAdapter(this, this, baseComment, myId);
         presenter = new AnswersActivityPresenter(baseComment.getId());
         rvAnswers.setAdapter(adapter);
         rvAnswers.setLayoutManager(new WrapperLinearLayoutManager(this));

@@ -1,7 +1,18 @@
 package dustit.clientapp.mvp.presenters.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
@@ -17,6 +28,7 @@ import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IMemViewPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
@@ -267,6 +279,63 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                     }
                 }));
     }
+
+    @Override
+    public void downloadImage(String imageId) {
+        boolean permCheck = getView().checkPermission();
+        if (permCheck) {
+            Picasso.get()
+                    .load(Uri.parse(IConstants.BASE_URL + "/feed/imgs?id=" + imageId))
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            String res = saveImage(bitmap);
+                            if (res.equals("")) {
+                                getView().onDownloadFailed();
+                            } else {
+                                getView().onDownloaded(res);
+
+                            }
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            getView().onDownloadFailed();
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    });
+        } else {
+            getView().getPermissions();
+        }
+    }
+
+    private String saveImage(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/memes");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 1000000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return file.getAbsolutePath();
+    }
+
 
     public boolean isRegistered() {
         return userSettingsDataManager.isRegistered();

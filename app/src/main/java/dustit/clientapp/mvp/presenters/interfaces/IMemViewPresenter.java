@@ -10,4 +10,5 @@ public interface IMemViewPresenter {
     void getCommentsToCommentId(String memId, String toCommentId);
     void updateFcmId();
     void postAnswer(String id, String answerId, String text, String commentId);
+    void downloadImage(String imageId);
 }

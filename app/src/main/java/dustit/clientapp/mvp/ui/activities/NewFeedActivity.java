@@ -46,7 +46,6 @@ import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.FeedPageTransformer;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.bus.FavouritesBus;
-import dustit.clientapp.utils.managers.NotifyManager;
 
 public class NewFeedActivity extends AppCompatActivity implements CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
     @BindView(R.id.vpFeedPager)
@@ -91,11 +90,6 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         presenter.bind(this);
         ButterKnife.bind(this);
         sdvUserIcon.setLegacyVisibilityHandlingEnabled(true);
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                clLayout.setVisibility(View.VISIBLE);
-            }
-        });
         adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), toolbar.getHeight());
         if (userSettingsDataManager.isRegistered()) presenter.getMyUsername();
         bnvFeed.setOnNavigationItemSelectedListener(item -> {
@@ -195,7 +189,6 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
             sdvUserIcon.setImageURI("android.resource://" + getPackageName() + "/drawable/noimage");
         }
         vpFeed.setPageTransformer(false, new FeedPageTransformer());
-        toolbar.setOnClickListener(v -> adapter.scrollToTop(vpFeed.getCurrentItem()));
         presenter.getCategories();
         showComments();
         if (!userSettingsDataManager.isFcmUpdated()) {
@@ -220,6 +213,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
                 window.setStatusBarColor(Color.WHITE);
             }
         }
+        toolbar.setOnClickListener(v -> adapter.scrollToTop(vpFeed.getCurrentItem()));
     }
 
     @Override
@@ -344,7 +338,6 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
 
     @Override
     public void closeMemView() {
-        clLayout.setVisibility(View.VISIBLE);
         getSupportFragmentManager().popBackStack();
     }
 

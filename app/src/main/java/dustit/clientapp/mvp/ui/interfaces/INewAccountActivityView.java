@@ -4,6 +4,7 @@ import java.util.List;
 
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.FavoriteEntity;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 
 public interface INewAccountActivityView extends IActivityView {
     void updateUploadingProgress(int percents);
@@ -12,7 +13,7 @@ public interface INewAccountActivityView extends IActivityView {
     void onUsernameArrived(String username);
     void onUsernameFailedToLoad();
 
-    void onFavoritesArrived(List<FavoriteEntity> list);
+    void onFavoritesArrived(List<MemEntity> list);
     void onFailedToLoadFavorites();
     void removedFromFavorites(String id);
     void onFailedToRemoveFromFavorites(String id);
