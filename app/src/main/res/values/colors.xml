@@ -15,4 +15,5 @@
     <color name="commentDateColor">#c7c9cb</color>
     <color name="baseCommentBackground">#202020</color>
     <color name="placeholder_color">#202020</color>
+    <color name="colorAchievementCircle">#202020</color>
 </resources>

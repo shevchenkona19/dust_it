@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,11 +25,13 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.HotFragmentPresenter;
+import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.IConstants;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -36,12 +40,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
-    private Unbinder unbinder;
     private final HotFragmentPresenter presenter = new HotFragmentPresenter();
-    private boolean isFirstTimeVisible = true;
-    private RecyclerView.OnScrollListener scrollListener;
-    private LinearLayoutManager linearLayoutManager;
-
     @BindView(R.id.rvHot)
     RecyclerView rvHot;
     @BindView(R.id.srlHotRefresh)
@@ -50,16 +49,21 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     ViewGroup empty;
     @BindView(R.id.btnEmptyHot)
     Button emptyHotRetry;
-
+    private Unbinder unbinder;
+    private boolean isFirstTimeVisible = true;
+    private RecyclerView.OnScrollListener scrollListener;
+    private LinearLayoutManager linearLayoutManager;
+    private String myId;
     private int appBarHeight;
 
 
     public HotFragment() {
     }
 
-    public static HotFragment newInstance(int appBarHeight) {
+    public static HotFragment newInstance(int appBarHeight, String myId) {
         Bundle args = new Bundle();
         args.putInt(HEIGHT_APPBAR, appBarHeight);
+        args.putString(IConstants.IBundle.MY_ID, myId);
         final HotFragment fragment = new HotFragment();
         fragment.setArguments(args);
         return fragment;
@@ -68,8 +72,10 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
-        if (args != null)
+        if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
+            myId = args.getString(IConstants.IBundle.MY_ID);
+        }
     }
 
     @Override
@@ -216,6 +222,14 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void gotoHot() {
         gotoFragment((byte) 1);
+    }
+
+    @Override
+    public void gotoAccount(MemEntity mem) {
+        Intent intent = new Intent(getContext(), AccountActivity.class);
+        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId().equals(myId));
+        intent.putExtra(IConstants.IBundle.USER_ID, mem.getUserId());
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
     }
 
     @Override

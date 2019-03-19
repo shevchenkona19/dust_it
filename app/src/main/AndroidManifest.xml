@@ -20,6 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:supportsRtl">
+        <activity android:name=".mvp.ui.activities.PhotoUploadActivity"></activity>
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
             android:screenOrientation="portrait"
@@ -67,9 +68,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeDayNight" />
         <activity
-            android:name=".mvp.ui.activities.NewAccountActivity"
+            android:name=".mvp.ui.activities.AccountActivity"
             android:launchMode="singleTask"
             android:theme="@style/MasterDayNight" />
+        <activity
+            android:name=".mvp.ui.fragments.ReferralFragment"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeDayNight" />
         <activity
             android:name=".mvp.ui.activities.SettingsActivity"
             android:launchMode="singleTask"
@@ -94,7 +100,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeDayNight" />
-
         <activity
             android:name=".mvp.ui.activities.AnswersActivity"
             android:launchMode="singleTask"
@@ -129,6 +134,9 @@
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

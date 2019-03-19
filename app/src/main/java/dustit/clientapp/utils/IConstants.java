@@ -1,11 +1,19 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-//    String BASE_URL = "http://192.168.0.102";
-    String BASE_URL = "http://193.111.63.173";
+    String BASE_URL = "http://192.168.0.100";
+    //    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
+    String IMAGE_URL = BASE_URL + "/feed/imgs?id=";
+    String USER_IMAGE_URL = BASE_URL + "/feed/userPhoto?targetUsername=";
+
+    interface IRequest {
+        int UPLOAD_PHOTO = 986;
+        int RESULT_OK = 101;
+        int RESULT_ERROR = 102;
+    }
 
     interface ErrorCodes {
         String INTERNAL_ERROR = "INTERNAL_ERROR";
@@ -19,6 +27,7 @@ public interface IConstants {
         String NO_SUCH_IMAGE = "NO_SUCH_IMAGE";
         String MEMES_ENDED = "MEMES_ENDED";
         String INCORRECT_DATA = "INCORRECT_DATA";
+        String REFERRAL_NOT_PRESENT = "REFERRAL_NOT_PRESENT";
     }
 
     interface IPreferences {
@@ -49,6 +58,11 @@ public interface IConstants {
         NEUTRAL
     }
 
+    enum ViewMode {
+        LIST,
+        GRID
+    }
+
     interface IBundle {
         String IS_ME = "IS_ME";
         String ID = "ID";
@@ -62,11 +76,21 @@ public interface IConstants {
         String SHOW_COMMENT = "SHOW_COMMENT";
         String MY_ID = "MY_ID";
         String RELOAD = "RELOAD";
+        String USER_ID = "USER_ID";
+        String UPLOAD = "UPLOAD";
+        String VIEW_MODE = "VIEW_MODE";
     }
 
     interface INotifications {
         String NEW_MEMES = "NEW_MEMES";
         String COMMENT_RESPOND = "COMMENT_RESPOND";
         String CHANNEL_ID = "CHANNEL_ID";
+    }
+
+    interface IViewTypes {
+
+        int LOADING = 0;
+        int FAILED_TO_LOAD = 1;
+        int ITEM = 2;
     }
 }

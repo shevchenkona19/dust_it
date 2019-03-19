@@ -18,11 +18,16 @@ import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
+import dustit.clientapp.mvp.model.entities.ReferralInfoEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
+import dustit.clientapp.mvp.model.entities.ReportEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.SimpleResponseEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UploadBody;
+import dustit.clientapp.mvp.model.entities.UploadsUpperEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import rx.Observable;
@@ -125,7 +130,7 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> addToFavorites(String token, String id) {
+    public Observable<RefreshedMem> addToFavorites(String token, String id) {
         return serverAPI.addToFavorites(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -159,12 +164,8 @@ public class ServerRepository {
         return serverAPI.getUsername(userId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<ResponseEntity> removeFromFavorites(String token, String id) {
+    public Observable<RefreshedMem> removeFromFavorites(String token, String id) {
         return serverAPI.removeFromFavorites(token, id).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Observable<RefreshedMem> refreshMem(String token, String id) {
-        return serverAPI.refreshMem(token, id).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<IsFavourite> isFavourite(String token, String id) {
@@ -207,5 +208,24 @@ public class ServerRepository {
 
     public Observable<CommentUpperEntity> getAnswersForCommentToId(String parentCommentId, String childCommentId, String imageId) {
         return serverAPI.getAnswersForCommentToId(parentCommentId, childCommentId, imageId).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ReferralInfoEntity> getMyReferralInfo(String token) {
+        return serverAPI.getMyReferralInfo(token).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<UploadsUpperEntity> getUserUploads(String token, int userId, int offset, int limit) {
+        return serverAPI.getUserUploads(token, userId, offset, limit)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<NewResponseEntity> uploadMeme(String token, UploadBody body) {
+        return serverAPI.uploadMeme(token, body)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<SimpleResponseEntity> reportMeme(String token, ReportEntity reportEntity) {
+        return serverAPI.reportMeme(token, reportEntity)
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

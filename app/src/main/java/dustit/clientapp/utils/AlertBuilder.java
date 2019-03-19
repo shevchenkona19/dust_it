@@ -10,7 +10,6 @@ import java.lang.ref.WeakReference;
 
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.ui.activities.ChooserActivity;
-import dustit.clientapp.mvp.ui.activities.RegisterActivity;
 
 public class AlertBuilder {
 
@@ -73,9 +72,36 @@ public class AlertBuilder {
                 .setMessage(context.getString(R.string.review_message));
     }
 
-    public static AlertDialog.Builder showXiaomiNotifications(Context context) {
+    public static AlertDialog.Builder getReferralDialog(WeakReference<Context> contextReference) {
+        Context context = contextReference.get();
         return new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.enable_autostart))
-                .setMessage(context.getString(R.string.autostart));
+                .setTitle(context.getString(R.string.do_you_have_ref_code_title));
+    }
+
+    public static AlertDialog.Builder getReferralCodeDialog(WeakReference<Context> contextReference) {
+        Context context = contextReference.get();
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.input_ref_code));
+    }
+
+    public static AlertDialog getUploadPermissionsRequired(Context context) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.permission_upload_title))
+                .setMessage(context.getString(R.string.permission_upload_message))
+                .setPositiveButton(context.getText(R.string.ok), null)
+                .setCancelable(true)
+                .create();
+        alertDialog.setOnShowListener(dialog -> alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorAccent)));
+        return alertDialog;
+    }
+
+    public static AlertDialog getEmptyCategoriesError(Context context) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.empty_categories_selected_upload))
+                .setMessage(context.getString(R.string.empty_categories_selected_upload_message))
+                .setPositiveButton(context.getText(R.string.ok), null)
+                .setCancelable(true)
+                .create();
+        return alertDialog;
     }
 }

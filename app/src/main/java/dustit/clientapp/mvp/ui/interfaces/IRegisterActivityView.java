@@ -8,4 +8,9 @@ package dustit.clientapp.mvp.ui.interfaces;
 public interface IRegisterActivityView extends IActivityView{
     void onRegisteredSuccessfully();
     void onError(String message);
+
+    void showReferralPrompt();
+
+    void showReferralCodeInputDialog();
+
 }

@@ -1,4 +1,3 @@
-
 package dustit.clientapp.mvp.model.entities;
 
 import android.os.Parcel;
@@ -11,7 +10,17 @@ import com.google.gson.annotations.SerializedName;
 import dustit.clientapp.utils.IConstants;
 
 public class MemEntity implements Parcelable {
+    public static final Creator<MemEntity> CREATOR = new Creator<MemEntity>() {
+        @Override
+        public MemEntity createFromParcel(Parcel in) {
+            return new MemEntity(in);
+        }
 
+        @Override
+        public MemEntity[] newArray(int size) {
+            return new MemEntity[size];
+        }
+    };
     @SerializedName("imageId")
     @Expose
     private String id;
@@ -39,23 +48,20 @@ public class MemEntity implements Parcelable {
     @SerializedName("comments_count")
     @Expose
     private int commentsCount;
+    @SerializedName("userId")
+    @Expose
+    private String userId;
+    @SerializedName("uploadDate")
+    @Expose
+    private String uploadDate;
+    @SerializedName("username")
+    @Expose
+    private String username;
 
     /**
      * No args constructor for use in serialization
      */
     public MemEntity() {
-    }
-
-    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite, String source, int width, int height, int commentsCount) {
-        this.id = id;
-        this.likes = likes;
-        this.dislikes = dislikes;
-        this.opinion = opinion;
-        this.favorite = favorite;
-        this.source = source;
-        this.width = width;
-        this.height = height;
-        this.commentsCount = commentsCount;
     }
 
     protected MemEntity(Parcel in) {
@@ -68,19 +74,41 @@ public class MemEntity implements Parcelable {
         width = in.readInt();
         height = in.readInt();
         commentsCount = in.readInt();
+        userId = in.readString();
+        uploadDate = in.readString();
+        username = in.readString();
     }
 
-    public static final Creator<MemEntity> CREATOR = new Creator<MemEntity>() {
-        @Override
-        public MemEntity createFromParcel(Parcel in) {
-            return new MemEntity(in);
-        }
+    public MemEntity(String id, String likes, String dislikes, String opinion, boolean favorite, String source, int width, int height, int commentsCount, String userId, String uploadDate, String username) {
+        this.id = id;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.opinion = opinion;
+        this.favorite = favorite;
+        this.source = source;
+        this.width = width;
+        this.height = height;
+        this.commentsCount = commentsCount;
+        this.userId = userId;
+        this.uploadDate = uploadDate;
+        this.username = username;
+    }
 
-        @Override
-        public MemEntity[] newArray(int size) {
-            return new MemEntity[size];
-        }
-    };
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(likes);
+        dest.writeString(dislikes);
+        dest.writeString(opinion);
+        dest.writeByte((byte) (favorite ? 1 : 0));
+        dest.writeString(source);
+        dest.writeInt(width);
+        dest.writeInt(height);
+        dest.writeInt(commentsCount);
+        dest.writeString(userId);
+        dest.writeString(uploadDate);
+        dest.writeString(username);
+    }
 
     public int getCommentsCount() {
         return commentsCount;
@@ -110,6 +138,10 @@ public class MemEntity implements Parcelable {
         return dislikes;
     }
 
+    public void setDislikes(int num) {
+        dislikes = String.valueOf(Integer.parseInt(dislikes) + num);
+    }
+
     public void setDislikes(String dislikes) {
         this.dislikes = dislikes;
     }
@@ -124,6 +156,10 @@ public class MemEntity implements Parcelable {
 
     public String getLikes() {
         return likes;
+    }
+
+    public void setLikes(int num) {
+        likes = String.valueOf(Integer.parseInt(likes) + num);
     }
 
     public void setLikes(String likes) {
@@ -154,6 +190,10 @@ public class MemEntity implements Parcelable {
         }
     }
 
+    public void setOpinion(String opinion) {
+        this.opinion = opinion;
+    }
+
     public void setOpinion(IConstants.OPINION opinion) {
         switch (opinion) {
             case LIKED:
@@ -166,18 +206,6 @@ public class MemEntity implements Parcelable {
                 this.opinion = "null";
                 break;
         }
-    }
-
-    public void setLikes(int num) {
-        likes = String.valueOf(Integer.parseInt(likes) + num);
-    }
-
-    public void setDislikes(int num) {
-        dislikes = String.valueOf(Integer.parseInt(dislikes) + num);
-    }
-
-    public void setOpinion(String opinion) {
-        this.opinion = opinion;
     }
 
     public String getSource() {
@@ -193,16 +221,27 @@ public class MemEntity implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(likes);
-        dest.writeString(dislikes);
-        dest.writeString(opinion);
-        dest.writeByte((byte) (favorite ? 1 : 0));
-        dest.writeString(source);
-        dest.writeInt(width);
-        dest.writeInt(height);
-        dest.writeInt(commentsCount);
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

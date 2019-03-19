@@ -15,6 +15,9 @@ public class RegisterUserEntity {
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("referral")
+    @Expose
+    private String referral;
 
     /**
      * No args constructor for use in serialization
@@ -24,15 +27,17 @@ public class RegisterUserEntity {
     }
 
     /**
-     * 
-     * @param username
+     *  @param username
      * @param password
+     * @param email
+     * @param referralCode
      */
-    public RegisterUserEntity(String username, String password, String email) {
+    public RegisterUserEntity(String username, String password, String email, String referralCode) {
         super();
         this.username = username;
         this.password = password;
         this.email = email;
+        this.referral = referralCode;
     }
 
     public String getUsername() {

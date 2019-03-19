@@ -164,28 +164,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             startActivity(browserIntent);
         });
         swNotifications.setChecked(userSettingsDataManager.isNotificationsEnabled());
-        swNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if ("Xiaomi".equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                if (!userSettingsDataManager.enabledAutoStart()) {
-                    AlertDialog dialog = AlertBuilder.showXiaomiNotifications(this)
-                            .setPositiveButton(getText(R.string.yes), (dialog1, which) -> {
-                                Intent intent = new Intent();
-                                intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
-                                startActivity(intent);
-                                userSettingsDataManager.setEnabledAutostart(true);
-                            })
-                            .setNegativeButton(R.string.no, null).create();
-                    swNotifications.setChecked(false);
-                    dialog.setOnShowListener(dialog12 -> {
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
-                    });
-                    dialog.show();
-                    return;
-                }
-            }
-            userSettingsDataManager.setNotificationsEnabled(isChecked);
-        });
+        swNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> userSettingsDataManager.setNotificationsEnabled(isChecked));
     }
 
     @Override
@@ -208,10 +187,10 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private void restartCurrentAndBackstack() {
-        NewAccountActivity.isReload = true;
+        AccountActivity.isReload = true;
         final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
                 .addNextIntent(new Intent(this, NewFeedActivity.class))
-                .addNextIntent(new Intent(this, NewAccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))
+                .addNextIntent(new Intent(this, AccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))
                 .addNextIntent(new Intent(this, SettingsActivity.class));
         stackBuilder.startActivities();
         finish();

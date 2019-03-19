@@ -1,14 +1,13 @@
 package dustit.clientapp.mvp.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +16,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Category;
-import dustit.clientapp.mvp.model.entities.PersonalCategory;
-import dustit.clientapp.utils.L;
 
 /**
  * Created by shevc on 04.10.2017.
  * Let's GO!
  */
 
-public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecyclerViewAdapter.ResultViewHolder> {
+public class CategoriesRecyclerViewAdapter extends RecyclerView.Adapter<CategoriesRecyclerViewAdapter.ResultViewHolder> {
     private List<Category> categoryList;
     private LayoutInflater inflater;
+    private boolean useDarkColor = false;
 
 
-    public ResultRecyclerViewAdapter(Context context) {
+    public CategoriesRecyclerViewAdapter(Context context) {
         categoryList = new ArrayList<>();
         inflater = LayoutInflater.from(context);
+    }
+
+    public CategoriesRecyclerViewAdapter(LayoutInflater inflater) {
+        categoryList = new ArrayList<>();
+        this.inflater = inflater;
     }
 
     @NonNull
@@ -46,6 +49,9 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
     public void onBindViewHolder(final ResultViewHolder holder, int position) {
         holder.cbTheme.setText(categoryList.get(position).getName());
         holder.cbTheme.setChecked(categoryList.get(position).isChecked());
+        if (useDarkColor) {
+            holder.cbTheme.setTextColor(Color.parseColor("#000000"));
+        }
         holder.cbTheme.setOnCheckedChangeListener((buttonView, isChecked) -> categoryList.get(holder.getAdapterPosition()).setChecked(isChecked));
     }
 
@@ -81,6 +87,10 @@ public class ResultRecyclerViewAdapter extends RecyclerView.Adapter<ResultRecycl
             }
         }
         return builder.toString();
+    }
+
+    public void useDarkColor() {
+        useDarkColor = true;
     }
 
     static class ResultViewHolder extends RecyclerView.ViewHolder {

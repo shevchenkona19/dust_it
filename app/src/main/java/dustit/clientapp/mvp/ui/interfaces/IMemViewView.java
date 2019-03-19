@@ -4,6 +4,8 @@ import java.util.List;
 
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -22,13 +24,7 @@ public interface IMemViewView extends IActivityView {
 
     void onCommentSendFail();
 
-    void onAddedToFavourites();
-
-    void onRemovedFromFavourites();
-
     void onError();
-
-    void onIsFavourite(boolean isFavourite);
 
     void onAchievementUpdate(NewAchievementEntity achievementEntity);
 
@@ -43,4 +39,11 @@ public interface IMemViewView extends IActivityView {
     void onDownloaded(String res);
 
     void getPermissions();
+
+    void changedFeedback(RefreshedMem refreshedMem);
+
+    void onError(RestoreMemEntity restoreMemEntity);
+
+    void onIsFavourite(boolean favourite);
+
 }

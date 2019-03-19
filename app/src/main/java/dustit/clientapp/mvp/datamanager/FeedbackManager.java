@@ -11,10 +11,12 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
+import dustit.clientapp.mvp.model.entities.UploadEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
 import dustit.clientapp.mvp.ui.interfaces.IActivityView;
 import dustit.clientapp.mvp.ui.interfaces.IView;
+import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.containers.Container;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
@@ -23,6 +25,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final List<IFeedbackInteraction> interactionList = new ArrayList<>();
+    private IAchievementListener achievementListener;
 
     public void subscribe(IFeedbackInteraction feedbackInteraction) {
         interactionList.add(feedbackInteraction);
@@ -43,13 +46,11 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
         App.get().getAppComponent().inject(this);
     }
 
-
     public interface IFeedbackInteraction {
+
         void changedFeedback(RefreshedMem refreshedMem);
 
         void onError(RestoreMemEntity restoreMemEntity);
-
-        void onAchievementUpdate(NewAchievementEntity achievementEntity);
     }
 
     public void postLike(final MemEntity memEntity) {
@@ -92,13 +93,93 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
         );
     }
 
+    public void postLike(final UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.postLike(getToken(), String.valueOf(memEntity.getImageId()))
+                .subscribe(createConsumer(memEntity))
+        );
+    }
+
+    public void postDislike(final UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.postDislike(getToken(), String.valueOf(memEntity.getImageId()))
+                .subscribe(createConsumer(memEntity))
+        );
+    }
+
+    public void deleteLike(UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.deleteLike(getToken(), String.valueOf(memEntity.getImageId()))
+                .subscribe(createConsumer(memEntity))
+        );
+    }
+
+    public void deleteDislike(UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.deleteDislike(getToken(), String.valueOf(memEntity.getImageId()))
+                .subscribe(createConsumer(memEntity))
+        );
+    }
+
+    public void addToFavourite(MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.addToFavorites(getToken(), memEntity.getId()).subscribe(createConsumer(memEntity)));
+    }
+
+    public void removeFromFavourites(MemEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.removeFromFavorites(getToken(), memEntity.getId()).subscribe(createConsumer(memEntity)));
+    }
+
+    public void addToFavourite(UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.addToFavorites(getToken(), String.valueOf(memEntity.getImageId())).subscribe(createConsumer(memEntity)));
+    }
+
+    public void removeFromFavourites(UploadEntity memEntity) {
+        if (!userSettingsDataManager.isRegistered()) {
+            getView().onNotRegistered();
+            return;
+        }
+        subscriptions.add(serverRepository.removeFromFavorites(getToken(), String.valueOf(memEntity.getImageId())).subscribe(createConsumer(memEntity)));
+    }
+
     private Subscriber<RefreshedMem> createConsumer(final MemEntity memEntity) {
+        return createConsumer(memEntity.getLikes(), memEntity.getDislikes(), memEntity.getOpinion(), memEntity.getId(), memEntity.isFavorite());
+    }
+
+    private Subscriber<RefreshedMem> createConsumer(final UploadEntity upload) {
+        return createConsumer(String.valueOf(upload.getLikes()), String.valueOf(upload.getDislikes()), upload.getOpinion(), String.valueOf(upload.getImageId()), upload.isFavourite());
+    }
+
+    private Subscriber<RefreshedMem> createConsumer(String likes, String dislikes, IConstants.OPINION opinion, String id, boolean isFavourite) {
         final Container<RefreshedMem> container = new Container<>();
         return new Subscriber<RefreshedMem>() {
             @Override
             public void onCompleted() {
                 final RefreshedMem refreshedMem = container.get();
-                refreshedMem.setId(memEntity.getId());
+                refreshedMem.setId(id);
                 boolean isSent = false;
                 for (IFeedbackInteraction interaction :
                         interactionList) {
@@ -106,7 +187,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
                     if (!isSent) {
                         if (refreshedMem.isAchievementUpdate()) {
                             isSent = true;
-                            interaction.onAchievementUpdate(refreshedMem.getAchievementEntity());
+                            achievementListener.onAchievementUpdate(refreshedMem.getAchievementEntity());
                         }
                     }
                 }
@@ -115,7 +196,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                final RestoreMemEntity restoreMemEntity = new RestoreMemEntity(memEntity);
+                final RestoreMemEntity restoreMemEntity = new RestoreMemEntity(likes, dislikes, opinion, id, isFavourite);
                 for (IFeedbackInteraction interaction :
                         interactionList) {
                     interaction.onError(restoreMemEntity);
@@ -137,5 +218,13 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
         unbind();
         subscriptions.unsubscribe();
         subscriptions.clear();
+    }
+
+    public interface IAchievementListener {
+        void onAchievementUpdate(NewAchievementEntity achievementEntity);
+    }
+
+    public void bindForAchievements(IAchievementListener listener) {
+        achievementListener = listener;
     }
 }

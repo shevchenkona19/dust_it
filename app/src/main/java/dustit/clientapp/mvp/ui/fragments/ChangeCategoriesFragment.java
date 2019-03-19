@@ -19,11 +19,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.ChangeCategoriesRecyclerViewAdapter;
-import dustit.clientapp.mvp.ui.adapters.ResultRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IChangeCategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 

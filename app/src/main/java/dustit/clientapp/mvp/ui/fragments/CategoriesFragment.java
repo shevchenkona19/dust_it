@@ -1,6 +1,8 @@
 package dustit.clientapp.mvp.ui.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,12 +26,14 @@ import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
+import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.mvp.ui.activities.NewFeedActivity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.IConstants;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -52,6 +56,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     private int appBarHeight;
     private Category currentCategory;
     private boolean isCategoriesLoaded = false;
+    private String myId;
 
     public interface ICategoriesFragmentInteractionListener {
         void onAttachToActivity(NewFeedActivity.ICategoriesSpinnerInteractionListener listener);
@@ -65,9 +70,10 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         // Required empty public constructor
     }
 
-    public static CategoriesFragment newInstance(int appBarHeight, boolean isCategoriesLoaded) {
+    public static CategoriesFragment newInstance(int appBarHeight, boolean isCategoriesLoaded, String myId) {
         Bundle args = new Bundle();
         args.putInt(HEIGHT_APPBAR, appBarHeight);
+        args.putString(IConstants.IBundle.MY_ID, myId);
         args.putBoolean(IS_CATEGORIES_LOADED, isCategoriesLoaded);
         final CategoriesFragment fragment = new CategoriesFragment();
         fragment.setArguments(args);
@@ -79,6 +85,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.setArguments(args);
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
+            myId = args.getString(IConstants.IBundle.MY_ID);
             isCategoriesLoaded = args.getBoolean(IS_CATEGORIES_LOADED);
         }
     }
@@ -256,5 +263,13 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void gotoHot() {
         gotoFragment((byte) 1);
+    }
+
+    @Override
+    public void gotoAccount(MemEntity mem) {
+        Intent intent = new Intent(getContext(), AccountActivity.class);
+        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId().equals(myId));
+        intent.putExtra(IConstants.IBundle.USER_ID, mem.getUserId());
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
     }
 }

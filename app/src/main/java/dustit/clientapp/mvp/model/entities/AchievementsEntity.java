@@ -24,6 +24,10 @@ public class AchievementsEntity {
     @Expose
     private Achievement views;
 
+    @SerializedName("referral")
+    @Expose
+    private Achievement referral;
+
     @SerializedName("firstHundred")
     @Expose
     private boolean firstHundred;
@@ -32,14 +36,18 @@ public class AchievementsEntity {
     @Expose
     private boolean firstThousand;
 
-    public AchievementsEntity(Achievement likes, Achievement dislikes, Achievement comments, Achievement favourites, Achievement views, boolean firstHundred, boolean firstThousand) {
+    public AchievementsEntity(Achievement likes, Achievement dislikes, Achievement comments, Achievement favourites, Achievement views, Achievement referral, boolean firstHundred, boolean firstThousand) {
         this.likes = likes;
         this.dislikes = dislikes;
         this.comments = comments;
         this.favourites = favourites;
         this.views = views;
+        this.referral = referral;
         this.firstHundred = firstHundred;
         this.firstThousand = firstThousand;
+    }
+
+    public AchievementsEntity() {
     }
 
     public Achievement getLikes() {
@@ -80,6 +88,14 @@ public class AchievementsEntity {
 
     public void setViews(Achievement views) {
         this.views = views;
+    }
+
+    public Achievement getReferral() {
+        return referral;
+    }
+
+    public void setReferral(Achievement referral) {
+        this.referral = referral;
     }
 
     public boolean isFirstHundred() {

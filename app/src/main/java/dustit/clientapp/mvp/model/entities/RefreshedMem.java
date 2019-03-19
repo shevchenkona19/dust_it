@@ -1,5 +1,7 @@
 package dustit.clientapp.mvp.model.entities;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,6 +22,10 @@ public class RefreshedMem {
     @Expose
     private String opinion;
 
+    @SerializedName("isFavourite")
+    @Expose
+    private boolean isFavourite;
+
     @SerializedName("achievementUpdate")
     @Expose
     private boolean achievementUpdate;
@@ -30,17 +36,25 @@ public class RefreshedMem {
 
     private String id;
 
-    public RefreshedMem(String likes, String dislikes, String opinion, boolean achievementUpdate, NewAchievementEntity achievementEntity, String id) {
+    public RefreshedMem(String likes, String dislikes, String opinion, boolean achievementUpdate, NewAchievementEntity achievementEntity, String id, boolean isFavourite) {
         this.likes = likes;
         this.dislikes = dislikes;
         this.opinion = opinion;
         this.achievementUpdate = achievementUpdate;
         this.achievementEntity = achievementEntity;
         this.id = id;
+        this.isFavourite = isFavourite;
+    }
+
+    public RefreshedMem() {
     }
 
     public String getLikes() {
         return likes;
+    }
+
+    public int getParsedLikes() {
+        return Integer.parseInt(likes);
     }
 
     public void setLikes(String likes) {
@@ -49,6 +63,10 @@ public class RefreshedMem {
 
     public String getDislikes() {
         return dislikes;
+    }
+
+    public int getParsedDislikes() {
+        return Integer.parseInt(dislikes);
     }
 
     public void setDislikes(String dislikes) {
@@ -77,6 +95,14 @@ public class RefreshedMem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 
     @Nullable
@@ -109,8 +135,18 @@ public class RefreshedMem {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "Likes: " + likes +"; Dislikes: " + dislikes + "; Opinion: " + opinion;
+        return "Likes: " + likes + "; Dislikes: " + dislikes + "; Opinion: " + opinion;
+    }
+
+    public MemEntity populateMemEntity(MemEntity memEntity) {
+        if (memEntity == null) return null;
+        memEntity.setLikes(likes);
+        memEntity.setDislikes(dislikes);
+        memEntity.setOpinion(opinion);
+        memEntity.setFavorite(isFavourite);
+        return memEntity;
     }
 }

@@ -99,6 +99,17 @@ public class AchievementHelper {
                     case 6:
                         return R.drawable.ic_achievement_fav_6_big;
                 }
+            case "referral":
+                switch (level) {
+                    case 0:
+                        return R.drawable.ic_achievement_fav_0_big;
+                    case 1:
+                        return R.drawable.ic_achievement_fav_1_big;
+                    case 2:
+                        return R.drawable.ic_achievement_fav_2_big;
+                    case 3:
+                        return R.drawable.ic_achievement_fav_3_big;
+                }
             default:
                 return 0;
         }
@@ -116,6 +127,8 @@ public class AchievementHelper {
                 return resources.getString(R.string.views_achievement);
             case "favourites":
                 return resources.getString(R.string.favourites_achievement);
+            case "referral":
+                return resources.getString(R.string.referral_achievement_count);
             default:
                 return "";
         }
@@ -170,6 +183,12 @@ public class AchievementHelper {
                 list.add(R.drawable.ic_achievement_fav_5_big);
                 list.add(R.drawable.ic_achievement_fav_6_big);
                 break;
+            }
+            case "referral": {
+                list.add(R.drawable.ic_achievement_comment_0_big);
+                list.add(R.drawable.ic_achievement_comment_1_big);
+                list.add(R.drawable.ic_achievement_comment_2_big);
+                list.add(R.drawable.ic_achievement_comment_6_big);
             }
         }
         return list;

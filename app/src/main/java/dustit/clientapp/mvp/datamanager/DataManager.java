@@ -2,32 +2,36 @@ package dustit.clientapp.mvp.datamanager;
 
 import android.content.Context;
 
-import org.w3c.dom.Comment;
-
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.IsFavourite;
-import dustit.clientapp.mvp.model.entities.NewResponseEntity;
-import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
 import dustit.clientapp.mvp.model.entities.PersonalCategory;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
+import dustit.clientapp.mvp.model.entities.ReferralInfoEntity;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
+import dustit.clientapp.mvp.model.entities.ReportEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.SimpleResponseEntity;
 import dustit.clientapp.mvp.model.entities.TestMemEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UploadBody;
+import dustit.clientapp.mvp.model.entities.UploadEntity;
+import dustit.clientapp.mvp.model.entities.UploadsUpperEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
@@ -98,10 +102,6 @@ public class DataManager {
                 .flatMap((Func1<TestUpperEntity, Observable<TestMemEntity>>) testUpperEntity -> Observable.from(testUpperEntity.getList()));
     }
 
-    public Observable<ResponseEntity> addToFavorites(String id) {
-        return serverRepository.addToFavorites(getToken(), id);
-    }
-
     public Observable<FavoritesUpperEntity> getAllFavorites(String id) {
         return serverRepository.getFavorites(id);
     }
@@ -132,10 +132,6 @@ public class DataManager {
 
     public Observable<ResponseEntity> postPhoto(PhotoBody photoBody) {
         return serverRepository.postPhoto(getToken(), photoBody);
-    }
-
-    public Observable<ResponseEntity> removeFromFavorites(String id) {
-        return serverRepository.removeFromFavorites(getToken(), id);
     }
 
     public Observable<UsernameEntity> getUsername(String id) {
@@ -206,5 +202,22 @@ public class DataManager {
     public Observable<CommentEntity> getAnswersForCommentToId(String childCommentId, String parentCommentId, String imageId) {
         return serverRepository.getAnswersForCommentToId(parentCommentId, childCommentId, imageId)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
+    }
+
+    public Observable<ReferralInfoEntity> getMyReferralInfo() {
+        return serverRepository.getMyReferralInfo(getToken());
+    }
+
+    public Observable<UploadEntity> getUserUploads(int userId, int limit, int offset) {
+        return serverRepository.getUserUploads(getToken(), userId, limit, offset)
+                .flatMap((Func1<UploadsUpperEntity, Observable<UploadEntity>>) uploadsUpperEntity -> Observable.from(uploadsUpperEntity.getUploadEntities()));
+    }
+
+    public Observable<NewResponseEntity> uploadMeme(UploadBody body) {
+        return serverRepository.uploadMeme(getToken(), body);
+    }
+
+    public Observable<SimpleResponseEntity> reportMeme(ReportEntity reportEntity) {
+        return serverRepository.reportMeme(getToken(), reportEntity);
     }
 }

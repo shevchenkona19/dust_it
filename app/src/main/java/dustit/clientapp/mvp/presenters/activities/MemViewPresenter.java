@@ -19,15 +19,20 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
+import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
+import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IMemViewPresenter;
+import dustit.clientapp.mvp.presenters.interfaces.base.IFeedbackBasePresenter;
 import dustit.clientapp.mvp.ui.interfaces.IMemViewView;
+import dustit.clientapp.mvp.ui.interfaces.IView;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Container;
@@ -37,14 +42,17 @@ import rx.Subscriber;
  * Created by Никита on 11.11.2017.
  */
 
-public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMemViewPresenter {
+public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFeedbackBasePresenter, FeedbackManager.IFeedbackInteraction, IMemViewPresenter {
     @Inject
     DataManager dataManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
+    @Inject
+    FeedbackManager feedbackManager;
 
     public MemViewPresenter() {
         App.get().getAppComponent().inject(this);
+        feedbackManager.subscribe(this);
     }
 
     @Override
@@ -136,66 +144,33 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
     }
 
     @Override
-    public void addToFavourites(String id) {
-        if (!isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        AtomicReference<ResponseEntity> atomicReference = new AtomicReference<>();
-        addSubscription(dataManager.addToFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                ResponseEntity response = atomicReference.get();
-                if (response != null) {
-                    if (isNotSuccess(response.getResponse())) {
-                        getView().onError();
-                        return;
-                    }
-                    getView().onAddedToFavourites();
-                    if (response.isAchievementUpdate()) {
-                        getView().onAchievementUpdate(response.getAchievementEntity());
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                L.print(e.getMessage());
-                getView().onError();
-            }
-
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                atomicReference.set(responseEntity);
-            }
-        }));
+    public void addToFavourites(MemEntity memEntity) {
+        feedbackManager.addToFavourite(memEntity);
     }
 
     @Override
-    public void removeFromFavourites(String id) {
-        if (!isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        addSubscription(dataManager.removeFromFavorites(id).subscribe(new Subscriber<ResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().onRemovedFromFavourites();
-            }
+    public void removeFromFavourites(MemEntity memEntity) {
+        feedbackManager.removeFromFavourites(memEntity);
+    }
 
-            @Override
-            public void onError(Throwable e) {
-                L.print(e.getMessage());
-                getView().onError();
-            }
+    @Override
+    public void postLike(MemEntity memEntity) {
+        feedbackManager.postLike(memEntity);
+    }
 
-            @Override
-            public void onNext(ResponseEntity responseEntity) {
-                if (isNotSuccess(responseEntity.getResponse())) {
-                    getView().onError();
-                }
-            }
-        }));
+    @Override
+    public void postDislike(MemEntity memEntity) {
+        feedbackManager.postDislike(memEntity);
+    }
+
+    @Override
+    public void deleteLike(MemEntity memEntity) {
+        feedbackManager.deleteLike(memEntity);
+    }
+
+    @Override
+    public void deleteDislike(MemEntity memEntity) {
+        feedbackManager.deleteDislike(memEntity);
     }
 
     @Override
@@ -341,11 +316,6 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
         return userSettingsDataManager.isRegistered();
     }
 
-
-    private boolean isNotSuccess(int code) {
-        return code != 200;
-    }
-
     public void updateFcmId() {
         String fcmId = userSettingsDataManager.getFcm();
         final boolean[] isError = {false};
@@ -369,5 +339,27 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IMe
                 }
             }
         }));
+    }
+
+    @Override
+    public void changedFeedback(RefreshedMem refreshedMem) {
+        getView().changedFeedback(refreshedMem);
+    }
+
+    @Override
+    public void onError(RestoreMemEntity restoreMemEntity) {
+        getView().onError(restoreMemEntity);
+    }
+
+    @Override
+    public void unbind() {
+        feedbackManager.unsubscribe(this);
+        feedbackManager.unbind();
+        super.unbind();
+    }
+
+    @Override
+    public void bindToView(IView iView) {
+        feedbackManager.bind(iView);
     }
 }

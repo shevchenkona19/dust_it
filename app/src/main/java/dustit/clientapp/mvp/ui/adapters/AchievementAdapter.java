@@ -69,10 +69,10 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 HundredViewHolder hundredViewHolder = (HundredViewHolder) holder;
                 if (isHundred) {
                     hundredViewHolder.ivIcon.setImageResource(R.drawable.ic_achievement_first100_big);
-                    hundredViewHolder.tvSlash.setText(context.getText(R.string.first_hundred));
+//                    hundredViewHolder.tvSlash.setText(context.getText(R.string.first_hundred));
                 } else if (isThousand) {
                     hundredViewHolder.ivIcon.setImageResource(R.drawable.ic_achievement_first1000_big);
-                    hundredViewHolder.tvSlash.setText(context.getText(R.string.first_thousand));
+//                    hundredViewHolder.tvSlash.setText(context.getText(R.string.first_thousand));
                 }
                 hundredViewHolder.itemView.setOnClickListener(v -> new ViewFirstMenDialog(context, isHundred, isThousand).bind(isMe).show());
                 return;
@@ -84,18 +84,18 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         AchievementViewHolder achievementViewHolder = (AchievementViewHolder) holder;
         achievementViewHolder.itemView.setOnClickListener(v -> new ViewAchievement(context).bind(achievement, isMe).show());
         achievementViewHolder.ivIcon.setImageResource(AchievementHelper.resolveAchievementIcon(achievement.getName(), achievement.getLvl()));
-        if (!achievement.isFinalLevel()) {
-            achievementViewHolder.pbAchievementProgress.setMax(achievement.getNextPrice());
-            achievementViewHolder.pbAchievementProgress.setProgress(achievement.getCount());
-            achievementViewHolder.tvAchievementCount.setText(String.valueOf(achievement.getCount()));
-            achievementViewHolder.tvMax.setText(String.valueOf(achievement.getNextPrice()));
-        } else {
-            achievementViewHolder.pbAchievementProgress.setMax(1);
-            achievementViewHolder.pbAchievementProgress.setProgress(1);
-            achievementViewHolder.tvAchievementCount.setVisibility(View.GONE);
-            achievementViewHolder.tvMax.setVisibility(View.GONE);
-            achievementViewHolder.tvSlash.setText(String.valueOf(achievement.getCount()));
-        }
+//        if (!achievement.isFinalLevel()) {
+//            achievementViewHolder.pbAchievementProgress.setMax(achievement.getNextPrice());
+//            achievementViewHolder.pbAchievementProgress.setProgress(achievement.getCount());
+//            achievementViewHolder.tvAchievementCount.setText(String.valueOf(achievement.getCount()));
+//            achievementViewHolder.tvMax.setText(String.valueOf(achievement.getNextPrice()));
+//        } else {
+//            achievementViewHolder.pbAchievementProgress.setMax(1);
+//            achievementViewHolder.pbAchievementProgress.setProgress(1);
+//            achievementViewHolder.tvAchievementCount.setVisibility(View.GONE);
+//            achievementViewHolder.tvMax.setVisibility(View.GONE);
+//            achievementViewHolder.tvSlash.setText(String.valueOf(achievement.getCount()));
+//        }
     }
 
     @Override
@@ -125,14 +125,8 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     static class AchievementViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivAchievementIcon)
         ImageView ivIcon;
-        @BindView(R.id.pbAchievementProgress)
-        ProgressBar pbAchievementProgress;
-        @BindView(R.id.tvAchievementCount)
-        TextView tvAchievementCount;
-        @BindView(R.id.tvAchievementSlash)
-        TextView tvSlash;
-        @BindView(R.id.tvAchievementMaximum)
-        TextView tvMax;
+//        @BindView(R.id.pbAchievementProgress)
+//        ProgressBar pbAchievementProgress;
 
         public AchievementViewHolder(View itemView) {
             super(itemView);
@@ -143,8 +137,8 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     static class HundredViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivAchievementIcon)
         ImageView ivIcon;
-        @BindView(R.id.tvAchievementSlash)
-        TextView tvSlash;
+//        @BindView(R.id.tvAchievementSlash)
+//        TextView tvSlash;
 
         public HundredViewHolder(View itemView) {
             super(itemView);

@@ -107,66 +107,6 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
     }
 
     @Override
-    public void loadFavorites(String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        final FavoritesUpperEntity[] favoritesEntity = new FavoritesUpperEntity[1];
-        addSubscription(dataManager.getAllFavorites(id)
-                .subscribe(new Subscriber<FavoritesUpperEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        if (favoritesEntity[0].getLength() == 0) {
-                            getView().showEmpty();
-                        } else {
-                            final List<MemEntity> list = favoritesEntity[0].getList();
-                            getView().onFavoritesArrived(list);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        L.print(e.getMessage());
-                        getView().onFailedToLoadFavorites();
-                    }
-
-                    @Override
-                    public void onNext(FavoritesUpperEntity favoritesUpperEntity) {
-                        favoritesEntity[0] = favoritesUpperEntity;
-                    }
-                }));
-    }
-
-    @Override
-    public void removeFromFavorites(final String id) {
-        if (!userSettingsDataManager.isRegistered()) {
-            getView().onNotRegistered();
-            return;
-        }
-        addSubscription(dataManager.removeFromFavorites(id)
-                .subscribe(new Subscriber<ResponseEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().removedFromFavorites(id);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        L.print(e.getMessage());
-                        getView().onFailedToRemoveFromFavorites(id);
-                    }
-
-                    @Override
-                    public void onNext(ResponseEntity responseEntity) {
-                        if (responseEntity.getResponse() != 200) {
-                            getView().onFailedToRemoveFromFavorites(id);
-                        }
-                    }
-                }));
-    }
-
-    @Override
     public void getAchievements(String userId) {
         AtomicReference<AchievementsEntity> achievements = new AtomicReference<>();
         addSubscription(dataManager.getAchievements(userId)

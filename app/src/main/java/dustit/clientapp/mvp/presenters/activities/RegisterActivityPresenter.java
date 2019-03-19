@@ -12,8 +12,6 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.presenters.base.BasePresenter;
 import dustit.clientapp.mvp.presenters.interfaces.IRegisterActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IRegisterActivityView;
-import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 import rx.Subscriber;
 
 public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityView> implements IRegisterActivityPresenter {
@@ -28,9 +26,14 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
     }
 
     @Override
-    public void registerUser(String username, String password, String email) {
+    public void onRegisterPressed() {
+        getView().showReferralPrompt();
+    }
+
+    @Override
+    public void registerUser(String username, String password, String email, String referralCode) {
         AtomicReference<TokenEntity> token = new AtomicReference<>();
-        addSubscription(dataManager.registerUser(new RegisterUserEntity(username, password, email))
+        addSubscription(dataManager.registerUser(new RegisterUserEntity(username, password, email, referralCode))
                 .subscribe(new Subscriber<TokenEntity>() {
                     @Override
                     public void onCompleted() {
@@ -48,7 +51,6 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
 
                     @Override
                     public void onError(Throwable e) {
-                        L.print("----------------------------------------------------, " + e.getMessage());
                         getView().onError(e.getMessage());
                     }
 
@@ -57,5 +59,10 @@ public class RegisterActivityPresenter extends BasePresenter<IRegisterActivityVi
                         token.set(tokenEntity);
                     }
                 }));
+    }
+
+    @Override
+    public void showReferralDialog() {
+        getView().showReferralCodeInputDialog();
     }
 }

@@ -8,4 +8,5 @@
     <color name="commentDateColor">#c7c9cb</color>
     <color name="baseCommentBackground">#eeeeee</color>
     <color name="placeholder_color">#efefef</color>
+    <color name="colorAchievementCircle">#eee</color>
 </resources>

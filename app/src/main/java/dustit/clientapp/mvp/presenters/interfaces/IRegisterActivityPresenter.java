@@ -6,6 +6,9 @@ package dustit.clientapp.mvp.presenters.interfaces;
  */
 
 public interface IRegisterActivityPresenter {
+    void onRegisterPressed();
+    void registerUser(String username, String password, String email, String referralCode);
 
-    void registerUser(String username, String password, String email);
+    void showReferralDialog();
+
 }

@@ -1,11 +1,11 @@
 package dustit.clientapp.mvp.ui.fragments
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
@@ -18,30 +18,33 @@ import dustit.clientapp.customviews.WrapperLinearLayoutManager
 import dustit.clientapp.mvp.model.entities.MemEntity
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity
 import dustit.clientapp.mvp.presenters.fragments.FeedFragmentPresenter
+import dustit.clientapp.mvp.ui.activities.AccountActivity
 import dustit.clientapp.mvp.ui.activities.PersonalSettingsActivity
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
 import dustit.clientapp.utils.AlertBuilder
+import dustit.clientapp.utils.IConstants
 import kotlinx.android.synthetic.main.fragment_feed.view.*
-
 
 class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
     private var appBarHeight: Int = 0
-    internal var rvFeed: RecyclerView? = null
-    internal var srlRefresh: SwipeRefreshLayout? = null
+    private var rvFeed: RecyclerView? = null
+    private var srlRefresh: SwipeRefreshLayout? = null
     private var unbinder: Unbinder? = null
     private var presenter: FeedFragmentPresenter? = null
     private var scrollListener: RecyclerView.OnScrollListener? = null
     private var linearLayoutManager: WrapperLinearLayoutManager? = null
     private var rlEmptyCategories: ViewGroup? = null
     private var changingCategories = false
+    private var myId: String? = ""
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR)
+            myId = args.getString(IConstants.IBundle.MY_ID)
         }
     }
 
@@ -76,27 +79,6 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             srlRefresh!!.isRefreshing = true
             presenter!!.loadBase()
         }
-        scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == SCROLL_STATE_IDLE) {
-                    notifyFeedScrollIdle(true)
-                    if (rvFeed!!.getChildAt(0) != null)
-                        if (rvFeed!!.getChildAt(0).top == appBarHeight && linearLayoutManager!!.findFirstVisibleItemPosition() == 0) {
-                            if (!srlRefresh!!.isRefreshing)
-                                notifyFeedOnTop()
-                        }
-                } else {
-                    notifyFeedScrollIdle(false)
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                notifyFeedScrollChanged(dy)
-            }
-        }
-        rvFeed!!.addOnScrollListener(scrollListener)
         (rvFeed!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         subscribeToFeedbackChanges()
@@ -109,7 +91,7 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     }
 
     override fun isRegistered(): Boolean {
-        return isUserRegistered;
+        return isUserRegistered
     }
 
     override fun onDestroyView() {
@@ -181,11 +163,21 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         }
     }
 
+    override fun gotoAccount(mem: MemEntity?) {
+        if (mem != null) {
+            val intent = Intent(context, AccountActivity::class.java)
+            intent.putExtra(IConstants.IBundle.IS_ME, myId.equals(mem.userId))
+            intent.putExtra(IConstants.IBundle.USER_ID, mem.userId)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+        }
+    }
+
     companion object {
         const val HEIGHT_APPBAR = "HEIGHT"
-        fun newInstance(appBarHeight: Int): FeedFragment {
+        fun newInstance(appBarHeight: Int, myId: String): FeedFragment {
             val args = Bundle()
             args.putInt(HEIGHT_APPBAR, appBarHeight)
+            args.putString(IConstants.IBundle.MY_ID, myId)
             val fragment = FeedFragment()
             fragment.arguments = args
             return fragment

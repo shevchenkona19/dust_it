@@ -147,5 +147,27 @@
     <string name="answering_to">Отвечаете %1$s</string>
     <string name="register_account">Зарегистрироваться / Войти в аккаунт</string>
     <string name="save">save</string>
+    <string name="referral_menu">Реферальна програма</string>
+    <string name="referral_title">Реферальна програма</string>
+    <string name="your_ref_code">Ваш реферальний код:</string>
+    <string name="referral_description">Якщо ви хочете отримати ачівку або спеціальний набір стікерів MemSpace, що ми вам відправимо безкоштовно на вашу почтову адресу - то вам потрібно щоб 10 людей зареєструвалися в MemSpace використовуючи цей код. Детальніше ви можете прочитати унизу</string>
+    <string name="do_you_have_ref_code_title">Чи є у вас реферальний код?</string>
+    <string name="input_ref_code">Введіть свій реферальний код</string>
+    <string name="ref_code_hint">Реферальний код</string>
+    <string name="referral_not_present">Такого реферального коду не існує</string>
+    <string name="ref_code_error">Код повинен бути більше одного символа у довжину</string>
+    <string name="referral_achievement_count">рефералів</string>
+    <string name="share_referral">Поділитись кодом:</string>
+    <string name="referral_share_subject"><![CDATA[Скачай MemSpace та зареєструйся використовуючи мій код:]]></string>
+    <string name="empty_photos">Додайте свій перший мем до мережі MemSpace</string>
+    <string name="permission_upload_title">Помилка</string>
+    <string name="permission_upload_message">Для загрузки фото нам потрібен дозвіл на перегляд внутрішнього сховища вашого смартфону</string>
+    <string name="empty_categories_selected_upload">Оберіть категорії</string>
+    <string name="empty_categories_selected_upload_message">Вам потрібно обрати хоча-б одну категорію для свого мема</string>
+    <string name="upload_finished_thanks">Дякуємо! Скоро мем з\'явиться у ленті</string>
+    <string name="loading">Загружаємо мем... почикайте трохи</string>
+    <string name="choose_categories_upload_title">Оберіть категорії</string>
+    <string name="upload_finished_title">Завершено!</string>
+    <string name="report_meme_menu">Повідомити про некоректний мем</string>
 
 </resources>

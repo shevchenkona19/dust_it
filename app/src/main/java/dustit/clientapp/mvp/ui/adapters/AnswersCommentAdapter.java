@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
-import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
+import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.utils.IConstants;
 
 public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -80,9 +80,9 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             baseComment.btnAnswer.setOnClickListener((v) -> interaction.onAnswerClicked(this.baseComment));
             baseComment.sdvUser.setOnClickListener((v) -> {
                 String userId = this.baseComment.getUserId();
-                Intent intent = new Intent(context, NewAccountActivity.class);
+                Intent intent = new Intent(context, AccountActivity.class);
                 intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
-                intent.putExtra(IConstants.IBundle.ID, userId);
+                intent.putExtra(IConstants.IBundle.USER_ID, userId);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, baseComment.sdvUser, context.getString(R.string.account_photo_transition));
                 context.startActivity(intent, options.toBundle());
             });
@@ -108,11 +108,11 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             answer.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
             answer.sdvUser.setOnClickListener((v) -> {
                 String userId = comment.getUserId();
-                Intent intent = new Intent(context, NewAccountActivity.class);
+                Intent intent = new Intent(context, AccountActivity.class);
                 intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
-                intent.putExtra(IConstants.IBundle.ID, userId);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, answer.sdvUser, context.getString(R.string.account_photo_transition));
-                context.startActivity(intent, options.toBundle());
+                if (!userId.equals(myId)) {
+                    intent.putExtra(IConstants.IBundle.USER_ID, comment.getUserId());
+                }                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
             });
         } else {
             if (!isLoading) {

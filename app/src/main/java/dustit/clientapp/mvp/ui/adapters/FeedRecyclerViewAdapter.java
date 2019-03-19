@@ -13,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -44,38 +47,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int appBarHeight;
     private Context context;
     private RecyclerView rvFeed;
-
-    public interface IFeedInteractionListener {
-        void reloadFeedBase();
-
-        void onMemSelected(View animStart, MemEntity mem);
-
-        boolean isRegistered();
-
-        void onNotRegistered();
-
-        void postLike(MemEntity mem);
-
-        void deleteLike(MemEntity mem);
-
-        void postDislike(MemEntity mem);
-
-        void deleteDislike(MemEntity mem);
-
-        void onCommentsSelected(View animStart, MemEntity mem);
-
-        void showErrorToast();
-
-        void loadMore(int offset);
-
-        void gotoHot();
-
-        void addToFavourites(String id, int pos);
-
-        void removeFromFavourites(String id, int pos);
-
-        void shareMem(MemEntity mem);
-    }
+    private boolean showUserIcon = true;
 
     public FeedRecyclerViewAdapter(Context context, IFeedInteractionListener feedInteractionListener, int appBarHeight, RecyclerView rvFeed) {
         layoutInflater = LayoutInflater.from(context);
@@ -118,6 +90,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 return new MemViewHolder(layoutInflater.inflate(R.layout.item_feed, parent, false));
 
         }
+    }
+
+    public void hideUserIcons() {
+        showUserIcon = false;
     }
 
     @Override
@@ -200,14 +176,36 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
             memViewHolder.ibAddToFavs.setOnClickListener(v -> {
                 if (mem.isFavorite()) {
-                    interactionListener.removeFromFavourites(mem.getId(), pos);
+                    interactionListener.removeFromFavourites(mem);
                 } else {
-                    interactionListener.addToFavourites(mem.getId(), pos);
+                    interactionListener.addToFavourites(mem);
                 }
             });
             memViewHolder.ibShare.setOnClickListener(v -> interactionListener.shareMem(mem));
             memViewHolder.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(memViewHolder.itemView, mem));
             memViewHolder.itemFeed.setOnClickListener(v -> interactionListener.onMemSelected(memViewHolder.itemView, mem));
+            if (showUserIcon) {
+                if (mem.getUserId() != null && !mem.getUserId().equals("")) {
+                    memViewHolder.sdvUserIcon.setImageURI(IConstants.USER_IMAGE_URL + mem.getUsername());
+                    memViewHolder.tvUsername.setText(mem.getUsername());
+                    memViewHolder.sdvUserIcon.setOnClickListener(v -> interactionListener.gotoAccount(mem));
+                } else {
+                    memViewHolder.sdvUserIcon.setImageResource(R.drawable.icon_memspace);
+                    memViewHolder.tvUsername.setText("MemSpace");
+                }
+            }
+            memViewHolder.tvOptions.setOnClickListener(v -> {
+                PopupMenu menu = new PopupMenu(context, memViewHolder.tvOptions);
+                menu.inflate(R.menu.feed_item_menu);
+                menu.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.report_meme) {
+                        interactionListener.reportMeme(mem);
+                        return true;
+                    }
+                    return false;
+                });
+                menu.show();
+            });
         } else if (holder instanceof FailedViewHolder) {
             final FailedViewHolder failedViewHolder = (FailedViewHolder) holder;
             failedViewHolder.btnRetry.setOnClickListener(v -> {
@@ -258,6 +256,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     memViewHolder.tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
                     memViewHolder.tvDislikeCount.setText(mem.getDislikes());
                     memViewHolder.tvLikeCount.setText(mem.getLikes());
+                    closeSrlForPosition(memViewHolder);
                 }
             }
         }
@@ -317,52 +316,28 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public void onAddedToFavourites(int position) {
-        mems.get(position).setFavorite(true);
-        closeSrlForPosition(position);
-    }
-
-    public void onRemovedFromFavourites(int position) {
-        mems.get(position).setFavorite(false);
-        closeSrlForPosition(position);
-    }
-
-    private void closeSrlForPosition(int position) {
-        RecyclerView.ViewHolder vh = rvFeed.findViewHolderForAdapterPosition(position);
-        if (vh != null) {
-            if (vh instanceof MemViewHolder) {
-                MemViewHolder mem = (MemViewHolder) vh;
-                if (mems.get(position).isFavorite()) {
-                    mem.ibAddToFavs.setImageResource(R.drawable.ic_saved);
-                } else {
-                    mem.ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
-                }
-                mem.srlReveal.close(true);
-            }
-        }
+    private void closeSrlForPosition(MemViewHolder holder) {
+        holder.srlReveal.close(true);
     }
 
     public void refreshMem(RefreshedMem refreshedMem) {
         final Pair<Integer, MemEntity> pair = findMemAndPositionById(refreshedMem.getId());
         if (pair != null) {
-            if (pair.getMem() == null) return;
-            pair.getMem().setLikes(refreshedMem.getLikes());
-            pair.getMem().setDislikes(refreshedMem.getDislikes());
-            pair.getMem().setOpinion(refreshedMem.getOpinion());
+            MemEntity mem = pair.getMem();
+            if (mem == null) return;
+            mem = refreshedMem.populateMemEntity(mem);
             MemViewHolder memViewHolder = (MemViewHolder) rvFeed.findViewHolderForAdapterPosition(pair.getPosition());
-            bind(memViewHolder, pair.getMem());
+            bind(memViewHolder, mem);
         }
     }
 
     public void restoreMem(RestoreMemEntity restoreMemEntity) {
         final Pair<Integer, MemEntity> memAndPos = findMemAndPositionById(restoreMemEntity.getId());
         if (memAndPos != null) {
-            final MemEntity mem = memAndPos.getMem();
+            MemEntity mem = memAndPos.getMem();
             if (mem == null) return;
             final int pos = memAndPos.getPosition();
-            mem.setLikes(restoreMemEntity.getLikes());
-            mem.setDislikes(restoreMemEntity.getDislikes());
-            mem.setOpinion(restoreMemEntity.getOpinion());
+            mem = restoreMemEntity.populateMemEntity(mem);
             MemViewHolder memViewHolder = (MemViewHolder) rvFeed.findViewHolderForAdapterPosition(pos);
             bind(memViewHolder, mem);
         }
@@ -377,6 +352,43 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
         return pair;
+    }
+
+    public interface IFeedInteractionListener {
+        void reloadFeedBase();
+
+        void onMemSelected(View animStart, MemEntity mem);
+
+        boolean isRegistered();
+
+        void onNotRegistered();
+
+        void postLike(MemEntity mem);
+
+        void deleteLike(MemEntity mem);
+
+        void postDislike(MemEntity mem);
+
+        void deleteDislike(MemEntity mem);
+
+        void onCommentsSelected(View animStart, MemEntity mem);
+
+        void showErrorToast();
+
+        void loadMore(int offset);
+
+        void gotoHot();
+
+        void addToFavourites(MemEntity memEntity);
+
+        void removeFromFavourites(MemEntity memEntity);
+
+        void shareMem(MemEntity mem);
+
+        void gotoAccount(MemEntity mem);
+
+        void reportMeme(MemEntity mem);
+
     }
 
     static class MemViewHolder extends RecyclerView.ViewHolder {
@@ -402,6 +414,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         ImageButton ibShare;
         @BindView(R.id.srlItemFeedReveal)
         dustit.clientapp.utils.SwipeRevealLayout srlReveal;
+        @BindView(R.id.sdvUserUploadIcon)
+        SimpleDraweeView sdvUserIcon;
+        @BindView(R.id.tvUsernameUpload)
+        TextView tvUsername;
+        @BindView(R.id.tvOptions)
+        TextView tvOptions;
 
         MemViewHolder(View itemView) {
             super(itemView);

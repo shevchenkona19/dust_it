@@ -2,34 +2,34 @@ package dustit.clientapp.mvp.model.apis;
 
 import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
-import dustit.clientapp.mvp.model.entities.IsFavourite;
-import dustit.clientapp.mvp.model.entities.MemEntity;
-import dustit.clientapp.mvp.model.entities.NewResponseEntity;
-import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
+import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.MemUpperEntity;
+import dustit.clientapp.mvp.model.entities.NewResponseEntity;
+import dustit.clientapp.mvp.model.entities.PersonalCategoryUpperEntity;
 import dustit.clientapp.mvp.model.entities.PhotoBody;
 import dustit.clientapp.mvp.model.entities.PostCommentEntity;
 import dustit.clientapp.mvp.model.entities.PostSelectedCategoriesUpperEntity;
+import dustit.clientapp.mvp.model.entities.ReferralInfoEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RegisterUserEntity;
+import dustit.clientapp.mvp.model.entities.ReportEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
-import dustit.clientapp.mvp.model.entities.SelectedCategoriesEntity;
+import dustit.clientapp.mvp.model.entities.SimpleResponseEntity;
 import dustit.clientapp.mvp.model.entities.TestUpperEntity;
 import dustit.clientapp.mvp.model.entities.TokenEntity;
+import dustit.clientapp.mvp.model.entities.UploadBody;
+import dustit.clientapp.mvp.model.entities.UploadsUpperEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
-import okhttp3.MultipartBody;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -100,8 +100,8 @@ public interface ServerAPI {
     Observable<TestUpperEntity> getTest(@Header("Authorization") String token);
 
     @POST("/favorites/addToFavorites")
-    Observable<ResponseEntity> addToFavorites(@Header("Authorization") String token,
-                                              @Query("id") String id);
+    Observable<RefreshedMem> addToFavorites(@Header("Authorization") String token,
+                                            @Query("id") String id);
 
     @GET("/v2/favorites/allFavorites")
     Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") String userId);
@@ -125,12 +125,8 @@ public interface ServerAPI {
     Observable<UsernameEntity> getUsername(@Query("userId") String userId);
 
     @DELETE("/favorites/removeFromFavorites")
-    Observable<ResponseEntity> removeFromFavorites(@Header("Authorization") String token,
-                                                   @Query("id") String id);
-
-    @GET("/feed/refreshMem")
-    Observable<RefreshedMem> refreshMem(@Header("Authorization") String token,
-                                        @Query("memId") String memId);
+    Observable<RefreshedMem> removeFromFavorites(@Header("Authorization") String token,
+                                                 @Query("id") String id);
 
     @GET("/favorites/isFavourite")
     Observable<IsFavourite> isFavourite(@Header("Authorization") String token,
@@ -168,7 +164,23 @@ public interface ServerAPI {
 
     @GET("/feedback/answersForCommentToId")
     Observable<CommentUpperEntity> getAnswersForCommentToId(@Query("parentCommentId") String parentCommentId,
-                                                         @Query("childCommentId") String childCommentId,
-                                                         @Query("imageId") String imageId);
+                                                            @Query("childCommentId") String childCommentId,
+                                                            @Query("imageId") String imageId);
 
+    @GET("/account/myReferralInfo")
+    Observable<ReferralInfoEntity> getMyReferralInfo(@Header("Authorization") String token);
+
+    @GET("/account/userUploads")
+    Observable<UploadsUpperEntity> getUserUploads(@Header("Authorization") String token,
+                                                  @Query("userId") int userId,
+                                                  @Query("limit") int limit,
+                                                  @Query("offset") int offset);
+
+    @POST("/account/uploadMeme")
+    Observable<NewResponseEntity> uploadMeme(@Header("Authorization") String token,
+                                             @Body UploadBody uploadBody);
+
+    @POST("/reports/report")
+    Observable<SimpleResponseEntity> reportMeme(@Header("Authorization") String token,
+                                                @Body ReportEntity reportEntity);
 }

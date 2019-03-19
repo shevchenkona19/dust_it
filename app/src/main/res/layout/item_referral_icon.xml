@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@android:style/Widget.ActionButton"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/referral_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:gravity="center"
+        android:src="@drawable/ic_people" />
+
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/referral_notification"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignTop="@id/referral_icon"
+        android:layout_alignEnd="@id/referral_icon"
+        android:layout_marginTop="-3dp"
+        android:layout_marginEnd="-3dp"
+        android:background="@drawable/notify_background"
+        android:gravity="center"
+        android:minWidth="17sp"
+        android:paddingBottom="1dp" />
+</RelativeLayout>

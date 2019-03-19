@@ -3,7 +3,6 @@ package dustit.clientapp;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -21,12 +20,12 @@ import dustit.clientapp.di.component.AppComponent;
 import dustit.clientapp.di.component.DaggerAppComponent;
 import dustit.clientapp.di.modules.AppModule;
 import dustit.clientapp.mvp.datamanager.DataManager;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.TimeTracking;
-import dustit.clientapp.utils.managers.NotifyManager;
 import dustit.clientapp.utils.managers.ThemeManager;
 import rx.Subscriber;
 
@@ -49,6 +48,8 @@ public class App extends Application {
     UserSettingsDataManager userSettingsDataManager;
     @Inject
     DataManager dataManager;
+    @Inject
+    FeedbackManager feedbackManager;
 
 
     @Override
@@ -76,12 +77,6 @@ public class App extends Application {
         createNotificationChannel();
         SharedPreferences preferences = getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        if (preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true)) {
-            if ("Xiaomi".equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                editor.putBoolean(IConstants.IPreferences.NOTIFICATIONS, false)
-                        .putBoolean(IConstants.IPreferences.AUTOSTART, false);
-            }
-        }
         if (!userSettingsDataManager.isFcmUpdated()) {
             if (!userSettingsDataManager.getFcm().equals("")) {
                 AtomicReference<ResponseEntity> reference = new AtomicReference<>();

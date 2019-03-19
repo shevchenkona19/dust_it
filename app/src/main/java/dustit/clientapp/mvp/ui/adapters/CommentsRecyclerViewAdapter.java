@@ -30,9 +30,8 @@ import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
-import dustit.clientapp.mvp.ui.activities.NewAccountActivity;
+import dustit.clientapp.mvp.ui.activities.AccountActivity;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 
 /**
  * Created by Никита on 11.11.2017.
@@ -98,13 +97,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.ivAnswers.setOnClickListener(v -> interactionListener.openAnswersForComment(comment));
             commentViewHolder.sdvUserPhoto.setOnClickListener((v) -> {
                 String userId = comment.getUserId();
-                Intent intent = new Intent(context, NewAccountActivity.class);
+                Intent intent = new Intent(context, AccountActivity.class);
                 intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
                 if (!userId.equals(myId)) {
-                    intent.putExtra(IConstants.IBundle.ID, comment.getUserId());
+                    intent.putExtra(IConstants.IBundle.USER_ID, comment.getUserId());
                 }
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, commentViewHolder.sdvUserPhoto, context.getString(R.string.account_photo_transition));
-                context.startActivity(intent, options.toBundle());
+                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
             });
             commentViewHolder.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", comment.getLikeAchievementLvl()));
             commentViewHolder.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", comment.getDislikesAchievementLvl()));

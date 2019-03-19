@@ -17,37 +17,38 @@ import dustit.clientapp.mvp.ui.fragments.HotFragment;
 
 public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
-    public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight) {
+    private int appbarHeight;
+    private String myId;
+    private WeakReference<FeedFragment> feedFragment;
+    private WeakReference<HotFragment> hotFragment;
+    private WeakReference<CategoriesFragment> categoriesFragment;
+    private boolean isCategoriesLoaded;
+
+    public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight, String myId) {
         super(fm);
         appbarHeight = appBarHeight;
+        this.myId = myId;
         feedFragment = new WeakReference<>(null);
         hotFragment = new WeakReference<>(null);
         categoriesFragment = new WeakReference<>(null);
     }
-
-    private int appbarHeight;
-    private WeakReference<FeedFragment> feedFragment;
-    private WeakReference<HotFragment> hotFragment;
-    private WeakReference<CategoriesFragment> categoriesFragment;
-
-    private boolean isCategoriesLoaded;
 
     @Override
     public Fragment getItem(int position) {
         Fragment selectedFragment;
         switch (position) {
             case 0:
-                FeedFragment feedFragment = FeedFragment.Companion.newInstance(appbarHeight);
+                FeedFragment feedFragment = FeedFragment.Companion.newInstance(appbarHeight, myId);
                 this.feedFragment = new WeakReference<>(feedFragment);
                 selectedFragment = feedFragment;
                 break;
             case 1:
-                HotFragment hotFragment = HotFragment.newInstance(appbarHeight);
+                HotFragment hotFragment = HotFragment.newInstance(appbarHeight, myId);
                 this.hotFragment = new WeakReference<>(hotFragment);
                 selectedFragment = hotFragment;
                 break;
             case 2:
-                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance(appbarHeight, isCategoriesLoaded);
+                CategoriesFragment categoriesFragment = CategoriesFragment.newInstance(appbarHeight, isCategoriesLoaded, myId);
                 this.categoriesFragment = new WeakReference<>(categoriesFragment);
                 selectedFragment = categoriesFragment;
                 break;

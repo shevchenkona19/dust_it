@@ -65,6 +65,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'com.stepstone.stepper:material-stepper:4.3.1'
     implementation 'com.github.yalantis:ucrop:2.2.1'
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'com.r0adkll:slidableactivity:2.0.5'
@@ -73,10 +74,10 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.github.lightfire:Android-Gradient-Text-Color:b0047755f7'
     implementation 'com.yarolegovich:discrete-scrollview:1.4.9'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
 
 
 }

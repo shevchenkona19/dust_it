@@ -1,5 +1,6 @@
 package dustit.clientapp.mvp.ui.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -33,21 +34,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
+import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 import dustit.clientapp.mvp.presenters.activities.FeedActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.FeedViewPagerAdapter;
 import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
+import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.fragments.CategoriesFragment;
 import dustit.clientapp.mvp.ui.fragments.MemViewFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFeedActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.FeedPageTransformer;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.bus.FavouritesBus;
 
-public class NewFeedActivity extends AppCompatActivity implements CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction {
+public class NewFeedActivity extends AppCompatActivity implements CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction, FeedbackManager.IAchievementListener {
     @BindView(R.id.vpFeedPager)
     ViewPager vpFeed;
     @BindView(R.id.bnvFeedNavigation)
@@ -72,6 +77,8 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     private List<Category> categories = new ArrayList<>();
 
     @Inject
+    FeedbackManager feedbackManager;
+    @Inject
     UserSettingsDataManager userSettingsDataManager;
 
     public interface ICategoriesSpinnerInteractionListener {
@@ -90,7 +97,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         presenter.bind(this);
         ButterKnife.bind(this);
         sdvUserIcon.setLegacyVisibilityHandlingEnabled(true);
-        adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), toolbar.getHeight());
+        adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), toolbar.getHeight(), presenter.loadId());
         if (userSettingsDataManager.isRegistered()) presenter.getMyUsername();
         bnvFeed.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -184,7 +191,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
             }
             return true;
         });
-        sdvUserIcon.setOnClickListener(this::revealAccount);
+        sdvUserIcon.setOnClickListener((View v) -> revealAccount());
         if (userSettingsDataManager.isNoRegistration()) {
             sdvUserIcon.setImageURI("android.resource://" + getPackageName() + "/drawable/noimage");
         }
@@ -194,6 +201,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         if (!userSettingsDataManager.isFcmUpdated()) {
             presenter.updateFcmId();
         }
+        feedbackManager.bindForAchievements(this);
     }
 
     @Override
@@ -222,7 +230,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         if (hasFocus && isFirstLaunch) {
             isFirstLaunch = false;
             if (adapter == null)
-                adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), toolbar.getHeight());
+                adapter = new FeedViewPagerAdapter(getSupportFragmentManager(), toolbar.getHeight(), presenter.loadId());
             if (vpFeed.getAdapter() == null)
                 vpFeed.setAdapter(adapter);
             vpFeed.setOffscreenPageLimit(3);
@@ -250,13 +258,10 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         }
     }
 
-    private void revealAccount(View view) {
-        Intent intent = new Intent(this, NewAccountActivity.class);
+    private void revealAccount() {
+        Intent intent = new Intent(this, AccountActivity.class);
         intent.putExtra(IConstants.IBundle.IS_ME, true);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                view,
-                getString(R.string.account_photo_transition));
-        startActivity(intent, options.toBundle());
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     @Override
@@ -357,6 +362,11 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     @Override
     public void onUsernameArrived(String s) {
         sdvUserIcon.setImageURI(IConstants.BASE_URL + "/feed/userPhoto?targetUsername=" + s);
+    }
+
+    @Override
+    public void onAchievementUpdate(NewAchievementEntity achievementEntity) {
+        new AchievementUnlockedDialog(this, achievementEntity.isFinalLevel()).bind(achievementEntity).show();
     }
 
     @Override

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
-import dustit.clientapp.mvp.ui.adapters.ResultRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.adapters.CategoriesRecyclerViewAdapter;
 import dustit.clientapp.mvp.ui.interfaces.IResultActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 
@@ -44,7 +44,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
     @BindView(R.id.btnResultRetrySendingCategories)
     Button btnRetrySending;
     private String[] interestedCategoriesIds;
-    private ResultRecyclerViewAdapter adapter;
+    private CategoriesRecyclerViewAdapter adapter;
     private final ResultActivityPresenter presenter = new ResultActivityPresenter();
 
     @Override
@@ -60,7 +60,7 @@ public class ResultActivity extends AppCompatActivity implements IResultActivity
             interestedCategoriesIds = new String[]{};
         }
         rvThemes.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new ResultRecyclerViewAdapter(this);
+        adapter = new CategoriesRecyclerViewAdapter(this);
         rvThemes.setAdapter(adapter);
         btnGo.setOnClickListener(view -> {
             rvThemes.setVisibility(View.GONE);

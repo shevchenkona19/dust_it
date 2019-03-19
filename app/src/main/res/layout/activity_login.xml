@@ -36,8 +36,11 @@
             android:layout_height="45dp"
             android:background="@drawable/btn_hello_accent"
             android:text="@string/login"
+            android:maxWidth="400dp"
+            android:fontFamily="@font/noto_sans"
             android:textColor="#fff"
             android:textSize="18sp" />
+
     </android.support.v7.widget.CardView>
 
     <ImageView
@@ -63,6 +66,7 @@
         android:clickable="true"
         android:focusable="true"
         android:text="@string/not_registred_question"
+        android:fontFamily="@font/noto_sans"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -111,6 +115,7 @@
                     android:textColorHint="@color/colorEditTextHint"
                     app:counterEnabled="true"
                     app:counterMaxLength="16"
+                    android:fontFamily="@font/noto_sans"
                     app:counterTextAppearance="@style/TextLabel"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -122,6 +127,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/login_edit_text_hint"
                         android:inputType="textPersonName"
+                        android:fontFamily="@font/noto_sans"
                         android:maxLines="1"
                         android:textColor="@color/colorMainText" />
 
@@ -138,6 +144,7 @@
                     app:counterEnabled="true"
                     app:counterMaxLength="22"
                     app:counterTextAppearance="@style/TextLabel"
+                    android:fontFamily="@font/noto_sans"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -147,6 +154,7 @@
                     <EditText
                         android:id="@+id/etLoginPassword"
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/noto_sans"
                         android:layout_height="wrap_content"
                         android:hint="@string/password_edit_text_hint"
                         android:inputType="textPassword"
