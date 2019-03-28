@@ -7,7 +7,7 @@ public class SimpleResponseEntity {
     @SerializedName("success")
     @Expose
     private boolean success;
-    @SerializedName("error")
+    @SerializedName("message")
     @Expose
     private String error;
 

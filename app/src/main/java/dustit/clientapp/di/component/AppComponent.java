@@ -24,6 +24,7 @@ import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.UploadActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.UserFeedbackPresenter;
+import dustit.clientapp.mvp.presenters.dialogs.ReportMemeDialogPresenter;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.CategoriesStepFragmentPresenter;
 import dustit.clientapp.mvp.presenters.fragments.ChangeCategoriesFragmentPresenter;
@@ -135,5 +136,7 @@ public interface AppComponent {
     void inject(UploadActivityPresenter uploadActivityPresenter);
 
     void inject(UserFavouritesListFragmentPresenter userFavouritesListFragmentPresenter);
+
+    void inject(ReportMemeDialogPresenter reportMemeDialogPresenter);
 
 }

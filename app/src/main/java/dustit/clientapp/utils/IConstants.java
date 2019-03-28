@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://192.168.0.100";
+    String BASE_URL = "http://192.168.1.7";
     //    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
@@ -92,5 +92,12 @@ public interface IConstants {
         int LOADING = 0;
         int FAILED_TO_LOAD = 1;
         int ITEM = 2;
+    }
+
+    public interface ReportReasons {
+        String ABUSE = "ABUSE ME";
+        String PORN = "PORN CONTENT";
+        String NOT_MEME = "NOT A MEME";
+        String TERROR = "TERRORISM PROPAGANDA";
     }
 }

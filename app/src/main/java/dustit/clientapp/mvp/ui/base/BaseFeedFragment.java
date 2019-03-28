@@ -15,6 +15,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.ui.adapters.FeedRecyclerViewAdapter;
+import dustit.clientapp.mvp.ui.dialog.ReportMemeDialog;
 import dustit.clientapp.mvp.ui.interfaces.IBaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
@@ -165,6 +166,8 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
     @Override
     public void reportMeme(MemEntity mem) {
+        if (getContext() == null) return;
+        ReportMemeDialog dialog = new ReportMemeDialog(getContext(), mem);
 
     }
 

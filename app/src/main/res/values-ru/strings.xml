@@ -169,5 +169,16 @@
     <string name="choose_categories_upload_title">Оберіть категорії</string>
     <string name="upload_finished_title">Завершено!</string>
     <string name="report_meme_menu">Повідомити про некоректний мем</string>
+    <string name="report_dialog_title">Поскаржитися на мем</string>
+    <string name="enter_report_reason">Розкажіть чому мем потрібно видалити?</string>
+    <string name="report_reason_abuse">Він мене висміює</string>
+    <string name="report_reason_porn">Мем містить порнографію</string>
+    <string name="report_reason_not_meme">Це не мем (Реклама, продажі та інше)</string>
+    <string name="report_reason_terror">Пропаганда тероризму</string>
+    <string name="report_reason_own">Ввести свій варіант</string>
+    <string name="tell_report_reason">Укажіть  детально чому цей мем потрібно видалити</string>
+    <string name="send_report">Відправити</string>
+    <string name="enter_reason">Введіть причину видалення мема</string>
+    <string name="thankyou_will_check_report">Дякуємо! Ми переглянемо вашу скаргу</string>
 
 </resources>

@@ -23,6 +23,7 @@ INTERNAL_ERROR: "INTERNAL_ERROR",
 
 public class ErrorCodeResolver {
     public static String resolveError(String message, WeakReference<Context> contextWeakReference) {
+        if (message == null) message = "";
         String error;
         switch (message) {
             case IConstants.ErrorCodes.EMAIL_NOT_UNIQUE:
