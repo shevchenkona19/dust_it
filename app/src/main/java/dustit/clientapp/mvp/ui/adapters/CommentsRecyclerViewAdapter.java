@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -31,59 +32,47 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.ui.activities.AccountActivity;
+import dustit.clientapp.utils.AchievementHelper;
+import dustit.clientapp.utils.GlideApp;
+import dustit.clientapp.utils.GlideRequests;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 
 /**
  * Created by Никита on 11.11.2017.
  */
 
 public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    @Inject
+    DataManager dataManager;
     private List<CommentEntity> list;
     private LayoutInflater inflater;
     private boolean isLoading = false;
+    private boolean commentsEnded = false;
     private Context context;
-    private String myId;
+    private GlideRequests glide;
+    private int myId;
+    private ICommentInteraction interactionListener;
 
-
-    @Inject
-    DataManager dataManager;
-
-    public CommentsRecyclerViewAdapter(Context context, String myId, ICommentInteraction commentInteraction) {
+    public CommentsRecyclerViewAdapter(Context context, int myId, ICommentInteraction commentInteraction) {
         list = new ArrayList<>();
         inflater = LayoutInflater.from(context);
         interactionListener = commentInteraction;
         this.myId = myId;
+        glide = GlideApp.with(context);
         this.context = context;
         App.get().getAppComponent().inject(this);
     }
 
-    public interface ICommentInteraction {
-        void loadCommentsPartial(int offset);
-
-        void loadCommentsBase();
-
-        void answerComment(CommentEntity comment, String commentId);
-
-        void openAnswersForComment(CommentEntity commentEntity);
-
-    }
-
-    private ICommentInteraction interactionListener;
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case 0:
-                View v = inflater.inflate(R.layout.item_comments_comment, parent, false);
-                return new CommentViewHolder(v);
-            case 1:
-                View v1 = inflater.inflate(R.layout.item_loading, parent, false);
-                return new FeedRecyclerViewAdapter.LoadingViewHolder(v1);
-            default:
-                View v3 = inflater.inflate(R.layout.item_comments_comment, parent, false);
-                return new CommentViewHolder(v3);
+        if (viewType == 1) {
+            View v1 = inflater.inflate(R.layout.item_loading, parent, false);
+            return new FeedLoadingViewHolder(v1);
         }
+        View v3 = inflater.inflate(R.layout.item_comments_comment, parent, false);
+        return new CommentViewHolder(v3);
     }
 
     @Override
@@ -96,19 +85,19 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             commentViewHolder.tvAnswersCount.setOnClickListener((v -> interactionListener.openAnswersForComment(comment)));
             commentViewHolder.ivAnswers.setOnClickListener(v -> interactionListener.openAnswersForComment(comment));
             commentViewHolder.sdvUserPhoto.setOnClickListener((v) -> {
-                String userId = comment.getUserId();
+                int userId = comment.getUserId();
                 Intent intent = new Intent(context, AccountActivity.class);
-                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
-                if (!userId.equals(myId)) {
+                intent.putExtra(IConstants.IBundle.IS_ME, userId == myId);
+                if (userId != myId) {
                     intent.putExtra(IConstants.IBundle.USER_ID, comment.getUserId());
                 }
                 context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
             });
-            commentViewHolder.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", comment.getLikeAchievementLvl()));
-            commentViewHolder.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", comment.getDislikesAchievementLvl()));
-            commentViewHolder.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
-            commentViewHolder.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
-            commentViewHolder.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("likes", comment.getLikeAchievementLvl())).into(commentViewHolder.ivLikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("dislikes", comment.getDislikesAchievementLvl())).into(commentViewHolder.ivDislikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("comments", comment.getCommentsAchievementLvl())).into(commentViewHolder.ivCommentsLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("favourites", comment.getFavouritesAchievementLvl())).into(commentViewHolder.ivFavouritesLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("views", comment.getViewsAchievementLvl())).into(commentViewHolder.ivViewsLevel);
             if (comment.getAnswers() > 0) {
                 commentViewHolder.tvAnswersCount.setVisibility(View.VISIBLE);
                 commentViewHolder.tvAnswersCount.setText(String.valueOf(comment.getAnswers()));
@@ -119,9 +108,9 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             }
             commentViewHolder.btnAnswer.setOnClickListener(v -> interactionListener.answerComment(comment, comment.getId()));
             if (comment.getFirstHundred()) {
-                commentViewHolder.ivFirst.setImageResource(R.drawable.ic_achievement_first100_small);
+                glide.load(R.drawable.ic_achievement_first100_small).into(commentViewHolder.ivFirst);
             } else if (comment.getFirstThousand()) {
-                commentViewHolder.ivFirst.setImageResource(R.drawable.ic_achievement_first1000_small);
+                glide.load(R.drawable.ic_achievement_first1000_small).into(commentViewHolder.ivFirst);
             }
 
             final String monthDay = comment.getDateOfPost().substring(
@@ -129,8 +118,11 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             final String hourMinute = comment.getDateOfPost().substring(
                     comment.getDateOfPost().indexOf('T') + 1, comment.getDateOfPost().indexOf('T') + 6);
             commentViewHolder.tvDateStamp.setText(hourMinute + " " + monthDay);
-        } else {
-            if (!isLoading) {
+        } else if (holder instanceof FeedFailedToLoadViewHolder) {
+            FeedFailedToLoadViewHolder failed = (FeedFailedToLoadViewHolder) holder;
+            failed.btnRetry.setOnClickListener(v -> interactionListener.loadCommentsBase());
+        } else if (holder instanceof FeedLoadingViewHolder) {
+            if (!isLoading && !commentsEnded) {
                 interactionListener.loadCommentsPartial(list.size() - 1);
                 isLoading = true;
             }
@@ -143,7 +135,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (comment == null) {
             return -1;
         } else {
-            return Long.parseLong(comment.getId());
+            return comment.getId();
         }
     }
 
@@ -182,19 +174,24 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         this.list.addAll(list);
         this.list.add(null);
         isLoading = false;
+        commentsEnded = false;
         notifyDataSetChanged();
     }
 
     public void updateListAtEnding(List<CommentEntity> list) {
-        int startPos = this.list.size() - 1;
-        this.list.remove(this.list.size() - 1);
-        isLoading = false;
         if (list.size() > 0) {
+            commentsEnded = false;
+            int startPos = this.list.size() - 1;
+            this.list.remove(this.list.size() - 1);
+            isLoading = false;
             this.list.addAll(list);
             this.list.add(null);
             notifyItemRangeInserted(startPos, list.size());
         } else {
-            notifyItemChanged(this.list.size() - 1);
+            isLoading = false;
+            commentsEnded = true;
+            this.list.remove(this.list.size() - 1);
+            notifyItemRemoved(this.list.size() - 1);
         }
     }
 
@@ -202,90 +199,15 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return list;
     }
 
-    private int resolveAchievementIcon(String name, int lvl) {
-        switch (name) {
-            case "likes":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_like_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_like_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_like_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_like_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_like_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_like_6_small;
-                }
-            case "dislikes":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_dislike_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_dislike_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_dislike_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_dislike_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_dislike_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_dislike_6_small;
-                }
-            case "comments":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_comment_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_comment_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_comment_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_comment_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_comment_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_comment_6_small;
-                }
-            case "views":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_views_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_views_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_views_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_views_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_views_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_views_6_small;
-                    case 7:
-                        return R.drawable.ic_achievement_views_7_small;
-                    case 8:
-                        return R.drawable.ic_achievement_views_8_small;
-                }
-            case "favourites":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_fav_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_fav_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_fav_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_fav_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_fav_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_fav_6_small;
-                }
-            default:
-                return 0;
-        }
+    public interface ICommentInteraction {
+        void loadCommentsPartial(int offset);
+
+        void loadCommentsBase();
+
+        void answerComment(CommentEntity comment, int commentId);
+
+        void openAnswersForComment(CommentEntity commentEntity);
+
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {

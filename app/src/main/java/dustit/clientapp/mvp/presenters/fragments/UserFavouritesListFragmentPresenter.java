@@ -28,7 +28,7 @@ public class UserFavouritesListFragmentPresenter extends BasePresenter<IUserFavo
     }
 
     @Override
-    public void loadFavourites(String userId) {
+    public void loadFavourites(int userId) {
         AtomicReference<FavoritesUpperEntity> atomicReference = new AtomicReference<>();
         addSubscription(dataManager.getAllFavorites(userId).subscribe(new Subscriber<FavoritesUpperEntity>() {
             @Override

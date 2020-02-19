@@ -1,8 +1,9 @@
 package dustit.clientapp.mvp.ui.adapters;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.lang.ref.WeakReference;
 
@@ -18,14 +19,14 @@ import dustit.clientapp.mvp.ui.fragments.HotFragment;
 public class FeedViewPagerAdapter extends FragmentPagerAdapter {
 
     private int appbarHeight;
-    private String myId;
+    private int myId;
     private WeakReference<FeedFragment> feedFragment;
     private WeakReference<HotFragment> hotFragment;
     private WeakReference<CategoriesFragment> categoriesFragment;
     private boolean isCategoriesLoaded;
 
-    public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight, String myId) {
-        super(fm);
+    public FeedViewPagerAdapter(FragmentManager fm, int appBarHeight, int myId) {
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         appbarHeight = appBarHeight;
         this.myId = myId;
         feedFragment = new WeakReference<>(null);
@@ -33,10 +34,12 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
         categoriesFragment = new WeakReference<>(null);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         Fragment selectedFragment;
         switch (position) {
+            default:
             case 0:
                 FeedFragment feedFragment = FeedFragment.Companion.newInstance(appbarHeight, myId);
                 this.feedFragment = new WeakReference<>(feedFragment);
@@ -52,8 +55,6 @@ public class FeedViewPagerAdapter extends FragmentPagerAdapter {
                 this.categoriesFragment = new WeakReference<>(categoriesFragment);
                 selectedFragment = categoriesFragment;
                 break;
-            default:
-                selectedFragment = null;
         }
         return selectedFragment;
     }

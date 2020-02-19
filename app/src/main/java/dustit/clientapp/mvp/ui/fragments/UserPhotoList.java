@@ -2,10 +2,10 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,7 @@ import dustit.clientapp.mvp.model.entities.UploadEntity;
 import dustit.clientapp.mvp.presenters.fragments.UserPhotoListFragmentPresenter;
 import dustit.clientapp.mvp.ui.adapters.UploadsAdapter;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
+import dustit.clientapp.mvp.ui.dialog.ReportMemeDialog;
 import dustit.clientapp.mvp.ui.interfaces.IBaseFeedFragment;
 import dustit.clientapp.mvp.ui.interfaces.IUserPhotoListFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
@@ -90,17 +91,16 @@ public class UserPhotoList extends Fragment implements IUserPhotoListFragmentVie
                 break;
         }
         rvPhotos.setAdapter(adapter);
-        presenter.loadBaseUploads();
+        rvPhotos.setHasFixedSize(true);
         presenter.bindToView(this);
+        presenter.loadBaseUploads();
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adapter.getItemCount() > 1) {
-            pbLoading.setVisibility(View.GONE);
-        }
+        pbLoading.setVisibility(View.GONE);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class UserPhotoList extends Fragment implements IUserPhotoListFragmentVie
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -138,6 +138,7 @@ public class UserPhotoList extends Fragment implements IUserPhotoListFragmentVie
     }
 
     private void showEmpty() {
+        L.print("set gone showEmpty");
         pbLoading.setVisibility(View.GONE);
         rvPhotos.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.VISIBLE);
@@ -161,15 +162,16 @@ public class UserPhotoList extends Fragment implements IUserPhotoListFragmentVie
 
     @Override
     public void startLoading() {
-        L.print("start loading");
         rvPhotos.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.GONE);
+        L.print("set visible startLoading");
         pbLoading.setVisibility(View.VISIBLE);
     }
 
     private void finishLoading() {
         rvPhotos.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
+        L.print("set gone finishLoading");
         pbLoading.setVisibility(View.GONE);
     }
 
@@ -239,12 +241,19 @@ public class UserPhotoList extends Fragment implements IUserPhotoListFragmentVie
         ImageShareUtils.shareImage(IConstants.BASE_URL + "/feed/imgs?id=" + upload.getImageId(), getContext());
     }
 
+    @Override
+    public void reportMeme(UploadEntity upload) {
+        if (getContext() == null) return;
+        new ReportMemeDialog(getContext(), upload.toMemEntity());
+    }
+
     private void showMessage(String error) {
         mListener.showSnackbar(error);
     }
 
     @Override
     public void onChangedMemFeedback(RefreshedMem refreshedMem) {
+        L.print("Refresh mem");
         adapter.refreshMem(refreshedMem);
     }
 

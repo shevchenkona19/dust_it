@@ -15,7 +15,7 @@ public class CommentEntity implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
 
     @SerializedName("text")
     @Expose
@@ -31,7 +31,7 @@ public class CommentEntity implements Parcelable {
 
     @SerializedName("userId")
     @Expose
-    private String userId;
+    private int userId;
 
     @SerializedName("time")
     @Expose
@@ -80,7 +80,7 @@ public class CommentEntity implements Parcelable {
     private boolean isExpanded = false;
 
 
-    public CommentEntity(String id, int parentId, int answerUserId, int answers, String text, String dateOfPost, String username, String userId, String time, int likeAchievementLvl, int dislikesAchievementLvl, int commentsAchievementLvl, int favouritesAchievementLvl, int viewsAchievementLvl, boolean firstHundred, boolean firstThousand) {
+    public CommentEntity(int id, int parentId, int answerUserId, int answers, String text, String dateOfPost, String username, int userId, String time, int likeAchievementLvl, int dislikesAchievementLvl, int commentsAchievementLvl, int favouritesAchievementLvl, int viewsAchievementLvl, boolean firstHundred, boolean firstThousand) {
         this.text = text;
         this.dateOfPost = dateOfPost;
         this.username = username;
@@ -100,11 +100,11 @@ public class CommentEntity implements Parcelable {
     }
 
     protected CommentEntity(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         text = in.readString();
         dateOfPost = in.readString();
         username = in.readString();
-        userId = in.readString();
+        userId = in.readInt();
         time = in.readString();
         parentId = in.readInt();
         answers = in.readInt();
@@ -121,11 +121,11 @@ public class CommentEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(text);
         dest.writeString(dateOfPost);
         dest.writeString(username);
-        dest.writeString(userId);
+        dest.writeInt(userId);
         dest.writeString(time);
         dest.writeInt(parentId);
         dest.writeInt(answers);
@@ -181,11 +181,11 @@ public class CommentEntity implements Parcelable {
         this.username = username;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -269,11 +269,11 @@ public class CommentEntity implements Parcelable {
         return firstThousand;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -4,19 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/clLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
         android:clipChildren="false">
 
-        <android.support.design.widget.AppBarLayout
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdvAccountUserIcon"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            android:transitionName="@string/account_photo_transition"
+            app:layout_anchor="@id/title_container"
+            app:layout_anchorGravity="top|center_horizontal"
+            app:layout_scrollFlags="scroll"
+            android:elevation="20dp"
+            app:roundAsCircle="true" />
+
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:fitsSystemWindows="true"
@@ -24,7 +36,7 @@
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|snap" />
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tbAccountSettingsToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -54,7 +66,7 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/achievementsList"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
@@ -63,41 +75,37 @@
                     android:paddingEnd="2dp" />
             </LinearLayout>
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tlAccountTabs"
                 android:layout_width="fill_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:tabIndicatorColor="?attr/colorAccent">
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabList"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:icon="@drawable/ic_view_list" />
+                    android:layout_height="match_parent" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabGrid"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:icon="@drawable/ic_view_grid" />
+                    android:layout_height="match_parent" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabFavourites"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:backgroundTint="?attr/colorAccent"
-                    android:icon="@drawable/ic_saved" />
+                    android:backgroundTint="?attr/colorAccent" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabReferrals"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:icon="@drawable/ic_people" />
-            </android.support.design.widget.TabLayout>
+                    android:layout_height="match_parent" />
+            </com.google.android.material.tabs.TabLayout>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <dustit.clientapp.customviews.NonSwipeableViewPager
             android:id="@+id/account_tabs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -105,7 +113,6 @@
 
         <Button
             android:id="@+id/btnRegister"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -114,9 +121,10 @@
             android:background="@drawable/btn_hello_accent"
             android:text="@string/register_account"
             android:textColor="#fff"
+            android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,19 +137,8 @@
             app:backgroundTint="#fff"
             app:layout_scrollFlags="scroll|snap|enterAlways" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/sdvAccountUserIcon"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_gravity="center_horizontal"
-            android:elevation="8dp"
-            android:transitionName="@string/account_photo_transition"
-            app:layout_anchor="@id/title_container"
-            app:layout_anchorGravity="top|center_horizontal"
-            app:layout_scrollFlags="scroll"
-            app:roundAsCircle="true" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/accountFragmentContainer"

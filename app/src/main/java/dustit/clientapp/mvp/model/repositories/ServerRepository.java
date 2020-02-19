@@ -29,6 +29,7 @@ import dustit.clientapp.mvp.model.entities.TokenEntity;
 import dustit.clientapp.mvp.model.entities.UploadBody;
 import dustit.clientapp.mvp.model.entities.UploadsUpperEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
+import dustit.clientapp.mvp.model.entities.UserSearchResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -100,22 +101,22 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> postLike(String token, String id) {
+    public Observable<RefreshedMem> postLike(String token, int id) {
         return serverAPI.postLike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> deleteLike(String token, String id) {
+    public Observable<RefreshedMem> deleteLike(String token, int id) {
         return serverAPI.deleteLike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> postDislike(String token, String id) {
+    public Observable<RefreshedMem> postDislike(String token, int id) {
         return serverAPI.postDislike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> deleteDislike(String token, String id) {
+    public Observable<RefreshedMem> deleteDislike(String token, int id) {
         return serverAPI.deleteDislike(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -130,26 +131,26 @@ public class ServerRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> addToFavorites(String token, String id) {
+    public Observable<RefreshedMem> addToFavorites(String token, int id) {
         return serverAPI.addToFavorites(token, id)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<FavoritesUpperEntity> getFavorites(String userId) {
+    public Observable<FavoritesUpperEntity> getFavorites(int userId) {
         return serverAPI.getAllFavorites(userId)
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
 
     public Observable<ResponseEntity> postComment(String token,
-                                                  String id,
+                                                  int id,
                                                   PostCommentEntity entity) {
         return serverAPI.postComment(token, id, entity)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<CommentUpperEntity> getComments(String token,
-                                                      String id,
+                                                      int id,
                                                       int count,
                                                       int offset) {
         return serverAPI.getComments(token, id, count, offset)
@@ -160,15 +161,15 @@ public class ServerRepository {
         return serverAPI.postPhoto(token, image).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<UsernameEntity> getUsername(String userId) {
+    public Observable<UsernameEntity> getUsername(int userId) {
         return serverAPI.getUsername(userId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<RefreshedMem> removeFromFavorites(String token, String id) {
+    public Observable<RefreshedMem> removeFromFavorites(String token, int id) {
         return serverAPI.removeFromFavorites(token, id).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<IsFavourite> isFavourite(String token, String id) {
+    public Observable<IsFavourite> isFavourite(String token, int id) {
         return serverAPI.isFavourite(token, id).observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -176,19 +177,19 @@ public class ServerRepository {
         return serverAPI.postUserFeedback(token, userFeedbackEntity).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<AchievementsEntity> getAchievements(String userId) {
+    public Observable<AchievementsEntity> getAchievements(int userId) {
         return serverAPI.getAchievements(userId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<CommentUpperEntity> getAnswersForComment(String commentId, int limit, int offset) {
+    public Observable<CommentUpperEntity> getAnswersForComment(int commentId, int limit, int offset) {
         return serverAPI.getAnswersForComment(commentId, limit, offset)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ResponseEntity> postAnswerForComment(String token,
-                                                           String imageId,
-                                                           String commentId,
-                                                           String userId,
+                                                           int imageId,
+                                                           int commentId,
+                                                           int userId,
                                                            PostCommentEntity entity) {
         return serverAPI.postCommentAnswer(token, imageId, commentId, userId, entity)
                 .observeOn(AndroidSchedulers.mainThread());
@@ -198,15 +199,15 @@ public class ServerRepository {
         return serverAPI.postFcmId(token, fcmId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<MemEntity> getMemById(String memId) {
+    public Observable<MemEntity> getMemById(int memId) {
         return serverAPI.getMemById(memId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<CommentUpperEntity> getCommentsToCommentId(String memId, String toCommentId) {
+    public Observable<CommentUpperEntity> getCommentsToCommentId(int memId, int toCommentId) {
         return serverAPI.getCommentsToCommentId(memId, toCommentId).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<CommentUpperEntity> getAnswersForCommentToId(String parentCommentId, String childCommentId, String imageId) {
+    public Observable<CommentUpperEntity> getAnswersForCommentToId(int parentCommentId, int childCommentId, int imageId) {
         return serverAPI.getAnswersForCommentToId(parentCommentId, childCommentId, imageId).observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -226,6 +227,11 @@ public class ServerRepository {
 
     public Observable<SimpleResponseEntity> reportMeme(String token, ReportEntity reportEntity) {
         return serverAPI.reportMeme(token, reportEntity)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<UserSearchResponseEntity> searchUsers(String query) {
+        return serverAPI.searchUsers(query)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

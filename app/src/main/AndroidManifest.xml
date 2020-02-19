@@ -20,7 +20,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:supportsRtl">
-        <activity android:name=".mvp.ui.activities.PhotoUploadActivity"></activity>
+        <activity
+            android:name=".mvp.ui.activities.SearchActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeDayNight" />
+        <activity android:name=".mvp.ui.activities.PhotoUploadActivity" />
         <activity
             android:name=".mvp.ui.activities.SplashActivity"
             android:screenOrientation="portrait"
@@ -72,11 +77,6 @@
             android:launchMode="singleTask"
             android:theme="@style/MasterDayNight" />
         <activity
-            android:name=".mvp.ui.fragments.ReferralFragment"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeDayNight" />
-        <activity
             android:name=".mvp.ui.activities.SettingsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -91,11 +91,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".mvp.ui.activities.FavoriteViewActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeDayNight" />
-        <activity
             android:name=".mvp.ui.activities.UserFeedbackActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -107,7 +102,7 @@
             android:theme="@style/AppThemeDayNight" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="dustit.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -137,6 +132,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
     </application>
 
 </manifest>

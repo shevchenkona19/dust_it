@@ -12,38 +12,43 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,8 +73,10 @@ import dustit.clientapp.mvp.ui.fragments.UserFavouritesList;
 import dustit.clientapp.mvp.ui.fragments.UserPhotoList;
 import dustit.clientapp.mvp.ui.interfaces.INewAccountActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.GlideApp;
+import dustit.clientapp.utils.GlideRequests;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.bus.FavouritesBus;
+import dustit.clientapp.utils.L;
 
 public class AccountActivity extends AppCompatActivity implements INewAccountActivityView, AppBarLayout.OnOffsetChangedListener, UserPhotoList.OnFragmentInteractionListener, UserFavouritesList.OnFragmentInteractionListener, MemViewFragment.IMemViewRatingInteractionListener {
 
@@ -79,6 +86,7 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 5;
     public static boolean isReload = false;
     private final NewAccountActivityPresenter presenter = new NewAccountActivityPresenter();
+
     @BindView(R.id.tbAccountSettingsToolbar)
     Toolbar toolbar;
     @BindView(R.id.tvAccountUsername)
@@ -102,25 +110,27 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
 
     @Inject
     UserSettingsDataManager userSettingsDataManager;
+
     private String username = "";
-    private String userId = "";
+    private int userId = -1;
     private boolean isMe = false;
     private AchievementAdapter achievementAdapter;
     private boolean mIsAvatarShown = true;
     private int mMaxScrollSize;
     private AccountViewPagerAdapter adapter;
+    private GlideRequests glide;
 
     private int[] tabIcons = {
-            R.drawable.ic_view_list,
-            R.drawable.ic_view_grid,
-            R.drawable.ic_saved,
-            R.drawable.ic_people
+            R.drawable.ic_menu_listview,
+            R.drawable.ic_menu_gridview,
+            R.drawable.ic_menu_favourites,
+            R.drawable.ic_menu_referal
     };
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         outState.putBoolean(IConstants.IBundle.IS_ME, isMe);
-        outState.putString(IConstants.IBundle.USER_ID, userId);
+        outState.putInt(IConstants.IBundle.USER_ID, userId);
         outState.putBoolean(IConstants.IBundle.RELOAD, true);
         super.onSaveInstanceState(outState);
     }
@@ -133,62 +143,22 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
         final Transition slide = new Slide();
         slide.excludeTarget(android.R.id.statusBarBackground, true);
         slide.excludeTarget(android.R.id.navigationBarBackground, true);
-        slide.addListener(new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionEnd(Transition transition) {
-                if (!(isMe && !userSettingsDataManager.isRegistered())) {
-                    loadAchievements();
-                    adapter = new AccountViewPagerAdapter(getSupportFragmentManager(), userId, isMe);
-                    vpAccount.setAdapter(adapter);
-                    if (tabs != null) {
-                        tabs.setupWithViewPager(vpAccount);
-                        tabs.getTabAt(0).setIcon(tabIcons[0]);
-                        tabs.getTabAt(1).setIcon(tabIcons[1]);
-                        tabs.getTabAt(2).setIcon(tabIcons[2]);
-                        if (isMe)
-                            tabs.getTabAt(3).setIcon(tabIcons[3]);
-                        else {
-                            if (tabs.getTabAt(3) != null)
-                                tabs.removeTabAt(3);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onTransitionCancel(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionPause(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionResume(Transition transition) {
-
-            }
-        });
         final Window window = getWindow();
         window.setEnterTransition(slide);
         window.setReturnTransition(slide);
         window.setExitTransition(slide);
+        startPostponedEnterTransition();
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
         sdvIcon.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         App.get().getAppComponent().inject(this);
         presenter.bind(this);
+        glide = GlideApp.with(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) bundle = savedInstanceState;
         if (bundle != null) {
             if (!bundle.getBoolean(IConstants.IBundle.IS_ME)) {
-                userId = bundle.getString(IConstants.IBundle.USER_ID);
+                userId = bundle.getInt(IConstants.IBundle.USER_ID);
             } else {
                 userId = presenter.loadMyId();
                 isMe = true;
@@ -199,6 +169,23 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
         loadUsername();
         checkReload();
         init();
+        if (!(isMe && !userSettingsDataManager.isRegistered())) {
+            loadAchievements();
+            adapter = new AccountViewPagerAdapter(getSupportFragmentManager(), userId, isMe);
+            vpAccount.setAdapter(adapter);
+            if (tabs != null) {
+                tabs.setupWithViewPager(vpAccount);
+                tabs.getTabAt(0).setIcon(tabIcons[0]);
+                tabs.getTabAt(1).setIcon(tabIcons[1]);
+                tabs.getTabAt(2).setIcon(tabIcons[2]);
+                if (isMe)
+                    tabs.getTabAt(3).setIcon(tabIcons[3]);
+                else {
+                    if (tabs.getTabAt(3) != null)
+                        tabs.removeTabAt(3);
+                }
+            }
+        }
     }
 
     @Override
@@ -225,7 +212,7 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
         super.onRestoreInstanceState(savedInstanceState, persistentState);
         if (savedInstanceState != null) {
             if (!savedInstanceState.getBoolean(IConstants.IBundle.IS_ME)) {
-                userId = savedInstanceState.getString(IConstants.IBundle.USER_ID);
+                userId = savedInstanceState.getInt(IConstants.IBundle.USER_ID);
             } else {
                 userId = presenter.loadMyId();
                 isMe = true;
@@ -239,7 +226,6 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
     @Override
     protected void onDestroy() {
         sdvIcon.setLayerType(View.LAYER_TYPE_NONE, null);
-        FavouritesBus.destroy();
         presenter.unbind();
         super.onDestroy();
     }
@@ -260,7 +246,6 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
             }
         }
         rvAchievements.setHasFixedSize(true);
-        sdvIcon.setLegacyVisibilityHandlingEnabled(true);
         vpAccount.setOffscreenPageLimit(3);
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -289,7 +274,8 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
                 switch (position) {
                     case 0:
                     case 1:
-                        showAddPhoto();
+                        if (isMe)
+                            showAddPhoto();
                         break;
                     default:
                         hideAddPhoto();
@@ -370,7 +356,7 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
                 btnRegister.setOnClickListener((view -> startActivity(new Intent(this, ChooserActivity.class))));
             }
         } else {
-            fabAddPhoto.setVisibility(View.GONE);
+            hideAddPhoto();
         }
         toolbar.setNavigationOnClickListener(v -> unRevealActivity());
         achievementAdapter = new AchievementAdapter(this, isMe);
@@ -383,7 +369,6 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
             }
             onNotRegistered();
         });
-        startPostponedEnterTransition();
     }
 
     private void hideAddPhoto() {
@@ -417,18 +402,16 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_DIALOG: {
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                        final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                        getIntent.setType("image/*");
-                        final Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        pickIntent.setType("image/*");
-                        final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
-                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                        startActivityForResult(chooserIntent, PICK_IMAGE);
-                    }
+        if (requestCode == PERMISSION_DIALOG) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    final Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    getIntent.setType("image/*");
+                    final Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    pickIntent.setType("image/*");
+                    final Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.choose_photo));
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+                    startActivityForResult(chooserIntent, PICK_IMAGE);
                 }
             }
         }
@@ -459,6 +442,7 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
                 final File image = createImageFile();
                 final Uri destinationUri = Uri.fromFile(image);
                 UCrop.Options options = new UCrop.Options();
+                options.setCircleDimmedLayer(true);
                 options.setToolbarColor(getResources().getColor(R.color.colorPrimaryDefault));
                 options.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDarkDefault));
                 options.setActiveWidgetColor(getResources().getColor(R.color.colorPrimaryDefault));
@@ -556,7 +540,6 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
 
         if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
-
             sdvIcon.animate()
                     .scaleY(0).scaleX(0).alpha(0)
                     .setDuration(200)

@@ -3,17 +3,19 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -28,7 +30,9 @@ import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.mvp.model.entities.UploadEntity;
 import dustit.clientapp.utils.GlideApp;
+import dustit.clientapp.utils.GlideRequests;
 import dustit.clientapp.utils.IConstants;
+import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.containers.Pair;
 import dustit.clientapp.utils.managers.ReviewManager;
 
@@ -43,40 +47,14 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean isMemesEnded = false;
     private Context context;
     private RecyclerView rvFeed;
+    private GlideRequests glide;
     private IConstants.ViewMode viewMode = IConstants.ViewMode.LIST;
-
-    public interface IUploadInteraction {
-        void reloadFeedBase();
-
-        void onUploadSelected(View animStart, UploadEntity upload);
-
-        boolean isRegistered();
-
-        void onNotRegistered();
-
-        void postLike(UploadEntity upload);
-
-        void deleteLike(UploadEntity upload);
-
-        void postDislike(UploadEntity upload);
-
-        void deleteDislike(UploadEntity upload);
-
-        void onCommentsSelected(View animStart, UploadEntity upload);
-
-        void loadMore(int offset);
-
-        void addToFavourites(UploadEntity uploadEntity);
-
-        void removeFromFavourites(UploadEntity uploadEntity);
-
-        void shareMem(UploadEntity upload);
-    }
 
     public UploadsAdapter(Context context, IUploadInteraction uploadInteraction, RecyclerView rvUploads) {
         layoutInflater = LayoutInflater.from(context);
         uploads = new ArrayList<>();
         uploads.add(null);
+        glide = GlideApp.with(context);
         this.context = context;
         interactionListener = uploadInteraction;
         this.rvFeed = rvUploads;
@@ -119,12 +97,16 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-
+        if (viewMode == IConstants.ViewMode.LIST && isMemesEnded && pos == uploads.size() - 1) {
+            final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 16, 0, 180);
+            holder.itemView.setLayoutParams(params);
+        }
         if (holder instanceof UploadViewHolder) {
             final UploadViewHolder uploadVh = (UploadViewHolder) holder;
             final UploadEntity upload = uploads.get(pos);
-            uploadVh.bind(upload);
-            GlideApp.with(context)
+            uploadVh.bind(upload, glide);
+            glide
                     .load(Uri.parse(IMAGE_URL + upload.getImageId()))
                     .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color)))
                     .into(uploadVh.itemFeed);
@@ -135,8 +117,8 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 switch (upload.getOpinion()) {
                     case DISLIKED:
-                        upload.setDislikes(-1);
-                        upload.setLikes(1);
+                        upload.addDislikes(-1);
+                        upload.addLikes(1);
                         upload.setOpinion(IConstants.OPINION.LIKED);
                         bind(uploadVh, upload);
                         interactionListener.postLike(upload);
@@ -144,7 +126,7 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             ReviewManager.get().positiveCount(new WeakReference<>(context));
                         break;
                     case NEUTRAL:
-                        upload.setLikes(1);
+                        upload.addLikes(1);
                         upload.setOpinion(IConstants.OPINION.LIKED);
                         bind(uploadVh, upload);
                         interactionListener.postLike(upload);
@@ -152,7 +134,7 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             ReviewManager.get().positiveCount(new WeakReference<>(context));
                         break;
                     case LIKED:
-                        upload.setLikes(-1);
+                        upload.addLikes(-1);
                         upload.setOpinion(IConstants.OPINION.NEUTRAL);
                         bind(uploadVh, upload);
                         interactionListener.deleteLike(upload);
@@ -166,48 +148,67 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 switch (upload.getOpinion()) {
                     case LIKED:
-                        upload.setLikes(-1);
-                        upload.setDislikes(1);
+                        upload.addLikes(-1);
+                        upload.addDislikes(1);
                         upload.setOpinion(IConstants.OPINION.DISLIKED);
                         bind(uploadVh, upload);
                         interactionListener.postDislike(upload);
                         break;
                     case NEUTRAL:
-                        upload.setDislikes(1);
+                        upload.addDislikes(1);
                         upload.setOpinion(IConstants.OPINION.DISLIKED);
                         bind(uploadVh, upload);
                         interactionListener.postDislike(upload);
                         break;
                     case DISLIKED:
-                        upload.setDislikes(-1);
+                        upload.addDislikes(-1);
                         upload.setOpinion(IConstants.OPINION.NEUTRAL);
                         bind(uploadVh, upload);
                         interactionListener.deleteDislike(upload);
                         break;
                 }
             });
-            uploadVh.ibAddToFavs.setOnClickListener(v -> {
-                if (upload.isFavourite()) {
-                    interactionListener.removeFromFavourites(upload);
-                } else {
-                    interactionListener.addToFavourites(upload);
-                }
-            });
-            uploadVh.ibShare.setOnClickListener(v -> interactionListener.shareMem(upload));
             uploadVh.icComments.setOnClickListener(v -> interactionListener.onCommentsSelected(uploadVh.itemView, upload));
             uploadVh.itemFeed.setOnClickListener(v -> interactionListener.onUploadSelected(uploadVh.itemView, upload));
-            if (upload.getUserId() != null && !upload.getUserId().equals("")) {
+            if (upload.getUserId() != -1) {
                 uploadVh.sdvUserIcon.setImageURI(IConstants.USER_IMAGE_URL + upload.getUsername());
                 uploadVh.tvUsername.setText(upload.getUsername());
             } else {
                 uploadVh.sdvUserIcon.setImageResource(R.drawable.icon_memspace);
                 uploadVh.tvUsername.setText("MemSpace");
             }
+            uploadVh.tvOptions.setOnClickListener(v -> {
+                PopupMenu menu = new PopupMenu(context, uploadVh.tvOptions);
+                menu.inflate(R.menu.feed_item_menu);
+                if (upload.isFavourite())
+                    menu.getMenu().getItem(2).setTitle(context.getString(R.string.remove_from_favorites));
+                else
+                    menu.getMenu().getItem(2).setTitle(context.getString(R.string.add_to_favourites_title));
+                menu.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.report_meme:
+                            interactionListener.reportMeme(upload);
+                            return true;
+                        case R.id.addToFavorites:
+                            if (upload.isFavourite())
+                                interactionListener.removeFromFavourites(upload);
+                            else
+                                interactionListener.addToFavourites(upload);
+                            return true;
+                        case R.id.shareMeme:
+                            interactionListener.shareMem(upload);
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+                menu.show();
+            });
         } else if (holder instanceof GridUploadViewHolder) {
             GridUploadViewHolder grid = (GridUploadViewHolder) holder;
             UploadEntity upload = uploads.get(pos);
             grid.itemView.setOnClickListener(v -> interactionListener.onUploadSelected(grid.itemView, upload));
-            grid.bind(upload);
+            grid.bind(upload, glide);
         } else if (holder instanceof FailedViewHolder) {
             final FailedViewHolder failedViewHolder = (FailedViewHolder) holder;
             failedViewHolder.btnRetry.setOnClickListener(v -> {
@@ -229,33 +230,24 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void bind(UploadViewHolder uploadViewHolder, UploadEntity upload) {
         if (uploadViewHolder != null) {
-            if (uploadViewHolder.itemView != null) {
-                if (uploadViewHolder.itemFeedLike != null) {
-                    switch (upload.getOpinion()) {
-                        case LIKED:
-                            uploadViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like_pressed);
-                            uploadViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike);
-                            break;
-                        case NEUTRAL:
-                            uploadViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like);
-                            uploadViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike);
-                            break;
-                        case DISLIKED:
-                            uploadViewHolder.itemFeedLike.setImageResource(R.drawable.ic_like);
-                            uploadViewHolder.itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
-                            break;
-                    }
-
-                    if (upload.isFavourite()) {
-                        uploadViewHolder.ibAddToFavs.setImageResource(R.drawable.ic_saved);
-                    } else {
-                        uploadViewHolder.ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
-                    }
-                    uploadViewHolder.tvCommentsCount.setText(String.valueOf(upload.getCommentsCount()));
-                    uploadViewHolder.tvDislikeCount.setText(String.valueOf(upload.getDislikes()));
-                    uploadViewHolder.tvLikeCount.setText(String.valueOf(upload.getLikes()));
-                    closeSrlForPosition(uploadViewHolder);
+            if (uploadViewHolder.itemFeedLike != null) {
+                switch (upload.getOpinion()) {
+                    case LIKED:
+                        glide.load(R.drawable.ic_like_pressed).into(uploadViewHolder.itemFeedLike);
+                        glide.load(R.drawable.ic_dislike).into(uploadViewHolder.itemFeedDislike);
+                        break;
+                    case NEUTRAL:
+                        glide.load(R.drawable.ic_like).into(uploadViewHolder.itemFeedLike);
+                        glide.load(R.drawable.ic_dislike).into(uploadViewHolder.itemFeedDislike);
+                        break;
+                    case DISLIKED:
+                        glide.load(R.drawable.ic_like).into(uploadViewHolder.itemFeedLike);
+                        glide.load(R.drawable.ic_dislike_pressed).into(uploadViewHolder.itemFeedDislike);
+                        break;
                 }
+                uploadViewHolder.tvCommentsCount.setText(String.valueOf(upload.getCommentsCount()));
+                uploadViewHolder.tvDislikeCount.setText(String.valueOf(upload.getDislikes()));
+                uploadViewHolder.tvLikeCount.setText(String.valueOf(upload.getLikes()));
             }
         }
     }
@@ -308,24 +300,19 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void closeSrlForPosition(UploadViewHolder holder) {
-        holder.srlReveal.close(true);
-    }
-
     public void refreshMem(RefreshedMem refreshedMem) {
         final Pair<Integer, UploadEntity> pair = findMemAndPositionById(refreshedMem.getId());
+        L.print("refresh start");
         if (pair != null) {
+            L.print("pair not null");
             if (pair.getMem() == null) return;
+            L.print("Not null");
             UploadEntity uploadEntity = pair.getMem();
-            uploadEntity.setLikes(refreshedMem.getParsedLikes());
-            uploadEntity.setDislikes(refreshedMem.getParsedDislikes());
+            uploadEntity.setLikes(refreshedMem.getLikes());
+            uploadEntity.setDislikes(refreshedMem.getDislikes());
             uploadEntity.setOpinion(refreshedMem.getOpinion());
             uploadEntity.setFavourite(refreshedMem.isFavourite());
-            RecyclerView.ViewHolder holder = rvFeed.findViewHolderForAdapterPosition(pair.getPosition());
-            if (holder instanceof UploadViewHolder) {
-                UploadViewHolder uploadViewHolder = (UploadViewHolder) rvFeed.findViewHolderForAdapterPosition(pair.getPosition());
-                bind(uploadViewHolder, uploadEntity);
-            }
+            notifyItemChanged(pair.getPosition());
         }
     }
 
@@ -335,28 +322,22 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final UploadEntity upload = memAndPos.getMem();
             if (upload == null) return;
             final int pos = memAndPos.getPosition();
-            upload.setLikes(restoreMemEntity.getParsedLikes());
-            upload.setDislikes(restoreMemEntity.getParsedDislikes());
+            upload.setLikes(restoreMemEntity.getLikes());
+            upload.setDislikes(restoreMemEntity.getDislikes());
             upload.setOpinion(restoreMemEntity.getOpinion());
             upload.setFavourite(restoreMemEntity.isFavourite());
-            RecyclerView.ViewHolder holder = rvFeed.findViewHolderForAdapterPosition(pos);
-            if (holder instanceof UploadViewHolder) {
-                UploadViewHolder uploadViewHolder = (UploadViewHolder) rvFeed.findViewHolderForAdapterPosition(pos);
-                bind(uploadViewHolder, upload);
-            }
+            notifyItemChanged(pos);
         }
     }
 
-    private Pair<Integer, UploadEntity> findMemAndPositionById(String id) {
-        Pair<Integer, UploadEntity> pair = null;
-        int memId = Integer.parseInt(id);
-        for (int i = 0; i < uploads.size() - 1; i++) {
-            if (uploads.get(i).getImageId() == memId) {
-                pair = new Pair<>(i, uploads.get(i));
-                break;
+    private Pair<Integer, UploadEntity> findMemAndPositionById(int id) {
+        for (int i = 0; i < uploads.size(); i++) {
+            UploadEntity upload = uploads.get(i);
+            if (upload != null && upload.getImageId() == id) {
+                return new Pair<>(i, uploads.get(i));
             }
         }
-        return pair;
+        return null;
     }
 
     public void changeViewMode(IConstants.ViewMode viewMode) {
@@ -366,6 +347,36 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public boolean isLoading() {
         return isLoading;
+    }
+
+    public interface IUploadInteraction {
+        void reloadFeedBase();
+
+        void onUploadSelected(View animStart, UploadEntity upload);
+
+        boolean isRegistered();
+
+        void onNotRegistered();
+
+        void postLike(UploadEntity upload);
+
+        void deleteLike(UploadEntity upload);
+
+        void postDislike(UploadEntity upload);
+
+        void deleteDislike(UploadEntity upload);
+
+        void onCommentsSelected(View animStart, UploadEntity upload);
+
+        void loadMore(int offset);
+
+        void addToFavourites(UploadEntity uploadEntity);
+
+        void removeFromFavourites(UploadEntity uploadEntity);
+
+        void shareMem(UploadEntity upload);
+
+        void reportMeme(UploadEntity upload);
     }
 
     static class UploadViewHolder extends RecyclerView.ViewHolder {
@@ -385,43 +396,32 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         View icComments;
         @BindView(R.id.clItemFeedLayout)
         ConstraintLayout clLayout;
-        @BindView(R.id.ibAddToFavsBack)
-        ImageButton ibAddToFavs;
-        @BindView(R.id.ibShareBack)
-        ImageButton ibShare;
-        @BindView(R.id.srlItemFeedReveal)
-        dustit.clientapp.utils.SwipeRevealLayout srlReveal;
         @BindView(R.id.sdvUserUploadIcon)
         SimpleDraweeView sdvUserIcon;
         @BindView(R.id.tvUsernameUpload)
         TextView tvUsername;
+        @BindView(R.id.tvOptions)
+        TextView tvOptions;
 
         UploadViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(UploadEntity upload) {
-            srlReveal.close(false);
+        public void bind(UploadEntity upload, GlideRequests glide) {
             switch (upload.getOpinion()) {
                 case LIKED:
-                    itemFeedLike.setImageResource(R.drawable.ic_like_pressed);
-                    itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                    glide.load(R.drawable.ic_like_pressed).into(itemFeedLike);
+                    glide.load(R.drawable.ic_dislike).into(itemFeedDislike);
                     break;
                 case NEUTRAL:
-                    itemFeedLike.setImageResource(R.drawable.ic_like);
-                    itemFeedDislike.setImageResource(R.drawable.ic_dislike);
+                    glide.load(R.drawable.ic_like).into(itemFeedLike);
+                    glide.load(R.drawable.ic_dislike).into(itemFeedDislike);
                     break;
                 case DISLIKED:
-                    itemFeedLike.setImageResource(R.drawable.ic_like);
-                    itemFeedDislike.setImageResource(R.drawable.ic_dislike_pressed);
+                    glide.load(R.drawable.ic_like).into(itemFeedLike);
+                    glide.load(R.drawable.ic_dislike_pressed).into(itemFeedDislike);
                     break;
-            }
-
-            if (upload.isFavourite()) {
-                ibAddToFavs.setImageResource(R.drawable.ic_saved);
-            } else {
-                ibAddToFavs.setImageResource(R.drawable.ic_add_to_favourites);
             }
 
             tvCommentsCount.setText(String.valueOf(upload.getCommentsCount()));
@@ -439,10 +439,10 @@ public class UploadsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(UploadEntity upload) {
+        public void bind(UploadEntity upload, GlideRequests glide) {
             Context context = itemView.getContext();
             if (context != null)
-                GlideApp.with(context)
+                glide
                         .load(Uri.parse(IMAGE_URL + upload.getImageId()))
                         .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color)))
                         .into(ivUpload);

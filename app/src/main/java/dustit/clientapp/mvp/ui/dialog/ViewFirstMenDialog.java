@@ -2,8 +2,8 @@ package dustit.clientapp.mvp.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.media.Image;
-import android.support.v7.widget.CardView;
+
+import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.Achievement;
 
 public class ViewFirstMenDialog {
     @BindView(R.id.cvDialog)

@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -50,7 +49,6 @@ import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.FeedPageTransformer;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.bus.FavouritesBus;
 
 public class NewFeedActivity extends AppCompatActivity implements CategoriesFragment.ICategoriesFragmentInteractionListener, IFeedActivityView, MemViewFragment.IMemViewRatingInteractionListener, BaseFeedFragment.IBaseFragmentInteraction, FeedbackManager.IAchievementListener {
     @BindView(R.id.vpFeedPager)
@@ -67,27 +65,18 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     Spinner spCategoriesChooser;
     @BindView(R.id.tvActivityFeedAppName)
     View tvAppName;
-
-    private FeedViewPagerAdapter adapter;
-    private FeedActivityPresenter presenter = new FeedActivityPresenter();
-
-    private boolean isFirstLaunch = true;
-    private ICategoriesSpinnerInteractionListener spinnerInteractionListener;
-
-    private List<Category> categories = new ArrayList<>();
-
+    @BindView(R.id.ibSearchUsers)
+    View searchBtn;
     @Inject
     FeedbackManager feedbackManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
 
-    public interface ICategoriesSpinnerInteractionListener {
-        void onCategoriesArrived();
-
-        void onCategoriesFailed();
-
-        void onCategorySelected(Category category);
-    }
+    private FeedViewPagerAdapter adapter;
+    private FeedActivityPresenter presenter = new FeedActivityPresenter();
+    private boolean isFirstLaunch = true;
+    private ICategoriesSpinnerInteractionListener spinnerInteractionListener;
+    private List<Category> categories = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -202,6 +191,10 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
             presenter.updateFcmId();
         }
         feedbackManager.bindForAchievements(this);
+        searchBtn.setOnClickListener(v -> {
+            Intent i = new Intent(NewFeedActivity.this, SearchActivity.class);
+            startActivity(i, ActivityOptions.makeSceneTransitionAnimation(NewFeedActivity.this).toBundle());
+        });
     }
 
     @Override
@@ -241,7 +234,6 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     protected void onDestroy() {
         presenter.unbind();
         adapter.destroy();
-        FavouritesBus.destroy();
         super.onDestroy();
     }
 
@@ -250,9 +242,9 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         if (intent.getExtras() != null) {
             Bundle extras = intent.getExtras();
             if (extras.getBoolean(IConstants.IBundle.SHOW_COMMENTS)) {
-                String memId = extras.getString(IConstants.IBundle.MEM_ID);
-                String parentComment = extras.getString(IConstants.IBundle.PARENT_COMMENT_ID);
-                String newComment = extras.getString(IConstants.IBundle.NEW_COMMENT_ID);
+                int memId = extras.getInt(IConstants.IBundle.MEM_ID);
+                int parentComment = extras.getInt(IConstants.IBundle.PARENT_COMMENT_ID);
+                int newComment = extras.getInt(IConstants.IBundle.NEW_COMMENT_ID);
                 presenter.loadMemForComments(memId, parentComment, newComment);
             }
         }
@@ -265,18 +257,13 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     }
 
     @Override
-    public void notifyOnScrollChanged(int distance) {
-
-    }
-
-    @Override
     public void launchMemView(View holder, MemEntity memEntity, boolean startComments) {
         MemViewFragment fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId());
         showFragment(fragment);
     }
 
-    private void launchMemViewForComments(MemEntity memEntity, boolean startComments, String
-            parentComment, String newComment) {
+    private void launchMemViewForComments(MemEntity memEntity, boolean startComments, int
+            parentComment, int newComment) {
         MemViewFragment fragment = MemViewFragment.newInstance(memEntity, startComments, presenter.loadId(), parentComment, newComment);
         showFragment(fragment);
     }
@@ -291,18 +278,8 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     }
 
     @Override
-    public void notifyFeedScrollIdle(boolean b) {
-
-    }
-
-    @Override
     public boolean isRegistered() {
         return userSettingsDataManager.isRegistered();
-    }
-
-    @Override
-    public void notifyFeedOnTop() {
-
     }
 
     @Override
@@ -408,7 +385,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     }
 
     @Override
-    public void onMemReadyForComments(MemEntity memEntity, String parentComment, String
+    public void onMemReadyForComments(MemEntity memEntity, int parentComment, int
             newComment) {
         launchMemViewForComments(memEntity, true, parentComment, newComment);
     }
@@ -416,5 +393,13 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
     @Override
     public void onNotRegistered() {
         AlertBuilder.showNotRegisteredPrompt(this);
+    }
+
+    public interface ICategoriesSpinnerInteractionListener {
+        void onCategoriesArrived();
+
+        void onCategoriesFailed();
+
+        void onCategorySelected(Category category);
     }
 }

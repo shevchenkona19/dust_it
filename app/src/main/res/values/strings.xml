@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="admob_app_id">ca-app-pub-9723651795695164~9141370921</string>
+    <string name="admob_nativead_id">ca-app-pub-3940256099942544/2247696110</string>
+
     <string name="app_name">MemSpace</string>
     <string name="error">Помилка</string>
     <string name="pick_language">Оберіть мову</string>
@@ -162,15 +165,13 @@
     <string name="share_referral">Поділитись кодом:</string>
     <string name="referral_share_subject"><![CDATA[Скачай MemSpace та зареєструйся використовуючи мій код:]]></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="empty_photos">Додайте свій перший мем до мережі MemSpace</string>
     <string name="permission_upload_title">Помилка</string>
     <string name="permission_upload_message">Для загрузки фото нам потрібен дозвіл на перегляд внутрішнього сховища вашого смартфону</string>
     <string name="empty_categories_selected_upload">Оберіть категорії</string>
     <string name="empty_categories_selected_upload_message">Вам потрібно обрати хоча-б одну категорію для свого мема</string>
     <string name="upload_finished_thanks">Дякуємо! Скоро мем з\'явиться у ленті</string>
-    <string name="loading">Загружаємо мем... почикайте трохи</string>
+    <string name="loading">Загружаємо мем… почикайте трохи</string>
     <string name="choose_categories_upload_title">Оберіть категорії</string>
     <string name="upload_finished_title">Завершено!</string>
     <string name="report_meme_menu">Повідомити про некоректний мем</string>
@@ -185,5 +186,13 @@
     <string name="send_report">Відправити</string>
     <string name="enter_reason">Введіть причину видалення мема</string>
     <string name="thankyou_will_check_report">Дякуємо! Ми переглянемо вашу скаргу</string>
+    <string name="searchUsers">Пошук юзерів</string>
+    <string name="new_like_notification" >%1$s лайкнув ваш мем</string>
+    <string name="new_like_notification_title">Новий лайк!</string>
+    <string name="error_uploading_meme">Помилка загрузки мема</string>
+    <string name="you_are_banned">У зв\'язку зі скаргами на ваші меми вам було заборонено загружати нові меми. Детальну інформацію ви можете отримати написавши за адресою нашої допомги користувачам, зазначену на сторінці магазину додатків.</string>
+    <string name="options_icon">⋮</string>
+    <string name="share_mem_feed">Поділитись мемом</string>
+    <string name="remove_from_favorites">Видалити з обраного</string>
 
 </resources>

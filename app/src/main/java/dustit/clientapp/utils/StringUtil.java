@@ -1,7 +1,7 @@
 package dustit.clientapp.utils;
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.widget.EditText;
 
 import java.util.regex.Pattern;

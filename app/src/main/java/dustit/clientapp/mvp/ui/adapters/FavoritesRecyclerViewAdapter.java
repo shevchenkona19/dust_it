@@ -3,14 +3,15 @@ package dustit.clientapp.mvp.ui.adapters;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
 import dustit.clientapp.mvp.model.entities.RestoreMemEntity;
 import dustit.clientapp.utils.GlideApp;
+import dustit.clientapp.utils.GlideRequests;
 
 import static dustit.clientapp.utils.IConstants.BASE_URL;
 
@@ -36,10 +38,12 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     private List<MemEntity> removedList = new ArrayList<>();
     private boolean isMe;
     private IFavoritesCallback callback;
+    private GlideRequests glide;
 
     public FavoritesRecyclerViewAdapter(Context context, IFavoritesCallback iFavoriteCallback) {
         inflater = LayoutInflater.from(context);
         callback = iFavoriteCallback;
+        glide = GlideApp.with(context);
         this.context = context;
     }
 
@@ -53,7 +57,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                 }
             } else {
                 for (MemEntity mem : removedList) {
-                    if (mem.getId().equals(refreshedMem.getId())) {
+                    if (mem.getId() == refreshedMem.getId()) {
                         mem = refreshedMem.populateMemEntity(mem);
                         list.add(0, mem);
                         removedList.remove(mem);
@@ -62,7 +66,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                     }
                 }
                 for (MemEntity mem : list) {
-                    if (mem.getId().equals(refreshedMem.getId())) {
+                    if (mem.getId() == refreshedMem.getId()) {
                         refreshedMem.populateMemEntity(mem);
                         return;
                     }
@@ -82,7 +86,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                 }
             } else {
                 for (MemEntity mem : removedList) {
-                    if (mem.getId().equals(restoreMemEntity.getId())) {
+                    if (mem.getId() == restoreMemEntity.getId()) {
                         mem = restoreMemEntity.populateMemEntity(mem);
                         list.add(0, mem);
                         removedList.remove(mem);
@@ -90,7 +94,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                     }
                 }
                 for (MemEntity mem : list) {
-                    if (mem.getId().equals(restoreMemEntity.getId())) {
+                    if (mem.getId() == restoreMemEntity.getId()) {
                         restoreMemEntity.populateMemEntity(mem);
                         return;
                     }
@@ -114,7 +118,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     @Override
     public void onBindViewHolder(@NonNull final FavoriteViewHolder holder, int position) {
         MemEntity mem = list.get(position);
-        GlideApp.with(context)
+        glide
                 .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
                 .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color)))
                 .into(holder.ivMem);
@@ -133,9 +137,9 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     }
 
     @Nullable
-    private MemEntity removeById(String id) {
+    private MemEntity removeById(int id) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId().equals(id)) {
+            if (list.get(i).getId() == id) {
                 notifyItemRemoved(i);
                 return list.remove(i);
             }

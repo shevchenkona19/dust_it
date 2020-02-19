@@ -6,7 +6,7 @@ import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.NewAchievementEntity;
 
 public interface IAnswersActivityView extends IActivityView {
-    void onAnswered(String newCommentId);
+    void onAnswered(int newCommentId);
 
     void onAnswerFailed();
 

@@ -3,11 +3,11 @@ package dustit.clientapp.mvp.presenters.interfaces;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 
 public interface IMemViewPresenter {
-    void loadCommentsBase(String id);
+    void loadCommentsBase(int id);
 
-    void loadCommentsWithOffset(String id, int offset);
+    void loadCommentsWithOffset(int id, int offset);
 
-    void postComment(String id, String text);
+    void postComment(int id, String text);
 
     void addToFavourites(MemEntity memEntity);
 
@@ -21,13 +21,13 @@ public interface IMemViewPresenter {
 
     void deleteDislike(MemEntity memEntity);
 
-    void isFavourite(String id);
+    void isFavourite(int id);
 
-    void getCommentsToCommentId(String memId, String toCommentId);
+    void getCommentsToCommentId(int memId, int toCommentId);
 
     void updateFcmId();
 
-    void postAnswer(String id, String answerId, String text, String commentId);
+    void postAnswer(int id, int answerId, String text, int commentId);
 
-    void downloadImage(String imageId);
+    void downloadImage(int imageId);
 }

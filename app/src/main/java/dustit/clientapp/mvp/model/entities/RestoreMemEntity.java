@@ -5,10 +5,10 @@ import org.jetbrains.annotations.Nullable;
 import dustit.clientapp.utils.IConstants;
 
 public class RestoreMemEntity {
-    private String likes;
-    private String dislikes;
+    private int likes;
+    private int dislikes;
     private String opinion;
-    private String id;
+    private int id;
     private boolean isFavourite;
 
     public RestoreMemEntity(MemEntity memEntity) {
@@ -19,7 +19,7 @@ public class RestoreMemEntity {
         isFavourite = memEntity.isFavorite();
     }
 
-    public RestoreMemEntity(String likes, String dislikes, String opinion, String id, boolean isFavourite) {
+    public RestoreMemEntity(int likes, int dislikes, String opinion, int id, boolean isFavourite) {
         this.likes = likes;
         this.dislikes = dislikes;
         setOpinion(opinion);
@@ -27,7 +27,7 @@ public class RestoreMemEntity {
         this.isFavourite = isFavourite;
     }
 
-    public RestoreMemEntity(String likes, String dislikes, IConstants.OPINION opinion, String id, boolean isFavourite) {
+    public RestoreMemEntity(int likes, int dislikes, IConstants.OPINION opinion, int id, boolean isFavourite) {
         this.likes = likes;
         this.dislikes = dislikes;
         setOpinion(opinion);
@@ -35,35 +35,27 @@ public class RestoreMemEntity {
         this.isFavourite = isFavourite;
     }
 
-    public String getLikes() {
+    public int getLikes() {
         return likes;
     }
 
-    public void setLikes(String likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
-    public String getDislikes() {
+    public int getDislikes() {
         return dislikes;
     }
 
-    public int getParsedDislikes() {
-        return Integer.parseInt(dislikes);
-    }
-
-    public int getParsedLikes() {
-        return Integer.parseInt(likes);
-    }
-
-    public void setDislikes(String dislikes) {
+    public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -75,7 +67,6 @@ public class RestoreMemEntity {
         isFavourite = favourite;
     }
 
-    @Nullable
     public IConstants.OPINION getOpinion() {
         if (opinion != null) {
             switch (opinion) {

@@ -7,8 +7,8 @@ public interface IAnswersActivityPresenter {
 
     void loadPartial(int limit);
 
-    void postRespond(String userId, String text, String imageId);
+    void postRespond(int userId, String text, int imageId);
 
-    void loadCommentsToId(String newCommentId, String baseCommentId, String imageId);
+    void loadCommentsToId(int newCommentId, int baseCommentId, int imageId);
 
 }

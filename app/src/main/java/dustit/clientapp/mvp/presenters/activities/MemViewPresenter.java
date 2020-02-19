@@ -56,7 +56,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void loadCommentsBase(String id) {
+    public void loadCommentsBase(int id) {
         getView().onStartLoading();
         final List<CommentEntity> list = new ArrayList<>();
         addSubscription(dataManager.getComments(id, 6, 0)
@@ -82,7 +82,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void loadCommentsWithOffset(String id, int offset) {
+    public void loadCommentsWithOffset(int id, int offset) {
         getView().onStartLoading();
         final List<CommentEntity> list = new ArrayList<>();
         addSubscription(dataManager.getComments(id, 5, offset)
@@ -106,7 +106,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void postComment(String id, String text) {
+    public void postComment(int id, String text) {
         if (!isRegistered()) {
             getView().onNotRegistered();
             return;
@@ -174,7 +174,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void isFavourite(String id) {
+    public void isFavourite(int id) {
         final Container<IsFavourite> favouriteContainer = new Container<>();
         addSubscription(dataManager.isFavourite(id).subscribe(new Subscriber<IsFavourite>() {
             @Override
@@ -196,7 +196,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void getCommentsToCommentId(String memId, String toCommentId) {
+    public void getCommentsToCommentId(int memId, int toCommentId) {
         getView().onStartLoading();
         List<CommentEntity> list = new ArrayList<>();
         addSubscription(dataManager.getCommentsToCommentId(memId, toCommentId).subscribe(new Subscriber<CommentEntity>() {
@@ -218,7 +218,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void postAnswer(String id, String answerId, String text, String commentId) {
+    public void postAnswer(int id, int answerId, String text, int commentId) {
         if (!isRegistered()) {
             getView().onNotRegistered();
             return;
@@ -256,7 +256,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
     }
 
     @Override
-    public void downloadImage(String imageId) {
+    public void downloadImage(int imageId) {
         boolean permCheck = getView().checkPermission();
         if (permCheck) {
             Picasso.get()

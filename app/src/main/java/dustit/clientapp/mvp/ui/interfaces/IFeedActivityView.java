@@ -20,6 +20,6 @@ public interface IFeedActivityView extends IActivityView {
 
     void onCategoriesFailedToLoad();
 
-    void onMemReadyForComments(MemEntity memEntity, String parentComment, String newComment);
+    void onMemReadyForComments(MemEntity memEntity, int parentComment, int newComment);
 
 }

@@ -16,4 +16,6 @@
     <color name="baseCommentBackground">#202020</color>
     <color name="placeholder_color">#202020</color>
     <color name="colorAchievementCircle">#202020</color>
+    <color name="devider">#30ffffff</color>
+    <color name="item_feed_background">#232323</color>
 </resources>

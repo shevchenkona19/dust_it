@@ -10,17 +10,6 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -35,9 +24,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.material.appbar.AppBarLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,6 @@ import butterknife.Unbinder;
 import dustit.clientapp.App;
 import dustit.clientapp.R;
 import dustit.clientapp.customviews.WrapperLinearLayoutManager;
-import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
@@ -78,38 +78,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private static final String COMMENTS_KEY = "COMMENTS_KEY";
     private static final String SHOW_FAVORITES = "SHOW_FAVORITES";
     private static final int PERMISSION_DIALOG = 2020;
-
-    private MemEntity mem;
-    private Unbinder unbinder;
-    private CommentsRecyclerViewAdapter commentAdapter;
     private final MemViewPresenter presenter = new MemViewPresenter();
-
-    private boolean startComments = false;
-
-    private boolean canPerformTap = true;
-    private boolean navVisible = true;
-
-    private int imageWidth = -1;
-    private int imageHeight = -1;
-
-    private String myId = "";
-
-    private String answerUserId = "";
-    private boolean isAnswering = false;
-    private String commentId = "";
-    private String answeringUsername = "";
-    private boolean showFavorites = false;
-
-    private boolean showNewComment = false;
-    private String newCommentParentId = "";
-    private String newCommentId = "";
-
-    public interface IMemViewRatingInteractionListener {
-        void closeMemView();
-    }
-
-    private IMemViewRatingInteractionListener interactionListener;
-
     @BindView(R.id.tvCommentEmptySet)
     TextView tvCommentEmpty;
     @BindView(R.id.ivMemViewLike)
@@ -160,39 +129,56 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     View rlExpandablePanelWrapper;
     @BindView(R.id.tvMemViewCommentsCount)
     TextView tvCommentsCount;
-
     @Inject
     UserSettingsDataManager userSettingsDataManager;
-
+    private MemEntity mem;
+    private Unbinder unbinder;
+    private CommentsRecyclerViewAdapter commentAdapter;
+    private boolean startComments = false;
+    private boolean canPerformTap = true;
+    private boolean navVisible = true;
+    private int imageWidth = -1;
+    private int imageHeight = -1;
+    private int myId;
+    private int answerUserId;
+    private boolean isAnswering = false;
+    private int commentId;
+    private String answeringUsername;
+    private boolean showFavorites = false;
+    private boolean showNewComment = false;
+    private int newCommentParentId;
+    private int newCommentId;
+    private IMemViewRatingInteractionListener interactionListener;
     private SlidingUpPanelLayout.PanelState prevPanelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
 
-    public static MemViewFragment newInstance(MemEntity mem, boolean startComments, String userId) {
+    public static MemViewFragment newInstance(MemEntity mem, boolean startComments, int userId) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
         args.putBoolean(COMMENTS_KEY, startComments);
-        args.putString(IConstants.IBundle.USER_ID, userId);
+        args.putInt(IConstants.IBundle.USER_ID, userId);
         final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static MemViewFragment newInstance(MemEntity mem, String userId, boolean showFavorites) {
+    public static MemViewFragment newInstance(MemEntity mem, int userId, boolean showFavorites) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, mem);
         args.putBoolean(SHOW_FAVORITES, showFavorites);
-        args.putString(IConstants.IBundle.USER_ID, userId);
+        args.putInt(IConstants.IBundle.USER_ID, userId);
         final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static MemViewFragment newInstance(@NotNull MemEntity memEntity, boolean startComments, String loadId, String parentComment, String newComment) {
+    public static MemViewFragment newInstance(@NotNull MemEntity memEntity, boolean startComments, int loadId, int parentComment, int newComment) {
         Bundle args = new Bundle();
         args.putParcelable(MEM_KEY, memEntity);
         args.putBoolean(COMMENTS_KEY, startComments);
-        args.putString(IConstants.IBundle.USER_ID, loadId);
-        args.putString(IConstants.IBundle.PARENT_COMMENT_ID, parentComment);
-        args.putString(IConstants.IBundle.NEW_COMMENT_ID, newComment);
+        args.putInt(IConstants.IBundle.USER_ID, loadId);
+        args.putInt(IConstants.IBundle.PARENT_COMMENT_ID, parentComment);
+        args.putInt(IConstants.IBundle.NEW_COMMENT_ID, newComment);
+        args.putBoolean(IConstants.IBundle.SHOW_COMMENTS, true);
         final MemViewFragment fragment = new MemViewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -203,14 +189,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         super.setArguments(args);
         if (args != null) {
             mem = args.getParcelable(MEM_KEY);
-            myId = args.getString(IConstants.IBundle.USER_ID);
+            myId = args.getInt(IConstants.IBundle.USER_ID);
             startComments = args.getBoolean(COMMENTS_KEY);
             showFavorites = args.getBoolean(SHOW_FAVORITES, false);
-            if (args.getString(IConstants.IBundle.PARENT_COMMENT_ID) != null) {
-                showNewComment = true;
-                newCommentParentId = args.getString(IConstants.IBundle.PARENT_COMMENT_ID);
-                newCommentId = args.getString(IConstants.IBundle.NEW_COMMENT_ID);
-            }
+            showNewComment = args.getBoolean(IConstants.IBundle.SHOW_COMMENTS, false);
+            newCommentParentId = args.getInt(IConstants.IBundle.PARENT_COMMENT_ID);
+            newCommentId = args.getInt(IConstants.IBundle.NEW_COMMENT_ID);
         }
     }
 
@@ -231,10 +215,12 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         presenter.bind(this);
         presenter.bindToView(this);
         commentAdapter = new CommentsRecyclerViewAdapter(getContext(), myId, this);
+        commentAdapter.setHasStableIds(true);
         pbCommentSend.getIndeterminateDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
         initOnClicks();
         rvComments.setAdapter(commentAdapter);
         rvComments.setNestedScrollingEnabled(true);
+        rvComments.setHasFixedSize(true);
         rvComments.setLayoutManager(new WrapperLinearLayoutManager(getContext()));
         srlCommentsRefresh.setOnRefreshListener(() -> {
             srlCommentsRefresh.setRefreshing(true);
@@ -284,10 +270,10 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                         setStatusbarForComments();
                         prevPanelState = SlidingUpPanelLayout.PanelState.EXPANDED;
                         canPerformTap = true;
-                        if (!showNewComment) {
-                            presenter.loadCommentsBase(mem.getId());
-                        } else {
+                        if (showNewComment) {
                             presenter.getCommentsToCommentId(mem.getId(), newCommentParentId);
+                        } else {
+                            presenter.loadCommentsBase(mem.getId());
                         }
                         supPanel.setDragView(clExpandedUpperLayout);
                         break;
@@ -306,10 +292,9 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                                 supPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                                 break;
                             case COLLAPSED:
-                                supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                                break;
                             case DRAGGING:
                                 supPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                                break;
                         }
                 }
             }
@@ -337,7 +322,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                     if (!etComment.getText().toString().contains("@" + answeringUsername) && !etComment.getText().toString().equals("")) {
                         isAnswering = false;
                         answeringUsername = "";
-                        answerUserId = "";
+                        answerUserId = -1;
                     }
                 }
             }
@@ -433,8 +418,8 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             if (tvDislikeCount != null) {
                 tvCommentsCount.setText(String.valueOf(mem.getCommentsCount()));
                 if (tvLikeCount != null) {
-                    tvLikeCount.setText(mem.getLikes());
-                    tvDislikeCount.setText(mem.getDislikes());
+                    tvLikeCount.setText(String.valueOf(mem.getLikes()));
+                    tvDislikeCount.setText(String.valueOf(mem.getDislikes()));
                     final IConstants.OPINION opinion = mem.getOpinion();
                     switch (opinion) {
                         case LIKED:
@@ -486,19 +471,19 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             if (mem.getOpinion() == IConstants.OPINION.LIKED) {
                 presenter.deleteLike(mem);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
-                mem.setLikes(-1);
+                mem.addLikes(-1);
             } else if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
                 if (getContext() != null)
                     ReviewManager.get().positiveCount(new WeakReference<>(getContext()));
                 presenter.postLike(mem);
-                mem.setLikes(1);
-                mem.setDislikes(-1);
+                mem.addLikes(1);
+                mem.addDislikes(-1);
                 mem.setOpinion(IConstants.OPINION.LIKED);
             } else {
                 if (getContext() != null)
                     ReviewManager.get().positiveCount(new WeakReference<>(getContext()));
                 presenter.postLike(mem);
-                mem.setLikes(1);
+                mem.addLikes(1);
                 mem.setOpinion(IConstants.OPINION.LIKED);
             }
             refreshUi();
@@ -510,16 +495,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             }
             if (mem.getOpinion() == IConstants.OPINION.DISLIKED) {
                 presenter.deleteDislike(mem);
-                mem.setDislikes(-1);
+                mem.addDislikes(-1);
                 mem.setOpinion(IConstants.OPINION.NEUTRAL);
             } else if (mem.getOpinion() == IConstants.OPINION.LIKED) {
                 presenter.postDislike(mem);
-                mem.setDislikes(1);
-                mem.setLikes(-1);
+                mem.addDislikes(1);
+                mem.addLikes(-1);
                 mem.setOpinion(IConstants.OPINION.DISLIKED);
             } else {
                 presenter.postDislike(mem);
-                mem.setDislikes(1);
+                mem.addDislikes(1);
                 mem.setOpinion(IConstants.OPINION.DISLIKED);
             }
             refreshUi();
@@ -648,11 +633,11 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     @Override
     public void onAnswerSentSuccessfully() {
         presenter.getCommentsToCommentId(mem.getId(), commentId);
-        answerUserId = "";
+        answerUserId = -1;
         answeringUsername = "";
         pbCommentSend.setVisibility(View.INVISIBLE);
         ivSendComment.setVisibility(View.VISIBLE);
-        commentId = "";
+        commentId = -1;
     }
 
     @Override
@@ -727,7 +712,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     }
 
     @Override
-    public void answerComment(CommentEntity comment, String commentId) {
+    public void answerComment(CommentEntity comment, int commentId) {
         etComment.setText(String.format("@%s,", comment.getUsername()));
         isAnswering = true;
         answerUserId = comment.getUserId();
@@ -746,7 +731,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         }
     }
 
-    public void openAnswersForComment(CommentEntity commentEntity, boolean startComments, String newCommentId) {
+    public void openAnswersForComment(CommentEntity commentEntity, boolean startComments, int newCommentId) {
         if (getContext() != null) {
             Intent intent = new Intent(getContext(), AnswersActivity.class);
             intent.putExtra(IConstants.IBundle.BASE_COMMENT, commentEntity);
@@ -772,16 +757,18 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_DIALOG: {
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                        presenter.downloadImage(mem.getId());
-                    }
-                } else {
-                    onError();
+        if (requestCode == PERMISSION_DIALOG) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    presenter.downloadImage(mem.getId());
                 }
+            } else {
+                onError();
             }
         }
+    }
+
+    public interface IMemViewRatingInteractionListener {
+        void closeMemView();
     }
 }

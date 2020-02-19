@@ -1,6 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -13,8 +12,6 @@ import dustit.clientapp.App;
 import dustit.clientapp.mvp.datamanager.DataManager;
 import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.Category;
-import dustit.clientapp.mvp.model.entities.FavoriteEntity;
-import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
@@ -104,28 +101,24 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
     }
 
     @Override
-    public void loadMemForComments(@Nullable String memId, @Nullable String parentComment, @Nullable String newComment) {
-        if (memId != null && parentComment != null && newComment != null) {
-            AtomicReference<MemEntity> reference = new AtomicReference<>();
-            addSubscription(dataManager.getMemById(memId).subscribe(new Subscriber<MemEntity>() {
-                @Override
-                public void onCompleted() {
-                    getView().onMemReadyForComments(reference.get(), parentComment, newComment);
-                }
+    public void loadMemForComments(int memId, @Nullable int parentComment, @Nullable int newComment) {
+        AtomicReference<MemEntity> reference = new AtomicReference<>();
+        addSubscription(dataManager.getMemById(memId).subscribe(new Subscriber<MemEntity>() {
+            @Override
+            public void onCompleted() {
+                getView().onMemReadyForComments(reference.get(), parentComment, newComment);
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    L.print("Error for loading mem: " + e.getMessage());
-                }
+            @Override
+            public void onError(Throwable e) {
+                L.print("Error for loading mem: " + e.getMessage());
+            }
 
-                @Override
-                public void onNext(MemEntity memEntity) {
-                    reference.set(memEntity);
-                }
-            }));
-        } else {
-            L.print("NULL FOR LOAD MEM");
-        }
+            @Override
+            public void onNext(MemEntity memEntity) {
+                reference.set(memEntity);
+            }
+        }));
     }
 
     public void updateFcmId() {
@@ -153,8 +146,7 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
         }));
     }
 
-    @NotNull
-    public String loadId() {
+    public int loadId() {
         return dataManager.loadId();
     }
 }

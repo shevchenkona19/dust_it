@@ -2,10 +2,10 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +24,6 @@ public class ReferralFragment extends Fragment implements IReferralActivityView 
 
     @BindView(R.id.tvRefCode)
     TextView tvRefCode;
-    @BindView(R.id.ivArrowDown)
-    View ivScrollDown;
     @BindView(R.id.ivShareCodeBtn)
     View shareCode;
     @BindView(R.id.svRefCodeWrapper)
@@ -51,7 +49,6 @@ public class ReferralFragment extends Fragment implements IReferralActivityView 
         View view = inflater.inflate(R.layout.activity_referral, container, false);
         ButterKnife.bind(this, view);
         presenter.getMyReferralInfo();
-        ivScrollDown.setOnClickListener(v -> svCodeWrapper.fling(3000));
         shareCode.setOnClickListener(v -> {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");

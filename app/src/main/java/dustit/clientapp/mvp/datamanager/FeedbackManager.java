@@ -98,7 +98,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.postLike(getToken(), String.valueOf(memEntity.getImageId()))
+        subscriptions.add(serverRepository.postLike(getToken(), memEntity.getImageId())
                 .subscribe(createConsumer(memEntity))
         );
     }
@@ -108,7 +108,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.postDislike(getToken(), String.valueOf(memEntity.getImageId()))
+        subscriptions.add(serverRepository.postDislike(getToken(), memEntity.getImageId())
                 .subscribe(createConsumer(memEntity))
         );
     }
@@ -118,7 +118,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.deleteLike(getToken(), String.valueOf(memEntity.getImageId()))
+        subscriptions.add(serverRepository.deleteLike(getToken(), memEntity.getImageId())
                 .subscribe(createConsumer(memEntity))
         );
     }
@@ -128,7 +128,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.deleteDislike(getToken(), String.valueOf(memEntity.getImageId()))
+        subscriptions.add(serverRepository.deleteDislike(getToken(), memEntity.getImageId())
                 .subscribe(createConsumer(memEntity))
         );
     }
@@ -154,7 +154,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.addToFavorites(getToken(), String.valueOf(memEntity.getImageId())).subscribe(createConsumer(memEntity)));
+        subscriptions.add(serverRepository.addToFavorites(getToken(), memEntity.getImageId()).subscribe(createConsumer(memEntity)));
     }
 
     public void removeFromFavourites(UploadEntity memEntity) {
@@ -162,7 +162,7 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
             getView().onNotRegistered();
             return;
         }
-        subscriptions.add(serverRepository.removeFromFavorites(getToken(), String.valueOf(memEntity.getImageId())).subscribe(createConsumer(memEntity)));
+        subscriptions.add(serverRepository.removeFromFavorites(getToken(), memEntity.getImageId()).subscribe(createConsumer(memEntity)));
     }
 
     private Subscriber<RefreshedMem> createConsumer(final MemEntity memEntity) {
@@ -170,10 +170,10 @@ public class FeedbackManager extends BaseFeedbackManager<IView> {
     }
 
     private Subscriber<RefreshedMem> createConsumer(final UploadEntity upload) {
-        return createConsumer(String.valueOf(upload.getLikes()), String.valueOf(upload.getDislikes()), upload.getOpinion(), String.valueOf(upload.getImageId()), upload.isFavourite());
+        return createConsumer(upload.getLikes(), upload.getDislikes(), upload.getOpinion(), upload.getImageId(), upload.isFavourite());
     }
 
-    private Subscriber<RefreshedMem> createConsumer(String likes, String dislikes, IConstants.OPINION opinion, String id, boolean isFavourite) {
+    private Subscriber<RefreshedMem> createConsumer(int likes, int dislikes, IConstants.OPINION opinion, int id, boolean isFavourite) {
         final Container<RefreshedMem> container = new Container<>();
         return new Subscriber<RefreshedMem>() {
             @Override

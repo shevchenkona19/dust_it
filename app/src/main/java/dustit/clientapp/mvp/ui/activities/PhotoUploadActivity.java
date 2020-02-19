@@ -2,20 +2,19 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,19 +24,19 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
-import dustit.clientapp.mvp.model.entities.Category;
 import dustit.clientapp.mvp.presenters.activities.UploadActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.UploadStepsAdapter;
 import dustit.clientapp.mvp.ui.fragments.CategoriesStepFragment;
 import dustit.clientapp.mvp.ui.interfaces.IPhotoUploadActivityView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.ErrorCodeResolver;
 import dustit.clientapp.utils.IConstants;
 
 public class PhotoUploadActivity extends AppCompatActivity implements IPhotoUploadActivityView, StepperLayout.StepperListener, CategoriesStepFragment.ICategoriesStepFragmentInteraction {
@@ -215,6 +214,17 @@ public class PhotoUploadActivity extends AppCompatActivity implements IPhotoUplo
     public void onErrorPhotoUploading() {
         Toast.makeText(this, getText(R.string.error), Toast.LENGTH_SHORT).show();
         finishWithError();
+    }
+
+    @Override
+    public void onErrorPhotoUploading(String message) {
+        AlertDialog.Builder builder = AlertBuilder.getErrorUploadingDialog(this);
+        builder.setMessage(ErrorCodeResolver.resolveError(message, new WeakReference<>(this)))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.ok), null)
+                .setOnCancelListener(dialog -> finishWithError())
+                .setOnDismissListener(dialog -> finishWithError())
+                .show();
     }
 
     @Override

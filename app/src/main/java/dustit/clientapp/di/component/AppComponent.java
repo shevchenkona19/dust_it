@@ -20,6 +20,7 @@ import dustit.clientapp.mvp.presenters.activities.NewAccountActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.ReferralActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.RegisterActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.ResultActivityPresenter;
+import dustit.clientapp.mvp.presenters.activities.SearchActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.SettingsActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.presenters.activities.UploadActivityPresenter;
@@ -51,8 +52,8 @@ import dustit.clientapp.utils.receivers.NotificationService;
  * Created by shevc on 22.09.2017.
  * Let's GO!
  */
-@Component(modules = {AppModule.class, ServerModule.class})
 @Singleton
+@Component(modules = {AppModule.class, ServerModule.class})
 public interface AppComponent {
     void inject(ServerRepository repository);
 
@@ -86,8 +87,6 @@ public interface AppComponent {
 
     void inject(MemViewPresenter memViewPresenter);
 
-
-
     void inject(ChangeCategoriesFragmentPresenter changeCategoriesFragmentPresenter);
 
     void inject(UserSettingsDataManager userSettingsDataManager);
@@ -103,7 +102,6 @@ public interface AppComponent {
     void inject(CategoriesFragment categoriesFragment);
 
     void inject(MemViewFragment memViewFragment);
-
 
     void inject(FeedbackManager feedbackManager);
 
@@ -139,4 +137,9 @@ public interface AppComponent {
 
     void inject(ReportMemeDialogPresenter reportMemeDialogPresenter);
 
+    void inject(SearchActivityPresenter searchActivityPresenter);
+
 }
+
+
+

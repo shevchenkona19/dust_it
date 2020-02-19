@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.MemEntity;
+import dustit.clientapp.mvp.model.entities.UploadEntity;
 import dustit.clientapp.mvp.presenters.dialogs.ReportMemeDialogPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IReportMemeDialogView;
 import dustit.clientapp.utils.AlertBuilder;

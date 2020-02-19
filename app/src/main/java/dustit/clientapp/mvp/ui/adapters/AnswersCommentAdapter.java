@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -23,6 +24,9 @@ import butterknife.ButterKnife;
 import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.CommentEntity;
 import dustit.clientapp.mvp.ui.activities.AccountActivity;
+import dustit.clientapp.utils.AchievementHelper;
+import dustit.clientapp.utils.GlideApp;
+import dustit.clientapp.utils.GlideRequests;
 import dustit.clientapp.utils.IConstants;
 
 public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -32,23 +36,11 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private CommentEntity baseComment;
 
     private boolean isLoading = true;
-    private String myId;
-
-    private interface ViewTypes {
-        int BASE_COMMENT = 1;
-        int ANSWER = 2;
-        int LOADING = 3;
-    }
-
-    public interface IAnswersInteraction {
-        void onAnswerClicked(CommentEntity comment);
-
-        void onLoadMore(int offset);
-    }
-
+    private int myId;
     private IAnswersInteraction interaction;
+    private GlideRequests glide;
 
-    public AnswersCommentAdapter(Context context, IAnswersInteraction interaction, CommentEntity baseComment, String myId) {
+    public AnswersCommentAdapter(Context context, IAnswersInteraction interaction, CommentEntity baseComment, int myId) {
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.interaction = interaction;
@@ -56,6 +48,7 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         list.add(null);
         list.add(null);
         this.myId = myId;
+        glide = GlideApp.with(context);
         this.baseComment = baseComment;
     }
 
@@ -79,40 +72,44 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             baseComment.bind(this.baseComment);
             baseComment.btnAnswer.setOnClickListener((v) -> interaction.onAnswerClicked(this.baseComment));
             baseComment.sdvUser.setOnClickListener((v) -> {
-                String userId = this.baseComment.getUserId();
+                int userId = this.baseComment.getUserId();
                 Intent intent = new Intent(context, AccountActivity.class);
-                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
+                intent.putExtra(IConstants.IBundle.IS_ME, userId == myId);
                 intent.putExtra(IConstants.IBundle.USER_ID, userId);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, baseComment.sdvUser, context.getString(R.string.account_photo_transition));
                 context.startActivity(intent, options.toBundle());
             });
-            baseComment.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", this.baseComment.getLikeAchievementLvl()));
-            baseComment.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", this.baseComment.getDislikesAchievementLvl()));
-            baseComment.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", this.baseComment.getCommentsAchievementLvl()));
-            baseComment.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", this.baseComment.getFavouritesAchievementLvl()));
-            baseComment.ivViewsLevel.setImageResource(resolveAchievementIcon("views", this.baseComment.getViewsAchievementLvl()));
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("likes", this.baseComment.getLikeAchievementLvl())).into(baseComment.ivLikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("dislikes", this.baseComment.getDislikesAchievementLvl())).into(baseComment.ivDislikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("comments", this.baseComment.getCommentsAchievementLvl())).into(baseComment.ivCommentsLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("favourites", this.baseComment.getFavouritesAchievementLvl())).into(baseComment.ivFavouritesLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("views", this.baseComment.getViewsAchievementLvl())).into(baseComment.ivViewsLevel);
+            int firstWhat = 0;
             if (this.baseComment.getFirstHundred()) {
-                baseComment.ivFirst.setImageResource(R.drawable.ic_achievement_first100_small);
+                firstWhat = R.drawable.ic_achievement_first100_small;
+                glide.load(R.drawable.ic_achievement_first100_small).into(baseComment.ivFirst);
             } else if (this.baseComment.getFirstThousand()) {
-                baseComment.ivFirst.setImageResource(R.drawable.ic_achievement_first1000_small);
+                firstWhat = R.drawable.ic_achievement_first1000_small;
             }
+            glide.load(firstWhat).into(baseComment.ivFirst);
         } else if (holder instanceof Answer) {
             Answer answer = (Answer) holder;
             CommentEntity comment = list.get(position);
             answer.bind(comment);
             answer.btnAnswer.setOnClickListener((v) -> interaction.onAnswerClicked(comment));
-            answer.ivLikeLevel.setImageResource(resolveAchievementIcon("likes", comment.getLikeAchievementLvl()));
-            answer.ivDislikeLevel.setImageResource(resolveAchievementIcon("dislikes", comment.getDislikesAchievementLvl()));
-            answer.ivCommentsLevel.setImageResource(resolveAchievementIcon("comments", comment.getCommentsAchievementLvl()));
-            answer.ivFavouritesLevel.setImageResource(resolveAchievementIcon("favourites", comment.getFavouritesAchievementLvl()));
-            answer.ivViewsLevel.setImageResource(resolveAchievementIcon("views", comment.getViewsAchievementLvl()));
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("likes", this.baseComment.getLikeAchievementLvl())).into(answer.ivLikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("dislikes", this.baseComment.getDislikesAchievementLvl())).into(answer.ivDislikeLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("comments", this.baseComment.getCommentsAchievementLvl())).into(answer.ivCommentsLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("favourites", this.baseComment.getFavouritesAchievementLvl())).into(answer.ivFavouritesLevel);
+            glide.load(AchievementHelper.resolveAchievementSmallIcon("views", this.baseComment.getViewsAchievementLvl())).into(answer.ivViewsLevel);
             answer.sdvUser.setOnClickListener((v) -> {
-                String userId = comment.getUserId();
+                int userId = comment.getUserId();
                 Intent intent = new Intent(context, AccountActivity.class);
-                intent.putExtra(IConstants.IBundle.IS_ME, userId.equals(myId));
-                if (!userId.equals(myId)) {
+                intent.putExtra(IConstants.IBundle.IS_ME, userId == myId);
+                if (userId != myId) {
                     intent.putExtra(IConstants.IBundle.USER_ID, comment.getUserId());
-                }                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
+                }
+                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
             });
         } else {
             if (!isLoading) {
@@ -143,12 +140,11 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (position == 0) {
             return -1;
         } else if (list.get(position) != null) {
-            return Long.valueOf(list.get(position).getId());
+            return list.get(position).getId();
         } else {
             return -2;
         }
     }
-
 
     public void onBaseUpdate(List<CommentEntity> list) {
         this.list.clear();
@@ -170,6 +166,104 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             notifyItemChanged(this.list.size() - 1);
         }
+    }
+
+    private int resolveAchievementIcon(String name, int lvl) {
+        switch (name) {
+            case "likes":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_like_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_like_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_like_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_like_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_like_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_like_6_small;
+                }
+            case "dislikes":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_dislike_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_dislike_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_dislike_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_dislike_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_dislike_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_dislike_6_small;
+                }
+            case "comments":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_comment_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_comment_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_comment_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_comment_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_comment_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_comment_6_small;
+                }
+            case "views":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_views_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_views_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_views_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_views_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_views_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_views_6_small;
+                    case 7:
+                        return R.drawable.ic_achievement_views_7_small;
+                    case 8:
+                        return R.drawable.ic_achievement_views_8_small;
+                }
+            case "favourites":
+                switch (lvl) {
+                    case 1:
+                        return R.drawable.ic_achievement_fav_1_small;
+                    case 2:
+                        return R.drawable.ic_achievement_fav_2_small;
+                    case 3:
+                        return R.drawable.ic_achievement_fav_3_small;
+                    case 4:
+                        return R.drawable.ic_achievement_fav_4_small;
+                    case 5:
+                        return R.drawable.ic_achievement_fav_5_small;
+                    case 6:
+                        return R.drawable.ic_achievement_fav_6_small;
+                }
+            default:
+                return 0;
+        }
+    }
+
+    private interface ViewTypes {
+        int BASE_COMMENT = 1;
+        int ANSWER = 2;
+        int LOADING = 3;
+    }
+
+    public interface IAnswersInteraction {
+        void onAnswerClicked(CommentEntity comment);
+
+        void onLoadMore(int offset);
     }
 
     static class BaseComment extends RecyclerView.ViewHolder {
@@ -262,92 +356,4 @@ public class AnswersCommentAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
         }
     }
-
-    private int resolveAchievementIcon(String name, int lvl) {
-        switch (name) {
-            case "likes":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_like_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_like_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_like_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_like_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_like_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_like_6_small;
-                }
-            case "dislikes":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_dislike_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_dislike_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_dislike_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_dislike_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_dislike_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_dislike_6_small;
-                }
-            case "comments":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_comment_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_comment_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_comment_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_comment_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_comment_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_comment_6_small;
-                }
-            case "views":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_views_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_views_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_views_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_views_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_views_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_views_6_small;
-                    case 7:
-                        return R.drawable.ic_achievement_views_7_small;
-                    case 8:
-                        return R.drawable.ic_achievement_views_8_small;
-                }
-            case "favourites":
-                switch (lvl) {
-                    case 1:
-                        return R.drawable.ic_achievement_fav_1_small;
-                    case 2:
-                        return R.drawable.ic_achievement_fav_2_small;
-                    case 3:
-                        return R.drawable.ic_achievement_fav_3_small;
-                    case 4:
-                        return R.drawable.ic_achievement_fav_4_small;
-                    case 5:
-                        return R.drawable.ic_achievement_fav_5_small;
-                    case 6:
-                        return R.drawable.ic_achievement_fav_6_small;
-                }
-            default:
-                return 0;
-        }
-    }
-
-
 }

@@ -2,7 +2,7 @@ package dustit.clientapp.mvp.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,7 +20,6 @@ import dustit.clientapp.R;
 import dustit.clientapp.mvp.model.entities.Achievement;
 import dustit.clientapp.mvp.ui.adapters.AchievementsViewAdapter;
 import dustit.clientapp.utils.AchievementHelper;
-import dustit.clientapp.utils.L;
 
 public class ViewAchievement {
     @BindView(R.id.cvDialog)

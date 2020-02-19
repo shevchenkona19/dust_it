@@ -1,6 +1,6 @@
 package dustit.clientapp.mvp.model.entities;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,11 +12,11 @@ import dustit.clientapp.utils.IConstants;
 public class RefreshedMem {
     @SerializedName("likes")
     @Expose
-    private String likes;
+    private int likes;
 
     @SerializedName("dislikes")
     @Expose
-    private String dislikes;
+    private int dislikes;
 
     @SerializedName("opinion")
     @Expose
@@ -34,9 +34,9 @@ public class RefreshedMem {
     @Expose
     private NewAchievementEntity achievementEntity;
 
-    private String id;
+    private int id;
 
-    public RefreshedMem(String likes, String dislikes, String opinion, boolean achievementUpdate, NewAchievementEntity achievementEntity, String id, boolean isFavourite) {
+    public RefreshedMem(int likes, int dislikes, String opinion, boolean achievementUpdate, NewAchievementEntity achievementEntity, int id, boolean isFavourite) {
         this.likes = likes;
         this.dislikes = dislikes;
         this.opinion = opinion;
@@ -49,27 +49,20 @@ public class RefreshedMem {
     public RefreshedMem() {
     }
 
-    public String getLikes() {
+    public int getLikes() {
         return likes;
     }
 
-    public int getParsedLikes() {
-        return Integer.parseInt(likes);
-    }
 
-    public void setLikes(String likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
-    public String getDislikes() {
+    public int getDislikes() {
         return dislikes;
     }
 
-    public int getParsedDislikes() {
-        return Integer.parseInt(dislikes);
-    }
-
-    public void setDislikes(String dislikes) {
+    public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
     }
 
@@ -89,11 +82,11 @@ public class RefreshedMem {
         this.achievementEntity = achievementEntity;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -105,7 +98,6 @@ public class RefreshedMem {
         isFavourite = favourite;
     }
 
-    @Nullable
     public IConstants.OPINION getOpinion() {
         if (opinion != null) {
             switch (opinion) {

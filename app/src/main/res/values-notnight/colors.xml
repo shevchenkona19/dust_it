@@ -9,4 +9,6 @@
     <color name="baseCommentBackground">#eeeeee</color>
     <color name="placeholder_color">#efefef</color>
     <color name="colorAchievementCircle">#eee</color>
+    <color name="devider">#30525252</color>
+    <color name="item_feed_background">#ffffff</color>
 </resources>

@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -32,7 +32,6 @@ import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IAnswersActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 
 public class AnswersActivity extends Activity implements IAnswersActivityView, AnswersCommentAdapter.IAnswersInteraction {
     @BindView(R.id.ibCloseAnswers)
@@ -55,13 +54,13 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
     private AnswersActivityPresenter presenter;
 
     private String answeringUsername = "";
-    private String answeringUserId = "";
+    private int answeringUserId;
     private boolean isAnsweringToSomebody = false;
-    private String imageId = "";
+    private int imageId = -1;
 
     private boolean startComment = false;
-    private String newCommentId = "";
-    private String myId;
+    private int newCommentId;
+    private int myId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,19 +69,21 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            myId = bundle.getString(IConstants.IBundle.MY_ID);
+            myId = bundle.getInt(IConstants.IBundle.MY_ID);
             baseComment = bundle.getParcelable(IConstants.IBundle.BASE_COMMENT);
-            imageId = bundle.getString(IConstants.IBundle.MEM_ID);
+            imageId = bundle.getInt(IConstants.IBundle.MEM_ID);
             startComment = bundle.getBoolean(IConstants.IBundle.SHOW_COMMENT);
-            newCommentId = bundle.getString(IConstants.IBundle.NEW_COMMENT_ID);
+            newCommentId = bundle.getInt(IConstants.IBundle.NEW_COMMENT_ID);
         } else {
             finish();
             return;
         }
         setAnsweringUsername(baseComment.getUsername());
         adapter = new AnswersCommentAdapter(this, this, baseComment, myId);
+        adapter.setHasStableIds(true);
         presenter = new AnswersActivityPresenter(baseComment.getId());
         rvAnswers.setAdapter(adapter);
+        rvAnswers.setHasFixedSize(true);
         rvAnswers.setLayoutManager(new WrapperLinearLayoutManager(this));
         presenter.loadBase();
         refreshLayout.setOnRefreshListener(() -> presenter.loadBase());
@@ -105,7 +106,7 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
                     if (!commentField.getText().toString().contains("@" + answeringUsername) && !commentField.getText().toString().equals("")) {
                         isAnsweringToSomebody = false;
                         answeringUsername = "";
-                        answeringUserId = "";
+                        answeringUserId = -1;
                         setAnsweringUsername(baseComment.getUsername());
                     }
                 }
@@ -153,11 +154,11 @@ public class AnswersActivity extends Activity implements IAnswersActivityView, A
     }
 
     @Override
-    public void onAnswered(String newCommentId) {
+    public void onAnswered(int newCommentId) {
         isAnsweringToSomebody = false;
         setAnsweringUsername(baseComment.getUsername());
         commentField.setText("");
-        answeringUserId = "";
+        answeringUserId = -1;
         answeringUsername = "";
         presenter.loadCommentsToId(newCommentId, baseComment.getId(), imageId);
     }

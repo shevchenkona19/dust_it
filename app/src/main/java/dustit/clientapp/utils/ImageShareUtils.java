@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
+
+import androidx.core.content.FileProvider;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;

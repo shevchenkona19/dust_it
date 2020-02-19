@@ -23,9 +23,9 @@ public class AnswersActivityPresenter extends BasePresenter<IAnswersActivityView
     DataManager dataManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
-    private String commentId;
+    private int commentId;
 
-    public AnswersActivityPresenter(String commentId) {
+    public AnswersActivityPresenter(int commentId) {
         App.get().getAppComponent().inject(this);
         this.commentId = commentId;
     }
@@ -82,7 +82,7 @@ public class AnswersActivityPresenter extends BasePresenter<IAnswersActivityView
     }
 
     @Override
-    public void postRespond(String userId, String text, String imageId) {
+    public void postRespond(int userId, String text, int imageId) {
         AtomicReference<ResponseEntity> res = new AtomicReference<>();
         addSubscription(dataManager.postAnswerForComment(imageId, commentId, userId, new PostCommentEntity(text)).subscribe(new Subscriber<ResponseEntity>() {
             @Override
@@ -111,7 +111,7 @@ public class AnswersActivityPresenter extends BasePresenter<IAnswersActivityView
     }
 
     @Override
-    public void loadCommentsToId(String newCommentId, String baseCommentId, String imageId) {
+    public void loadCommentsToId(int newCommentId, int baseCommentId, int imageId) {
         final List<CommentEntity> list = new ArrayList<>();
         addSubscription(dataManager.getAnswersForCommentToId(newCommentId, baseCommentId, imageId).subscribe(new Subscriber<CommentEntity>() {
             @Override

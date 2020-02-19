@@ -33,6 +33,7 @@ import dustit.clientapp.mvp.model.entities.UploadBody;
 import dustit.clientapp.mvp.model.entities.UploadEntity;
 import dustit.clientapp.mvp.model.entities.UploadsUpperEntity;
 import dustit.clientapp.mvp.model.entities.UserFeedbackEntity;
+import dustit.clientapp.mvp.model.entities.UserSearchResponseEntity;
 import dustit.clientapp.mvp.model.entities.UsernameEntity;
 import dustit.clientapp.mvp.model.repositories.ServerRepository;
 import dustit.clientapp.mvp.model.repositories.SharedPreferencesRepository;
@@ -102,15 +103,15 @@ public class DataManager {
                 .flatMap((Func1<TestUpperEntity, Observable<TestMemEntity>>) testUpperEntity -> Observable.from(testUpperEntity.getList()));
     }
 
-    public Observable<FavoritesUpperEntity> getAllFavorites(String id) {
+    public Observable<FavoritesUpperEntity> getAllFavorites(int id) {
         return serverRepository.getFavorites(id);
     }
 
-    public Observable<ResponseEntity> postComment(String id, PostCommentEntity entity) {
+    public Observable<ResponseEntity> postComment(int id, PostCommentEntity entity) {
         return serverRepository.postComment(getToken(), id, entity);
     }
 
-    public Observable<CommentEntity> getComments(String id, int count, int offset) {
+    public Observable<CommentEntity> getComments(int id, int count, int offset) {
         return serverRepository.getComments(getToken(), id, count, offset)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
@@ -134,11 +135,11 @@ public class DataManager {
         return serverRepository.postPhoto(getToken(), photoBody);
     }
 
-    public Observable<UsernameEntity> getUsername(String id) {
+    public Observable<UsernameEntity> getUsername(int id) {
         return serverRepository.getUsername(id);
     }
 
-    public Observable<AchievementsEntity> getAchievements(String userId) {
+    public Observable<AchievementsEntity> getAchievements(int userId) {
         return serverRepository.getAchievements(userId);
     }
 
@@ -158,7 +159,7 @@ public class DataManager {
         return context;
     }
 
-    public Observable<IsFavourite> isFavourite(String id) {
+    public Observable<IsFavourite> isFavourite(int id) {
         return serverRepository.isFavourite(getToken(), id);
     }
 
@@ -166,22 +167,22 @@ public class DataManager {
         return serverRepository.postUserFeedback(getToken(), userFeedbackEntity);
     }
 
-    public void saveId(String id) {
+    public void saveId(int id) {
         preferencesRepository.saveMyId(id);
     }
 
-    public String loadId() {
+    public int loadId() {
         return preferencesRepository.loadId();
     }
 
-    public Observable<CommentEntity> getAnswersForComment(String commentId, int limit, int offset) {
+    public Observable<CommentEntity> getAnswersForComment(int commentId, int limit, int offset) {
         return serverRepository.getAnswersForComment(commentId, limit, offset)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
 
-    public Observable<ResponseEntity> postAnswerForComment(String imageId,
-                                                           String commentId,
-                                                           String userId,
+    public Observable<ResponseEntity> postAnswerForComment(int imageId,
+                                                           int commentId,
+                                                           int userId,
                                                            PostCommentEntity entity) {
         return serverRepository.postAnswerForComment(getToken(), imageId, commentId, userId, entity);
     }
@@ -190,16 +191,16 @@ public class DataManager {
         return serverRepository.setFcmId(getToken(), fcmId);
     }
 
-    public Observable<MemEntity> getMemById(String memId) {
+    public Observable<MemEntity> getMemById(int memId) {
         return serverRepository.getMemById(memId);
     }
 
-    public Observable<CommentEntity> getCommentsToCommentId(String memId, String toCommentId) {
+    public Observable<CommentEntity> getCommentsToCommentId(int memId, int toCommentId) {
         return serverRepository.getCommentsToCommentId(memId, toCommentId)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
 
-    public Observable<CommentEntity> getAnswersForCommentToId(String childCommentId, String parentCommentId, String imageId) {
+    public Observable<CommentEntity> getAnswersForCommentToId(int childCommentId, int parentCommentId, int imageId) {
         return serverRepository.getAnswersForCommentToId(parentCommentId, childCommentId, imageId)
                 .flatMap((Func1<CommentUpperEntity, Observable<CommentEntity>>) commentUpperEntity -> Observable.from(commentUpperEntity.getList()));
     }
@@ -219,5 +220,9 @@ public class DataManager {
 
     public Observable<SimpleResponseEntity> reportMeme(ReportEntity reportEntity) {
         return serverRepository.reportMeme(getToken(), reportEntity);
+    }
+
+    public Observable<UserSearchResponseEntity> searchUsers(String query) {
+        return serverRepository.searchUsers(query);
     }
 }

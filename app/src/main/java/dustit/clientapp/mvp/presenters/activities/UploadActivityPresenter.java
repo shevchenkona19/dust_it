@@ -56,7 +56,7 @@ public class UploadActivityPresenter extends BasePresenter<IPhotoUploadActivityV
                     getView().onPhotoUploaded();
                     return;
                 }
-                getView().onErrorPhotoUploading();
+                getView().onErrorPhotoUploading(res.get().getMessage());
             }
 
             @Override

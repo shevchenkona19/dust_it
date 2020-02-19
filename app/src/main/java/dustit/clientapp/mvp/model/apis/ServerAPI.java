@@ -4,6 +4,7 @@ import dustit.clientapp.mvp.model.entities.AchievementsEntity;
 import dustit.clientapp.mvp.model.entities.CategoryEntity;
 import dustit.clientapp.mvp.model.entities.CommentUpperEntity;
 import dustit.clientapp.mvp.model.entities.FavoritesUpperEntity;
+import dustit.clientapp.mvp.model.entities.UserSearchResponseEntity;
 import dustit.clientapp.mvp.model.entities.IsFavourite;
 import dustit.clientapp.mvp.model.entities.LoginUserEntity;
 import dustit.clientapp.mvp.model.entities.MemEntity;
@@ -79,19 +80,19 @@ public interface ServerAPI {
 
     @POST("/feedback/like")
     Observable<RefreshedMem> postLike(@Header("Authorization") String token,
-                                      @Query("id") String id);
+                                      @Query("id") int id);
 
     @DELETE("/feedback/like")
     Observable<RefreshedMem> deleteLike(@Header("Authorization") String token,
-                                        @Query("id") String id);
+                                        @Query("id") int id);
 
     @POST("/feedback/dislike")
     Observable<RefreshedMem> postDislike(@Header("Authorization") String token,
-                                         @Query("id") String id);
+                                         @Query("id") int id);
 
     @DELETE("/feedback/dislike")
     Observable<RefreshedMem> deleteDislike(@Header("Authorization") String token,
-                                           @Query("id") String id);
+                                           @Query("id") int id);
 
     @POST("/account/logout")
     Observable<ResponseEntity> logout(@Header("Authorization") String token);
@@ -101,19 +102,19 @@ public interface ServerAPI {
 
     @POST("/favorites/addToFavorites")
     Observable<RefreshedMem> addToFavorites(@Header("Authorization") String token,
-                                            @Query("id") String id);
+                                            @Query("id") int id);
 
     @GET("/v2/favorites/allFavorites")
-    Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") String userId);
+    Observable<FavoritesUpperEntity> getAllFavorites(@Query("userId") int userId);
 
     @POST("/feedback/comment")
     Observable<ResponseEntity> postComment(@Header("Authorization") String token,
-                                           @Query("id") String id,
+                                           @Query("id") int id,
                                            @Body PostCommentEntity entity);
 
     @GET("/feedback/comments")
     Observable<CommentUpperEntity> getComments(@Header("Authorization") String token,
-                                               @Query("id") String id,
+                                               @Query("id") int id,
                                                @Query("count") int count,
                                                @Query("offset") int offset);
 
@@ -122,33 +123,33 @@ public interface ServerAPI {
                                          @Body PhotoBody photoBody);
 
     @GET("/v1/account/username")
-    Observable<UsernameEntity> getUsername(@Query("userId") String userId);
+    Observable<UsernameEntity> getUsername(@Query("userId") int userId);
 
     @DELETE("/favorites/removeFromFavorites")
     Observable<RefreshedMem> removeFromFavorites(@Header("Authorization") String token,
-                                                 @Query("id") String id);
+                                                 @Query("id") int id);
 
     @GET("/favorites/isFavourite")
     Observable<IsFavourite> isFavourite(@Header("Authorization") String token,
-                                        @Query("id") String id);
+                                        @Query("id") int id);
 
     @POST("/feedback/messageForDev")
     Observable<NewResponseEntity> postUserFeedback(@Header("Authorization") String token,
                                                    @Body UserFeedbackEntity userFeedbackEntity);
 
     @GET("/account/achievements")
-    Observable<AchievementsEntity> getAchievements(@Query("userId") String id);
+    Observable<AchievementsEntity> getAchievements(@Query("userId") int id);
 
     @GET("/feedback/answersForComment")
-    Observable<CommentUpperEntity> getAnswersForComment(@Query("commentId") String commentId,
+    Observable<CommentUpperEntity> getAnswersForComment(@Query("commentId") int commentId,
                                                         @Query("limit") int limit,
                                                         @Query("offset") int offset);
 
     @POST("/feedback/commentAnswer")
     Observable<ResponseEntity> postCommentAnswer(@Header("Authorization") String token,
-                                                 @Query("id") String imageId,
-                                                 @Query("commentId") String commentId,
-                                                 @Query("answerUserId") String answerUserId,
+                                                 @Query("id") int imageId,
+                                                 @Query("commentId") int commentId,
+                                                 @Query("answerUserId") int answerUserId,
                                                  @Body PostCommentEntity postCommentEntity);
 
     @POST("/account/fcmId")
@@ -156,16 +157,16 @@ public interface ServerAPI {
                                          @Query("fcmId") String fcmId);
 
     @GET("/feed/mem")
-    Observable<MemEntity> getMemById(@Query("memId") String memId);
+    Observable<MemEntity> getMemById(@Query("memId") int memId);
 
     @GET("/feedback/commentsToCommentId")
-    Observable<CommentUpperEntity> getCommentsToCommentId(@Query("memId") String memId,
-                                                          @Query("toCommentId") String toCommentId);
+    Observable<CommentUpperEntity> getCommentsToCommentId(@Query("memId") int memId,
+                                                          @Query("toCommentId") int toCommentId);
 
     @GET("/feedback/answersForCommentToId")
-    Observable<CommentUpperEntity> getAnswersForCommentToId(@Query("parentCommentId") String parentCommentId,
-                                                            @Query("childCommentId") String childCommentId,
-                                                            @Query("imageId") String imageId);
+    Observable<CommentUpperEntity> getAnswersForCommentToId(@Query("parentCommentId") int parentCommentId,
+                                                            @Query("childCommentId") int childCommentId,
+                                                            @Query("imageId") int imageId);
 
     @GET("/account/myReferralInfo")
     Observable<ReferralInfoEntity> getMyReferralInfo(@Header("Authorization") String token);
@@ -183,4 +184,7 @@ public interface ServerAPI {
     @POST("/reports/report")
     Observable<SimpleResponseEntity> reportMeme(@Header("Authorization") String token,
                                                 @Body ReportEntity reportEntity);
+
+    @GET("/feed/searchUser")
+    Observable<UserSearchResponseEntity> searchUsers(@Query("query") String searchQuery);
 }

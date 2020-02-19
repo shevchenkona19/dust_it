@@ -4,16 +4,17 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.List;
 
@@ -33,47 +34,35 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.ICategoriesFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.GlideApp;
 import dustit.clientapp.utils.IConstants;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class CategoriesFragment extends BaseFeedFragment implements ICategoriesFragmentView,
         FeedRecyclerViewAdapter.IFeedInteractionListener {
 
     private static final String HEIGHT_APPBAR = "HEIGHT";
     private static final String IS_CATEGORIES_LOADED = "ISCATLOAD";
-
+    private final CategoriesFragmentPresenter presenter = new CategoriesFragmentPresenter();
     @BindView(R.id.srlCategoriesRefresh)
     SwipeRefreshLayout srlRefresh;
     @BindView(R.id.rvCategoriesFeed)
     RecyclerView rvFeed;
-
     private Unbinder unbinder;
     private ICategoriesFragmentInteractionListener listener;
-    private final CategoriesFragmentPresenter presenter = new CategoriesFragmentPresenter();
-    private RecyclerView.OnScrollListener scrollListener;
     private LinearLayoutManager linearLayoutManager;
     private int appBarHeight;
     private Category currentCategory;
     private boolean isCategoriesLoaded = false;
-    private String myId;
-
-    public interface ICategoriesFragmentInteractionListener {
-        void onAttachToActivity(NewFeedActivity.ICategoriesSpinnerInteractionListener listener);
-
-        void reloadCategories();
-
-        void onDetachFromActivity();
-    }
+    private int myId;
 
     public CategoriesFragment() {
         // Required empty public constructor
     }
 
-    public static CategoriesFragment newInstance(int appBarHeight, boolean isCategoriesLoaded, String myId) {
+    public static CategoriesFragment newInstance(int appBarHeight, boolean isCategoriesLoaded, int myId) {
         Bundle args = new Bundle();
         args.putInt(HEIGHT_APPBAR, appBarHeight);
-        args.putString(IConstants.IBundle.MY_ID, myId);
+        args.putInt(IConstants.IBundle.MY_ID, myId);
         args.putBoolean(IS_CATEGORIES_LOADED, isCategoriesLoaded);
         final CategoriesFragment fragment = new CategoriesFragment();
         fragment.setArguments(args);
@@ -85,7 +74,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         super.setArguments(args);
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
-            myId = args.getString(IConstants.IBundle.MY_ID);
+            myId = args.getInt(IConstants.IBundle.MY_ID);
             isCategoriesLoaded = args.getBoolean(IS_CATEGORIES_LOADED);
         }
     }
@@ -113,9 +102,11 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
         bindFeedback(this);
         linearLayoutManager = new LinearLayoutManager(getContext());
         rvFeed.setLayoutManager(linearLayoutManager);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight, rvFeed);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, rvFeed);
         adapter.setHasStableIds(true);
+        adapter.setGlideLoader(GlideApp.with(this));
         rvFeed.setAdapter(adapter);
+        rvFeed.setHasFixedSize(true);
         rvFeed.setRecycledViewPool(getFeedPool());
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
         srlRefresh.setOnRefreshListener(() -> {
@@ -127,28 +118,7 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 listener.reloadCategories();
             }
         });
-        scrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_IDLE) {
-                    notifyFeedScrollIdle(true);
-                    if (rvFeed.getChildAt(0) != null)
-                        if (rvFeed.getChildAt(0).getTop() == appBarHeight && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
-                            if (!srlRefresh.isRefreshing())
-                                notifyFeedOnTop();
-                        }
-                } else {
-                    notifyFeedScrollIdle(false);
-                }
-            }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                notifyFeedScrollChanged(dy);
-            }
-        };
         listener.onAttachToActivity(new NewFeedActivity.ICategoriesSpinnerInteractionListener() {
             @Override
             public void onCategoriesFailed() {
@@ -168,7 +138,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
                 presenter.loadBase(category.getId());
             }
         });
-        rvFeed.addOnScrollListener(scrollListener);
         ((SimpleItemAnimator) rvFeed.getItemAnimator()).setSupportsChangeAnimations(false);
 
         subscribeToFeedbackChanges();
@@ -181,7 +150,6 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void onDestroyView() {
         unsubscribeFromFeedbackChanges();
-        rvFeed.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
         listener.onDetachFromActivity();
@@ -268,8 +236,16 @@ public class CategoriesFragment extends BaseFeedFragment implements ICategoriesF
     @Override
     public void gotoAccount(MemEntity mem) {
         Intent intent = new Intent(getContext(), AccountActivity.class);
-        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId().equals(myId));
+        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId() == myId);
         intent.putExtra(IConstants.IBundle.USER_ID, mem.getUserId());
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+    }
+
+    public interface ICategoriesFragmentInteractionListener {
+        void onAttachToActivity(NewFeedActivity.ICategoriesSpinnerInteractionListener listener);
+
+        void reloadCategories();
+
+        void onDetachFromActivity();
     }
 }

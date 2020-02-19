@@ -13,7 +13,7 @@ package dustit.clientapp.customviews.zoomableview;
 
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.facebook.common.logging.FLog;
 

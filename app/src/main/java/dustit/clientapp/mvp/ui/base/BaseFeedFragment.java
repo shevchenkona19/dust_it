@@ -1,15 +1,24 @@
 package dustit.clientapp.mvp.ui.base;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dustit.clientapp.App;
+import dustit.clientapp.R;
 import dustit.clientapp.mvp.datamanager.FeedbackManager;
 import dustit.clientapp.mvp.model.entities.MemEntity;
 import dustit.clientapp.mvp.model.entities.RefreshedMem;
@@ -21,7 +30,10 @@ import dustit.clientapp.mvp.ui.interfaces.IFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.ImageShareUtils;
+import dustit.clientapp.utils.L;
 import rx.exceptions.OnErrorNotImplementedException;
+
+import static dustit.clientapp.utils.IConstants.NUMBER_OF_ADS;
 
 /**
  * Created by User on 06.03.2018.
@@ -29,39 +41,20 @@ import rx.exceptions.OnErrorNotImplementedException;
 
 public abstract class BaseFeedFragment extends Fragment implements FeedbackManager.IFeedbackInteraction, IBaseFeedFragment, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
+    private RecyclerView.RecycledViewPool feedPool;
+    public FeedRecyclerViewAdapter adapter;
     @Inject
     FeedbackManager feedbackManager;
-
-    public RecyclerView.RecycledViewPool feedPool;
-
-    public FeedRecyclerViewAdapter adapter;
-
-    public interface IBaseFragmentInteraction {
-        void notifyOnScrollChanged(int distance);
-
-        void launchMemView(View holder, MemEntity memEntity, boolean startComments);
-
-        void notifyFeedScrollIdle(boolean b);
-
-        boolean isRegistered();
-
-        void notifyFeedOnTop();
-
-        void gotoFragment(byte id);
-
-        void onError(String error);
-
-    }
-
-    public void setFeedPool(RecyclerView.RecycledViewPool feedPool) {
-        this.feedPool = feedPool;
-    }
+    private AdLoader adLoader;
+    private IBaseFragmentInteraction fragmentInteraction;
 
     public RecyclerView.RecycledViewPool getFeedPool() {
         return feedPool;
     }
 
-    private IBaseFragmentInteraction fragmentInteraction;
+    public void setFeedPool(RecyclerView.RecycledViewPool feedPool) {
+        this.feedPool = feedPool;
+    }
 
     public void bindFeedback(IFragmentView view) {
         feedbackManager.bind(view);
@@ -88,25 +81,12 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
         fragmentInteraction.launchMemView(view, memEntity, startComments);
     }
 
-    public void notifyFeedScrollChanged(int scrollY) {
-        fragmentInteraction.notifyOnScrollChanged(scrollY);
-    }
-
     public boolean isUserRegistered() {
         return fragmentInteraction.isRegistered();
     }
 
     public void gotoFragment(byte id) {
         fragmentInteraction.gotoFragment(id);
-    }
-
-
-    public void notifyFeedScrollIdle(boolean b) {
-        fragmentInteraction.notifyFeedScrollIdle(b);
-    }
-
-    public void notifyFeedOnTop() {
-        fragmentInteraction.notifyFeedOnTop();
     }
 
     @Override
@@ -167,8 +147,7 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
     @Override
     public void reportMeme(MemEntity mem) {
         if (getContext() == null) return;
-        ReportMemeDialog dialog = new ReportMemeDialog(getContext(), mem);
-
+        new ReportMemeDialog(getContext(), mem);
     }
 
     @Override
@@ -176,5 +155,45 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
         if (getContext() != null) {
             ImageShareUtils.shareImage(IConstants.BASE_URL + "/feed/imgs?id=" + mem.getId(), getContext());
         }
+    }
+
+    @Override
+    public void getMoreAds() {
+        List<UnifiedNativeAd> preloadAds = new ArrayList<>();
+        AdLoader.Builder builder = new AdLoader.Builder(getContext(), getString(R.string.admob_nativead_id));
+        adLoader = builder.forUnifiedNativeAd(
+                unifiedNativeAd -> {
+                    // A native ad loaded successfully, check if the ad loader has finished loading
+                    // and if so, insert the ads into the list.
+                    preloadAds.add(unifiedNativeAd);
+                    if (!adLoader.isLoading()) {
+                        adapter.addPreloadAds(preloadAds);
+                    }
+                }).withAdListener( new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // A native ad failed to load, check if the ad loader has finished loading
+                        // and if so, insert the ads into the list.
+                        L.print("The previous native ad failed to load. Attempting to"
+                                + " load another.: " + errorCode);
+                        if (!adLoader.isLoading()) {
+                            adapter.addPreloadAds(preloadAds);
+                        }
+                    }
+                }).build();
+
+        // Load the Native Express ad.
+        adLoader.loadAds(new AdRequest.Builder().build(), NUMBER_OF_ADS);
+    }
+
+    public interface IBaseFragmentInteraction {
+        void launchMemView(View holder, MemEntity memEntity, boolean startComments);
+
+        boolean isRegistered();
+
+        void gotoFragment(byte id);
+
+        void onError(String error);
+
     }
 }

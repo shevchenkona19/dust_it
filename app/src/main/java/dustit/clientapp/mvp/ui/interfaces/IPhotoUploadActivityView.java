@@ -5,4 +5,6 @@ public interface IPhotoUploadActivityView extends IActivityView {
 
     void onErrorPhotoUploading();
 
+    void onErrorPhotoUploading(String message);
+
 }

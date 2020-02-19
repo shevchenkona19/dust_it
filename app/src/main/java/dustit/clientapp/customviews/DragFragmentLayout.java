@@ -1,9 +1,9 @@
 package dustit.clientapp.customviews;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.widget.ViewDragHelper;
+import androidx.annotation.NonNull;
+import androidx.core.view.MotionEventCompat;
+import androidx.customview.widget.ViewDragHelper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;

@@ -6,12 +6,19 @@ import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
+import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.listener.RequestListener;
+import com.facebook.imagepipeline.listener.RequestLoggingListener;
+import com.google.android.gms.ads.MobileAds;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
@@ -25,7 +32,6 @@ import dustit.clientapp.mvp.datamanager.UserSettingsDataManager;
 import dustit.clientapp.mvp.model.entities.ResponseEntity;
 import dustit.clientapp.utils.IConstants;
 import dustit.clientapp.utils.L;
-import dustit.clientapp.utils.TimeTracking;
 import dustit.clientapp.utils.managers.ThemeManager;
 import rx.Subscriber;
 
@@ -55,8 +61,18 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TimeTracking.getInstance().setStartDate(System.currentTimeMillis());
-        Fresco.initialize(this);
+
+
+        Set<RequestListener> requestListeners = new HashSet<>();
+        requestListeners.add(new RequestLoggingListener());
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
+                // other setters
+                .setRequestListeners(requestListeners)
+                .build();
+        Fresco.initialize(this, config);
+        FLog.setMinimumLoggingLevel(FLog.ERROR);
+
+
         Picasso.get().setLoggingEnabled(true);
         instance = this;
         appComponent = DaggerAppComponent.builder()
@@ -72,6 +88,7 @@ public class App extends Application {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
         }
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
         ClearCacheTask clearCacheTask = new ClearCacheTask();
         clearCacheTask.execute();
         createNotificationChannel();

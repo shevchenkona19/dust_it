@@ -75,7 +75,7 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
     }
 
     @Override
-    public void getUsername(String id) {
+    public void getUsername(int id) {
         final StringBuilder builder = new StringBuilder();
         addSubscription(dataManager.getUsername(id)
                 .subscribe(new Subscriber<UsernameEntity>() {
@@ -88,6 +88,7 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
                     @Override
                     public void onError(Throwable e) {
                         L.print(e.getMessage());
+                        L.print("ERROR");
                         getView().onUsernameFailedToLoad();
                     }
 
@@ -107,7 +108,7 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
     }
 
     @Override
-    public void getAchievements(String userId) {
+    public void getAchievements(int userId) {
         AtomicReference<AchievementsEntity> achievements = new AtomicReference<>();
         addSubscription(dataManager.getAchievements(userId)
         .subscribe(new Subscriber<AchievementsEntity>() {
@@ -129,7 +130,7 @@ public class NewAccountActivityPresenter extends BasePresenter<INewAccountActivi
         }));
     }
 
-    public String loadMyId() {
+    public int loadMyId() {
         return dataManager.loadId();
     }
 }

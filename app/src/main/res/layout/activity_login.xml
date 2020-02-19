@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clLoginLayout"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cvBtnLoginWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,10 +27,10 @@
         app:cardCornerRadius="23dp"
         app:cardElevation="7dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
-        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
-        app:layout_constraintStart_toStartOf="@+id/frameLayout">
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/cardView">
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogin"
             android:layout_width="200dp"
             android:layout_height="45dp"
@@ -41,7 +41,7 @@
             android:textColor="#fff"
             android:textSize="18sp" />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/ivLoginIcon"
@@ -73,26 +73,21 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.41" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/tvLoginNotRegistered"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/tvLoginNotRegistered"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="50dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
@@ -101,11 +96,11 @@
             app:cardElevation="4dp"
             app:cardMaxElevation="9dp">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilLoginUsername"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -129,11 +124,12 @@
                         android:inputType="textPersonName"
                         android:fontFamily="@font/noto_sans"
                         android:maxLines="1"
-                        android:textColor="@color/colorMainText" />
+                        android:textColor="@color/colorMainText"
+                        />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilLoginPassword"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -161,13 +157,11 @@
                         android:maxLines="1"
                         android:textColor="@color/colorMainText" />
 
-                </android.support.design.widget.TextInputLayout>
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-    </FrameLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -184,10 +178,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/btnLogin"
-        app:layout_constraintLeft_toLeftOf="@id/frameLayout"
-        app:layout_constraintRight_toRightOf="@id/frameLayout"
-        app:layout_constraintTop_toTopOf="@+id/frameLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/cvBtnLoginWrapper"
+        app:layout_constraintLeft_toLeftOf="@id/cardView"
+        app:layout_constraintRight_toRightOf="@id/cardView"
+        app:layout_constraintTop_toTopOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.49" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

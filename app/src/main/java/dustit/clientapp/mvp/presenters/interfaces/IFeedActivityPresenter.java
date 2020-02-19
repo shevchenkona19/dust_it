@@ -13,5 +13,5 @@ public interface IFeedActivityPresenter {
     void setFeedVisited();
     boolean isFeedFirstTime();
 
-    void loadMemForComments(@Nullable String memId, @Nullable String parentComment, @Nullable String newComment);
+    void loadMemForComments(@Nullable int memId, @Nullable int parentComment, @Nullable int newComment);
 }

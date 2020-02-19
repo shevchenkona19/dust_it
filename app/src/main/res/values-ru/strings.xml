@@ -180,5 +180,12 @@
     <string name="send_report">Відправити</string>
     <string name="enter_reason">Введіть причину видалення мема</string>
     <string name="thankyou_will_check_report">Дякуємо! Ми переглянемо вашу скаргу</string>
+    <string name="searchUsers">Пошук юзерів</string>
+    <string name="new_like_notification" >%1$s лайкнув ваш мем</string>
+    <string name="new_like_notification_title">Новий лайк!</string>
+    <string name="error_uploading_meme">Помилка загрузки мема</string>
+    <string name="you_are_banned">У зв\'язку зі скаргами на ваші меми вам було заборонено загружати нові меми. Детальну інформацію ви можете отримати написавши за адресою нашої допомги користувачам, зазначену на сторінці магазину додатків.</string>
+    <string name="share_mem_feed">Поділитись мемом</string>
+    <string name="remove_from_favorites">Видалити з обраного</string>
 
 </resources>

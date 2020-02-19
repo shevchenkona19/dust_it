@@ -3,7 +3,7 @@ package dustit.clientapp.customviews;
 import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;

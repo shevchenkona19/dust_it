@@ -2,11 +2,11 @@ package dustit.clientapp.mvp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +43,7 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
     private Unbinder unbinder;
     private UserFavouritesListFragmentPresenter presenter = new UserFavouritesListFragmentPresenter();
     private FavoritesRecyclerViewAdapter adapter;
-    private String userId;
+    private int userId;
 
     private boolean isMe;
 
@@ -53,10 +53,10 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
         // Required empty public constructor
     }
 
-    public static UserFavouritesList newInstance(String userId, boolean isMe) {
+    public static UserFavouritesList newInstance(int userId, boolean isMe) {
         UserFavouritesList fragment = new UserFavouritesList();
         Bundle args = new Bundle();
-        args.putString(IConstants.IBundle.USER_ID, userId);
+        args.putInt(IConstants.IBundle.USER_ID, userId);
         args.putBoolean(IConstants.IBundle.IS_ME, isMe);
         fragment.setArguments(args);
         return fragment;
@@ -66,7 +66,7 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
         if (args != null) {
-            userId = args.getString(IConstants.IBundle.USER_ID);
+            userId = args.getInt(IConstants.IBundle.USER_ID);
             isMe = args.getBoolean(IConstants.IBundle.IS_ME);
         }
     }
@@ -88,6 +88,7 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
         adapter.setHasStableIds(true);
         adapter.setIsMe(isMe);
         rvPhotos.setAdapter(adapter);
+        rvPhotos.setHasFixedSize(true);
         presenter.loadFavourites(userId);
         return v;
     }

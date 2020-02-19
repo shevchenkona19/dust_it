@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/clMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,11 +14,11 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tbFeedActivity"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -46,6 +46,7 @@
                         android:visibility="visible"
                         tools:ignore="RelativeOverlap" />
 
+
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/sdvUserIcon"
                         android:layout_width="40dp"
@@ -58,11 +59,21 @@
                         app:actualImageScaleType="centerInside"
                         app:roundAsCircle="true"
                         app:roundingBorderColor="#eee" />
-                </RelativeLayout>
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+                    <ImageButton
+                        android:id="@+id/ibSearchUsers"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_toStartOf="@id/sdvUserIcon"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_search"/>
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -73,9 +84,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context="dustit.clientapp.mvp.ui.activities.FeedActivity" />
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.design.widget.BottomNavigationView
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bnvFeedNavigation"
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -86,7 +97,7 @@
             app:layout_behavior="dustit.clientapp.utils.behaviour.BottomNavigationBehaviour"
             app:menu="@menu/feed_menu" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/feedContainer"

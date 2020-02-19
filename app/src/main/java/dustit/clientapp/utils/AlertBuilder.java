@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import java.lang.ref.WeakReference;
 
@@ -18,7 +18,6 @@ public class AlertBuilder {
                 .setTitle(context.getString(R.string.you_arent_registered))
                 .setMessage(context.getString(R.string.function_disabled_not_registered))
                 .setPositiveButton(context.getText(R.string.yes), (dialog, which) -> {
-                    L.print("wtf1");
                     final Intent intent = new Intent(context, ChooserActivity.class);
                     context.startActivity(intent);
                 })
@@ -32,17 +31,6 @@ public class AlertBuilder {
             alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.colorAccent));
         });
         alertDialog.show();
-    }
-
-    public static void showMemSource(final Context context, final String src) {
-        final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.about_mem_title))
-                .setMessage(context.getString(R.string.about_mem_message) + " " + src)
-                .setPositiveButton(context.getString(R.string.ok), null)
-                .setCancelable(true)
-                .create();
-        dialog.setOnShowListener(dialog1 -> dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000")));
-        dialog.show();
     }
 
     public static void showRegisterPrompt(Context context) {
@@ -103,5 +91,10 @@ public class AlertBuilder {
                 .setCancelable(true)
                 .create();
         return alertDialog;
+    }
+
+    public static AlertDialog.Builder getErrorUploadingDialog(Context context) {
+        return new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.error_uploading_meme));
     }
 }

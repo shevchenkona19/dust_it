@@ -1,6 +1,6 @@
 package dustit.clientapp.mvp.model.entities;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -31,7 +31,7 @@ public class UploadEntity {
     private String username;
     @SerializedName("userId")
     @Expose
-    private String userId;
+    private int userId = -1;
     @SerializedName("uploadDate")
     @Expose
     private String uploadDate;
@@ -39,7 +39,7 @@ public class UploadEntity {
     public UploadEntity() {
     }
 
-    public UploadEntity(int imageId, int likes, int dislikes, String opinion, int commentsCount, boolean isFavourite, String username, String userId, String uploadDate) {
+    public UploadEntity(int imageId, int likes, int dislikes, String opinion, int commentsCount, boolean isFavourite, String username, int userId, String uploadDate) {
         this.imageId = imageId;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -59,11 +59,11 @@ public class UploadEntity {
         this.username = username;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -91,6 +91,10 @@ public class UploadEntity {
         this.likes = likes;
     }
 
+    public void addLikes(int num) {
+        likes += num;
+    }
+
     public int getDislikes() {
         return dislikes;
     }
@@ -99,8 +103,8 @@ public class UploadEntity {
         this.dislikes = dislikes;
     }
 
-    public void setOpinion(String opinion) {
-        this.opinion = opinion;
+    public void addDislikes(int num) {
+        dislikes += num;
     }
 
     @NonNull
@@ -115,6 +119,10 @@ public class UploadEntity {
                     return IConstants.OPINION.NEUTRAL;
             }
         else return IConstants.OPINION.NEUTRAL;
+    }
+
+    public void setOpinion(String opinion) {
+        this.opinion = opinion;
     }
 
     public void setOpinion(IConstants.OPINION opinion) {
@@ -149,9 +157,9 @@ public class UploadEntity {
 
     public MemEntity toMemEntity() {
         MemEntity mem = new MemEntity();
-        mem.setId(String.valueOf(imageId));
-        mem.setLikes(String.valueOf(likes));
-        mem.setDislikes(String.valueOf(dislikes));
+        mem.setId(imageId);
+        mem.setLikes(likes);
+        mem.setDislikes(dislikes);
         mem.setOpinion(opinion);
         mem.setCommentsCount(commentsCount);
         mem.setFavorite(isFavourite);

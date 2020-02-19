@@ -1,13 +1,25 @@
 package dustit.clientapp.utils;
 
 public interface IConstants {
-    String BASE_URL = "http://192.168.1.7";
+    String BASE_URL = "http://192.168.1.21";
     //    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
     String NO_REGISTRATION_USERNAME = "user";
     String NO_REGISTRATION_PASSWORD = "lolkek123";
     String IMAGE_URL = BASE_URL + "/feed/imgs?id=";
     String USER_IMAGE_URL = BASE_URL + "/feed/userPhoto?targetUsername=";
+    int NUMBER_OF_ADS = 10;
+
+    enum OPINION {
+        LIKED,
+        DISLIKED,
+        NEUTRAL
+    }
+
+    enum ViewMode {
+        LIST,
+        GRID
+    }
 
     interface IRequest {
         int UPLOAD_PHOTO = 986;
@@ -28,6 +40,7 @@ public interface IConstants {
         String MEMES_ENDED = "MEMES_ENDED";
         String INCORRECT_DATA = "INCORRECT_DATA";
         String REFERRAL_NOT_PRESENT = "REFERRAL_NOT_PRESENT";
+        String USER_BANNED = "USER_BANNED";
     }
 
     interface IPreferences {
@@ -52,17 +65,6 @@ public interface IConstants {
         String IS_NO_REGISTRATION = "IS_NO_REGISTRATION";
     }
 
-    enum OPINION {
-        LIKED,
-        DISLIKED,
-        NEUTRAL
-    }
-
-    enum ViewMode {
-        LIST,
-        GRID
-    }
-
     interface IBundle {
         String IS_ME = "IS_ME";
         String ID = "ID";
@@ -84,6 +86,7 @@ public interface IConstants {
     interface INotifications {
         String NEW_MEMES = "NEW_MEMES";
         String COMMENT_RESPOND = "COMMENT_RESPOND";
+        String NOTIFY_ABOUT_POSTED_MEME = "NOTIFY_ABOUT_POSTED_MEME";
         String CHANNEL_ID = "CHANNEL_ID";
     }
 

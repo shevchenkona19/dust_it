@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName;
 public class ReportEntity {
     @SerializedName("imageId")
     @Expose
-    private String imageId;
+    private int imageId;
     @SerializedName("reportReason")
     @Expose
     private String reportReason;
 
-    public ReportEntity(String imageId, String reportReason) {
+    public ReportEntity(int imageId, String reportReason) {
         this.imageId = imageId;
         this.reportReason = reportReason;
     }
@@ -19,11 +19,11 @@ public class ReportEntity {
     public ReportEntity() {
     }
 
-    public String getImageId() {
+    public int getImageId() {
         return imageId;
     }
 
-    public void setImageId(String imageId) {
+    public void setImageId(int imageId) {
         this.imageId = imageId;
     }
 

@@ -4,12 +4,12 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +31,10 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment;
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog;
 import dustit.clientapp.mvp.ui.interfaces.IHotFragmentView;
 import dustit.clientapp.utils.AlertBuilder;
+import dustit.clientapp.utils.GlideApp;
 import dustit.clientapp.utils.IConstants;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 
 public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
@@ -51,19 +52,17 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     Button emptyHotRetry;
     private Unbinder unbinder;
     private boolean isFirstTimeVisible = true;
-    private RecyclerView.OnScrollListener scrollListener;
-    private LinearLayoutManager linearLayoutManager;
-    private String myId;
+    private int myId;
     private int appBarHeight;
 
 
     public HotFragment() {
     }
 
-    public static HotFragment newInstance(int appBarHeight, String myId) {
+    public static HotFragment newInstance(int appBarHeight, int myId) {
         Bundle args = new Bundle();
         args.putInt(HEIGHT_APPBAR, appBarHeight);
-        args.putString(IConstants.IBundle.MY_ID, myId);
+        args.putInt(IConstants.IBundle.MY_ID, myId);
         final HotFragment fragment = new HotFragment();
         fragment.setArguments(args);
         return fragment;
@@ -74,7 +73,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
         super.setArguments(args);
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR);
-            myId = args.getString(IConstants.IBundle.MY_ID);
+            myId = args.getInt(IConstants.IBundle.MY_ID);
         }
     }
 
@@ -83,13 +82,15 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_hot, container, false);
         unbinder = ButterKnife.bind(this, v);
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvHot.setLayoutManager(linearLayoutManager);
         bindFeedback(this);
-        adapter = new FeedRecyclerViewAdapter(getContext(), this, appBarHeight, rvHot);
+        adapter = new FeedRecyclerViewAdapter(getContext(), this, rvHot);
         adapter.setIsHot();
         adapter.setHasStableIds(true);
+        adapter.setGlideLoader(GlideApp.with(this));
         rvHot.setAdapter(adapter);
+        rvHot.setHasFixedSize(true);
         presenter.bind(this);
         rvHot.setRecycledViewPool(getFeedPool());
         srlRefresh.setProgressViewOffset(false, appBarHeight - 100, appBarHeight + 100);
@@ -103,29 +104,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
             srlRefresh.setRefreshing(true);
             presenter.loadBase();
         });
-        scrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_IDLE) {
-                    notifyFeedScrollIdle(true);
-                    if (rvHot.getChildAt(0) != null)
-                        if (rvHot.getChildAt(0).getTop() == appBarHeight && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
-                            if (!srlRefresh.isRefreshing())
-                                notifyFeedOnTop();
-                        }
-                } else {
-                    notifyFeedScrollIdle(false);
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                notifyFeedScrollChanged(dy);
-            }
-        };
-        rvHot.addOnScrollListener(scrollListener);
         ((SimpleItemAnimator) rvHot.getItemAnimator()).setSupportsChangeAnimations(false);
 
         subscribeToFeedbackChanges();
@@ -137,12 +115,12 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isFirstTimeVisible) {
+    public void onResume() {
+        if (isFirstTimeVisible) {
             presenter.loadBase();
             isFirstTimeVisible = false;
         }
-        super.setUserVisibleHint(isVisibleToUser);
+        super.onResume();
     }
 
     @Override
@@ -154,7 +132,6 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void onDestroyView() {
         unsubscribeFromFeedbackChanges();
-        rvHot.removeOnScrollListener(scrollListener);
         unbinder.unbind();
         presenter.unbind();
         super.onDestroyView();
@@ -227,7 +204,7 @@ public class HotFragment extends BaseFeedFragment implements IHotFragmentView,
     @Override
     public void gotoAccount(MemEntity mem) {
         Intent intent = new Intent(getContext(), AccountActivity.class);
-        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId().equals(myId));
+        intent.putExtra(IConstants.IBundle.IS_ME, mem.getUserId() == myId);
         intent.putExtra(IConstants.IBundle.USER_ID, mem.getUserId());
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
     }

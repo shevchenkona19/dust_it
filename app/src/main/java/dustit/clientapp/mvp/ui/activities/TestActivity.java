@@ -9,9 +9,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,7 +32,6 @@ import dustit.clientapp.mvp.presenters.activities.TestActivityPresenter;
 import dustit.clientapp.mvp.ui.adapters.TestDeckAdapter;
 import dustit.clientapp.mvp.ui.interfaces.ITestActivityView;
 import dustit.clientapp.utils.AlertBuilder;
-import dustit.clientapp.utils.L;
 
 public class TestActivity extends AppCompatActivity implements ITestActivityView, TestDeckAdapter.ITestDeckListener {
 

@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import dustit.clientapp.App;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 import dustit.clientapp.utils.managers.ThemeManager;
 
 /**
@@ -54,6 +53,7 @@ public class SharedPreferencesRepository {
     public void clearUsername() {
         preferences.edit()
                 .putString(IConstants.IPreferences.USERNAME_KEY, "")
+                .putBoolean(IConstants.IPreferences.USERNAME_CACHED_KEY, false)
                 .apply();
     }
 
@@ -66,7 +66,6 @@ public class SharedPreferencesRepository {
                 .putString(IConstants.IPreferences.LANGUAGE_KEY, lang)
                 .apply();
     }
-
 
     public String loadLanguage() {
         return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "INIT");
@@ -102,9 +101,17 @@ public class SharedPreferencesRepository {
     }
 
     public void setRegistered(boolean registered) {
-        preferences.edit()
-                .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered)
-                .apply();
+        SharedPreferences.Editor editor = preferences.edit()
+                .putBoolean(IConstants.IPreferences.REGISTRATION_KEY, registered);
+        if (!registered) {
+            editor
+                    .putInt(IConstants.IPreferences.MY_ID, -1)
+                    .putString(IConstants.IPreferences.USERNAME_KEY, "")
+                    .putBoolean(IConstants.IPreferences.USERNAME_CACHED_KEY, false);
+        }
+        editor.apply();
+        setFcmUpdate(false);
+        saveFcmId("");
     }
 
     public boolean isNoRegistration() {
@@ -157,12 +164,12 @@ public class SharedPreferencesRepository {
         preferences.edit().putBoolean(IConstants.IPreferences.REVIEW, isReviewed).apply();
     }
 
-    public void setNotificationsEnabled(boolean enabled) {
-        preferences.edit().putBoolean(IConstants.IPreferences.NOTIFICATIONS, enabled).apply();
-    }
-
     public boolean isNotificationsEnabled() {
         return preferences.getBoolean(IConstants.IPreferences.NOTIFICATIONS, true);
+    }
+
+    public void setNotificationsEnabled(boolean enabled) {
+        preferences.edit().putBoolean(IConstants.IPreferences.NOTIFICATIONS, enabled).apply();
     }
 
     public boolean enabledAutoStart() {
@@ -173,12 +180,20 @@ public class SharedPreferencesRepository {
         preferences.edit().putBoolean(IConstants.IPreferences.AUTOSTART, enabledAutostart).apply();
     }
 
-    public void saveMyId(String id) {
-        preferences.edit().putString(IConstants.IPreferences.MY_ID, id).apply();
+    public void saveMyId(int id) {
+        preferences.edit().putInt(IConstants.IPreferences.MY_ID, id).apply();
     }
 
-    public String loadId() {
-        return preferences.getString(IConstants.IPreferences.MY_ID, "");
+    public int loadId() {
+        try {
+            return preferences.getInt(IConstants.IPreferences.MY_ID, -1);
+        } catch (ClassCastException e) {
+            String prevId = preferences.getString(IConstants.IPreferences.MY_ID, "");
+            if (prevId.equals("")) return -1;
+            int id = Integer.parseInt(prevId);
+            saveMyId(id);
+            return loadId();
+        }
     }
 
     public void saveFcmId(String fcmId) {

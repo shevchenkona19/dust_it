@@ -4,13 +4,11 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import dustit.clientapp.R
@@ -25,30 +23,30 @@ import dustit.clientapp.mvp.ui.base.BaseFeedFragment
 import dustit.clientapp.mvp.ui.dialog.AchievementUnlockedDialog
 import dustit.clientapp.mvp.ui.interfaces.IFeedFragmentView
 import dustit.clientapp.utils.AlertBuilder
+import dustit.clientapp.utils.GlideApp
 import dustit.clientapp.utils.IConstants
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 
 class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdapter.IFeedInteractionListener {
     private var appBarHeight: Int = 0
-    private var rvFeed: RecyclerView? = null
+    private var rvFeed: androidx.recyclerview.widget.RecyclerView? = null
     private var srlRefresh: SwipeRefreshLayout? = null
     private var unbinder: Unbinder? = null
     private var presenter: FeedFragmentPresenter? = null
-    private var scrollListener: RecyclerView.OnScrollListener? = null
-    private var linearLayoutManager: WrapperLinearLayoutManager? = null
+    private var scrollListener: androidx.recyclerview.widget.RecyclerView.OnScrollListener? = null
     private var rlEmptyCategories: ViewGroup? = null
     private var changingCategories = false
-    private var myId: String? = ""
+    private var myId: Int = -1;
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
         if (args != null) {
             appBarHeight = args.getInt(HEIGHT_APPBAR)
-            myId = args.getString(IConstants.IBundle.MY_ID)
+            myId = args.getInt(IConstants.IBundle.MY_ID)
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         bindWithBase(context)
     }
@@ -60,13 +58,16 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
         srlRefresh = v.srlFeedRefresh
         unbinder = ButterKnife.bind(this, v)
         bindFeedback(this)
-        linearLayoutManager = WrapperLinearLayoutManager(context)
+        val linearLayoutManager = WrapperLinearLayoutManager(context)
+        linearLayoutManager.initialPrefetchItemCount = 4
         rvFeed!!.layoutManager = linearLayoutManager
-        adapter = context?.let { FeedRecyclerViewAdapter(context, this, appBarHeight, rvFeed) }
+        adapter = context?.let { FeedRecyclerViewAdapter(context, this, rvFeed) }
         adapter.setHasStableIds(true)
+        rvFeed!!.setHasFixedSize(true)
+        rvFeed!!.setItemViewCacheSize(3)
         rvFeed!!.adapter = adapter
         rlEmptyCategories = v.hotEmpty
-        setFeedPool(rvFeed!!.recycledViewPool)
+        feedPool = rvFeed!!.recycledViewPool
         presenter = FeedFragmentPresenter()
         presenter!!.bind(this)
         v.btnEmptyHot.setOnClickListener {
@@ -79,8 +80,8 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
             srlRefresh!!.isRefreshing = true
             presenter!!.loadBase()
         }
-        (rvFeed!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
+        (rvFeed!!.itemAnimator as androidx.recyclerview.widget.SimpleItemAnimator).supportsChangeAnimations = false
+        adapter.setGlideLoader(GlideApp.with(this))
         subscribeToFeedbackChanges()
         presenter!!.loadBase()
         return v
@@ -96,7 +97,8 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     override fun onDestroyView() {
         unsubscribeFromFeedbackChanges()
-        rvFeed!!.removeOnScrollListener(scrollListener)
+        if (rvFeed != null && scrollListener != null)
+            rvFeed?.removeOnScrollListener(scrollListener!!)
         unbinder!!.unbind()
         presenter!!.unbind()
         super.onDestroyView()
@@ -159,14 +161,14 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
     override fun onAchievementUpdate(achievementEntity: NewAchievementEntity) {
         if (context != null) {
             if (presenter!!.isRegistered)
-            AchievementUnlockedDialog(context, achievementEntity.isFinalLevel).bind(achievementEntity).show()
+                AchievementUnlockedDialog(context, achievementEntity.isFinalLevel).bind(achievementEntity).show()
         }
     }
 
     override fun gotoAccount(mem: MemEntity?) {
         if (mem != null) {
             val intent = Intent(context, AccountActivity::class.java)
-            intent.putExtra(IConstants.IBundle.IS_ME, myId.equals(mem.userId))
+            intent.putExtra(IConstants.IBundle.IS_ME, myId == mem.userId)
             intent.putExtra(IConstants.IBundle.USER_ID, mem.userId)
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
         }
@@ -174,10 +176,10 @@ class FeedFragment : BaseFeedFragment(), IFeedFragmentView, FeedRecyclerViewAdap
 
     companion object {
         const val HEIGHT_APPBAR = "HEIGHT"
-        fun newInstance(appBarHeight: Int, myId: String): FeedFragment {
+        fun newInstance(appBarHeight: Int, myId: Int): FeedFragment {
             val args = Bundle()
             args.putInt(HEIGHT_APPBAR, appBarHeight)
-            args.putString(IConstants.IBundle.MY_ID, myId)
+            args.putInt(IConstants.IBundle.MY_ID, myId)
             val fragment = FeedFragment()
             fragment.arguments = args
             return fragment

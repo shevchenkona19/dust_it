@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ivAchievementIcon"
     android:layout_width="60dp"
     android:layout_height="60dp"
-    app:cardCornerRadius="30dp"
-    app:cardElevation="0dp"
     android:layout_marginStart="4dp"
     android:layout_marginEnd="4dp"
-    app:cardBackgroundColor="@color/colorAchievementCircle"
-    app:cardUseCompatPadding="false">
-
-        <ImageView
-            android:id="@+id/ivAchievementIcon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="4dp"
-            android:src="@drawable/ic_achievement_comment_1_big"
-            android:transitionName="@string/view_achievement_transition" />
-
-
-</android.support.v7.widget.CardView>
+    android:padding="4dp"
+    android:src="@drawable/ic_achievement_comment_1_big"
+    android:transitionName="@string/view_achievement_transition" />

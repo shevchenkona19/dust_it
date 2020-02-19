@@ -26,6 +26,9 @@ public class ErrorCodeResolver {
         if (message == null) message = "";
         String error;
         switch (message) {
+            case IConstants.ErrorCodes.USER_BANNED:
+                error = contextWeakReference.get().getString(R.string.you_are_banned);
+                break;
             case IConstants.ErrorCodes.EMAIL_NOT_UNIQUE:
                 error = contextWeakReference.get().getString(R.string.email_not_unique);
                 break;
