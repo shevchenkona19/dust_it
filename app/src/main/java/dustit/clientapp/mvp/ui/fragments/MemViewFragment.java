@@ -137,15 +137,16 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
     private boolean startComments = false;
     private boolean canPerformTap = true;
     private boolean navVisible = true;
+    private boolean showFavorites = false;
+    private boolean showNewComment = false;
+    private boolean isAnswering = false;
+    private boolean isMe = true;
     private int imageWidth = -1;
     private int imageHeight = -1;
     private int myId;
     private int answerUserId;
-    private boolean isAnswering = false;
     private int commentId;
     private String answeringUsername;
-    private boolean showFavorites = false;
-    private boolean showNewComment = false;
     private int newCommentParentId;
     private int newCommentId;
     private IMemViewRatingInteractionListener interactionListener;
@@ -184,6 +185,17 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
         return fragment;
     }
 
+    public static MemViewFragment newInstance(MemEntity mem, int userId, boolean showFavorites, boolean isMe) {
+        Bundle args = new Bundle();
+        args.putParcelable(MEM_KEY, mem);
+        args.putBoolean(SHOW_FAVORITES, showFavorites);
+        args.putInt(IConstants.IBundle.USER_ID, userId);
+        args.putBoolean(IConstants.IBundle.IS_ME, isMe);
+        final MemViewFragment fragment = new MemViewFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
@@ -195,6 +207,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
             showNewComment = args.getBoolean(IConstants.IBundle.SHOW_COMMENTS, false);
             newCommentParentId = args.getInt(IConstants.IBundle.PARENT_COMMENT_ID);
             newCommentId = args.getInt(IConstants.IBundle.NEW_COMMENT_ID);
+            isMe = args.getBoolean(IConstants.IBundle.IS_ME, true);
         }
     }
 
@@ -327,7 +340,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
                 }
             }
         });
-        if (!userSettingsDataManager.isFcmUpdated()) {
+        if (userSettingsDataManager.shouldFcmUpdate()) {
             presenter.updateFcmId();
         }
         return view;
@@ -410,7 +423,7 @@ public class MemViewFragment extends Fragment implements CommentsRecyclerViewAda
 
     private void refreshUi() {
         if (getContext() != null) {
-            if (mem.isFavorite()) {
+            if (mem.isFavorite() && isMe) {
                 setImageDrawable(ivAddToFavourites, R.drawable.ic_saved);
             } else {
                 setImageDrawable(ivAddToFavourites, R.drawable.ic_add_to_favourites);

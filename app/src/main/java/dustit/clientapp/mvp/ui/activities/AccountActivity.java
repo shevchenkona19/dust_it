@@ -337,8 +337,8 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
                             .setNegativeButton(getString(R.string.no), null)
                             .create();
                     dialog.setOnShowListener(dialogInterface -> {
-                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
-                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.fabSecond));
+                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.fabSecond));
                     });
                     dialog.show();
                 });
@@ -588,8 +588,8 @@ public class AccountActivity extends AppCompatActivity implements INewAccountAct
     }
 
     @Override
-    public void onFavoriteSelected(MemEntity memEntity) {
-        MemViewFragment fragment = MemViewFragment.newInstance(memEntity, userId, true);
+    public void onFavoriteSelected(MemEntity memEntity, boolean isMe) {
+        MemViewFragment fragment = MemViewFragment.newInstance(memEntity, userId, true, isMe);
         showFragment(fragment);
     }
 

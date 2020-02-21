@@ -61,14 +61,16 @@ public class SharedPreferencesRepository {
         return preferences.getString(IConstants.IPreferences.USERNAME_KEY, "");
     }
 
-    public void saveLanguagePref(String lang) {
-        preferences.edit()
-                .putString(IConstants.IPreferences.LANGUAGE_KEY, lang)
-                .apply();
+    public void scheduleTokenUpdate() {
+        preferences.edit().putBoolean(IConstants.IPreferences.SCHEDULED_UPDATE, true).apply();
     }
 
-    public String loadLanguage() {
-        return preferences.getString(IConstants.IPreferences.LANGUAGE_KEY, "INIT");
+    public void onFcmUpdated() {
+        preferences.edit().putBoolean(IConstants.IPreferences.SCHEDULED_UPDATE, false).apply();
+    }
+
+    public boolean shouldFcmUpdate() {
+        return preferences.getBoolean(IConstants.IPreferences.SCHEDULED_UPDATE, false);
     }
 
     public void saveTheme(ThemeManager.Theme t) {
@@ -111,7 +113,6 @@ public class SharedPreferencesRepository {
         }
         editor.apply();
         setFcmUpdate(false);
-        saveFcmId("");
     }
 
     public boolean isNoRegistration() {
@@ -130,14 +131,6 @@ public class SharedPreferencesRepository {
 
     public boolean isFeedFirstTime() {
         return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_FEED, true);
-    }
-
-    public void setAccountVisited() {
-        preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, false).apply();
-    }
-
-    public boolean isAccountFirstTime() {
-        return preferences.getBoolean(IConstants.IPreferences.FIRST_TIME_ACCOUNT, true);
     }
 
     public int getPositiveCount() {
@@ -170,14 +163,6 @@ public class SharedPreferencesRepository {
 
     public void setNotificationsEnabled(boolean enabled) {
         preferences.edit().putBoolean(IConstants.IPreferences.NOTIFICATIONS, enabled).apply();
-    }
-
-    public boolean enabledAutoStart() {
-        return preferences.getBoolean(IConstants.IPreferences.AUTOSTART, true);
-    }
-
-    public void setEnabledAutostart(boolean enabledAutostart) {
-        preferences.edit().putBoolean(IConstants.IPreferences.AUTOSTART, enabledAutostart).apply();
     }
 
     public void saveMyId(int id) {

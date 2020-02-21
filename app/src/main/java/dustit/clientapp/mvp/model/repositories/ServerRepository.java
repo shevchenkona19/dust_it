@@ -47,6 +47,10 @@ public class ServerRepository {
         App.get().getAppComponent().inject(this);
     }
 
+    public void deleteFCMId(String token) {
+        serverAPI.deleteFcmId(token);
+    }
+
     public Observable<TokenEntity> registerUser(RegisterUserEntity userEntity) {
         return serverAPI.registerUser(userEntity)
                 .observeOn(AndroidSchedulers.mainThread());

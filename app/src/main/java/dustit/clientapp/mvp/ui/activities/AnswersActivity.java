@@ -1,14 +1,8 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -17,6 +11,13 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ import dustit.clientapp.mvp.ui.interfaces.IAnswersActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
 
-public class AnswersActivity extends Activity implements IAnswersActivityView, AnswersCommentAdapter.IAnswersInteraction {
+public class AnswersActivity extends AppCompatActivity implements IAnswersActivityView, AnswersCommentAdapter.IAnswersInteraction {
     @BindView(R.id.ibCloseAnswers)
     View close;
     @BindView(R.id.srlAnswers)

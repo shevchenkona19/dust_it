@@ -323,7 +323,7 @@ public class MemViewPresenter extends BasePresenter<IMemViewView> implements IFe
             @Override
             public void onCompleted() {
                 if (!isError[0]) {
-                    userSettingsDataManager.setFcmUpdate(true);
+                    userSettingsDataManager.onFcmUpdated();
                 }
             }
 

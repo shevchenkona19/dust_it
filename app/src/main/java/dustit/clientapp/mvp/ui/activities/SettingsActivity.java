@@ -1,18 +1,10 @@
 package dustit.clientapp.mvp.ui.activities;
 
-import android.app.TaskStackBuilder;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,7 +17,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Locale;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 
 import javax.inject.Inject;
 
@@ -42,18 +37,15 @@ import dustit.clientapp.utils.managers.ThemeManager;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivityView {
 
+    private final int LIGHT = 0;
+    private final int NIGHT = 1;
+    private final SettingsActivityPresenter presenter = new SettingsActivityPresenter();
     @BindView(R.id.btnSettingsLogout)
     Button btnLogout;
     @BindView(R.id.tbSettingsToolbar)
     Toolbar toolbar;
     @BindView(R.id.tvSettingsChooseThemeLabel)
     TextView tvSettingsChooseThemeLabel;
-    @BindView(R.id.tvSettingChangeLanguage)
-    TextView tvChangeLanguage;
-    @BindView(R.id.tvSettingsCurrentLanguage)
-    TextView tvCurrentLanguage;
-    @BindView(R.id.rlSettingsLanguagePicker)
-    ViewGroup rlLanguagePicker;
     @BindView(R.id.spSettingsThemeChooser)
     AppCompatSpinner spThemeChooser;
     @BindView(R.id.rlSettingsPrivacy)
@@ -62,18 +54,10 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     ViewGroup vgNotifications;
     @BindView(R.id.swSettingsNotifications)
     Switch swNotifications;
-
     @Inject
     ThemeManager themeManager;
     @Inject
     UserSettingsDataManager userSettingsDataManager;
-
-
-    private final int LIGHT = 0;
-    private final int NIGHT = 1;
-    private boolean isFirstLaunch = true;
-
-    private final SettingsActivityPresenter presenter = new SettingsActivityPresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +70,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, themeManager.getThemeList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spThemeChooser.setAdapter(adapter);
-        spThemeChooser.setSelection(presenter.loadTheme());
+        spThemeChooser.setSelection(presenter.loadTheme(), false);
         spThemeChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -101,13 +85,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                         presenter.saveTheme(ThemeManager.Theme.NIGHT);
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                         break;
-                    default:
-                        return;
-                }
-                if (!isFirstLaunch) {
-                    restartCurrentAndBackstack();
-                } else {
-                    isFirstLaunch = false;
                 }
             }
 
@@ -117,47 +94,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             }
         });
         toolbar.setNavigationOnClickListener(v -> finish());
-        String langToSet = "";
-        switch (userSettingsDataManager.loadLanguage()) {
-            case "ru":
-                langToSet = "Русский";
-                break;
-            case "uk":
-                langToSet = "Українська";
-                break;
-            case "en":
-                langToSet = "English";
-                break;
-        }
-        tvCurrentLanguage.setText(langToSet);
-        rlLanguagePicker.setOnClickListener(v -> {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-            builder.setTitle(getString(R.string.pick_language));
-            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
-                String langToLoad = "";
-                switch (which) {
-                    case 0:
-                        langToLoad = "en";
-                        break;
-                    case 1:
-                        langToLoad = "uk";
-                        break;
-                    case 2:
-                        langToLoad = "ru";
-                        break;
-                }
-                final Locale locale = new Locale(langToLoad);
-                Locale.setDefault(locale);
-                final Configuration config = new Configuration();
-                config.locale = locale;
-                final Resources resources = getBaseContext().getResources();
-                resources.updateConfiguration(config,
-                        resources.getDisplayMetrics());
-                userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                restartActivity();
-            });
-            builder.create().show();
-        });
         rlViewPolicy.setOnClickListener((v) -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(IConstants.BASE_URL + "/account/policy"));
             startActivity(browserIntent);
@@ -183,23 +119,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 window.setStatusBarColor(Color.WHITE);
             }
         }
-    }
-
-    private void restartCurrentAndBackstack() {
-        AccountActivity.isReload = true;
-        final TaskStackBuilder stackBuilder = TaskStackBuilder.create(this)
-                .addNextIntent(new Intent(this, NewFeedActivity.class))
-                .addNextIntent(new Intent(this, AccountActivity.class).putExtras(getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle()))
-                .addNextIntent(new Intent(this, SettingsActivity.class));
-        stackBuilder.startActivities();
-        finish();
-    }
-
-    public void restartActivity() {
-        final Intent intent = new Intent(this, NewFeedActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override

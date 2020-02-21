@@ -225,4 +225,8 @@ public class DataManager {
     public Observable<UserSearchResponseEntity> searchUsers(String query) {
         return serverRepository.searchUsers(query);
     }
+
+    public void removeFCMId() {
+        serverRepository.deleteFCMId(getToken());
+    }
 }

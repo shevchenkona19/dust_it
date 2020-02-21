@@ -65,7 +65,10 @@ public class PersonalSettingsActivity extends AppCompatActivity implements Chang
             });
         } else {
             btnChangeCategories.setText(R.string.register);
-            btnChangeCategories.setOnClickListener(view -> AlertBuilder.showRegisterPrompt(this));
+            btnChangeCategories.setOnClickListener(view -> {
+                final Intent intent = new Intent(this, ChooserActivity.class);
+                startActivity(intent);
+            });
             btnRestartTest.setOnClickListener(view -> AlertBuilder.showNotRegisteredPrompt(this));
         }
         toolbar.setNavigationOnClickListener(v -> finish());

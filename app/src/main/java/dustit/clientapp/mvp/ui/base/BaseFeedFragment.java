@@ -1,9 +1,10 @@
 package dustit.clientapp.mvp.ui.base;
 
 import android.content.Context;
+import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
@@ -41,10 +42,10 @@ import static dustit.clientapp.utils.IConstants.NUMBER_OF_ADS;
 
 public abstract class BaseFeedFragment extends Fragment implements FeedbackManager.IFeedbackInteraction, IBaseFeedFragment, FeedRecyclerViewAdapter.IFeedInteractionListener {
 
-    private RecyclerView.RecycledViewPool feedPool;
     public FeedRecyclerViewAdapter adapter;
     @Inject
     FeedbackManager feedbackManager;
+    private RecyclerView.RecycledViewPool feedPool;
     private AdLoader adLoader;
     private IBaseFragmentInteraction fragmentInteraction;
 
@@ -147,7 +148,10 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
     @Override
     public void reportMeme(MemEntity mem) {
         if (getContext() == null) return;
-        new ReportMemeDialog(getContext(), mem);
+        if (isUserRegistered())
+            new ReportMemeDialog(getContext(), mem);
+        else
+            onNotRegistered();
     }
 
     @Override
@@ -159,31 +163,33 @@ public abstract class BaseFeedFragment extends Fragment implements FeedbackManag
 
     @Override
     public void getMoreAds() {
-        List<UnifiedNativeAd> preloadAds = new ArrayList<>();
-        AdLoader.Builder builder = new AdLoader.Builder(getContext(), getString(R.string.admob_nativead_id));
-        adLoader = builder.forUnifiedNativeAd(
-                unifiedNativeAd -> {
-                    // A native ad loaded successfully, check if the ad loader has finished loading
-                    // and if so, insert the ads into the list.
-                    preloadAds.add(unifiedNativeAd);
-                    if (!adLoader.isLoading()) {
-                        adapter.addPreloadAds(preloadAds);
-                    }
-                }).withAdListener( new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(int errorCode) {
-                        // A native ad failed to load, check if the ad loader has finished loading
+        if (getContext() != null) {
+            List<UnifiedNativeAd> preloadAds = new ArrayList<>();
+            AdLoader.Builder builder = new AdLoader.Builder(getContext(), getString(R.string.admob_nativead_id));
+            adLoader = builder.forUnifiedNativeAd(
+                    unifiedNativeAd -> {
+                        // A native ad loaded successfully, check if the ad loader has finished loading
                         // and if so, insert the ads into the list.
-                        L.print("The previous native ad failed to load. Attempting to"
-                                + " load another.: " + errorCode);
+                        preloadAds.add(unifiedNativeAd);
                         if (!adLoader.isLoading()) {
                             adapter.addPreloadAds(preloadAds);
                         }
+                    }).withAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    // A native ad failed to load, check if the ad loader has finished loading
+                    // and if so, insert the ads into the list.
+                    L.print("The previous native ad failed to load. Attempting to"
+                            + " load another.: " + errorCode);
+                    if (!adLoader.isLoading()) {
+                        adapter.addPreloadAds(preloadAds);
                     }
-                }).build();
+                }
+            }).build();
 
-        // Load the Native Express ad.
-        adLoader.loadAds(new AdRequest.Builder().build(), NUMBER_OF_ADS);
+            // Load the Native Express ad.
+            adLoader.loadAds(new AdRequest.Builder().build(), NUMBER_OF_ADS);
+        }
     }
 
     public interface IBaseFragmentInteraction {

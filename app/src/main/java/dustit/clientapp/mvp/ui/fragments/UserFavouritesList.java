@@ -85,8 +85,8 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
         presenter.bind(this);
         adapter = new FavoritesRecyclerViewAdapter(getContext(), this);
         rvPhotos.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        adapter.setHasStableIds(true);
         adapter.setIsMe(isMe);
+        adapter.setHasStableIds(true);
         rvPhotos.setAdapter(adapter);
         rvPhotos.setHasFixedSize(true);
         presenter.loadFavourites(userId);
@@ -171,8 +171,8 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
     }
 
     @Override
-    public void onFavoriteChosen(MemEntity mem) {
-        mListener.onFavoriteSelected(mem);
+    public void onFavoriteChosen(MemEntity mem, boolean isMe) {
+        mListener.onFavoriteSelected(mem, isMe);
     }
 
     @Override
@@ -181,6 +181,6 @@ public class UserFavouritesList extends Fragment implements IUserFavouritesListF
     }
 
     public interface OnFragmentInteractionListener {
-        void onFavoriteSelected(MemEntity memEntity);
+        void onFavoriteSelected(MemEntity memEntity, boolean isMe);
     }
 }

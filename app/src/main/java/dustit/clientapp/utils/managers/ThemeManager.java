@@ -1,6 +1,9 @@
 package dustit.clientapp.utils.managers;
 
 import android.content.Context;
+import android.content.res.Resources;
+
+import java.util.Locale;
 
 import dustit.clientapp.R;
 

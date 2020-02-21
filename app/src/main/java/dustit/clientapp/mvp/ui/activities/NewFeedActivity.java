@@ -187,7 +187,7 @@ public class NewFeedActivity extends AppCompatActivity implements CategoriesFrag
         vpFeed.setPageTransformer(false, new FeedPageTransformer());
         presenter.getCategories();
         showComments();
-        if (!userSettingsDataManager.isFcmUpdated()) {
+        if (userSettingsDataManager.shouldFcmUpdate()) {
             presenter.updateFcmId();
         }
         feedbackManager.bindForAchievements(this);

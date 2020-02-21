@@ -87,31 +87,31 @@
                             android:layout_centerVertical="true" />
                     </RelativeLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/rlSettingsLanguagePicker"
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:background="?attr/selectableItemBackground"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/rlSettingsLanguagePicker"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="70dp"-->
+<!--                        android:background="?attr/selectableItemBackground"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">-->
 
-                        <TextView
-                            android:id="@+id/tvSettingChangeLanguage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/pick_language"
-                            tools:ignore="RelativeOverlap" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvSettingChangeLanguage"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:text="@string/pick_language"-->
+<!--                            tools:ignore="RelativeOverlap" />-->
 
-                        <TextView
-                            android:id="@+id/tvSettingsCurrentLanguage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="16dp" />
-                    </RelativeLayout>
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvSettingsCurrentLanguage"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginEnd="16dp" />-->
+<!--                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:id="@+id/rlSettingsPrivacy"

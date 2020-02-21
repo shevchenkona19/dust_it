@@ -75,6 +75,7 @@
         <activity
             android:name=".mvp.ui.activities.AccountActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/MasterDayNight" />
         <activity
             android:name=".mvp.ui.activities.SettingsActivity"
@@ -112,7 +113,8 @@
         </provider>
 
         <service android:name=".utils.managers.NotifyManager" />
-        <service android:name=".utils.receivers.NotificationService">
+        <service android:name=".utils.receivers.NotificationService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

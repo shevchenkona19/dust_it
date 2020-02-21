@@ -56,9 +56,9 @@ public class ReviewManager {
                 .setOnCancelListener(dialog1 -> sharedPreferencesRepository.setPositiveLimit(sharedPreferencesRepository.getPositiveLimit() + 3))
                 .create();
         dialog.setOnShowListener(dialog1 -> {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.get().getResources().getColor(R.color.colorAccent));
-            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.get().getResources().getColor(R.color.colorAccent));
-            dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.get().getResources().getColor(R.color.colorAccent));
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.get().getResources().getColor(R.color.fabSecond));
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.get().getResources().getColor(R.color.fabSecond));
+            dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.get().getResources().getColor(R.color.fabSecond));
         });
         dialog.show();
     }

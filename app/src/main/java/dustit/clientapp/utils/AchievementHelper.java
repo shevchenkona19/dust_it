@@ -200,14 +200,12 @@ public class AchievementHelper {
             case "referral":
                 switch (level) {
                     case 0:
-                        return R.drawable.ic_referal_0_big;
-                    case 1:
                         return R.drawable.ic_referal_1_big;
-                    case 2:
+                    case 1:
                         return R.drawable.ic_referal_2_big;
-                    case 3:
+                    case 2:
                         return R.drawable.ic_referal_3_big;
-                    case 4:
+                    case 3:
                         return R.drawable.ic_referal_4_big;
                 }
             default:
@@ -285,7 +283,6 @@ public class AchievementHelper {
                 break;
             }
             case "referral": {
-                list.add(R.drawable.ic_referal_0_big);
                 list.add(R.drawable.ic_referal_1_big);
                 list.add(R.drawable.ic_referal_2_big);
                 list.add(R.drawable.ic_referal_3_big);

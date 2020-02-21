@@ -2,8 +2,6 @@ package dustit.clientapp.mvp.ui.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,12 +9,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -29,7 +24,6 @@ import dustit.clientapp.mvp.presenters.activities.ChooserActivityPresenter;
 import dustit.clientapp.mvp.ui.interfaces.IChooserActivityView;
 import dustit.clientapp.utils.AlertBuilder;
 import dustit.clientapp.utils.IConstants;
-import dustit.clientapp.utils.L;
 
 public class ChooserActivity extends AppCompatActivity implements IChooserActivityView {
     @BindView(R.id.btnChooserLogin)
@@ -38,8 +32,6 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     Button btnRegister;
     @BindView(R.id.ivChooserIcon)
     ImageView ivIcon;
-    @BindView(R.id.ibChooserChangeLanguage)
-    ImageButton ibChangeLanguage;
     @BindView(R.id.tvChooserContinueWithoutRegistration)
     TextView tvNoRegistration;
     @BindView(R.id.clChooserLayout)
@@ -58,8 +50,6 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.get().getAppComponent().inject(this);
-        SharedPreferences preferences = getSharedPreferences(IConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        final boolean isFirstTime = preferences.getBoolean(IConstants.IPreferences.FIRST_TIME, true);
         setContentView(R.layout.activity_chooser);
         ButterKnife.bind(this);
         mPresenter.bind(this);
@@ -73,37 +63,6 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
             final Intent intent = new Intent(ChooserActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
-
-        ibChangeLanguage.setOnClickListener(v -> {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(ChooserActivity.this);
-            builder.setTitle(getString(R.string.pick_language));
-            builder.setItems(new String[]{"English", "Українська", "Русский"}, (dialog, which) -> {
-                String langToLoad = "";
-                switch (which) {
-                    case 0:
-                        langToLoad = "en";
-                        break;
-                    case 1:
-                        langToLoad = "uk";
-                        break;
-                    case 2:
-                        langToLoad = "ru";
-                        break;
-                }
-                Locale locale = new Locale(langToLoad);
-                Locale.setDefault(locale);
-                Configuration config = new Configuration();
-                config.locale = locale;
-                getBaseContext().getResources().updateConfiguration(config,
-                        getBaseContext().getResources().getDisplayMetrics());
-                userSettingsDataManager.saveNewLanguagePref(langToLoad);
-                restartActivity();
-            });
-            builder.setNegativeButton(getString(R.string.cancel), null);
-            final AlertDialog dialog = builder.create();
-            dialog.setOnShowListener(dialog0 -> dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent)));
-            dialog.show();
-        });
         tvNoRegistration.setOnClickListener(v -> {
             final AlertDialog alertDialog = new AlertDialog.Builder(ChooserActivity.this)
                     .setTitle(getString(R.string.continue_without_registration))
@@ -112,25 +71,15 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
             alertDialog.setOnShowListener(dialog -> {
-                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAccent));
-                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAccent));
+                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.fabSecond));
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.fabSecond));
             });
             alertDialog.show();
         });
-        if (isFirstTime) {
-            preferences.edit().putBoolean(IConstants.IPreferences.FIRST_TIME, false).apply();
-            mPresenter.continueNoRegistration();
-        }
         tvViewPolicy.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(IConstants.BASE_URL + "/account/policy"));
             startActivity(browserIntent);
         });
-    }
-
-    public void restartActivity() {
-        final Intent intent = new Intent(ChooserActivity.this, ChooserActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -141,7 +90,6 @@ public class ChooserActivity extends AppCompatActivity implements IChooserActivi
 
     @Override
     public void userAlreadyRegistered() {
-        L.print("alreadyReg");
         startActivity(new Intent(this, NewFeedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
         finish();
     }

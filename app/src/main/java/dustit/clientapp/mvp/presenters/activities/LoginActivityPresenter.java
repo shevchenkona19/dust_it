@@ -63,28 +63,26 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> im
     }
 
     private void setFcmForUser() {
-        if (!userSettingsDataManager.getFcm().equals("")) {
-            AtomicReference<ResponseEntity> reference = new AtomicReference<>();
-            addSubscription(dataManager.setFcmId(userSettingsDataManager.getFcm()).subscribe(new Subscriber<ResponseEntity>() {
-                @Override
-                public void onCompleted() {
-                    if (reference.get().getResponse() == 200) {
-                        userSettingsDataManager.setFcmUpdate(true);
-                    } else {
-                        userSettingsDataManager.setFcmUpdate(false);
-                    }
+        AtomicReference<ResponseEntity> reference = new AtomicReference<>();
+        addSubscription(dataManager.setFcmId(userSettingsDataManager.getFcm()).subscribe(new Subscriber<ResponseEntity>() {
+            @Override
+            public void onCompleted() {
+                if (reference.get().getResponse() == 200) {
+                    userSettingsDataManager.onFcmUpdated();
+                } else {
+                    userSettingsDataManager.scheduleTokenUpdate();
                 }
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    userSettingsDataManager.setFcmUpdate(false);
-                }
+            @Override
+            public void onError(Throwable e) {
+                userSettingsDataManager.scheduleTokenUpdate();
+            }
 
-                @Override
-                public void onNext(ResponseEntity responseEntity) {
-                    reference.set(responseEntity);
-                }
-            }));
-        }
+            @Override
+            public void onNext(ResponseEntity responseEntity) {
+                reference.set(responseEntity);
+            }
+        }));
     }
 }

@@ -1,7 +1,5 @@
 package dustit.clientapp.mvp.presenters.activities;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -101,7 +99,10 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
     }
 
     @Override
-    public void loadMemForComments(int memId, @Nullable int parentComment, @Nullable int newComment) {
+    public void loadMemForComments(int memId, int parentComment, int newComment) {
+        L.print("MemId: " + memId);
+        L.print("parentComment: " + parentComment);
+        L.print("newComment: " + newComment);
         AtomicReference<MemEntity> reference = new AtomicReference<>();
         addSubscription(dataManager.getMemById(memId).subscribe(new Subscriber<MemEntity>() {
             @Override
@@ -128,7 +129,7 @@ public class FeedActivityPresenter extends BasePresenter<IFeedActivityView> impl
             @Override
             public void onCompleted() {
                 if (!isError[0]) {
-                    userSettingsDataManager.setFcmUpdate(true);
+                    userSettingsDataManager.onFcmUpdated();
                 }
             }
 

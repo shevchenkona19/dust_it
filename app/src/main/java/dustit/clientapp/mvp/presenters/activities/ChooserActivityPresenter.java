@@ -41,7 +41,7 @@ public class ChooserActivityPresenter extends BasePresenter<IChooserActivityView
     }
 
     @Override
-    public void continueNoRegistration() {
+    public void     continueNoRegistration() {
         userSettingsDataManager.setRegistered(false);
         getView().showLoading();
         addSubscription(dataManager.loginUser(new LoginUserEntity(IConstants.NO_REGISTRATION_USERNAME, IConstants.NO_REGISTRATION_PASSWORD))

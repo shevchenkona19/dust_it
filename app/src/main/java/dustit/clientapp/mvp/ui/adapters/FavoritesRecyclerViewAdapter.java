@@ -122,7 +122,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                 .load(Uri.parse(BASE_URL + "/feed/imgs?id=" + mem.getId()))
                 .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color)))
                 .into(holder.ivMem);
-        holder.ivMem.setOnClickListener(view -> callback.onFavoriteChosen(mem));
+        holder.ivMem.setOnClickListener(view -> callback.onFavoriteChosen(mem, isMe));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     }
 
     public interface IFavoritesCallback {
-        void onFavoriteChosen(MemEntity mem);
+        void onFavoriteChosen(MemEntity mem, boolean isMe);
 
         void reload();
     }

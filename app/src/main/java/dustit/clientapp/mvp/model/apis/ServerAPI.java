@@ -41,6 +41,9 @@ import rx.Observable;
 
 public interface ServerAPI {
 
+    @DELETE("/account/fcmId")
+    Observable<ResponseEntity> deleteFcmId(@Header("Authorization") String token);
+
     @POST("/account/register/")
     Observable<TokenEntity> registerUser(@Body RegisterUserEntity userEntity);
 

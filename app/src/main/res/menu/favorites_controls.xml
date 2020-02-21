@@ -5,11 +5,11 @@
         android:id="@+id/download"
         android:icon="@drawable/ic_save"
         android:title="@string/save"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/share"
         android:icon="@drawable/ic_share"
         android:title="@string/share_image"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

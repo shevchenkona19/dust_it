@@ -29,9 +29,9 @@ public class ReferralFragment extends Fragment implements IReferralActivityView 
     @BindView(R.id.svRefCodeWrapper)
     NestedScrollView svCodeWrapper;
 
-    String myCode = "";
+    private String myCode = "";
 
-    ReferralActivityPresenter presenter = new ReferralActivityPresenter();
+    private ReferralActivityPresenter presenter = new ReferralActivityPresenter();
 
     public static ReferralFragment newInstance() {
         return new ReferralFragment();

@@ -26,9 +26,9 @@ public class AlertBuilder {
                 .setCancelable(true)
                 .create();
         alertDialog.setOnShowListener(dialog -> {
-            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorAccent));
-            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.colorAccent));
-            alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.colorAccent));
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.fabSecond));
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.fabSecond));
+            alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.fabSecond));
         });
         alertDialog.show();
     }
@@ -46,9 +46,9 @@ public class AlertBuilder {
                 .setCancelable(true)
                 .create();
         alertDialog.setOnShowListener(dialog -> {
-            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorAccent));
-            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.colorAccent));
-            alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.colorAccent));
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.fabSecond));
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.fabSecond));
+            alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.fabSecond));
         });
         alertDialog.show();
     }
@@ -79,7 +79,7 @@ public class AlertBuilder {
                 .setPositiveButton(context.getText(R.string.ok), null)
                 .setCancelable(true)
                 .create();
-        alertDialog.setOnShowListener(dialog -> alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorAccent)));
+        alertDialog.setOnShowListener(dialog -> alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.fabSecond)));
         return alertDialog;
     }
 

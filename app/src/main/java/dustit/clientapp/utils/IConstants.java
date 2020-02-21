@@ -4,8 +4,8 @@ public interface IConstants {
     String BASE_URL = "http://192.168.1.21";
     //    String BASE_URL = "http://193.111.63.173";
     String SHARED_PREFERENCES_NAME = "12Fgt2yyckt655";
-    String NO_REGISTRATION_USERNAME = "user";
-    String NO_REGISTRATION_PASSWORD = "lolkek123";
+    String NO_REGISTRATION_USERNAME = "noreg";
+    String NO_REGISTRATION_PASSWORD = "noreg";
     String IMAGE_URL = BASE_URL + "/feed/imgs?id=";
     String USER_IMAGE_URL = BASE_URL + "/feed/userPhoto?targetUsername=";
     int NUMBER_OF_ADS = 10;
@@ -63,6 +63,7 @@ public interface IConstants {
         String FCM_ID = "FCM_ID";
         String FCM_UPDATE = "FCM_UPDATE";
         String IS_NO_REGISTRATION = "IS_NO_REGISTRATION";
+        String SCHEDULED_UPDATE = "SCHEDULED_UPDATE";
     }
 
     interface IBundle {

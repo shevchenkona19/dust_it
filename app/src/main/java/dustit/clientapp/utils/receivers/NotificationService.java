@@ -6,6 +6,7 @@ import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -39,6 +40,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        L.print("GOT NEW MSG ________________________________________________");
         if (remoteMessage.getData().size() > 0) {
             if (userSettingsDataManager.isNotificationsEnabled()) {
                 Map<String, String> data = remoteMessage.getData();
@@ -76,21 +78,26 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void buildNewRespondNotification(Map<String, String> data) {
-        String username = data.get("username");
-        String text = data.get("text");
-        Intent intent = new Intent(this, NewFeedActivity.class);
-        intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
-        intent.putExtra(IConstants.IBundle.MEM_ID, data.get("memId"));
-        intent.putExtra(IConstants.IBundle.PARENT_COMMENT_ID, data.get("parentCommentId"));
-        intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, data.get("newCommentId"));
-        sendNewRespondOnCommentNotification(username, text, intent);
+        try {
+            int memId = Integer.parseInt(data.get("memId"));
+            int parentCommentId = Integer.parseInt(data.get("parentCommentId"));
+            int newCommentId = Integer.parseInt(data.get("newCommentId"));
+            String username = data.get("username");
+            String text = data.get("text");
+            Intent intent = new Intent(this, NewFeedActivity.class);
+            intent.putExtra(IConstants.IBundle.SHOW_COMMENTS, true);
+            intent.putExtra(IConstants.IBundle.MEM_ID, memId);
+            intent.putExtra(IConstants.IBundle.PARENT_COMMENT_ID, parentCommentId);
+            intent.putExtra(IConstants.IBundle.NEW_COMMENT_ID, newCommentId);
+            sendNewRespondOnCommentNotification(username, text, intent);
+        } catch (Exception ignored) {
+
+        }
     }
 
     private void sendNewLikeNotification(String byUsername, String byUserId, String eventType, Intent intent) {
         if (byUserId == null || byUserId.equals("undefined") ||
-                byUsername == null || byUsername.equals("undefined") ||
-                eventType == null || eventType.equals("undefined")) return;
-
+                byUsername == null || byUsername.equals("undefined")) return;
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -184,7 +191,8 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        setToken(s);
+        if (userSettingsDataManager.isRegistered())
+            setToken(s);
         userSettingsDataManager.saveFcmId(s);
     }
 
@@ -196,19 +204,19 @@ public class NotificationService extends FirebaseMessagingService {
             public void onCompleted() {
                 if (reference.get().getResponse() == 200) {
                     counter = 0;
-                    userSettingsDataManager.setFcmUpdate(true);
+                    userSettingsDataManager.onFcmUpdated();
                 } else {
-                    userSettingsDataManager.setFcmUpdate(false);
+                    userSettingsDataManager.scheduleTokenUpdate();
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 L.print("Error setting FCM Token: " + e.getMessage());
-                if (counter <= 5) {
+                if (counter <= 3) {
                     setToken(s);
                 } else {
-                    userSettingsDataManager.setFcmUpdate(false);
+                    userSettingsDataManager.onFcmUpdated();
                 }
             }
 
